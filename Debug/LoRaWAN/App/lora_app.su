@@ -1,0 +1,13 @@
+lora_app.c:228:6:LoRaWAN_Init	48	static
+lora_app.c:307:6:HAL_GPIO_EXTI_Callback	16	static
+lora_app.c:328:16:platform_write	24	static
+lora_app.c:332:16:platform_read	24	static
+lora_app.c:338:13:OnRxData	48	static
+lora_app.c:395:13:SendTxData	56	static
+lora_app.c:422:13:OnTxTimerEvent	16	static
+lora_app.c:437:13:OnTxTimerLedEvent	16	static
+lora_app.c:441:13:OnRxTimerLedEvent	16	static
+lora_app.c:445:13:OnJoinTimerLedEvent	16	static
+lora_app.c:451:13:OnTxData	32	static
+lora_app.c:475:13:OnJoinRequest	16	static
+lora_app.c:500:13:OnMacProcessNotify	8	static

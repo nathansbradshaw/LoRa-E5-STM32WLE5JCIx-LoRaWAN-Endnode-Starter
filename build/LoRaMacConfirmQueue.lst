@@ -1,0 +1,1521 @@
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\cc08aeVP.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"LoRaMacConfirmQueue.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.section	.text.IncreaseBufferPointer,"ax",%progbits
+  18              		.align	1
+  19              		.syntax unified
+  20              		.thumb
+  21              		.thumb_func
+  23              	IncreaseBufferPointer:
+  24              	.LVL0:
+  25              	.LFB104:
+  26              		.file 1 "Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c"
+   1:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c **** /*!
+   2:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****  * \file      LoRaMacConfirmQueue.c
+   3:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****  *
+   4:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****  * \brief     LoRa MAC confirm queue implementation
+   5:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****  *
+   6:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****  * \copyright Revised BSD License, see section \ref LICENSE.
+   7:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****  *
+   8:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****  * \code
+   9:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****  *                ______                              _
+  10:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****  *               / _____)             _              | |
+  11:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****  *              ( (____  _____ ____ _| |_ _____  ____| |__
+  12:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****  *               \____ \| ___ |    (_   _) ___ |/ ___)  _ \
+  13:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****  *               _____) ) ____| | | || |_| ____( (___| | | |
+  14:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****  *              (______/|_____)_|_|_| \__)_____)\____)_| |_|
+  15:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****  *              (C)2013 Semtech
+  16:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****  *
+  17:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****  *               ___ _____ _   ___ _  _____ ___  ___  ___ ___
+  18:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****  *              / __|_   _/_\ / __| |/ / __/ _ \| _ \/ __| __|
+  19:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****  *              \__ \ | |/ _ \ (__| ' <| _| (_) |   / (__| _|
+  20:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****  *              |___/ |_/_/ \_\___|_|\_\_| \___/|_|_\\___|___|
+  21:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****  *              embedded.connectivity.solutions===============
+  22:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****  *
+  23:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****  * \endcode
+  24:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****  *
+  25:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****  * \author    Miguel Luis ( Semtech )
+  26:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****  *
+  27:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****  * \author    Gregory Cristian ( Semtech )
+  28:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****  *
+  29:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****  * \author    Daniel Jaeckle ( STACKFORCE )
+  30:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****  */
+  31:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c **** #include <stdint.h>
+  32:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c **** #include <stdbool.h>
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\cc08aeVP.s 			page 2
+
+
+  33:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c **** #include <stddef.h>
+  34:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c **** 
+  35:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c **** #include "timer.h"
+  36:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c **** #include "utilities.h"
+  37:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c **** #include "LoRaMac.h"
+  38:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c **** #include "LoRaMacConfirmQueue.h"
+  39:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c **** 
+  40:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c **** 
+  41:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c **** /*
+  42:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****  * LoRaMac Confirm Queue Context NVM structure
+  43:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****  */
+  44:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c **** typedef struct sLoRaMacConfirmQueueNvmData
+  45:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c **** {
+  46:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****     /*!
+  47:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****     * MlmeConfirm queue data structure
+  48:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****     */
+  49:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****     MlmeConfirmQueue_t MlmeConfirmQueue[LORA_MAC_MLME_CONFIRM_QUEUE_LEN];
+  50:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****     /*!
+  51:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****     * Counts the number of MlmeConfirms to process
+  52:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****     */
+  53:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****     uint8_t MlmeConfirmQueueCnt;
+  54:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****     /*!
+  55:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****     * Variable which holds a common status
+  56:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****     */
+  57:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****     LoRaMacEventInfoStatus_t CommonStatus;
+  58:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c **** } LoRaMacConfirmQueueNvmData_t;
+  59:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c **** 
+  60:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c **** /*
+  61:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****  * LoRaMac Confirm Queue Context structure
+  62:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****  */
+  63:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c **** typedef struct sLoRaMacConfirmQueueCtx
+  64:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c **** {
+  65:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****     /*!
+  66:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****     * LoRaMac callback function primitives
+  67:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****     */
+  68:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****     LoRaMacPrimitives_t* Primitives;
+  69:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****     /*!
+  70:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****     * Pointer to the first element of the ring buffer
+  71:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****     */
+  72:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****     MlmeConfirmQueue_t* BufferStart;
+  73:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****     /*!
+  74:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****     * Pointer to the last element of the ring buffer
+  75:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****     */
+  76:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****     MlmeConfirmQueue_t* BufferEnd;
+  77:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****     /*!
+  78:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****     * Non-volatile module context.
+  79:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****     */
+  80:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****     LoRaMacConfirmQueueNvmData_t Nvm;
+  81:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c **** } LoRaMacConfirmQueueCtx_t;
+  82:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c **** 
+  83:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c **** /*
+  84:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****  * Module context.
+  85:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****  */
+  86:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c **** static LoRaMacConfirmQueueCtx_t ConfirmQueueCtx;
+  87:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c **** 
+  88:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c **** static MlmeConfirmQueue_t* IncreaseBufferPointer( MlmeConfirmQueue_t* bufferPointer )
+  89:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c **** {
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\cc08aeVP.s 			page 3
+
+
+  27              		.loc 1 89 1 view -0
+  28              		.cfi_startproc
+  29              		@ args = 0, pretend = 0, frame = 0
+  30              		@ frame_needed = 0, uses_anonymous_args = 0
+  31              		@ link register save eliminated.
+  90:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****     if( bufferPointer == &ConfirmQueueCtx.Nvm.MlmeConfirmQueue[LORA_MAC_MLME_CONFIRM_QUEUE_LEN - 1]
+  32              		.loc 1 90 5 view .LVU1
+  33              		.loc 1 90 7 is_stmt 0 view .LVU2
+  34 0000 034B     		ldr	r3, .L4
+  35 0002 9842     		cmp	r0, r3
+  36 0004 01D0     		beq	.L3
+  91:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****     {
+  92:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****         // Reset to the first element
+  93:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****         bufferPointer = ConfirmQueueCtx.Nvm.MlmeConfirmQueue;
+  94:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****     }
+  95:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****     else
+  96:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****     {
+  97:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****         // Increase
+  98:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****         bufferPointer++;
+  37              		.loc 1 98 9 is_stmt 1 view .LVU3
+  38              		.loc 1 98 22 is_stmt 0 view .LVU4
+  39 0006 0430     		adds	r0, r0, #4
+  40              	.LVL1:
+  41              		.loc 1 98 22 view .LVU5
+  42 0008 7047     		bx	lr
+  43              	.L3:
+  93:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****     }
+  44              		.loc 1 93 23 view .LVU6
+  45 000a 0248     		ldr	r0, .L4+4
+  46              	.LVL2:
+  99:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****     }
+ 100:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****     return bufferPointer;
+  47              		.loc 1 100 5 is_stmt 1 view .LVU7
+ 101:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c **** }
+  48              		.loc 1 101 1 is_stmt 0 view .LVU8
+  49 000c 7047     		bx	lr
+  50              	.L5:
+  51 000e 00BF     		.align	2
+  52              	.L4:
+  53 0010 1C000000 		.word	.LANCHOR0+28
+  54 0014 0C000000 		.word	.LANCHOR0+12
+  55              		.cfi_endproc
+  56              	.LFE104:
+  58              		.section	.text.DecreaseBufferPointer,"ax",%progbits
+  59              		.align	1
+  60              		.syntax unified
+  61              		.thumb
+  62              		.thumb_func
+  64              	DecreaseBufferPointer:
+  65              	.LVL3:
+  66              	.LFB105:
+ 102:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c **** 
+ 103:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c **** static MlmeConfirmQueue_t* DecreaseBufferPointer( MlmeConfirmQueue_t* bufferPointer )
+ 104:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c **** {
+  67              		.loc 1 104 1 is_stmt 1 view -0
+  68              		.cfi_startproc
+  69              		@ args = 0, pretend = 0, frame = 0
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\cc08aeVP.s 			page 4
+
+
+  70              		@ frame_needed = 0, uses_anonymous_args = 0
+  71              		@ link register save eliminated.
+ 105:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****     if( bufferPointer == ConfirmQueueCtx.Nvm.MlmeConfirmQueue )
+  72              		.loc 1 105 5 view .LVU10
+  73              		.loc 1 105 7 is_stmt 0 view .LVU11
+  74 0000 034B     		ldr	r3, .L9
+  75 0002 9842     		cmp	r0, r3
+  76 0004 01D0     		beq	.L8
+ 106:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****     {
+ 107:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****         // Reset to the last element
+ 108:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****         bufferPointer = &ConfirmQueueCtx.Nvm.MlmeConfirmQueue[LORA_MAC_MLME_CONFIRM_QUEUE_LEN - 1];
+ 109:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****     }
+ 110:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****     else
+ 111:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****     {
+ 112:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****         bufferPointer--;
+  77              		.loc 1 112 9 is_stmt 1 view .LVU12
+  78              		.loc 1 112 22 is_stmt 0 view .LVU13
+  79 0006 0438     		subs	r0, r0, #4
+  80              	.LVL4:
+  81              		.loc 1 112 22 view .LVU14
+  82 0008 7047     		bx	lr
+  83              	.L8:
+ 108:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****     }
+  84              		.loc 1 108 23 view .LVU15
+  85 000a 0248     		ldr	r0, .L9+4
+  86              	.LVL5:
+ 113:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****     }
+ 114:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****     return bufferPointer;
+  87              		.loc 1 114 5 is_stmt 1 view .LVU16
+ 115:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c **** }
+  88              		.loc 1 115 1 is_stmt 0 view .LVU17
+  89 000c 7047     		bx	lr
+  90              	.L10:
+  91 000e 00BF     		.align	2
+  92              	.L9:
+  93 0010 0C000000 		.word	.LANCHOR0+12
+  94 0014 1C000000 		.word	.LANCHOR0+28
+  95              		.cfi_endproc
+  96              	.LFE105:
+  98              		.section	.text.IsListEmpty,"ax",%progbits
+  99              		.align	1
+ 100              		.syntax unified
+ 101              		.thumb
+ 102              		.thumb_func
+ 104              	IsListEmpty:
+ 105              	.LVL6:
+ 106              	.LFB106:
+ 116:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c **** 
+ 117:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c **** static bool IsListEmpty( uint8_t count )
+ 118:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c **** {
+ 107              		.loc 1 118 1 is_stmt 1 view -0
+ 108              		.cfi_startproc
+ 109              		@ args = 0, pretend = 0, frame = 0
+ 110              		@ frame_needed = 0, uses_anonymous_args = 0
+ 111              		@ link register save eliminated.
+ 119:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****     if( count == 0 )
+ 112              		.loc 1 119 5 view .LVU19
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\cc08aeVP.s 			page 5
+
+
+ 113              		.loc 1 119 7 is_stmt 0 view .LVU20
+ 114 0000 08B1     		cbz	r0, .L13
+ 120:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****     {
+ 121:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****         return true;
+ 122:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****     }
+ 123:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****     return false;
+ 115              		.loc 1 123 12 view .LVU21
+ 116 0002 0020     		movs	r0, #0
+ 117              	.LVL7:
+ 118              		.loc 1 123 12 view .LVU22
+ 119 0004 7047     		bx	lr
+ 120              	.LVL8:
+ 121              	.L13:
+ 121:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****     }
+ 122              		.loc 1 121 16 view .LVU23
+ 123 0006 0120     		movs	r0, #1
+ 124              	.LVL9:
+ 124:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c **** }
+ 125              		.loc 1 124 1 view .LVU24
+ 126 0008 7047     		bx	lr
+ 127              		.cfi_endproc
+ 128              	.LFE106:
+ 130              		.section	.text.IsListFull,"ax",%progbits
+ 131              		.align	1
+ 132              		.syntax unified
+ 133              		.thumb
+ 134              		.thumb_func
+ 136              	IsListFull:
+ 137              	.LVL10:
+ 138              	.LFB107:
+ 125:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c **** 
+ 126:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c **** static bool IsListFull( uint8_t count )
+ 127:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c **** {
+ 139              		.loc 1 127 1 is_stmt 1 view -0
+ 140              		.cfi_startproc
+ 141              		@ args = 0, pretend = 0, frame = 0
+ 142              		@ frame_needed = 0, uses_anonymous_args = 0
+ 143              		@ link register save eliminated.
+ 128:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****     if( count >= LORA_MAC_MLME_CONFIRM_QUEUE_LEN )
+ 144              		.loc 1 128 5 view .LVU26
+ 145              		.loc 1 128 7 is_stmt 0 view .LVU27
+ 146 0000 0428     		cmp	r0, #4
+ 147 0002 01D8     		bhi	.L16
+ 129:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****     {
+ 130:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****         return true;
+ 131:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****     }
+ 132:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****     return false;
+ 148              		.loc 1 132 12 view .LVU28
+ 149 0004 0020     		movs	r0, #0
+ 150              	.LVL11:
+ 151              		.loc 1 132 12 view .LVU29
+ 152 0006 7047     		bx	lr
+ 153              	.LVL12:
+ 154              	.L16:
+ 130:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****     }
+ 155              		.loc 1 130 16 view .LVU30
+ 156 0008 0120     		movs	r0, #1
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\cc08aeVP.s 			page 6
+
+
+ 157              	.LVL13:
+ 133:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c **** }
+ 158              		.loc 1 133 1 view .LVU31
+ 159 000a 7047     		bx	lr
+ 160              		.cfi_endproc
+ 161              	.LFE107:
+ 163              		.section	.text.GetElement,"ax",%progbits
+ 164              		.align	1
+ 165              		.syntax unified
+ 166              		.thumb
+ 167              		.thumb_func
+ 169              	GetElement:
+ 170              	.LVL14:
+ 171              	.LFB108:
+ 134:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c **** 
+ 135:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c **** static MlmeConfirmQueue_t* GetElement( Mlme_t request, MlmeConfirmQueue_t* bufferStart, MlmeConfirm
+ 136:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c **** {
+ 172              		.loc 1 136 1 is_stmt 1 view -0
+ 173              		.cfi_startproc
+ 174              		@ args = 0, pretend = 0, frame = 0
+ 175              		@ frame_needed = 0, uses_anonymous_args = 0
+ 176              		.loc 1 136 1 is_stmt 0 view .LVU33
+ 177 0000 F8B5     		push	{r3, r4, r5, r6, r7, lr}
+ 178              	.LCFI0:
+ 179              		.cfi_def_cfa_offset 24
+ 180              		.cfi_offset 3, -24
+ 181              		.cfi_offset 4, -20
+ 182              		.cfi_offset 5, -16
+ 183              		.cfi_offset 6, -12
+ 184              		.cfi_offset 7, -8
+ 185              		.cfi_offset 14, -4
+ 186 0002 0646     		mov	r6, r0
+ 187 0004 0C46     		mov	r4, r1
+ 137:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****     MlmeConfirmQueue_t* element = bufferStart;
+ 188              		.loc 1 137 5 is_stmt 1 view .LVU34
+ 189              	.LVL15:
+ 138:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c **** 
+ 139:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****     if( IsListEmpty( ConfirmQueueCtx.Nvm.MlmeConfirmQueueCnt ) == true )
+ 190              		.loc 1 139 5 view .LVU35
+ 191              		.loc 1 139 9 is_stmt 0 view .LVU36
+ 192 0006 0D4B     		ldr	r3, .L25
+ 193 0008 93F82070 		ldrb	r7, [r3, #32]	@ zero_extendqisi2
+ 194 000c 3846     		mov	r0, r7
+ 195              	.LVL16:
+ 196              		.loc 1 139 9 view .LVU37
+ 197 000e FFF7FEFF 		bl	IsListEmpty
+ 198              	.LVL17:
+ 199              		.loc 1 139 7 view .LVU38
+ 200 0012 70B9     		cbnz	r0, .L21
+ 201              	.LBB2:
+ 140:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****     {
+ 141:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****         return NULL;
+ 142:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****     }
+ 143:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c **** 
+ 144:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****     for( uint8_t elementCnt = 0; elementCnt < ConfirmQueueCtx.Nvm.MlmeConfirmQueueCnt; elementCnt++
+ 202              		.loc 1 144 18 view .LVU39
+ 203 0014 0025     		movs	r5, #0
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\cc08aeVP.s 			page 7
+
+
+ 204              	.LVL18:
+ 205              	.L19:
+ 206              		.loc 1 144 34 is_stmt 1 discriminator 1 view .LVU40
+ 207              		.loc 1 144 5 is_stmt 0 discriminator 1 view .LVU41
+ 208 0016 AF42     		cmp	r7, r5
+ 209 0018 09D9     		bls	.L24
+ 145:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****     {
+ 146:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****         if( element->Request == request )
+ 210              		.loc 1 146 9 is_stmt 1 view .LVU42
+ 211              		.loc 1 146 20 is_stmt 0 view .LVU43
+ 212 001a 2378     		ldrb	r3, [r4]	@ zero_extendqisi2
+ 213              		.loc 1 146 11 view .LVU44
+ 214 001c B342     		cmp	r3, r6
+ 215 001e 0AD0     		beq	.L22
+ 147:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****         {
+ 148:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****             // We have found the element
+ 149:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****             return element;
+ 150:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****         }
+ 151:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****         element = IncreaseBufferPointer( element );
+ 216              		.loc 1 151 9 is_stmt 1 discriminator 2 view .LVU45
+ 217              		.loc 1 151 19 is_stmt 0 discriminator 2 view .LVU46
+ 218 0020 2046     		mov	r0, r4
+ 219 0022 FFF7FEFF 		bl	IncreaseBufferPointer
+ 220              	.LVL19:
+ 221 0026 0446     		mov	r4, r0
+ 222              	.LVL20:
+ 144:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****     {
+ 223              		.loc 1 144 88 is_stmt 1 discriminator 2 view .LVU47
+ 144:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****     {
+ 224              		.loc 1 144 98 is_stmt 0 discriminator 2 view .LVU48
+ 225 0028 0135     		adds	r5, r5, #1
+ 226              	.LVL21:
+ 144:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****     {
+ 227              		.loc 1 144 98 discriminator 2 view .LVU49
+ 228 002a EDB2     		uxtb	r5, r5
+ 229              	.LVL22:
+ 144:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****     {
+ 230              		.loc 1 144 98 discriminator 2 view .LVU50
+ 231 002c F3E7     		b	.L19
+ 232              	.LVL23:
+ 233              	.L24:
+ 144:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****     {
+ 234              		.loc 1 144 98 discriminator 2 view .LVU51
+ 235              	.LBE2:
+ 152:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****     }
+ 153:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c **** 
+ 154:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****     return NULL;
+ 236              		.loc 1 154 12 view .LVU52
+ 237 002e 0020     		movs	r0, #0
+ 238              	.LVL24:
+ 239              	.L17:
+ 155:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c **** }
+ 240              		.loc 1 155 1 view .LVU53
+ 241 0030 F8BD     		pop	{r3, r4, r5, r6, r7, pc}
+ 242              	.LVL25:
+ 243              	.L21:
+ 141:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****     }
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\cc08aeVP.s 			page 8
+
+
+ 244              		.loc 1 141 16 view .LVU54
+ 245 0032 0020     		movs	r0, #0
+ 246 0034 FCE7     		b	.L17
+ 247              	.LVL26:
+ 248              	.L22:
+ 249              	.LBB3:
+ 149:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****         }
+ 250              		.loc 1 149 20 view .LVU55
+ 251 0036 2046     		mov	r0, r4
+ 252 0038 FAE7     		b	.L17
+ 253              	.L26:
+ 254 003a 00BF     		.align	2
+ 255              	.L25:
+ 256 003c 00000000 		.word	.LANCHOR0
+ 257              	.LBE3:
+ 258              		.cfi_endproc
+ 259              	.LFE108:
+ 261              		.section	.text.LoRaMacConfirmQueueInit,"ax",%progbits
+ 262              		.align	1
+ 263              		.global	LoRaMacConfirmQueueInit
+ 264              		.syntax unified
+ 265              		.thumb
+ 266              		.thumb_func
+ 268              	LoRaMacConfirmQueueInit:
+ 269              	.LVL27:
+ 270              	.LFB109:
+ 156:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c **** 
+ 157:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c **** void LoRaMacConfirmQueueInit( LoRaMacPrimitives_t* primitives )
+ 158:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c **** {
+ 271              		.loc 1 158 1 is_stmt 1 view -0
+ 272              		.cfi_startproc
+ 273              		@ args = 0, pretend = 0, frame = 0
+ 274              		@ frame_needed = 0, uses_anonymous_args = 0
+ 275              		.loc 1 158 1 is_stmt 0 view .LVU57
+ 276 0000 10B5     		push	{r4, lr}
+ 277              	.LCFI1:
+ 278              		.cfi_def_cfa_offset 8
+ 279              		.cfi_offset 4, -8
+ 280              		.cfi_offset 14, -4
+ 159:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****     ConfirmQueueCtx.Primitives = primitives;
+ 281              		.loc 1 159 5 is_stmt 1 view .LVU58
+ 282              		.loc 1 159 32 is_stmt 0 view .LVU59
+ 283 0002 084C     		ldr	r4, .L29
+ 284 0004 2060     		str	r0, [r4]
+ 160:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c **** 
+ 161:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****     // Init counter
+ 162:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****     ConfirmQueueCtx.Nvm.MlmeConfirmQueueCnt = 0;
+ 285              		.loc 1 162 5 is_stmt 1 view .LVU60
+ 286              		.loc 1 162 45 is_stmt 0 view .LVU61
+ 287 0006 0023     		movs	r3, #0
+ 288 0008 84F82030 		strb	r3, [r4, #32]
+ 163:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c **** 
+ 164:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****     // Init buffer
+ 165:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****     ConfirmQueueCtx.BufferStart = ConfirmQueueCtx.Nvm.MlmeConfirmQueue;
+ 289              		.loc 1 165 5 is_stmt 1 view .LVU62
+ 290              		.loc 1 165 33 is_stmt 0 view .LVU63
+ 291 000c 04F10C00 		add	r0, r4, #12
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\cc08aeVP.s 			page 9
+
+
+ 292              	.LVL28:
+ 293              		.loc 1 165 33 view .LVU64
+ 294 0010 6060     		str	r0, [r4, #4]
+ 166:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****     ConfirmQueueCtx.BufferEnd = ConfirmQueueCtx.Nvm.MlmeConfirmQueue;
+ 295              		.loc 1 166 5 is_stmt 1 view .LVU65
+ 296              		.loc 1 166 31 is_stmt 0 view .LVU66
+ 297 0012 A060     		str	r0, [r4, #8]
+ 167:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c **** 
+ 168:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****     memset1( ( uint8_t* )ConfirmQueueCtx.Nvm.MlmeConfirmQueue, 0xFF, sizeof( ConfirmQueueCtx.Nvm.Ml
+ 298              		.loc 1 168 5 is_stmt 1 view .LVU67
+ 299 0014 1422     		movs	r2, #20
+ 300 0016 FF21     		movs	r1, #255
+ 301 0018 FFF7FEFF 		bl	memset1
+ 302              	.LVL29:
+ 169:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c **** 
+ 170:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****     // Common status
+ 171:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****     ConfirmQueueCtx.Nvm.CommonStatus = LORAMAC_EVENT_INFO_STATUS_ERROR;
+ 303              		.loc 1 171 5 view .LVU68
+ 304              		.loc 1 171 38 is_stmt 0 view .LVU69
+ 305 001c 0123     		movs	r3, #1
+ 306 001e 84F82130 		strb	r3, [r4, #33]
+ 172:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c **** }
+ 307              		.loc 1 172 1 view .LVU70
+ 308 0022 10BD     		pop	{r4, pc}
+ 309              	.L30:
+ 310              		.align	2
+ 311              	.L29:
+ 312 0024 00000000 		.word	.LANCHOR0
+ 313              		.cfi_endproc
+ 314              	.LFE109:
+ 316              		.section	.text.LoRaMacConfirmQueueAdd,"ax",%progbits
+ 317              		.align	1
+ 318              		.global	LoRaMacConfirmQueueAdd
+ 319              		.syntax unified
+ 320              		.thumb
+ 321              		.thumb_func
+ 323              	LoRaMacConfirmQueueAdd:
+ 324              	.LVL30:
+ 325              	.LFB110:
+ 173:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c **** 
+ 174:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c **** bool LoRaMacConfirmQueueAdd( MlmeConfirmQueue_t* mlmeConfirm )
+ 175:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c **** {
+ 326              		.loc 1 175 1 is_stmt 1 view -0
+ 327              		.cfi_startproc
+ 328              		@ args = 0, pretend = 0, frame = 0
+ 329              		@ frame_needed = 0, uses_anonymous_args = 0
+ 330              		.loc 1 175 1 is_stmt 0 view .LVU72
+ 331 0000 38B5     		push	{r3, r4, r5, lr}
+ 332              	.LCFI2:
+ 333              		.cfi_def_cfa_offset 16
+ 334              		.cfi_offset 3, -16
+ 335              		.cfi_offset 4, -12
+ 336              		.cfi_offset 5, -8
+ 337              		.cfi_offset 14, -4
+ 338 0002 0546     		mov	r5, r0
+ 176:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****     if( IsListFull( ConfirmQueueCtx.Nvm.MlmeConfirmQueueCnt ) == true )
+ 339              		.loc 1 176 5 is_stmt 1 view .LVU73
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\cc08aeVP.s 			page 10
+
+
+ 340              		.loc 1 176 9 is_stmt 0 view .LVU74
+ 341 0004 0F4B     		ldr	r3, .L35
+ 342 0006 93F82000 		ldrb	r0, [r3, #32]	@ zero_extendqisi2
+ 343              	.LVL31:
+ 344              		.loc 1 176 9 view .LVU75
+ 345 000a FFF7FEFF 		bl	IsListFull
+ 346              	.LVL32:
+ 347              		.loc 1 176 7 view .LVU76
+ 348 000e B8B9     		cbnz	r0, .L33
+ 177:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****     {
+ 178:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****         // Protect the buffer against overwrites
+ 179:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****         return false;
+ 180:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****     }
+ 181:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c **** 
+ 182:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****     // Add the element to the ring buffer
+ 183:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****     ConfirmQueueCtx.BufferEnd->Request = mlmeConfirm->Request;
+ 349              		.loc 1 183 5 is_stmt 1 view .LVU77
+ 350              		.loc 1 183 20 is_stmt 0 view .LVU78
+ 351 0010 0C4C     		ldr	r4, .L35
+ 352 0012 A368     		ldr	r3, [r4, #8]
+ 353              		.loc 1 183 53 view .LVU79
+ 354 0014 2A78     		ldrb	r2, [r5]	@ zero_extendqisi2
+ 355              		.loc 1 183 40 view .LVU80
+ 356 0016 1A70     		strb	r2, [r3]
+ 184:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****     ConfirmQueueCtx.BufferEnd->Status = mlmeConfirm->Status;
+ 357              		.loc 1 184 5 is_stmt 1 view .LVU81
+ 358              		.loc 1 184 20 is_stmt 0 view .LVU82
+ 359 0018 A368     		ldr	r3, [r4, #8]
+ 360              		.loc 1 184 52 view .LVU83
+ 361 001a 6A78     		ldrb	r2, [r5, #1]	@ zero_extendqisi2
+ 362              		.loc 1 184 39 view .LVU84
+ 363 001c 5A70     		strb	r2, [r3, #1]
+ 185:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****     ConfirmQueueCtx.BufferEnd->RestrictCommonReadyToHandle = mlmeConfirm->RestrictCommonReadyToHand
+ 364              		.loc 1 185 5 is_stmt 1 view .LVU85
+ 365              		.loc 1 185 20 is_stmt 0 view .LVU86
+ 366 001e A368     		ldr	r3, [r4, #8]
+ 367              		.loc 1 185 73 view .LVU87
+ 368 0020 EA78     		ldrb	r2, [r5, #3]	@ zero_extendqisi2
+ 369              		.loc 1 185 60 view .LVU88
+ 370 0022 DA70     		strb	r2, [r3, #3]
+ 186:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****     ConfirmQueueCtx.BufferEnd->ReadyToHandle = false;
+ 371              		.loc 1 186 5 is_stmt 1 view .LVU89
+ 372              		.loc 1 186 20 is_stmt 0 view .LVU90
+ 373 0024 A368     		ldr	r3, [r4, #8]
+ 374              		.loc 1 186 46 view .LVU91
+ 375 0026 0022     		movs	r2, #0
+ 376 0028 9A70     		strb	r2, [r3, #2]
+ 187:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****     // Increase counter
+ 188:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****     ConfirmQueueCtx.Nvm.MlmeConfirmQueueCnt++;
+ 377              		.loc 1 188 5 is_stmt 1 view .LVU92
+ 378              		.loc 1 188 24 is_stmt 0 view .LVU93
+ 379 002a 94F82030 		ldrb	r3, [r4, #32]	@ zero_extendqisi2
+ 380              		.loc 1 188 44 view .LVU94
+ 381 002e 0133     		adds	r3, r3, #1
+ 382 0030 84F82030 		strb	r3, [r4, #32]
+ 189:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****     // Update end pointer
+ 190:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****     ConfirmQueueCtx.BufferEnd = IncreaseBufferPointer( ConfirmQueueCtx.BufferEnd );
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\cc08aeVP.s 			page 11
+
+
+ 383              		.loc 1 190 5 is_stmt 1 view .LVU95
+ 384              		.loc 1 190 33 is_stmt 0 view .LVU96
+ 385 0034 A068     		ldr	r0, [r4, #8]
+ 386 0036 FFF7FEFF 		bl	IncreaseBufferPointer
+ 387              	.LVL33:
+ 388              		.loc 1 190 31 view .LVU97
+ 389 003a A060     		str	r0, [r4, #8]
+ 191:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c **** 
+ 192:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****     return true;
+ 390              		.loc 1 192 5 is_stmt 1 view .LVU98
+ 391              		.loc 1 192 12 is_stmt 0 view .LVU99
+ 392 003c 0120     		movs	r0, #1
+ 393              	.L32:
+ 193:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c **** }
+ 394              		.loc 1 193 1 view .LVU100
+ 395 003e 38BD     		pop	{r3, r4, r5, pc}
+ 396              	.LVL34:
+ 397              	.L33:
+ 179:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****     }
+ 398              		.loc 1 179 16 view .LVU101
+ 399 0040 0020     		movs	r0, #0
+ 400 0042 FCE7     		b	.L32
+ 401              	.L36:
+ 402              		.align	2
+ 403              	.L35:
+ 404 0044 00000000 		.word	.LANCHOR0
+ 405              		.cfi_endproc
+ 406              	.LFE110:
+ 408              		.section	.text.LoRaMacConfirmQueueRemoveLast,"ax",%progbits
+ 409              		.align	1
+ 410              		.global	LoRaMacConfirmQueueRemoveLast
+ 411              		.syntax unified
+ 412              		.thumb
+ 413              		.thumb_func
+ 415              	LoRaMacConfirmQueueRemoveLast:
+ 416              	.LFB111:
+ 194:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c **** 
+ 195:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c **** bool LoRaMacConfirmQueueRemoveLast( void )
+ 196:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c **** {
+ 417              		.loc 1 196 1 is_stmt 1 view -0
+ 418              		.cfi_startproc
+ 419              		@ args = 0, pretend = 0, frame = 0
+ 420              		@ frame_needed = 0, uses_anonymous_args = 0
+ 421 0000 38B5     		push	{r3, r4, r5, lr}
+ 422              	.LCFI3:
+ 423              		.cfi_def_cfa_offset 16
+ 424              		.cfi_offset 3, -16
+ 425              		.cfi_offset 4, -12
+ 426              		.cfi_offset 5, -8
+ 427              		.cfi_offset 14, -4
+ 197:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****     if( IsListEmpty( ConfirmQueueCtx.Nvm.MlmeConfirmQueueCnt ) == true )
+ 428              		.loc 1 197 5 view .LVU103
+ 429              		.loc 1 197 9 is_stmt 0 view .LVU104
+ 430 0002 094B     		ldr	r3, .L41
+ 431 0004 93F82040 		ldrb	r4, [r3, #32]	@ zero_extendqisi2
+ 432 0008 2046     		mov	r0, r4
+ 433 000a FFF7FEFF 		bl	IsListEmpty
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\cc08aeVP.s 			page 12
+
+
+ 434              	.LVL35:
+ 435              		.loc 1 197 7 view .LVU105
+ 436 000e 48B9     		cbnz	r0, .L39
+ 198:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****     {
+ 199:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****         return false;
+ 200:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****     }
+ 201:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c **** 
+ 202:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****     // Increase counter
+ 203:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****     ConfirmQueueCtx.Nvm.MlmeConfirmQueueCnt--;
+ 437              		.loc 1 203 5 is_stmt 1 view .LVU106
+ 438              		.loc 1 203 44 is_stmt 0 view .LVU107
+ 439 0010 054D     		ldr	r5, .L41
+ 440 0012 013C     		subs	r4, r4, #1
+ 441 0014 85F82040 		strb	r4, [r5, #32]
+ 204:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****     // Update start pointer
+ 205:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****     ConfirmQueueCtx.BufferEnd = DecreaseBufferPointer( ConfirmQueueCtx.BufferEnd );
+ 442              		.loc 1 205 5 is_stmt 1 view .LVU108
+ 443              		.loc 1 205 33 is_stmt 0 view .LVU109
+ 444 0018 A868     		ldr	r0, [r5, #8]
+ 445 001a FFF7FEFF 		bl	DecreaseBufferPointer
+ 446              	.LVL36:
+ 447              		.loc 1 205 31 view .LVU110
+ 448 001e A860     		str	r0, [r5, #8]
+ 206:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c **** 
+ 207:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****     return true;
+ 449              		.loc 1 207 5 is_stmt 1 view .LVU111
+ 450              		.loc 1 207 12 is_stmt 0 view .LVU112
+ 451 0020 0120     		movs	r0, #1
+ 452              	.L38:
+ 208:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c **** }
+ 453              		.loc 1 208 1 view .LVU113
+ 454 0022 38BD     		pop	{r3, r4, r5, pc}
+ 455              	.L39:
+ 199:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****     }
+ 456              		.loc 1 199 16 view .LVU114
+ 457 0024 0020     		movs	r0, #0
+ 458 0026 FCE7     		b	.L38
+ 459              	.L42:
+ 460              		.align	2
+ 461              	.L41:
+ 462 0028 00000000 		.word	.LANCHOR0
+ 463              		.cfi_endproc
+ 464              	.LFE111:
+ 466              		.section	.text.LoRaMacConfirmQueueRemoveFirst,"ax",%progbits
+ 467              		.align	1
+ 468              		.global	LoRaMacConfirmQueueRemoveFirst
+ 469              		.syntax unified
+ 470              		.thumb
+ 471              		.thumb_func
+ 473              	LoRaMacConfirmQueueRemoveFirst:
+ 474              	.LFB112:
+ 209:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c **** 
+ 210:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c **** bool LoRaMacConfirmQueueRemoveFirst( void )
+ 211:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c **** {
+ 475              		.loc 1 211 1 is_stmt 1 view -0
+ 476              		.cfi_startproc
+ 477              		@ args = 0, pretend = 0, frame = 0
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\cc08aeVP.s 			page 13
+
+
+ 478              		@ frame_needed = 0, uses_anonymous_args = 0
+ 479 0000 38B5     		push	{r3, r4, r5, lr}
+ 480              	.LCFI4:
+ 481              		.cfi_def_cfa_offset 16
+ 482              		.cfi_offset 3, -16
+ 483              		.cfi_offset 4, -12
+ 484              		.cfi_offset 5, -8
+ 485              		.cfi_offset 14, -4
+ 212:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****     if( IsListEmpty( ConfirmQueueCtx.Nvm.MlmeConfirmQueueCnt ) == true )
+ 486              		.loc 1 212 5 view .LVU116
+ 487              		.loc 1 212 9 is_stmt 0 view .LVU117
+ 488 0002 094B     		ldr	r3, .L47
+ 489 0004 93F82040 		ldrb	r4, [r3, #32]	@ zero_extendqisi2
+ 490 0008 2046     		mov	r0, r4
+ 491 000a FFF7FEFF 		bl	IsListEmpty
+ 492              	.LVL37:
+ 493              		.loc 1 212 7 view .LVU118
+ 494 000e 48B9     		cbnz	r0, .L45
+ 213:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****     {
+ 214:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****         return false;
+ 215:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****     }
+ 216:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c **** 
+ 217:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****     // Increase counter
+ 218:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****     ConfirmQueueCtx.Nvm.MlmeConfirmQueueCnt--;
+ 495              		.loc 1 218 5 is_stmt 1 view .LVU119
+ 496              		.loc 1 218 44 is_stmt 0 view .LVU120
+ 497 0010 054D     		ldr	r5, .L47
+ 498 0012 013C     		subs	r4, r4, #1
+ 499 0014 85F82040 		strb	r4, [r5, #32]
+ 219:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****     // Update start pointer
+ 220:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****     ConfirmQueueCtx.BufferStart = IncreaseBufferPointer( ConfirmQueueCtx.BufferStart );
+ 500              		.loc 1 220 5 is_stmt 1 view .LVU121
+ 501              		.loc 1 220 35 is_stmt 0 view .LVU122
+ 502 0018 6868     		ldr	r0, [r5, #4]
+ 503 001a FFF7FEFF 		bl	IncreaseBufferPointer
+ 504              	.LVL38:
+ 505              		.loc 1 220 33 view .LVU123
+ 506 001e 6860     		str	r0, [r5, #4]
+ 221:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c **** 
+ 222:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****     return true;
+ 507              		.loc 1 222 5 is_stmt 1 view .LVU124
+ 508              		.loc 1 222 12 is_stmt 0 view .LVU125
+ 509 0020 0120     		movs	r0, #1
+ 510              	.L44:
+ 223:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c **** }
+ 511              		.loc 1 223 1 view .LVU126
+ 512 0022 38BD     		pop	{r3, r4, r5, pc}
+ 513              	.L45:
+ 214:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****     }
+ 514              		.loc 1 214 16 view .LVU127
+ 515 0024 0020     		movs	r0, #0
+ 516 0026 FCE7     		b	.L44
+ 517              	.L48:
+ 518              		.align	2
+ 519              	.L47:
+ 520 0028 00000000 		.word	.LANCHOR0
+ 521              		.cfi_endproc
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\cc08aeVP.s 			page 14
+
+
+ 522              	.LFE112:
+ 524              		.section	.text.LoRaMacConfirmQueueSetStatus,"ax",%progbits
+ 525              		.align	1
+ 526              		.global	LoRaMacConfirmQueueSetStatus
+ 527              		.syntax unified
+ 528              		.thumb
+ 529              		.thumb_func
+ 531              	LoRaMacConfirmQueueSetStatus:
+ 532              	.LVL39:
+ 533              	.LFB113:
+ 224:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c **** 
+ 225:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c **** void LoRaMacConfirmQueueSetStatus( LoRaMacEventInfoStatus_t status, Mlme_t request )
+ 226:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c **** {
+ 534              		.loc 1 226 1 is_stmt 1 view -0
+ 535              		.cfi_startproc
+ 536              		@ args = 0, pretend = 0, frame = 0
+ 537              		@ frame_needed = 0, uses_anonymous_args = 0
+ 538              		.loc 1 226 1 is_stmt 0 view .LVU129
+ 539 0000 38B5     		push	{r3, r4, r5, lr}
+ 540              	.LCFI5:
+ 541              		.cfi_def_cfa_offset 16
+ 542              		.cfi_offset 3, -16
+ 543              		.cfi_offset 4, -12
+ 544              		.cfi_offset 5, -8
+ 545              		.cfi_offset 14, -4
+ 546 0002 0546     		mov	r5, r0
+ 547 0004 0C46     		mov	r4, r1
+ 227:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****     MlmeConfirmQueue_t* element = NULL;
+ 548              		.loc 1 227 5 is_stmt 1 view .LVU130
+ 549              	.LVL40:
+ 228:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c **** 
+ 229:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****     if( IsListEmpty( ConfirmQueueCtx.Nvm.MlmeConfirmQueueCnt ) == false )
+ 550              		.loc 1 229 5 view .LVU131
+ 551              		.loc 1 229 9 is_stmt 0 view .LVU132
+ 552 0006 084B     		ldr	r3, .L52
+ 553 0008 93F82000 		ldrb	r0, [r3, #32]	@ zero_extendqisi2
+ 554              	.LVL41:
+ 555              		.loc 1 229 9 view .LVU133
+ 556 000c FFF7FEFF 		bl	IsListEmpty
+ 557              	.LVL42:
+ 558              		.loc 1 229 7 view .LVU134
+ 559 0010 48B9     		cbnz	r0, .L49
+ 230:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****     {
+ 231:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****         element = GetElement( request, ConfirmQueueCtx.BufferStart, ConfirmQueueCtx.BufferEnd );
+ 560              		.loc 1 231 9 is_stmt 1 view .LVU135
+ 561              		.loc 1 231 19 is_stmt 0 view .LVU136
+ 562 0012 054B     		ldr	r3, .L52
+ 563 0014 9A68     		ldr	r2, [r3, #8]
+ 564 0016 5968     		ldr	r1, [r3, #4]
+ 565 0018 2046     		mov	r0, r4
+ 566 001a FFF7FEFF 		bl	GetElement
+ 567              	.LVL43:
+ 232:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****         if( element != NULL )
+ 568              		.loc 1 232 9 is_stmt 1 view .LVU137
+ 569              		.loc 1 232 11 is_stmt 0 view .LVU138
+ 570 001e 10B1     		cbz	r0, .L49
+ 233:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****         {
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\cc08aeVP.s 			page 15
+
+
+ 234:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****             element->Status = status;
+ 571              		.loc 1 234 13 is_stmt 1 view .LVU139
+ 572              		.loc 1 234 29 is_stmt 0 view .LVU140
+ 573 0020 4570     		strb	r5, [r0, #1]
+ 235:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****             element->ReadyToHandle = true;
+ 574              		.loc 1 235 13 is_stmt 1 view .LVU141
+ 575              		.loc 1 235 36 is_stmt 0 view .LVU142
+ 576 0022 0122     		movs	r2, #1
+ 577 0024 8270     		strb	r2, [r0, #2]
+ 578              	.LVL44:
+ 579              	.L49:
+ 236:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****         }
+ 237:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****     }
+ 238:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c **** }
+ 580              		.loc 1 238 1 view .LVU143
+ 581 0026 38BD     		pop	{r3, r4, r5, pc}
+ 582              	.L53:
+ 583              		.align	2
+ 584              	.L52:
+ 585 0028 00000000 		.word	.LANCHOR0
+ 586              		.cfi_endproc
+ 587              	.LFE113:
+ 589              		.section	.text.LoRaMacConfirmQueueGetStatus,"ax",%progbits
+ 590              		.align	1
+ 591              		.global	LoRaMacConfirmQueueGetStatus
+ 592              		.syntax unified
+ 593              		.thumb
+ 594              		.thumb_func
+ 596              	LoRaMacConfirmQueueGetStatus:
+ 597              	.LVL45:
+ 598              	.LFB114:
+ 239:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c **** 
+ 240:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c **** LoRaMacEventInfoStatus_t LoRaMacConfirmQueueGetStatus( Mlme_t request )
+ 241:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c **** {
+ 599              		.loc 1 241 1 is_stmt 1 view -0
+ 600              		.cfi_startproc
+ 601              		@ args = 0, pretend = 0, frame = 0
+ 602              		@ frame_needed = 0, uses_anonymous_args = 0
+ 603              		.loc 1 241 1 is_stmt 0 view .LVU145
+ 604 0000 10B5     		push	{r4, lr}
+ 605              	.LCFI6:
+ 606              		.cfi_def_cfa_offset 8
+ 607              		.cfi_offset 4, -8
+ 608              		.cfi_offset 14, -4
+ 609 0002 0446     		mov	r4, r0
+ 242:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****     MlmeConfirmQueue_t* element = NULL;
+ 610              		.loc 1 242 5 is_stmt 1 view .LVU146
+ 611              	.LVL46:
+ 243:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c **** 
+ 244:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****     if( IsListEmpty( ConfirmQueueCtx.Nvm.MlmeConfirmQueueCnt ) == false )
+ 612              		.loc 1 244 5 view .LVU147
+ 613              		.loc 1 244 9 is_stmt 0 view .LVU148
+ 614 0004 094B     		ldr	r3, .L59
+ 615 0006 93F82000 		ldrb	r0, [r3, #32]	@ zero_extendqisi2
+ 616              	.LVL47:
+ 617              		.loc 1 244 9 view .LVU149
+ 618 000a FFF7FEFF 		bl	IsListEmpty
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\cc08aeVP.s 			page 16
+
+
+ 619              	.LVL48:
+ 620              		.loc 1 244 7 view .LVU150
+ 621 000e 40B9     		cbnz	r0, .L56
+ 245:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****     {
+ 246:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****         element = GetElement( request, ConfirmQueueCtx.BufferStart, ConfirmQueueCtx.BufferEnd );
+ 622              		.loc 1 246 9 is_stmt 1 view .LVU151
+ 623              		.loc 1 246 19 is_stmt 0 view .LVU152
+ 624 0010 064B     		ldr	r3, .L59
+ 625 0012 9A68     		ldr	r2, [r3, #8]
+ 626 0014 5968     		ldr	r1, [r3, #4]
+ 627 0016 2046     		mov	r0, r4
+ 628 0018 FFF7FEFF 		bl	GetElement
+ 629              	.LVL49:
+ 247:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****         if( element != NULL )
+ 630              		.loc 1 247 9 is_stmt 1 view .LVU153
+ 631              		.loc 1 247 11 is_stmt 0 view .LVU154
+ 632 001c 18B1     		cbz	r0, .L57
+ 248:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****         {
+ 249:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****             return element->Status;
+ 633              		.loc 1 249 13 is_stmt 1 view .LVU155
+ 634              		.loc 1 249 27 is_stmt 0 view .LVU156
+ 635 001e 4078     		ldrb	r0, [r0, #1]	@ zero_extendqisi2
+ 636              	.LVL50:
+ 637              		.loc 1 249 27 view .LVU157
+ 638 0020 00E0     		b	.L55
+ 639              	.LVL51:
+ 640              	.L56:
+ 250:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****         }
+ 251:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****     }
+ 252:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****     return LORAMAC_EVENT_INFO_STATUS_ERROR;
+ 641              		.loc 1 252 12 view .LVU158
+ 642 0022 0120     		movs	r0, #1
+ 643              	.LVL52:
+ 644              	.L55:
+ 253:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c **** }
+ 645              		.loc 1 253 1 view .LVU159
+ 646 0024 10BD     		pop	{r4, pc}
+ 647              	.LVL53:
+ 648              	.L57:
+ 252:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c **** }
+ 649              		.loc 1 252 12 view .LVU160
+ 650 0026 0120     		movs	r0, #1
+ 651              	.LVL54:
+ 252:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c **** }
+ 652              		.loc 1 252 12 view .LVU161
+ 653 0028 FCE7     		b	.L55
+ 654              	.L60:
+ 655 002a 00BF     		.align	2
+ 656              	.L59:
+ 657 002c 00000000 		.word	.LANCHOR0
+ 658              		.cfi_endproc
+ 659              	.LFE114:
+ 661              		.section	.text.LoRaMacConfirmQueueSetStatusCmn,"ax",%progbits
+ 662              		.align	1
+ 663              		.global	LoRaMacConfirmQueueSetStatusCmn
+ 664              		.syntax unified
+ 665              		.thumb
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\cc08aeVP.s 			page 17
+
+
+ 666              		.thumb_func
+ 668              	LoRaMacConfirmQueueSetStatusCmn:
+ 669              	.LVL55:
+ 670              	.LFB115:
+ 254:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c **** 
+ 255:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c **** void LoRaMacConfirmQueueSetStatusCmn( LoRaMacEventInfoStatus_t status )
+ 256:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c **** {
+ 671              		.loc 1 256 1 is_stmt 1 view -0
+ 672              		.cfi_startproc
+ 673              		@ args = 0, pretend = 0, frame = 0
+ 674              		@ frame_needed = 0, uses_anonymous_args = 0
+ 675              		.loc 1 256 1 is_stmt 0 view .LVU163
+ 676 0000 38B5     		push	{r3, r4, r5, lr}
+ 677              	.LCFI7:
+ 678              		.cfi_def_cfa_offset 16
+ 679              		.cfi_offset 3, -16
+ 680              		.cfi_offset 4, -12
+ 681              		.cfi_offset 5, -8
+ 682              		.cfi_offset 14, -4
+ 683 0002 0546     		mov	r5, r0
+ 257:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****     MlmeConfirmQueue_t* element = ConfirmQueueCtx.BufferStart;
+ 684              		.loc 1 257 5 is_stmt 1 view .LVU164
+ 685              		.loc 1 257 25 is_stmt 0 view .LVU165
+ 686 0004 0C4B     		ldr	r3, .L67
+ 687 0006 5C68     		ldr	r4, [r3, #4]
+ 688              	.LVL56:
+ 258:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c **** 
+ 259:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****     ConfirmQueueCtx.Nvm.CommonStatus = status;
+ 689              		.loc 1 259 5 is_stmt 1 view .LVU166
+ 690              		.loc 1 259 38 is_stmt 0 view .LVU167
+ 691 0008 83F82100 		strb	r0, [r3, #33]
+ 260:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c **** 
+ 261:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****     if( IsListEmpty( ConfirmQueueCtx.Nvm.MlmeConfirmQueueCnt ) == false )
+ 692              		.loc 1 261 5 is_stmt 1 view .LVU168
+ 693              		.loc 1 261 9 is_stmt 0 view .LVU169
+ 694 000c 93F82000 		ldrb	r0, [r3, #32]	@ zero_extendqisi2
+ 695              	.LVL57:
+ 696              		.loc 1 261 9 view .LVU170
+ 697 0010 FFF7FEFF 		bl	IsListEmpty
+ 698              	.LVL58:
+ 699              		.loc 1 261 7 view .LVU171
+ 700 0014 50B1     		cbz	r0, .L64
+ 701              	.L61:
+ 262:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****     {
+ 263:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****         do
+ 264:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****         {
+ 265:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****             element->Status = status;
+ 266:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****             // Set the status if it is allowed to set it with a call to
+ 267:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****             // LoRaMacConfirmQueueSetStatusCmn.
+ 268:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****             if( element->RestrictCommonReadyToHandle == false )
+ 269:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****             {
+ 270:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****                 element->ReadyToHandle = true;
+ 271:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****             }
+ 272:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****             element = IncreaseBufferPointer( element );
+ 273:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****         }while( element != ConfirmQueueCtx.BufferEnd );
+ 274:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****     }
+ 275:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c **** }
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\cc08aeVP.s 			page 18
+
+
+ 702              		.loc 1 275 1 view .LVU172
+ 703 0016 38BD     		pop	{r3, r4, r5, pc}
+ 704              	.LVL59:
+ 705              	.L66:
+ 270:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****             }
+ 706              		.loc 1 270 17 is_stmt 1 view .LVU173
+ 270:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****             }
+ 707              		.loc 1 270 40 is_stmt 0 view .LVU174
+ 708 0018 0123     		movs	r3, #1
+ 709 001a A370     		strb	r3, [r4, #2]
+ 710              	.L63:
+ 272:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****         }while( element != ConfirmQueueCtx.BufferEnd );
+ 711              		.loc 1 272 13 is_stmt 1 view .LVU175
+ 272:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****         }while( element != ConfirmQueueCtx.BufferEnd );
+ 712              		.loc 1 272 23 is_stmt 0 view .LVU176
+ 713 001c 2046     		mov	r0, r4
+ 714 001e FFF7FEFF 		bl	IncreaseBufferPointer
+ 715              	.LVL60:
+ 716 0022 0446     		mov	r4, r0
+ 717              	.LVL61:
+ 273:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****     }
+ 718              		.loc 1 273 15 is_stmt 1 view .LVU177
+ 273:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****     }
+ 719              		.loc 1 273 43 is_stmt 0 view .LVU178
+ 720 0024 044B     		ldr	r3, .L67
+ 721 0026 9B68     		ldr	r3, [r3, #8]
+ 273:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****     }
+ 722              		.loc 1 273 9 view .LVU179
+ 723 0028 8342     		cmp	r3, r0
+ 724 002a F4D0     		beq	.L61
+ 725              	.LVL62:
+ 726              	.L64:
+ 263:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****         {
+ 727              		.loc 1 263 9 is_stmt 1 view .LVU180
+ 265:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****             // Set the status if it is allowed to set it with a call to
+ 728              		.loc 1 265 13 view .LVU181
+ 265:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****             // Set the status if it is allowed to set it with a call to
+ 729              		.loc 1 265 29 is_stmt 0 view .LVU182
+ 730 002c 6570     		strb	r5, [r4, #1]
+ 268:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****             {
+ 731              		.loc 1 268 13 is_stmt 1 view .LVU183
+ 268:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****             {
+ 732              		.loc 1 268 24 is_stmt 0 view .LVU184
+ 733 002e E378     		ldrb	r3, [r4, #3]	@ zero_extendqisi2
+ 268:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****             {
+ 734              		.loc 1 268 15 view .LVU185
+ 735 0030 002B     		cmp	r3, #0
+ 736 0032 F3D1     		bne	.L63
+ 268:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****             {
+ 737              		.loc 1 268 15 view .LVU186
+ 738 0034 F0E7     		b	.L66
+ 739              	.L68:
+ 740 0036 00BF     		.align	2
+ 741              	.L67:
+ 742 0038 00000000 		.word	.LANCHOR0
+ 743              		.cfi_endproc
+ 744              	.LFE115:
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\cc08aeVP.s 			page 19
+
+
+ 746              		.section	.text.LoRaMacConfirmQueueGetStatusCmn,"ax",%progbits
+ 747              		.align	1
+ 748              		.global	LoRaMacConfirmQueueGetStatusCmn
+ 749              		.syntax unified
+ 750              		.thumb
+ 751              		.thumb_func
+ 753              	LoRaMacConfirmQueueGetStatusCmn:
+ 754              	.LFB116:
+ 276:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c **** 
+ 277:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c **** LoRaMacEventInfoStatus_t LoRaMacConfirmQueueGetStatusCmn( void )
+ 278:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c **** {
+ 755              		.loc 1 278 1 is_stmt 1 view -0
+ 756              		.cfi_startproc
+ 757              		@ args = 0, pretend = 0, frame = 0
+ 758              		@ frame_needed = 0, uses_anonymous_args = 0
+ 759              		@ link register save eliminated.
+ 279:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****     return ConfirmQueueCtx.Nvm.CommonStatus;
+ 760              		.loc 1 279 5 view .LVU188
+ 280:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c **** }
+ 761              		.loc 1 280 1 is_stmt 0 view .LVU189
+ 762 0000 014B     		ldr	r3, .L70
+ 763 0002 93F82100 		ldrb	r0, [r3, #33]	@ zero_extendqisi2
+ 764 0006 7047     		bx	lr
+ 765              	.L71:
+ 766              		.align	2
+ 767              	.L70:
+ 768 0008 00000000 		.word	.LANCHOR0
+ 769              		.cfi_endproc
+ 770              	.LFE116:
+ 772              		.section	.text.LoRaMacConfirmQueueIsCmdActive,"ax",%progbits
+ 773              		.align	1
+ 774              		.global	LoRaMacConfirmQueueIsCmdActive
+ 775              		.syntax unified
+ 776              		.thumb
+ 777              		.thumb_func
+ 779              	LoRaMacConfirmQueueIsCmdActive:
+ 780              	.LVL63:
+ 781              	.LFB117:
+ 281:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c **** 
+ 282:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c **** bool LoRaMacConfirmQueueIsCmdActive( Mlme_t request )
+ 283:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c **** {
+ 782              		.loc 1 283 1 is_stmt 1 view -0
+ 783              		.cfi_startproc
+ 784              		@ args = 0, pretend = 0, frame = 0
+ 785              		@ frame_needed = 0, uses_anonymous_args = 0
+ 786              		.loc 1 283 1 is_stmt 0 view .LVU191
+ 787 0000 08B5     		push	{r3, lr}
+ 788              	.LCFI8:
+ 789              		.cfi_def_cfa_offset 8
+ 790              		.cfi_offset 3, -8
+ 791              		.cfi_offset 14, -4
+ 284:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****     if( GetElement( request, ConfirmQueueCtx.BufferStart, ConfirmQueueCtx.BufferEnd ) != NULL )
+ 792              		.loc 1 284 5 is_stmt 1 view .LVU192
+ 793              		.loc 1 284 9 is_stmt 0 view .LVU193
+ 794 0002 044B     		ldr	r3, .L76
+ 795 0004 9A68     		ldr	r2, [r3, #8]
+ 796 0006 5968     		ldr	r1, [r3, #4]
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\cc08aeVP.s 			page 20
+
+
+ 797 0008 FFF7FEFF 		bl	GetElement
+ 798              	.LVL64:
+ 799              		.loc 1 284 7 view .LVU194
+ 800 000c 00B1     		cbz	r0, .L73
+ 285:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****     {
+ 286:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****         return true;
+ 801              		.loc 1 286 16 view .LVU195
+ 802 000e 0120     		movs	r0, #1
+ 803              	.L73:
+ 287:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****     }
+ 288:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****     return false;
+ 289:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c **** }
+ 804              		.loc 1 289 1 view .LVU196
+ 805 0010 08BD     		pop	{r3, pc}
+ 806              	.L77:
+ 807 0012 00BF     		.align	2
+ 808              	.L76:
+ 809 0014 00000000 		.word	.LANCHOR0
+ 810              		.cfi_endproc
+ 811              	.LFE117:
+ 813              		.section	.text.LoRaMacConfirmQueueHandleCb,"ax",%progbits
+ 814              		.align	1
+ 815              		.global	LoRaMacConfirmQueueHandleCb
+ 816              		.syntax unified
+ 817              		.thumb
+ 818              		.thumb_func
+ 820              	LoRaMacConfirmQueueHandleCb:
+ 821              	.LVL65:
+ 822              	.LFB118:
+ 290:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c **** 
+ 291:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c **** void LoRaMacConfirmQueueHandleCb( MlmeConfirm_t* mlmeConfirm )
+ 292:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c **** {
+ 823              		.loc 1 292 1 is_stmt 1 view -0
+ 824              		.cfi_startproc
+ 825              		@ args = 0, pretend = 0, frame = 8
+ 826              		@ frame_needed = 0, uses_anonymous_args = 0
+ 827              		.loc 1 292 1 is_stmt 0 view .LVU198
+ 828 0000 F0B5     		push	{r4, r5, r6, r7, lr}
+ 829              	.LCFI9:
+ 830              		.cfi_def_cfa_offset 20
+ 831              		.cfi_offset 4, -20
+ 832              		.cfi_offset 5, -16
+ 833              		.cfi_offset 6, -12
+ 834              		.cfi_offset 7, -8
+ 835              		.cfi_offset 14, -4
+ 836 0002 83B0     		sub	sp, sp, #12
+ 837              	.LCFI10:
+ 838              		.cfi_def_cfa_offset 32
+ 839 0004 0646     		mov	r6, r0
+ 293:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****     uint8_t nbElements = ConfirmQueueCtx.Nvm.MlmeConfirmQueueCnt;
+ 840              		.loc 1 293 5 is_stmt 1 view .LVU199
+ 841              		.loc 1 293 13 is_stmt 0 view .LVU200
+ 842 0006 164B     		ldr	r3, .L87
+ 843 0008 93F82070 		ldrb	r7, [r3, #32]	@ zero_extendqisi2
+ 844              	.LVL66:
+ 294:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****     bool readyToHandle = false;
+ 845              		.loc 1 294 5 is_stmt 1 view .LVU201
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\cc08aeVP.s 			page 21
+
+
+ 295:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****     MlmeConfirmQueue_t mlmeConfirmToStore;
+ 846              		.loc 1 295 5 view .LVU202
+ 296:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c **** 
+ 297:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****     for( uint8_t i = 0; i < nbElements; i++ )
+ 847              		.loc 1 297 5 view .LVU203
+ 848              	.LBB4:
+ 849              		.loc 1 297 10 view .LVU204
+ 850              		.loc 1 297 18 is_stmt 0 view .LVU205
+ 851 000c 0024     		movs	r4, #0
+ 852              		.loc 1 297 5 view .LVU206
+ 853 000e 0DE0     		b	.L79
+ 854              	.LVL67:
+ 855              	.L80:
+ 298:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****     {
+ 299:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****         mlmeConfirm->MlmeRequest = ConfirmQueueCtx.BufferStart->Request;
+ 300:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****         mlmeConfirm->Status = ConfirmQueueCtx.BufferStart->Status;
+ 301:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****         readyToHandle = ConfirmQueueCtx.BufferStart->ReadyToHandle;
+ 302:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c **** 
+ 303:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****         if( readyToHandle == true )
+ 304:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****         {
+ 305:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****             ConfirmQueueCtx.Primitives->MacMlmeConfirm( mlmeConfirm );
+ 306:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****         }
+ 307:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****         else
+ 308:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****         {
+ 309:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****             // The request is not processed yet. Store the state.
+ 310:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****             mlmeConfirmToStore.Request = ConfirmQueueCtx.BufferStart->Request;
+ 856              		.loc 1 310 13 is_stmt 1 view .LVU207
+ 857              		.loc 1 310 69 is_stmt 0 view .LVU208
+ 858 0010 1A78     		ldrb	r2, [r3]	@ zero_extendqisi2
+ 859              		.loc 1 310 40 view .LVU209
+ 860 0012 8DF80420 		strb	r2, [sp, #4]
+ 311:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****             mlmeConfirmToStore.Status = ConfirmQueueCtx.BufferStart->Status;
+ 861              		.loc 1 311 13 is_stmt 1 view .LVU210
+ 862              		.loc 1 311 68 is_stmt 0 view .LVU211
+ 863 0016 5A78     		ldrb	r2, [r3, #1]	@ zero_extendqisi2
+ 864              		.loc 1 311 39 view .LVU212
+ 865 0018 8DF80520 		strb	r2, [sp, #5]
+ 312:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****             mlmeConfirmToStore.RestrictCommonReadyToHandle = ConfirmQueueCtx.BufferStart->RestrictC
+ 866              		.loc 1 312 13 is_stmt 1 view .LVU213
+ 867              		.loc 1 312 89 is_stmt 0 view .LVU214
+ 868 001c DB78     		ldrb	r3, [r3, #3]	@ zero_extendqisi2
+ 869              		.loc 1 312 60 view .LVU215
+ 870 001e 8DF80730 		strb	r3, [sp, #7]
+ 871              	.L81:
+ 313:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****         }
+ 314:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c **** 
+ 315:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****         // Increase the pointer afterwards to prevent overwrites
+ 316:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****         LoRaMacConfirmQueueRemoveFirst( );
+ 872              		.loc 1 316 9 is_stmt 1 view .LVU216
+ 873 0022 FFF7FEFF 		bl	LoRaMacConfirmQueueRemoveFirst
+ 874              	.LVL68:
+ 317:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c **** 
+ 318:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****         if( readyToHandle == false )
+ 875              		.loc 1 318 9 view .LVU217
+ 876              		.loc 1 318 11 is_stmt 0 view .LVU218
+ 877 0026 A5B1     		cbz	r5, .L85
+ 878              	.L82:
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\cc08aeVP.s 			page 22
+
+
+ 297:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****     {
+ 879              		.loc 1 297 41 is_stmt 1 discriminator 2 view .LVU219
+ 297:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****     {
+ 880              		.loc 1 297 42 is_stmt 0 discriminator 2 view .LVU220
+ 881 0028 0134     		adds	r4, r4, #1
+ 882              	.LVL69:
+ 297:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****     {
+ 883              		.loc 1 297 42 discriminator 2 view .LVU221
+ 884 002a E4B2     		uxtb	r4, r4
+ 885              	.LVL70:
+ 886              	.L79:
+ 297:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****     {
+ 887              		.loc 1 297 25 is_stmt 1 discriminator 1 view .LVU222
+ 297:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****     {
+ 888              		.loc 1 297 5 is_stmt 0 discriminator 1 view .LVU223
+ 889 002c BC42     		cmp	r4, r7
+ 890 002e 14D2     		bcs	.L86
+ 299:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****         mlmeConfirm->Status = ConfirmQueueCtx.BufferStart->Status;
+ 891              		.loc 1 299 9 is_stmt 1 view .LVU224
+ 299:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****         mlmeConfirm->Status = ConfirmQueueCtx.BufferStart->Status;
+ 892              		.loc 1 299 51 is_stmt 0 view .LVU225
+ 893 0030 0B4B     		ldr	r3, .L87
+ 894 0032 5A68     		ldr	r2, [r3, #4]
+ 299:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****         mlmeConfirm->Status = ConfirmQueueCtx.BufferStart->Status;
+ 895              		.loc 1 299 63 view .LVU226
+ 896 0034 1278     		ldrb	r2, [r2]	@ zero_extendqisi2
+ 299:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****         mlmeConfirm->Status = ConfirmQueueCtx.BufferStart->Status;
+ 897              		.loc 1 299 34 view .LVU227
+ 898 0036 3270     		strb	r2, [r6]
+ 300:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****         readyToHandle = ConfirmQueueCtx.BufferStart->ReadyToHandle;
+ 899              		.loc 1 300 9 is_stmt 1 view .LVU228
+ 300:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****         readyToHandle = ConfirmQueueCtx.BufferStart->ReadyToHandle;
+ 900              		.loc 1 300 46 is_stmt 0 view .LVU229
+ 901 0038 5A68     		ldr	r2, [r3, #4]
+ 300:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****         readyToHandle = ConfirmQueueCtx.BufferStart->ReadyToHandle;
+ 902              		.loc 1 300 58 view .LVU230
+ 903 003a 5278     		ldrb	r2, [r2, #1]	@ zero_extendqisi2
+ 300:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****         readyToHandle = ConfirmQueueCtx.BufferStart->ReadyToHandle;
+ 904              		.loc 1 300 29 view .LVU231
+ 905 003c 7270     		strb	r2, [r6, #1]
+ 301:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c **** 
+ 906              		.loc 1 301 9 is_stmt 1 view .LVU232
+ 301:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c **** 
+ 907              		.loc 1 301 40 is_stmt 0 view .LVU233
+ 908 003e 5B68     		ldr	r3, [r3, #4]
+ 301:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c **** 
+ 909              		.loc 1 301 23 view .LVU234
+ 910 0040 9D78     		ldrb	r5, [r3, #2]	@ zero_extendqisi2
+ 911              	.LVL71:
+ 303:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****         {
+ 912              		.loc 1 303 9 is_stmt 1 view .LVU235
+ 303:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****         {
+ 913              		.loc 1 303 11 is_stmt 0 view .LVU236
+ 914 0042 002D     		cmp	r5, #0
+ 915 0044 E4D0     		beq	.L80
+ 305:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****         }
+ 916              		.loc 1 305 13 is_stmt 1 view .LVU237
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\cc08aeVP.s 			page 23
+
+
+ 305:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****         }
+ 917              		.loc 1 305 28 is_stmt 0 view .LVU238
+ 918 0046 064B     		ldr	r3, .L87
+ 919 0048 1B68     		ldr	r3, [r3]
+ 305:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****         }
+ 920              		.loc 1 305 39 view .LVU239
+ 921 004a 9B68     		ldr	r3, [r3, #8]
+ 305:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****         }
+ 922              		.loc 1 305 13 view .LVU240
+ 923 004c 3046     		mov	r0, r6
+ 924 004e 9847     		blx	r3
+ 925              	.LVL72:
+ 926 0050 E7E7     		b	.L81
+ 927              	.L85:
+ 319:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****         {
+ 320:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****             // Add a request which has not been finished again to the queue
+ 321:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****             LoRaMacConfirmQueueAdd( &mlmeConfirmToStore );
+ 928              		.loc 1 321 13 is_stmt 1 view .LVU241
+ 929 0052 01A8     		add	r0, sp, #4
+ 930 0054 FFF7FEFF 		bl	LoRaMacConfirmQueueAdd
+ 931              	.LVL73:
+ 932 0058 E6E7     		b	.L82
+ 933              	.LVL74:
+ 934              	.L86:
+ 935              		.loc 1 321 13 is_stmt 0 view .LVU242
+ 936              	.LBE4:
+ 322:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****         }
+ 323:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****     }
+ 324:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c **** }
+ 937              		.loc 1 324 1 view .LVU243
+ 938 005a 03B0     		add	sp, sp, #12
+ 939              	.LCFI11:
+ 940              		.cfi_def_cfa_offset 20
+ 941              		@ sp needed
+ 942 005c F0BD     		pop	{r4, r5, r6, r7, pc}
+ 943              	.LVL75:
+ 944              	.L88:
+ 945              		.loc 1 324 1 view .LVU244
+ 946 005e 00BF     		.align	2
+ 947              	.L87:
+ 948 0060 00000000 		.word	.LANCHOR0
+ 949              		.cfi_endproc
+ 950              	.LFE118:
+ 952              		.section	.text.LoRaMacConfirmQueueGetCnt,"ax",%progbits
+ 953              		.align	1
+ 954              		.global	LoRaMacConfirmQueueGetCnt
+ 955              		.syntax unified
+ 956              		.thumb
+ 957              		.thumb_func
+ 959              	LoRaMacConfirmQueueGetCnt:
+ 960              	.LFB119:
+ 325:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c **** 
+ 326:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c **** uint8_t LoRaMacConfirmQueueGetCnt( void )
+ 327:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c **** {
+ 961              		.loc 1 327 1 is_stmt 1 view -0
+ 962              		.cfi_startproc
+ 963              		@ args = 0, pretend = 0, frame = 0
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\cc08aeVP.s 			page 24
+
+
+ 964              		@ frame_needed = 0, uses_anonymous_args = 0
+ 965              		@ link register save eliminated.
+ 328:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****     return ConfirmQueueCtx.Nvm.MlmeConfirmQueueCnt;
+ 966              		.loc 1 328 5 view .LVU246
+ 329:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c **** }
+ 967              		.loc 1 329 1 is_stmt 0 view .LVU247
+ 968 0000 014B     		ldr	r3, .L90
+ 969 0002 93F82000 		ldrb	r0, [r3, #32]	@ zero_extendqisi2
+ 970 0006 7047     		bx	lr
+ 971              	.L91:
+ 972              		.align	2
+ 973              	.L90:
+ 974 0008 00000000 		.word	.LANCHOR0
+ 975              		.cfi_endproc
+ 976              	.LFE119:
+ 978              		.section	.text.LoRaMacConfirmQueueIsFull,"ax",%progbits
+ 979              		.align	1
+ 980              		.global	LoRaMacConfirmQueueIsFull
+ 981              		.syntax unified
+ 982              		.thumb
+ 983              		.thumb_func
+ 985              	LoRaMacConfirmQueueIsFull:
+ 986              	.LFB120:
+ 330:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c **** 
+ 331:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c **** bool LoRaMacConfirmQueueIsFull( void )
+ 332:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c **** {
+ 987              		.loc 1 332 1 is_stmt 1 view -0
+ 988              		.cfi_startproc
+ 989              		@ args = 0, pretend = 0, frame = 0
+ 990              		@ frame_needed = 0, uses_anonymous_args = 0
+ 991 0000 08B5     		push	{r3, lr}
+ 992              	.LCFI12:
+ 993              		.cfi_def_cfa_offset 8
+ 994              		.cfi_offset 3, -8
+ 995              		.cfi_offset 14, -4
+ 333:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****     if( IsListFull( ConfirmQueueCtx.Nvm.MlmeConfirmQueueCnt ) == true )
+ 996              		.loc 1 333 5 view .LVU249
+ 997              		.loc 1 333 9 is_stmt 0 view .LVU250
+ 998 0002 034B     		ldr	r3, .L94
+ 999 0004 93F82000 		ldrb	r0, [r3, #32]	@ zero_extendqisi2
+ 1000 0008 FFF7FEFF 		bl	IsListFull
+ 1001              	.LVL76:
+ 334:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****     {
+ 335:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****         return true;
+ 336:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****     }
+ 337:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****     else
+ 338:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****     {
+ 339:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****         return false;
+ 340:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c ****     }
+ 341:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.c **** }
+ 1002              		.loc 1 341 1 view .LVU251
+ 1003 000c 08BD     		pop	{r3, pc}
+ 1004              	.L95:
+ 1005 000e 00BF     		.align	2
+ 1006              	.L94:
+ 1007 0010 00000000 		.word	.LANCHOR0
+ 1008              		.cfi_endproc
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\cc08aeVP.s 			page 25
+
+
+ 1009              	.LFE120:
+ 1011              		.section	.bss.ConfirmQueueCtx,"aw",%nobits
+ 1012              		.align	2
+ 1013              		.set	.LANCHOR0,. + 0
+ 1016              	ConfirmQueueCtx:
+ 1017 0000 00000000 		.space	36
+ 1017      00000000 
+ 1017      00000000 
+ 1017      00000000 
+ 1017      00000000 
+ 1018              		.text
+ 1019              	.Letext0:
+ 1020              		.file 2 "c:\\program files (x86)\\gnu arm embedded toolchain\\10 2021.10\\arm-none-eabi\\include\\
+ 1021              		.file 3 "c:\\program files (x86)\\gnu arm embedded toolchain\\10 2021.10\\arm-none-eabi\\include\\
+ 1022              		.file 4 "Utilities/timer/stm32_timer.h"
+ 1023              		.file 5 "Utilities/misc/stm32_systime.h"
+ 1024              		.file 6 "Middlewares/Third_Party/LoRaWAN/Mac/LoRaMac.h"
+ 1025              		.file 7 "Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacConfirmQueue.h"
+ 1026              		.file 8 "Middlewares/Third_Party/LoRaWAN/Utilities/utilities.h"
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\cc08aeVP.s 			page 26
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 LoRaMacConfirmQueue.c
+C:\Users\NATHAN~1\AppData\Local\Temp\cc08aeVP.s:18     .text.IncreaseBufferPointer:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\cc08aeVP.s:23     .text.IncreaseBufferPointer:00000000 IncreaseBufferPointer
+C:\Users\NATHAN~1\AppData\Local\Temp\cc08aeVP.s:53     .text.IncreaseBufferPointer:00000010 $d
+C:\Users\NATHAN~1\AppData\Local\Temp\cc08aeVP.s:59     .text.DecreaseBufferPointer:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\cc08aeVP.s:64     .text.DecreaseBufferPointer:00000000 DecreaseBufferPointer
+C:\Users\NATHAN~1\AppData\Local\Temp\cc08aeVP.s:93     .text.DecreaseBufferPointer:00000010 $d
+C:\Users\NATHAN~1\AppData\Local\Temp\cc08aeVP.s:99     .text.IsListEmpty:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\cc08aeVP.s:104    .text.IsListEmpty:00000000 IsListEmpty
+C:\Users\NATHAN~1\AppData\Local\Temp\cc08aeVP.s:131    .text.IsListFull:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\cc08aeVP.s:136    .text.IsListFull:00000000 IsListFull
+C:\Users\NATHAN~1\AppData\Local\Temp\cc08aeVP.s:164    .text.GetElement:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\cc08aeVP.s:169    .text.GetElement:00000000 GetElement
+C:\Users\NATHAN~1\AppData\Local\Temp\cc08aeVP.s:256    .text.GetElement:0000003c $d
+C:\Users\NATHAN~1\AppData\Local\Temp\cc08aeVP.s:262    .text.LoRaMacConfirmQueueInit:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\cc08aeVP.s:268    .text.LoRaMacConfirmQueueInit:00000000 LoRaMacConfirmQueueInit
+C:\Users\NATHAN~1\AppData\Local\Temp\cc08aeVP.s:312    .text.LoRaMacConfirmQueueInit:00000024 $d
+C:\Users\NATHAN~1\AppData\Local\Temp\cc08aeVP.s:317    .text.LoRaMacConfirmQueueAdd:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\cc08aeVP.s:323    .text.LoRaMacConfirmQueueAdd:00000000 LoRaMacConfirmQueueAdd
+C:\Users\NATHAN~1\AppData\Local\Temp\cc08aeVP.s:404    .text.LoRaMacConfirmQueueAdd:00000044 $d
+C:\Users\NATHAN~1\AppData\Local\Temp\cc08aeVP.s:409    .text.LoRaMacConfirmQueueRemoveLast:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\cc08aeVP.s:415    .text.LoRaMacConfirmQueueRemoveLast:00000000 LoRaMacConfirmQueueRemoveLast
+C:\Users\NATHAN~1\AppData\Local\Temp\cc08aeVP.s:462    .text.LoRaMacConfirmQueueRemoveLast:00000028 $d
+C:\Users\NATHAN~1\AppData\Local\Temp\cc08aeVP.s:467    .text.LoRaMacConfirmQueueRemoveFirst:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\cc08aeVP.s:473    .text.LoRaMacConfirmQueueRemoveFirst:00000000 LoRaMacConfirmQueueRemoveFirst
+C:\Users\NATHAN~1\AppData\Local\Temp\cc08aeVP.s:520    .text.LoRaMacConfirmQueueRemoveFirst:00000028 $d
+C:\Users\NATHAN~1\AppData\Local\Temp\cc08aeVP.s:525    .text.LoRaMacConfirmQueueSetStatus:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\cc08aeVP.s:531    .text.LoRaMacConfirmQueueSetStatus:00000000 LoRaMacConfirmQueueSetStatus
+C:\Users\NATHAN~1\AppData\Local\Temp\cc08aeVP.s:585    .text.LoRaMacConfirmQueueSetStatus:00000028 $d
+C:\Users\NATHAN~1\AppData\Local\Temp\cc08aeVP.s:590    .text.LoRaMacConfirmQueueGetStatus:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\cc08aeVP.s:596    .text.LoRaMacConfirmQueueGetStatus:00000000 LoRaMacConfirmQueueGetStatus
+C:\Users\NATHAN~1\AppData\Local\Temp\cc08aeVP.s:657    .text.LoRaMacConfirmQueueGetStatus:0000002c $d
+C:\Users\NATHAN~1\AppData\Local\Temp\cc08aeVP.s:662    .text.LoRaMacConfirmQueueSetStatusCmn:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\cc08aeVP.s:668    .text.LoRaMacConfirmQueueSetStatusCmn:00000000 LoRaMacConfirmQueueSetStatusCmn
+C:\Users\NATHAN~1\AppData\Local\Temp\cc08aeVP.s:742    .text.LoRaMacConfirmQueueSetStatusCmn:00000038 $d
+C:\Users\NATHAN~1\AppData\Local\Temp\cc08aeVP.s:747    .text.LoRaMacConfirmQueueGetStatusCmn:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\cc08aeVP.s:753    .text.LoRaMacConfirmQueueGetStatusCmn:00000000 LoRaMacConfirmQueueGetStatusCmn
+C:\Users\NATHAN~1\AppData\Local\Temp\cc08aeVP.s:768    .text.LoRaMacConfirmQueueGetStatusCmn:00000008 $d
+C:\Users\NATHAN~1\AppData\Local\Temp\cc08aeVP.s:773    .text.LoRaMacConfirmQueueIsCmdActive:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\cc08aeVP.s:779    .text.LoRaMacConfirmQueueIsCmdActive:00000000 LoRaMacConfirmQueueIsCmdActive
+C:\Users\NATHAN~1\AppData\Local\Temp\cc08aeVP.s:809    .text.LoRaMacConfirmQueueIsCmdActive:00000014 $d
+C:\Users\NATHAN~1\AppData\Local\Temp\cc08aeVP.s:814    .text.LoRaMacConfirmQueueHandleCb:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\cc08aeVP.s:820    .text.LoRaMacConfirmQueueHandleCb:00000000 LoRaMacConfirmQueueHandleCb
+C:\Users\NATHAN~1\AppData\Local\Temp\cc08aeVP.s:948    .text.LoRaMacConfirmQueueHandleCb:00000060 $d
+C:\Users\NATHAN~1\AppData\Local\Temp\cc08aeVP.s:953    .text.LoRaMacConfirmQueueGetCnt:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\cc08aeVP.s:959    .text.LoRaMacConfirmQueueGetCnt:00000000 LoRaMacConfirmQueueGetCnt
+C:\Users\NATHAN~1\AppData\Local\Temp\cc08aeVP.s:974    .text.LoRaMacConfirmQueueGetCnt:00000008 $d
+C:\Users\NATHAN~1\AppData\Local\Temp\cc08aeVP.s:979    .text.LoRaMacConfirmQueueIsFull:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\cc08aeVP.s:985    .text.LoRaMacConfirmQueueIsFull:00000000 LoRaMacConfirmQueueIsFull
+C:\Users\NATHAN~1\AppData\Local\Temp\cc08aeVP.s:1007   .text.LoRaMacConfirmQueueIsFull:00000010 $d
+C:\Users\NATHAN~1\AppData\Local\Temp\cc08aeVP.s:1012   .bss.ConfirmQueueCtx:00000000 $d
+C:\Users\NATHAN~1\AppData\Local\Temp\cc08aeVP.s:1016   .bss.ConfirmQueueCtx:00000000 ConfirmQueueCtx
+
+UNDEFINED SYMBOLS
+memset1

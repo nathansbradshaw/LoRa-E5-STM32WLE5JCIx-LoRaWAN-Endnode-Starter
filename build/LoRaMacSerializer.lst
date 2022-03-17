@@ -1,0 +1,989 @@
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccWEWw6a.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"LoRaMacSerializer.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.section	.text.LoRaMacSerializerJoinRequest,"ax",%progbits
+  18              		.align	1
+  19              		.global	LoRaMacSerializerJoinRequest
+  20              		.syntax unified
+  21              		.thumb
+  22              		.thumb_func
+  24              	LoRaMacSerializerJoinRequest:
+  25              	.LVL0:
+  26              	.LFB104:
+  27              		.file 1 "Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c"
+   1:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c **** /*!
+   2:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****  * \file      LoRaMacSerializer.c
+   3:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****  *
+   4:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****  * \brief     LoRa MAC layer message serializer functionality implementation
+   5:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****  *
+   6:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****  * \copyright Revised BSD License, see section \ref LICENSE.
+   7:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****  *
+   8:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****  * \code
+   9:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****  *                ______                              _
+  10:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****  *               / _____)             _              | |
+  11:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****  *              ( (____  _____ ____ _| |_ _____  ____| |__
+  12:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****  *               \____ \| ___ |    (_   _) ___ |/ ___)  _ \
+  13:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****  *               _____) ) ____| | | || |_| ____( (___| | | |
+  14:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****  *              (______/|_____)_|_|_| \__)_____)\____)_| |_|
+  15:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****  *              (C)2013 Semtech
+  16:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****  *
+  17:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****  *               ___ _____ _   ___ _  _____ ___  ___  ___ ___
+  18:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****  *              / __|_   _/_\ / __| |/ / __/ _ \| _ \/ __| __|
+  19:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****  *              \__ \ | |/ _ \ (__| ' <| _| (_) |   / (__| _|
+  20:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****  *              |___/ |_/_/ \_\___|_|\_\_| \___/|_|_\\___|___|
+  21:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****  *              embedded.connectivity.solutions===============
+  22:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****  *
+  23:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****  * \endcode
+  24:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****  *
+  25:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****  * \author    Miguel Luis ( Semtech )
+  26:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****  *
+  27:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****  * \author    Gregory Cristian ( Semtech )
+  28:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****  *
+  29:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****  * \author    Daniel Jaeckle ( STACKFORCE )
+  30:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****  *
+  31:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****  * \author    Johannes Bruder ( STACKFORCE )
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccWEWw6a.s 			page 2
+
+
+  32:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****  */
+  33:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c **** #include "LoRaMacSerializer.h"
+  34:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c **** #include "utilities.h"
+  35:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c **** 
+  36:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c **** LoRaMacSerializerStatus_t LoRaMacSerializerJoinRequest( LoRaMacMessageJoinRequest_t* macMsg )
+  37:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c **** {
+  28              		.loc 1 37 1 view -0
+  29              		.cfi_startproc
+  30              		@ args = 0, pretend = 0, frame = 0
+  31              		@ frame_needed = 0, uses_anonymous_args = 0
+  38:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****     if( ( macMsg == 0 ) || ( macMsg->Buffer == 0 ) )
+  32              		.loc 1 38 5 view .LVU1
+  33              		.loc 1 38 7 is_stmt 0 view .LVU2
+  34 0000 70B3     		cbz	r0, .L3
+  37:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****     if( ( macMsg == 0 ) || ( macMsg->Buffer == 0 ) )
+  35              		.loc 1 37 1 discriminator 1 view .LVU3
+  36 0002 10B5     		push	{r4, lr}
+  37              	.LCFI0:
+  38              		.cfi_def_cfa_offset 8
+  39              		.cfi_offset 4, -8
+  40              		.cfi_offset 14, -4
+  41 0004 0446     		mov	r4, r0
+  42              		.loc 1 38 36 discriminator 1 view .LVU4
+  43 0006 0368     		ldr	r3, [r0]
+  44              		.loc 1 38 25 discriminator 1 view .LVU5
+  45 0008 63B3     		cbz	r3, .L4
+  39:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****     {
+  40:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****         return LORAMAC_SERIALIZER_ERROR_NPE;
+  41:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****     }
+  42:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c **** 
+  43:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****     uint16_t bufItr = 0;
+  46              		.loc 1 43 5 is_stmt 1 view .LVU6
+  47              	.LVL1:
+  44:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c **** 
+  45:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****     // Check macMsg->BufSize
+  46:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****     if( macMsg->BufSize < LORAMAC_JOIN_REQ_MSG_SIZE )
+  48              		.loc 1 46 5 view .LVU7
+  49              		.loc 1 46 15 is_stmt 0 view .LVU8
+  50 000a 0279     		ldrb	r2, [r0, #4]	@ zero_extendqisi2
+  51              		.loc 1 46 7 view .LVU9
+  52 000c 162A     		cmp	r2, #22
+  53 000e 2BD9     		bls	.L5
+  47:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****     {
+  48:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****         return LORAMAC_SERIALIZER_ERROR_BUF_SIZE;
+  49:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****     }
+  50:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c **** 
+  51:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****     macMsg->Buffer[bufItr++] = macMsg->MHDR.Value;
+  54              		.loc 1 51 5 is_stmt 1 view .LVU10
+  55              	.LVL2:
+  56              		.loc 1 51 44 is_stmt 0 view .LVU11
+  57 0010 4279     		ldrb	r2, [r0, #5]	@ zero_extendqisi2
+  58              		.loc 1 51 30 view .LVU12
+  59 0012 1A70     		strb	r2, [r3]
+  52:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c **** 
+  53:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****     memcpyr( &macMsg->Buffer[bufItr], macMsg->JoinEUI, LORAMAC_JOIN_EUI_FIELD_SIZE );
+  60              		.loc 1 53 5 is_stmt 1 view .LVU13
+  61              		.loc 1 53 21 is_stmt 0 view .LVU14
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccWEWw6a.s 			page 3
+
+
+  62 0014 0146     		mov	r1, r0
+  63 0016 51F8060B 		ldr	r0, [r1], #6
+  64              	.LVL3:
+  65              		.loc 1 53 5 view .LVU15
+  66 001a 0822     		movs	r2, #8
+  67 001c 0130     		adds	r0, r0, #1
+  68 001e FFF7FEFF 		bl	memcpyr
+  69              	.LVL4:
+  54:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****     bufItr += LORAMAC_JOIN_EUI_FIELD_SIZE;
+  70              		.loc 1 54 5 is_stmt 1 view .LVU16
+  55:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c **** 
+  56:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****     memcpyr( &macMsg->Buffer[bufItr], macMsg->DevEUI, LORAMAC_DEV_EUI_FIELD_SIZE );
+  71              		.loc 1 56 5 view .LVU17
+  72              		.loc 1 56 21 is_stmt 0 view .LVU18
+  73 0022 2146     		mov	r1, r4
+  74 0024 51F80E0B 		ldr	r0, [r1], #14
+  75              		.loc 1 56 5 view .LVU19
+  76 0028 0822     		movs	r2, #8
+  77 002a 0930     		adds	r0, r0, #9
+  78 002c FFF7FEFF 		bl	memcpyr
+  79              	.LVL5:
+  57:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****     bufItr += LORAMAC_DEV_EUI_FIELD_SIZE;
+  80              		.loc 1 57 5 is_stmt 1 view .LVU20
+  58:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c **** 
+  59:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****     macMsg->Buffer[bufItr++] = macMsg->DevNonce & 0xFF;
+  81              		.loc 1 59 5 view .LVU21
+  82              		.loc 1 59 38 is_stmt 0 view .LVU22
+  83 0030 E28A     		ldrh	r2, [r4, #22]
+  84              		.loc 1 59 11 view .LVU23
+  85 0032 2368     		ldr	r3, [r4]
+  86              	.LVL6:
+  87              		.loc 1 59 30 view .LVU24
+  88 0034 5A74     		strb	r2, [r3, #17]
+  60:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****     macMsg->Buffer[bufItr++] = ( macMsg->DevNonce >> 8 ) & 0xFF;
+  89              		.loc 1 60 5 is_stmt 1 view .LVU25
+  90              		.loc 1 60 40 is_stmt 0 view .LVU26
+  91 0036 E38A     		ldrh	r3, [r4, #22]
+  92              		.loc 1 60 11 view .LVU27
+  93 0038 2268     		ldr	r2, [r4]
+  94              	.LVL7:
+  95              		.loc 1 60 30 view .LVU28
+  96 003a 1B0A     		lsrs	r3, r3, #8
+  97 003c 9374     		strb	r3, [r2, #18]
+  61:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c **** 
+  62:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****     macMsg->Buffer[bufItr++] = macMsg->MIC & 0xFF;
+  98              		.loc 1 62 5 is_stmt 1 view .LVU29
+  99              		.loc 1 62 38 is_stmt 0 view .LVU30
+ 100 003e A269     		ldr	r2, [r4, #24]
+ 101              		.loc 1 62 11 view .LVU31
+ 102 0040 2368     		ldr	r3, [r4]
+ 103              	.LVL8:
+ 104              		.loc 1 62 30 view .LVU32
+ 105 0042 DA74     		strb	r2, [r3, #19]
+  63:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****     macMsg->Buffer[bufItr++] = ( macMsg->MIC >> 8 ) & 0xFF;
+ 106              		.loc 1 63 5 is_stmt 1 view .LVU33
+ 107              		.loc 1 63 40 is_stmt 0 view .LVU34
+ 108 0044 A369     		ldr	r3, [r4, #24]
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccWEWw6a.s 			page 4
+
+
+ 109              		.loc 1 63 46 view .LVU35
+ 110 0046 1B0A     		lsrs	r3, r3, #8
+ 111              		.loc 1 63 11 view .LVU36
+ 112 0048 2268     		ldr	r2, [r4]
+ 113              	.LVL9:
+ 114              		.loc 1 63 30 view .LVU37
+ 115 004a 1375     		strb	r3, [r2, #20]
+  64:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****     macMsg->Buffer[bufItr++] = ( macMsg->MIC >> 16 ) & 0xFF;
+ 116              		.loc 1 64 5 is_stmt 1 view .LVU38
+ 117              		.loc 1 64 46 is_stmt 0 view .LVU39
+ 118 004c 628B     		ldrh	r2, [r4, #26]
+ 119              		.loc 1 64 11 view .LVU40
+ 120 004e 2368     		ldr	r3, [r4]
+ 121              	.LVL10:
+ 122              		.loc 1 64 30 view .LVU41
+ 123 0050 5A75     		strb	r2, [r3, #21]
+  65:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****     macMsg->Buffer[bufItr++] = ( macMsg->MIC >> 24 ) & 0xFF;
+ 124              		.loc 1 65 5 is_stmt 1 view .LVU42
+ 125              		.loc 1 65 46 is_stmt 0 view .LVU43
+ 126 0052 E27E     		ldrb	r2, [r4, #27]	@ zero_extendqisi2
+ 127              		.loc 1 65 11 view .LVU44
+ 128 0054 2368     		ldr	r3, [r4]
+ 129              	.LVL11:
+ 130              		.loc 1 65 30 view .LVU45
+ 131 0056 9A75     		strb	r2, [r3, #22]
+  66:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c **** 
+  67:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****     macMsg->BufSize = bufItr;
+ 132              		.loc 1 67 5 is_stmt 1 view .LVU46
+ 133              		.loc 1 67 21 is_stmt 0 view .LVU47
+ 134 0058 1723     		movs	r3, #23
+ 135 005a 2371     		strb	r3, [r4, #4]
+  68:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c **** 
+  69:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****     return LORAMAC_SERIALIZER_SUCCESS;
+ 136              		.loc 1 69 5 is_stmt 1 view .LVU48
+ 137              		.loc 1 69 12 is_stmt 0 view .LVU49
+ 138 005c 0020     		movs	r0, #0
+ 139              	.LVL12:
+ 140              	.L2:
+  70:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c **** }
+ 141              		.loc 1 70 1 view .LVU50
+ 142 005e 10BD     		pop	{r4, pc}
+ 143              	.LVL13:
+ 144              	.L3:
+ 145              	.LCFI1:
+ 146              		.cfi_def_cfa_offset 0
+ 147              		.cfi_restore 4
+ 148              		.cfi_restore 14
+  40:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****     }
+ 149              		.loc 1 40 16 view .LVU51
+ 150 0060 0120     		movs	r0, #1
+ 151              	.LVL14:
+ 152              		.loc 1 70 1 view .LVU52
+ 153 0062 7047     		bx	lr
+ 154              	.LVL15:
+ 155              	.L4:
+ 156              	.LCFI2:
+ 157              		.cfi_def_cfa_offset 8
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccWEWw6a.s 			page 5
+
+
+ 158              		.cfi_offset 4, -8
+ 159              		.cfi_offset 14, -4
+  40:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****     }
+ 160              		.loc 1 40 16 view .LVU53
+ 161 0064 0120     		movs	r0, #1
+ 162              	.LVL16:
+  40:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****     }
+ 163              		.loc 1 40 16 view .LVU54
+ 164 0066 FAE7     		b	.L2
+ 165              	.LVL17:
+ 166              	.L5:
+  48:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****     }
+ 167              		.loc 1 48 16 view .LVU55
+ 168 0068 0220     		movs	r0, #2
+ 169              	.LVL18:
+  48:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****     }
+ 170              		.loc 1 48 16 view .LVU56
+ 171 006a F8E7     		b	.L2
+ 172              		.cfi_endproc
+ 173              	.LFE104:
+ 175              		.section	.text.LoRaMacSerializerReJoinType1,"ax",%progbits
+ 176              		.align	1
+ 177              		.global	LoRaMacSerializerReJoinType1
+ 178              		.syntax unified
+ 179              		.thumb
+ 180              		.thumb_func
+ 182              	LoRaMacSerializerReJoinType1:
+ 183              	.LVL19:
+ 184              	.LFB105:
+  71:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c **** 
+  72:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c **** LoRaMacSerializerStatus_t LoRaMacSerializerReJoinType1( LoRaMacMessageReJoinType1_t* macMsg )
+  73:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c **** {
+ 185              		.loc 1 73 1 is_stmt 1 view -0
+ 186              		.cfi_startproc
+ 187              		@ args = 0, pretend = 0, frame = 0
+ 188              		@ frame_needed = 0, uses_anonymous_args = 0
+  74:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****     if( ( macMsg == 0 ) || ( macMsg->Buffer == 0 ) )
+ 189              		.loc 1 74 5 view .LVU58
+ 190              		.loc 1 74 7 is_stmt 0 view .LVU59
+ 191 0000 10B3     		cbz	r0, .L12
+  73:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****     if( ( macMsg == 0 ) || ( macMsg->Buffer == 0 ) )
+ 192              		.loc 1 73 1 discriminator 1 view .LVU60
+ 193 0002 10B5     		push	{r4, lr}
+ 194              	.LCFI3:
+ 195              		.cfi_def_cfa_offset 8
+ 196              		.cfi_offset 4, -8
+ 197              		.cfi_offset 14, -4
+ 198 0004 0446     		mov	r4, r0
+ 199              		.loc 1 74 36 discriminator 1 view .LVU61
+ 200 0006 0368     		ldr	r3, [r0]
+ 201              		.loc 1 74 25 discriminator 1 view .LVU62
+ 202 0008 03B3     		cbz	r3, .L13
+  75:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****     {
+  76:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****         return LORAMAC_SERIALIZER_ERROR_NPE;
+  77:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****     }
+  78:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c **** 
+  79:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****     uint16_t bufItr = 0;
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccWEWw6a.s 			page 6
+
+
+ 203              		.loc 1 79 5 is_stmt 1 view .LVU63
+ 204              	.LVL20:
+  80:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c **** 
+  81:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****     // Check macMsg->BufSize
+  82:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****     if( macMsg->BufSize < LORAMAC_RE_JOIN_1_MSG_SIZE )
+ 205              		.loc 1 82 5 view .LVU64
+ 206              		.loc 1 82 15 is_stmt 0 view .LVU65
+ 207 000a 0279     		ldrb	r2, [r0, #4]	@ zero_extendqisi2
+ 208              		.loc 1 82 7 view .LVU66
+ 209 000c 172A     		cmp	r2, #23
+ 210 000e 1FD9     		bls	.L14
+  83:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****     {
+  84:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****         return LORAMAC_SERIALIZER_ERROR_BUF_SIZE;
+  85:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****     }
+  86:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c **** 
+  87:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****     macMsg->Buffer[bufItr++] = macMsg->MHDR.Value;
+ 211              		.loc 1 87 5 is_stmt 1 view .LVU67
+ 212              	.LVL21:
+ 213              		.loc 1 87 44 is_stmt 0 view .LVU68
+ 214 0010 4279     		ldrb	r2, [r0, #5]	@ zero_extendqisi2
+ 215              		.loc 1 87 30 view .LVU69
+ 216 0012 1A70     		strb	r2, [r3]
+  88:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c **** 
+  89:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****     macMsg->Buffer[bufItr++] = macMsg->ReJoinType;
+ 217              		.loc 1 89 5 is_stmt 1 view .LVU70
+ 218              		.loc 1 89 11 is_stmt 0 view .LVU71
+ 219 0014 0368     		ldr	r3, [r0]
+ 220              	.LVL22:
+ 221              		.loc 1 89 38 view .LVU72
+ 222 0016 8279     		ldrb	r2, [r0, #6]	@ zero_extendqisi2
+ 223              		.loc 1 89 30 view .LVU73
+ 224 0018 5A70     		strb	r2, [r3, #1]
+  90:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c **** 
+  91:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****     memcpyr( &macMsg->Buffer[bufItr], macMsg->JoinEUI, LORAMAC_JOIN_EUI_FIELD_SIZE );
+ 225              		.loc 1 91 5 is_stmt 1 view .LVU74
+ 226              		.loc 1 91 21 is_stmt 0 view .LVU75
+ 227 001a 0146     		mov	r1, r0
+ 228 001c 51F8070B 		ldr	r0, [r1], #7
+ 229              	.LVL23:
+ 230              		.loc 1 91 5 view .LVU76
+ 231 0020 0822     		movs	r2, #8
+ 232 0022 0230     		adds	r0, r0, #2
+ 233 0024 FFF7FEFF 		bl	memcpyr
+ 234              	.LVL24:
+  92:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****     bufItr += LORAMAC_JOIN_EUI_FIELD_SIZE;
+ 235              		.loc 1 92 5 is_stmt 1 view .LVU77
+  93:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c **** 
+  94:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****     memcpyr( &macMsg->Buffer[bufItr], macMsg->DevEUI, LORAMAC_DEV_EUI_FIELD_SIZE );
+ 236              		.loc 1 94 5 view .LVU78
+ 237              		.loc 1 94 21 is_stmt 0 view .LVU79
+ 238 0028 2146     		mov	r1, r4
+ 239 002a 51F80F0B 		ldr	r0, [r1], #15
+ 240              		.loc 1 94 5 view .LVU80
+ 241 002e 0822     		movs	r2, #8
+ 242 0030 0A30     		adds	r0, r0, #10
+ 243 0032 FFF7FEFF 		bl	memcpyr
+ 244              	.LVL25:
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccWEWw6a.s 			page 7
+
+
+  95:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****     bufItr += LORAMAC_DEV_EUI_FIELD_SIZE;
+ 245              		.loc 1 95 5 is_stmt 1 view .LVU81
+  96:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c **** 
+  97:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****     macMsg->Buffer[bufItr++] = macMsg->RJcount1 & 0xFF;
+ 246              		.loc 1 97 5 view .LVU82
+ 247              		.loc 1 97 38 is_stmt 0 view .LVU83
+ 248 0036 228B     		ldrh	r2, [r4, #24]
+ 249              		.loc 1 97 11 view .LVU84
+ 250 0038 2368     		ldr	r3, [r4]
+ 251              	.LVL26:
+ 252              		.loc 1 97 30 view .LVU85
+ 253 003a 9A74     		strb	r2, [r3, #18]
+  98:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****     macMsg->Buffer[bufItr++] = ( macMsg->RJcount1 >> 8 ) & 0xFF;
+ 254              		.loc 1 98 5 is_stmt 1 view .LVU86
+ 255              		.loc 1 98 40 is_stmt 0 view .LVU87
+ 256 003c 238B     		ldrh	r3, [r4, #24]
+ 257              		.loc 1 98 11 view .LVU88
+ 258 003e 2268     		ldr	r2, [r4]
+ 259              	.LVL27:
+ 260              		.loc 1 98 30 view .LVU89
+ 261 0040 1B0A     		lsrs	r3, r3, #8
+ 262 0042 D374     		strb	r3, [r2, #19]
+  99:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c **** 
+ 100:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****     return LORAMAC_SERIALIZER_SUCCESS;
+ 263              		.loc 1 100 5 is_stmt 1 view .LVU90
+ 264              		.loc 1 100 12 is_stmt 0 view .LVU91
+ 265 0044 0020     		movs	r0, #0
+ 266              	.LVL28:
+ 267              	.L11:
+ 101:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c **** }
+ 268              		.loc 1 101 1 view .LVU92
+ 269 0046 10BD     		pop	{r4, pc}
+ 270              	.LVL29:
+ 271              	.L12:
+ 272              	.LCFI4:
+ 273              		.cfi_def_cfa_offset 0
+ 274              		.cfi_restore 4
+ 275              		.cfi_restore 14
+  76:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****     }
+ 276              		.loc 1 76 16 view .LVU93
+ 277 0048 0120     		movs	r0, #1
+ 278              	.LVL30:
+ 279              		.loc 1 101 1 view .LVU94
+ 280 004a 7047     		bx	lr
+ 281              	.LVL31:
+ 282              	.L13:
+ 283              	.LCFI5:
+ 284              		.cfi_def_cfa_offset 8
+ 285              		.cfi_offset 4, -8
+ 286              		.cfi_offset 14, -4
+  76:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****     }
+ 287              		.loc 1 76 16 view .LVU95
+ 288 004c 0120     		movs	r0, #1
+ 289              	.LVL32:
+  76:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****     }
+ 290              		.loc 1 76 16 view .LVU96
+ 291 004e FAE7     		b	.L11
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccWEWw6a.s 			page 8
+
+
+ 292              	.LVL33:
+ 293              	.L14:
+  84:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****     }
+ 294              		.loc 1 84 16 view .LVU97
+ 295 0050 0220     		movs	r0, #2
+ 296              	.LVL34:
+  84:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****     }
+ 297              		.loc 1 84 16 view .LVU98
+ 298 0052 F8E7     		b	.L11
+ 299              		.cfi_endproc
+ 300              	.LFE105:
+ 302              		.section	.text.LoRaMacSerializerReJoinType0or2,"ax",%progbits
+ 303              		.align	1
+ 304              		.global	LoRaMacSerializerReJoinType0or2
+ 305              		.syntax unified
+ 306              		.thumb
+ 307              		.thumb_func
+ 309              	LoRaMacSerializerReJoinType0or2:
+ 310              	.LVL35:
+ 311              	.LFB106:
+ 102:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c **** 
+ 103:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c **** LoRaMacSerializerStatus_t LoRaMacSerializerReJoinType0or2( LoRaMacMessageReJoinType0or2_t* macMsg )
+ 104:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c **** {
+ 312              		.loc 1 104 1 is_stmt 1 view -0
+ 313              		.cfi_startproc
+ 314              		@ args = 0, pretend = 0, frame = 0
+ 315              		@ frame_needed = 0, uses_anonymous_args = 0
+ 105:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****     if( ( macMsg == 0 ) || ( macMsg->Buffer == 0 ) )
+ 316              		.loc 1 105 5 view .LVU100
+ 317              		.loc 1 105 7 is_stmt 0 view .LVU101
+ 318 0000 10B3     		cbz	r0, .L21
+ 104:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****     if( ( macMsg == 0 ) || ( macMsg->Buffer == 0 ) )
+ 319              		.loc 1 104 1 discriminator 1 view .LVU102
+ 320 0002 10B5     		push	{r4, lr}
+ 321              	.LCFI6:
+ 322              		.cfi_def_cfa_offset 8
+ 323              		.cfi_offset 4, -8
+ 324              		.cfi_offset 14, -4
+ 325 0004 0446     		mov	r4, r0
+ 326              		.loc 1 105 36 discriminator 1 view .LVU103
+ 327 0006 0368     		ldr	r3, [r0]
+ 328              		.loc 1 105 25 discriminator 1 view .LVU104
+ 329 0008 03B3     		cbz	r3, .L22
+ 106:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****     {
+ 107:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****         return LORAMAC_SERIALIZER_ERROR_NPE;
+ 108:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****     }
+ 109:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c **** 
+ 110:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****     uint16_t bufItr = 0;
+ 330              		.loc 1 110 5 is_stmt 1 view .LVU105
+ 331              	.LVL36:
+ 111:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c **** 
+ 112:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****     // Check macMsg->BufSize
+ 113:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****     if( macMsg->BufSize < LORAMAC_RE_JOIN_0_2_MSG_SIZE )
+ 332              		.loc 1 113 5 view .LVU106
+ 333              		.loc 1 113 15 is_stmt 0 view .LVU107
+ 334 000a 0279     		ldrb	r2, [r0, #4]	@ zero_extendqisi2
+ 335              		.loc 1 113 7 view .LVU108
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccWEWw6a.s 			page 9
+
+
+ 336 000c 122A     		cmp	r2, #18
+ 337 000e 1FD9     		bls	.L23
+ 114:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****     {
+ 115:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****         return LORAMAC_SERIALIZER_ERROR_BUF_SIZE;
+ 116:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****     }
+ 117:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c **** 
+ 118:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****     macMsg->Buffer[bufItr++] = macMsg->MHDR.Value;
+ 338              		.loc 1 118 5 is_stmt 1 view .LVU109
+ 339              	.LVL37:
+ 340              		.loc 1 118 44 is_stmt 0 view .LVU110
+ 341 0010 4279     		ldrb	r2, [r0, #5]	@ zero_extendqisi2
+ 342              		.loc 1 118 30 view .LVU111
+ 343 0012 1A70     		strb	r2, [r3]
+ 119:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c **** 
+ 120:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****     macMsg->Buffer[bufItr++] = macMsg->ReJoinType;
+ 344              		.loc 1 120 5 is_stmt 1 view .LVU112
+ 345              		.loc 1 120 11 is_stmt 0 view .LVU113
+ 346 0014 0368     		ldr	r3, [r0]
+ 347              	.LVL38:
+ 348              		.loc 1 120 38 view .LVU114
+ 349 0016 8279     		ldrb	r2, [r0, #6]	@ zero_extendqisi2
+ 350              		.loc 1 120 30 view .LVU115
+ 351 0018 5A70     		strb	r2, [r3, #1]
+ 121:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c **** 
+ 122:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****     memcpy1( &macMsg->Buffer[bufItr], macMsg->NetID, LORAMAC_NET_ID_FIELD_SIZE );
+ 352              		.loc 1 122 5 is_stmt 1 view .LVU116
+ 353              		.loc 1 122 21 is_stmt 0 view .LVU117
+ 354 001a 0146     		mov	r1, r0
+ 355 001c 51F8070B 		ldr	r0, [r1], #7
+ 356              	.LVL39:
+ 357              		.loc 1 122 5 view .LVU118
+ 358 0020 0322     		movs	r2, #3
+ 359 0022 0230     		adds	r0, r0, #2
+ 360 0024 FFF7FEFF 		bl	memcpy1
+ 361              	.LVL40:
+ 123:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****     bufItr += LORAMAC_NET_ID_FIELD_SIZE;
+ 362              		.loc 1 123 5 is_stmt 1 view .LVU119
+ 124:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c **** 
+ 125:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****     memcpyr( &macMsg->Buffer[bufItr], macMsg->DevEUI, LORAMAC_DEV_EUI_FIELD_SIZE );
+ 363              		.loc 1 125 5 view .LVU120
+ 364              		.loc 1 125 21 is_stmt 0 view .LVU121
+ 365 0028 2146     		mov	r1, r4
+ 366 002a 51F80A0B 		ldr	r0, [r1], #10
+ 367              		.loc 1 125 5 view .LVU122
+ 368 002e 0822     		movs	r2, #8
+ 369 0030 0530     		adds	r0, r0, #5
+ 370 0032 FFF7FEFF 		bl	memcpyr
+ 371              	.LVL41:
+ 126:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****     bufItr += LORAMAC_DEV_EUI_FIELD_SIZE;
+ 372              		.loc 1 126 5 is_stmt 1 view .LVU123
+ 127:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c **** 
+ 128:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****     macMsg->Buffer[bufItr++] = macMsg->RJcount0 & 0xFF;
+ 373              		.loc 1 128 5 view .LVU124
+ 374              		.loc 1 128 38 is_stmt 0 view .LVU125
+ 375 0036 628A     		ldrh	r2, [r4, #18]
+ 376              		.loc 1 128 11 view .LVU126
+ 377 0038 2368     		ldr	r3, [r4]
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccWEWw6a.s 			page 10
+
+
+ 378              	.LVL42:
+ 379              		.loc 1 128 30 view .LVU127
+ 380 003a 5A73     		strb	r2, [r3, #13]
+ 129:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****     macMsg->Buffer[bufItr++] = ( macMsg->RJcount0 >> 8 ) & 0xFF;
+ 381              		.loc 1 129 5 is_stmt 1 view .LVU128
+ 382              		.loc 1 129 40 is_stmt 0 view .LVU129
+ 383 003c 638A     		ldrh	r3, [r4, #18]
+ 384              		.loc 1 129 11 view .LVU130
+ 385 003e 2268     		ldr	r2, [r4]
+ 386              	.LVL43:
+ 387              		.loc 1 129 30 view .LVU131
+ 388 0040 1B0A     		lsrs	r3, r3, #8
+ 389 0042 9373     		strb	r3, [r2, #14]
+ 130:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c **** 
+ 131:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****     return LORAMAC_SERIALIZER_SUCCESS;
+ 390              		.loc 1 131 5 is_stmt 1 view .LVU132
+ 391              		.loc 1 131 12 is_stmt 0 view .LVU133
+ 392 0044 0020     		movs	r0, #0
+ 393              	.LVL44:
+ 394              	.L20:
+ 132:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c **** }
+ 395              		.loc 1 132 1 view .LVU134
+ 396 0046 10BD     		pop	{r4, pc}
+ 397              	.LVL45:
+ 398              	.L21:
+ 399              	.LCFI7:
+ 400              		.cfi_def_cfa_offset 0
+ 401              		.cfi_restore 4
+ 402              		.cfi_restore 14
+ 107:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****     }
+ 403              		.loc 1 107 16 view .LVU135
+ 404 0048 0120     		movs	r0, #1
+ 405              	.LVL46:
+ 406              		.loc 1 132 1 view .LVU136
+ 407 004a 7047     		bx	lr
+ 408              	.LVL47:
+ 409              	.L22:
+ 410              	.LCFI8:
+ 411              		.cfi_def_cfa_offset 8
+ 412              		.cfi_offset 4, -8
+ 413              		.cfi_offset 14, -4
+ 107:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****     }
+ 414              		.loc 1 107 16 view .LVU137
+ 415 004c 0120     		movs	r0, #1
+ 416              	.LVL48:
+ 107:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****     }
+ 417              		.loc 1 107 16 view .LVU138
+ 418 004e FAE7     		b	.L20
+ 419              	.LVL49:
+ 420              	.L23:
+ 115:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****     }
+ 421              		.loc 1 115 16 view .LVU139
+ 422 0050 0220     		movs	r0, #2
+ 423              	.LVL50:
+ 115:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****     }
+ 424              		.loc 1 115 16 view .LVU140
+ 425 0052 F8E7     		b	.L20
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccWEWw6a.s 			page 11
+
+
+ 426              		.cfi_endproc
+ 427              	.LFE106:
+ 429              		.section	.text.LoRaMacSerializerData,"ax",%progbits
+ 430              		.align	1
+ 431              		.global	LoRaMacSerializerData
+ 432              		.syntax unified
+ 433              		.thumb
+ 434              		.thumb_func
+ 436              	LoRaMacSerializerData:
+ 437              	.LVL51:
+ 438              	.LFB107:
+ 133:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c **** 
+ 134:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c **** LoRaMacSerializerStatus_t LoRaMacSerializerData( LoRaMacMessageData_t* macMsg )
+ 135:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c **** {
+ 439              		.loc 1 135 1 is_stmt 1 view -0
+ 440              		.cfi_startproc
+ 441              		@ args = 0, pretend = 0, frame = 0
+ 442              		@ frame_needed = 0, uses_anonymous_args = 0
+ 136:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****     if( ( macMsg == 0 ) || ( macMsg->Buffer == 0 ) )
+ 443              		.loc 1 136 5 view .LVU142
+ 444              		.loc 1 136 7 is_stmt 0 view .LVU143
+ 445 0000 0028     		cmp	r0, #0
+ 446 0002 66D0     		beq	.L32
+ 135:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****     if( ( macMsg == 0 ) || ( macMsg->Buffer == 0 ) )
+ 447              		.loc 1 135 1 discriminator 1 view .LVU144
+ 448 0004 38B5     		push	{r3, r4, r5, lr}
+ 449              	.LCFI9:
+ 450              		.cfi_def_cfa_offset 16
+ 451              		.cfi_offset 3, -16
+ 452              		.cfi_offset 4, -12
+ 453              		.cfi_offset 5, -8
+ 454              		.cfi_offset 14, -4
+ 455 0006 0446     		mov	r4, r0
+ 456              		.loc 1 136 36 discriminator 1 view .LVU145
+ 457 0008 0168     		ldr	r1, [r0]
+ 458              		.loc 1 136 25 discriminator 1 view .LVU146
+ 459 000a 0029     		cmp	r1, #0
+ 460 000c 63D0     		beq	.L33
+ 137:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****     {
+ 138:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****         return LORAMAC_SERIALIZER_ERROR_NPE;
+ 139:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****     }
+ 140:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c **** 
+ 141:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****     uint16_t bufItr = 0;
+ 461              		.loc 1 141 5 is_stmt 1 view .LVU147
+ 462              	.LVL52:
+ 142:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c **** 
+ 143:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****     // Check macMsg->BufSize
+ 144:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****     uint16_t computedBufSize =   LORAMAC_MHDR_FIELD_SIZE
+ 463              		.loc 1 144 5 view .LVU148
+ 145:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****                                + LORAMAC_FHDR_DEV_ADDR_FIELD_SIZE
+ 146:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****                                + LORAMAC_FHDR_F_CTRL_FIELD_SIZE
+ 147:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****                                + LORAMAC_FHDR_F_CNT_FIELD_SIZE;
+ 148:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c **** 
+ 149:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****     computedBufSize += macMsg->FHDR.FCtrl.Bits.FOptsLen;
+ 464              		.loc 1 149 5 view .LVU149
+ 465              		.loc 1 149 47 is_stmt 0 view .LVU150
+ 466 000e 027B     		ldrb	r2, [r0, #12]	@ zero_extendqisi2
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccWEWw6a.s 			page 12
+
+
+ 467 0010 02F00F02 		and	r2, r2, #15
+ 468              		.loc 1 149 21 view .LVU151
+ 469 0014 02F10800 		add	r0, r2, #8
+ 470              	.LVL53:
+ 150:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c **** 
+ 151:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****     if( macMsg->FRMPayloadSize > 0 )
+ 471              		.loc 1 151 5 is_stmt 1 view .LVU152
+ 472              		.loc 1 151 15 is_stmt 0 view .LVU153
+ 473 0018 94F82830 		ldrb	r3, [r4, #40]	@ zero_extendqisi2
+ 474              		.loc 1 151 7 view .LVU154
+ 475 001c 0BB1     		cbz	r3, .L30
+ 152:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****     {
+ 153:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****         computedBufSize += LORAMAC_F_PORT_FIELD_SIZE;
+ 476              		.loc 1 153 9 is_stmt 1 view .LVU155
+ 477              		.loc 1 153 25 is_stmt 0 view .LVU156
+ 478 001e 02F10900 		add	r0, r2, #9
+ 479              	.LVL54:
+ 480              	.L30:
+ 154:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****     }
+ 155:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c **** 
+ 156:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****     computedBufSize += macMsg->FRMPayloadSize;
+ 481              		.loc 1 156 5 is_stmt 1 view .LVU157
+ 482              		.loc 1 156 21 is_stmt 0 view .LVU158
+ 483 0022 0344     		add	r3, r3, r0
+ 484              	.LVL55:
+ 157:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****     computedBufSize += LORAMAC_MIC_FIELD_SIZE;
+ 485              		.loc 1 157 5 is_stmt 1 view .LVU159
+ 486              		.loc 1 157 21 is_stmt 0 view .LVU160
+ 487 0024 0433     		adds	r3, r3, #4
+ 488              	.LVL56:
+ 489              		.loc 1 157 21 view .LVU161
+ 490 0026 9BB2     		uxth	r3, r3
+ 491              	.LVL57:
+ 158:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c **** 
+ 159:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****     if( macMsg->BufSize < computedBufSize )
+ 492              		.loc 1 159 5 is_stmt 1 view .LVU162
+ 493              		.loc 1 159 15 is_stmt 0 view .LVU163
+ 494 0028 2279     		ldrb	r2, [r4, #4]	@ zero_extendqisi2
+ 495              		.loc 1 159 7 view .LVU164
+ 496 002a 9A42     		cmp	r2, r3
+ 497 002c 55D3     		bcc	.L34
+ 160:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****     {
+ 161:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****         return LORAMAC_SERIALIZER_ERROR_BUF_SIZE;
+ 162:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****     }
+ 163:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c **** 
+ 164:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****     macMsg->Buffer[bufItr++] = macMsg->MHDR.Value;
+ 498              		.loc 1 164 5 is_stmt 1 view .LVU165
+ 499              	.LVL58:
+ 500              		.loc 1 164 44 is_stmt 0 view .LVU166
+ 501 002e 6379     		ldrb	r3, [r4, #5]	@ zero_extendqisi2
+ 502              	.LVL59:
+ 503              		.loc 1 164 30 view .LVU167
+ 504 0030 0B70     		strb	r3, [r1]
+ 505              	.LVL60:
+ 165:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c **** 
+ 166:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****     macMsg->Buffer[bufItr++] = ( macMsg->FHDR.DevAddr ) & 0xFF;
+ 506              		.loc 1 166 5 is_stmt 1 view .LVU168
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccWEWw6a.s 			page 13
+
+
+ 507              		.loc 1 166 46 is_stmt 0 view .LVU169
+ 508 0032 A268     		ldr	r2, [r4, #8]
+ 509              		.loc 1 166 11 view .LVU170
+ 510 0034 2368     		ldr	r3, [r4]
+ 511              	.LVL61:
+ 512              		.loc 1 166 30 view .LVU171
+ 513 0036 5A70     		strb	r2, [r3, #1]
+ 167:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****     macMsg->Buffer[bufItr++] = ( macMsg->FHDR.DevAddr >> 8 ) & 0xFF;
+ 514              		.loc 1 167 5 is_stmt 1 view .LVU172
+ 515              		.loc 1 167 46 is_stmt 0 view .LVU173
+ 516 0038 A368     		ldr	r3, [r4, #8]
+ 517              		.loc 1 167 55 view .LVU174
+ 518 003a 1B0A     		lsrs	r3, r3, #8
+ 519              		.loc 1 167 11 view .LVU175
+ 520 003c 2268     		ldr	r2, [r4]
+ 521              	.LVL62:
+ 522              		.loc 1 167 30 view .LVU176
+ 523 003e 9370     		strb	r3, [r2, #2]
+ 168:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****     macMsg->Buffer[bufItr++] = ( macMsg->FHDR.DevAddr >> 16 ) & 0xFF;
+ 524              		.loc 1 168 5 is_stmt 1 view .LVU177
+ 525              		.loc 1 168 55 is_stmt 0 view .LVU178
+ 526 0040 6289     		ldrh	r2, [r4, #10]
+ 527              		.loc 1 168 11 view .LVU179
+ 528 0042 2368     		ldr	r3, [r4]
+ 529              	.LVL63:
+ 530              		.loc 1 168 30 view .LVU180
+ 531 0044 DA70     		strb	r2, [r3, #3]
+ 169:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****     macMsg->Buffer[bufItr++] = ( macMsg->FHDR.DevAddr >> 24 ) & 0xFF;
+ 532              		.loc 1 169 5 is_stmt 1 view .LVU181
+ 533              		.loc 1 169 55 is_stmt 0 view .LVU182
+ 534 0046 E27A     		ldrb	r2, [r4, #11]	@ zero_extendqisi2
+ 535              		.loc 1 169 11 view .LVU183
+ 536 0048 2368     		ldr	r3, [r4]
+ 537              	.LVL64:
+ 538              		.loc 1 169 30 view .LVU184
+ 539 004a 1A71     		strb	r2, [r3, #4]
+ 170:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c **** 
+ 171:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****     macMsg->Buffer[bufItr++] = macMsg->FHDR.FCtrl.Value;
+ 540              		.loc 1 171 5 is_stmt 1 view .LVU185
+ 541              		.loc 1 171 11 is_stmt 0 view .LVU186
+ 542 004c 2368     		ldr	r3, [r4]
+ 543              	.LVL65:
+ 544              		.loc 1 171 50 view .LVU187
+ 545 004e 227B     		ldrb	r2, [r4, #12]	@ zero_extendqisi2
+ 546              		.loc 1 171 30 view .LVU188
+ 547 0050 5A71     		strb	r2, [r3, #5]
+ 172:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c **** 
+ 173:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****     macMsg->Buffer[bufItr++] = macMsg->FHDR.FCnt & 0xFF;
+ 548              		.loc 1 173 5 is_stmt 1 view .LVU189
+ 549              		.loc 1 173 44 is_stmt 0 view .LVU190
+ 550 0052 E289     		ldrh	r2, [r4, #14]
+ 551              		.loc 1 173 11 view .LVU191
+ 552 0054 2368     		ldr	r3, [r4]
+ 553              	.LVL66:
+ 554              		.loc 1 173 30 view .LVU192
+ 555 0056 9A71     		strb	r2, [r3, #6]
+ 174:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****     macMsg->Buffer[bufItr++] = ( macMsg->FHDR.FCnt >> 8 ) & 0xFF;
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccWEWw6a.s 			page 14
+
+
+ 556              		.loc 1 174 5 is_stmt 1 view .LVU193
+ 557              		.loc 1 174 46 is_stmt 0 view .LVU194
+ 558 0058 E389     		ldrh	r3, [r4, #14]
+ 559              		.loc 1 174 11 view .LVU195
+ 560 005a 2268     		ldr	r2, [r4]
+ 561              	.LVL67:
+ 562              		.loc 1 174 30 view .LVU196
+ 563 005c 1B0A     		lsrs	r3, r3, #8
+ 564 005e D371     		strb	r3, [r2, #7]
+ 175:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c **** 
+ 176:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****     memcpy1( &macMsg->Buffer[bufItr], macMsg->FHDR.FOpts, macMsg->FHDR.FCtrl.Bits.FOptsLen );
+ 565              		.loc 1 176 5 is_stmt 1 view .LVU197
+ 566              		.loc 1 176 21 is_stmt 0 view .LVU198
+ 567 0060 2146     		mov	r1, r4
+ 568 0062 51F8100B 		ldr	r0, [r1], #16
+ 569              		.loc 1 176 82 view .LVU199
+ 570 0066 227B     		ldrb	r2, [r4, #12]	@ zero_extendqisi2
+ 571              		.loc 1 176 5 view .LVU200
+ 572 0068 02F00F02 		and	r2, r2, #15
+ 573 006c 0830     		adds	r0, r0, #8
+ 574 006e FFF7FEFF 		bl	memcpy1
+ 575              	.LVL68:
+ 177:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****     bufItr = bufItr + macMsg->FHDR.FCtrl.Bits.FOptsLen;
+ 576              		.loc 1 177 5 is_stmt 1 view .LVU201
+ 577              		.loc 1 177 46 is_stmt 0 view .LVU202
+ 578 0072 237B     		ldrb	r3, [r4, #12]	@ zero_extendqisi2
+ 579 0074 03F00F03 		and	r3, r3, #15
+ 580              		.loc 1 177 12 view .LVU203
+ 581 0078 03F10805 		add	r5, r3, #8
+ 582              	.LVL69:
+ 178:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c **** 
+ 179:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****     if( macMsg->FRMPayloadSize > 0 )
+ 583              		.loc 1 179 5 is_stmt 1 view .LVU204
+ 584              		.loc 1 179 15 is_stmt 0 view .LVU205
+ 585 007c 94F82820 		ldrb	r2, [r4, #40]	@ zero_extendqisi2
+ 586              		.loc 1 179 7 view .LVU206
+ 587 0080 2AB1     		cbz	r2, .L31
+ 180:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****     {
+ 181:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****         macMsg->Buffer[bufItr++] = macMsg->FPort;
+ 588              		.loc 1 181 9 is_stmt 1 view .LVU207
+ 589              		.loc 1 181 15 is_stmt 0 view .LVU208
+ 590 0082 2268     		ldr	r2, [r4]
+ 591              	.LVL70:
+ 592              		.loc 1 181 42 view .LVU209
+ 593 0084 94F82010 		ldrb	r1, [r4, #32]	@ zero_extendqisi2
+ 594              		.loc 1 181 34 view .LVU210
+ 595 0088 5155     		strb	r1, [r2, r5]
+ 596              		.loc 1 181 30 view .LVU211
+ 597 008a 03F10905 		add	r5, r3, #9
+ 598              	.LVL71:
+ 599              	.L31:
+ 182:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****     }
+ 183:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c **** 
+ 184:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****     memcpy1( &macMsg->Buffer[bufItr], macMsg->FRMPayload, macMsg->FRMPayloadSize );
+ 600              		.loc 1 184 5 is_stmt 1 view .LVU212
+ 601              		.loc 1 184 21 is_stmt 0 view .LVU213
+ 602 008e 2068     		ldr	r0, [r4]
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccWEWw6a.s 			page 15
+
+
+ 603              		.loc 1 184 5 view .LVU214
+ 604 0090 94F82820 		ldrb	r2, [r4, #40]	@ zero_extendqisi2
+ 605 0094 616A     		ldr	r1, [r4, #36]
+ 606 0096 2844     		add	r0, r0, r5
+ 607 0098 FFF7FEFF 		bl	memcpy1
+ 608              	.LVL72:
+ 185:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****     bufItr = bufItr + macMsg->FRMPayloadSize;
+ 609              		.loc 1 185 5 is_stmt 1 view .LVU215
+ 610              		.loc 1 185 29 is_stmt 0 view .LVU216
+ 611 009c 94F82830 		ldrb	r3, [r4, #40]	@ zero_extendqisi2
+ 612              		.loc 1 185 12 view .LVU217
+ 613 00a0 2B44     		add	r3, r3, r5
+ 614              	.LVL73:
+ 186:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c **** 
+ 187:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****     macMsg->Buffer[bufItr++] = macMsg->MIC & 0xFF;
+ 615              		.loc 1 187 5 is_stmt 1 view .LVU218
+ 616              		.loc 1 187 38 is_stmt 0 view .LVU219
+ 617 00a2 E06A     		ldr	r0, [r4, #44]
+ 618              		.loc 1 187 11 view .LVU220
+ 619 00a4 2168     		ldr	r1, [r4]
+ 620              		.loc 1 187 26 view .LVU221
+ 621 00a6 5A1C     		adds	r2, r3, #1
+ 622 00a8 92B2     		uxth	r2, r2
+ 623              	.LVL74:
+ 624              		.loc 1 187 30 view .LVU222
+ 625 00aa C854     		strb	r0, [r1, r3]
+ 188:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****     macMsg->Buffer[bufItr++] = ( macMsg->MIC >> 8 ) & 0xFF;
+ 626              		.loc 1 188 5 is_stmt 1 view .LVU223
+ 627              		.loc 1 188 40 is_stmt 0 view .LVU224
+ 628 00ac E16A     		ldr	r1, [r4, #44]
+ 629              		.loc 1 188 46 view .LVU225
+ 630 00ae 080A     		lsrs	r0, r1, #8
+ 631              		.loc 1 188 11 view .LVU226
+ 632 00b0 2568     		ldr	r5, [r4]
+ 633              		.loc 1 188 26 view .LVU227
+ 634 00b2 991C     		adds	r1, r3, #2
+ 635 00b4 89B2     		uxth	r1, r1
+ 636              	.LVL75:
+ 637              		.loc 1 188 30 view .LVU228
+ 638 00b6 A854     		strb	r0, [r5, r2]
+ 189:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****     macMsg->Buffer[bufItr++] = ( macMsg->MIC >> 16 ) & 0xFF;
+ 639              		.loc 1 189 5 is_stmt 1 view .LVU229
+ 640              		.loc 1 189 46 is_stmt 0 view .LVU230
+ 641 00b8 E58D     		ldrh	r5, [r4, #46]
+ 642              		.loc 1 189 11 view .LVU231
+ 643 00ba 2068     		ldr	r0, [r4]
+ 644              		.loc 1 189 26 view .LVU232
+ 645 00bc DA1C     		adds	r2, r3, #3
+ 646 00be 92B2     		uxth	r2, r2
+ 647              	.LVL76:
+ 648              		.loc 1 189 30 view .LVU233
+ 649 00c0 4554     		strb	r5, [r0, r1]
+ 190:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****     macMsg->Buffer[bufItr++] = ( macMsg->MIC >> 24 ) & 0xFF;
+ 650              		.loc 1 190 5 is_stmt 1 view .LVU234
+ 651              		.loc 1 190 46 is_stmt 0 view .LVU235
+ 652 00c2 94F82F00 		ldrb	r0, [r4, #47]	@ zero_extendqisi2
+ 653              		.loc 1 190 11 view .LVU236
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccWEWw6a.s 			page 16
+
+
+ 654 00c6 2168     		ldr	r1, [r4]
+ 655              		.loc 1 190 26 view .LVU237
+ 656 00c8 0433     		adds	r3, r3, #4
+ 657              	.LVL77:
+ 658              		.loc 1 190 30 view .LVU238
+ 659 00ca 8854     		strb	r0, [r1, r2]
+ 191:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c **** 
+ 192:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****     macMsg->BufSize = bufItr;
+ 660              		.loc 1 192 5 is_stmt 1 view .LVU239
+ 661              		.loc 1 192 21 is_stmt 0 view .LVU240
+ 662 00cc 2371     		strb	r3, [r4, #4]
+ 193:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c **** 
+ 194:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****     return LORAMAC_SERIALIZER_SUCCESS;
+ 663              		.loc 1 194 5 is_stmt 1 view .LVU241
+ 664              		.loc 1 194 12 is_stmt 0 view .LVU242
+ 665 00ce 0020     		movs	r0, #0
+ 666              	.LVL78:
+ 667              	.L29:
+ 195:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c **** }
+ 668              		.loc 1 195 1 view .LVU243
+ 669 00d0 38BD     		pop	{r3, r4, r5, pc}
+ 670              	.LVL79:
+ 671              	.L32:
+ 672              	.LCFI10:
+ 673              		.cfi_def_cfa_offset 0
+ 674              		.cfi_restore 3
+ 675              		.cfi_restore 4
+ 676              		.cfi_restore 5
+ 677              		.cfi_restore 14
+ 138:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****     }
+ 678              		.loc 1 138 16 view .LVU244
+ 679 00d2 0120     		movs	r0, #1
+ 680              	.LVL80:
+ 681              		.loc 1 195 1 view .LVU245
+ 682 00d4 7047     		bx	lr
+ 683              	.LVL81:
+ 684              	.L33:
+ 685              	.LCFI11:
+ 686              		.cfi_def_cfa_offset 16
+ 687              		.cfi_offset 3, -16
+ 688              		.cfi_offset 4, -12
+ 689              		.cfi_offset 5, -8
+ 690              		.cfi_offset 14, -4
+ 138:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****     }
+ 691              		.loc 1 138 16 view .LVU246
+ 692 00d6 0120     		movs	r0, #1
+ 693              	.LVL82:
+ 138:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****     }
+ 694              		.loc 1 138 16 view .LVU247
+ 695 00d8 FAE7     		b	.L29
+ 696              	.LVL83:
+ 697              	.L34:
+ 161:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.c ****     }
+ 698              		.loc 1 161 16 view .LVU248
+ 699 00da 0220     		movs	r0, #2
+ 700 00dc F8E7     		b	.L29
+ 701              		.cfi_endproc
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccWEWw6a.s 			page 17
+
+
+ 702              	.LFE107:
+ 704              		.text
+ 705              	.Letext0:
+ 706              		.file 2 "c:\\program files (x86)\\gnu arm embedded toolchain\\10 2021.10\\arm-none-eabi\\include\\
+ 707              		.file 3 "c:\\program files (x86)\\gnu arm embedded toolchain\\10 2021.10\\arm-none-eabi\\include\\
+ 708              		.file 4 "Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacHeaderTypes.h"
+ 709              		.file 5 "Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacMessageTypes.h"
+ 710              		.file 6 "Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacSerializer.h"
+ 711              		.file 7 "Middlewares/Third_Party/LoRaWAN/Utilities/utilities.h"
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccWEWw6a.s 			page 18
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 LoRaMacSerializer.c
+C:\Users\NATHAN~1\AppData\Local\Temp\ccWEWw6a.s:18     .text.LoRaMacSerializerJoinRequest:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\ccWEWw6a.s:24     .text.LoRaMacSerializerJoinRequest:00000000 LoRaMacSerializerJoinRequest
+C:\Users\NATHAN~1\AppData\Local\Temp\ccWEWw6a.s:176    .text.LoRaMacSerializerReJoinType1:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\ccWEWw6a.s:182    .text.LoRaMacSerializerReJoinType1:00000000 LoRaMacSerializerReJoinType1
+C:\Users\NATHAN~1\AppData\Local\Temp\ccWEWw6a.s:303    .text.LoRaMacSerializerReJoinType0or2:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\ccWEWw6a.s:309    .text.LoRaMacSerializerReJoinType0or2:00000000 LoRaMacSerializerReJoinType0or2
+C:\Users\NATHAN~1\AppData\Local\Temp\ccWEWw6a.s:430    .text.LoRaMacSerializerData:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\ccWEWw6a.s:436    .text.LoRaMacSerializerData:00000000 LoRaMacSerializerData
+
+UNDEFINED SYMBOLS
+memcpyr
+memcpy1

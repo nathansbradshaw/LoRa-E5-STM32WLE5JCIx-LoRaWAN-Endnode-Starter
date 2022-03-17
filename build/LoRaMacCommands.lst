@@ -1,0 +1,2278 @@
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccSg685F.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"LoRaMacCommands.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.section	.text.IsSlotFree,"ax",%progbits
+  18              		.align	1
+  19              		.syntax unified
+  20              		.thumb
+  21              		.thumb_func
+  23              	IsSlotFree:
+  24              	.LVL0:
+  25              	.LFB104:
+  26              		.file 1 "Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c"
+   1:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** /*!
+   2:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****  * \file      LoRaMacCommands.c
+   3:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****  *
+   4:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****  * \brief     LoRa MAC commands
+   5:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****  *
+   6:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****  * \copyright Revised BSD License, see section \ref LICENSE.
+   7:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****  *
+   8:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****  * \code
+   9:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****  *                ______                              _
+  10:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****  *               / _____)             _              | |
+  11:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****  *              ( (____  _____ ____ _| |_ _____  ____| |__
+  12:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****  *               \____ \| ___ |    (_   _) ___ |/ ___)  _ \
+  13:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****  *               _____) ) ____| | | || |_| ____( (___| | | |
+  14:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****  *              (______/|_____)_|_|_| \__)_____)\____)_| |_|
+  15:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****  *              (C)2013 Semtech
+  16:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****  *
+  17:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****  *               ___ _____ _   ___ _  _____ ___  ___  ___ ___
+  18:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****  *              / __|_   _/_\ / __| |/ / __/ _ \| _ \/ __| __|
+  19:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****  *              \__ \ | |/ _ \ (__| ' <| _| (_) |   / (__| _|
+  20:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****  *              |___/ |_/_/ \_\___|_|\_\_| \___/|_|_\\___|___|
+  21:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****  *              embedded.connectivity.solutions===============
+  22:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****  *
+  23:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****  * \endcode
+  24:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****  *
+  25:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****  * \author    Miguel Luis ( Semtech )
+  26:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****  *
+  27:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****  * \author    Daniel Jaeckle ( STACKFORCE )
+  28:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****  *
+  29:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****  * \author    Johannes Bruder ( STACKFORCE )
+  30:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****  */
+  31:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** #include <stddef.h>
+  32:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** 
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccSg685F.s 			page 2
+
+
+  33:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** #include "utilities.h"
+  34:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** #include "LoRaMacCommands.h"
+  35:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** #include "LoRaMacConfirmQueue.h"
+  36:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** 
+  37:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** /*!
+  38:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****  * Number of MAC Command slots
+  39:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****  */
+  40:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** #define NUM_OF_MAC_COMMANDS 15
+  41:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** 
+  42:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** /*!
+  43:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****  * Size of the CID field of MAC commands
+  44:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****  */
+  45:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** #define CID_FIELD_SIZE 1
+  46:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** 
+  47:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** /*!
+  48:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****  *  Mac Commands list structure
+  49:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****  */
+  50:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** typedef struct sMacCommandsList
+  51:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** {
+  52:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     /*
+  53:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****      * First element of MAC command list.
+  54:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****      */
+  55:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     MacCommand_t* First;
+  56:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     /*
+  57:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****      * Last element of MAC command list.
+  58:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****      */
+  59:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     MacCommand_t* Last;
+  60:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** } MacCommandsList_t;
+  61:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** 
+  62:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** /*!
+  63:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****  * LoRaMac Commands Context structure
+  64:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****  */
+  65:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** typedef struct sLoRaMacCommandsCtx
+  66:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** {
+  67:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     /*
+  68:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****      * List of MAC command elements
+  69:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****      */
+  70:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     MacCommandsList_t MacCommandList;
+  71:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     /*
+  72:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****      * Buffer to store MAC command elements
+  73:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****      */
+  74:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     MacCommand_t MacCommandSlots[NUM_OF_MAC_COMMANDS];
+  75:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     /*
+  76:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****      * Size of all MAC commands serialized as buffer
+  77:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****      */
+  78:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     size_t SerializedCmdsSize;
+  79:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** } LoRaMacCommandsCtx_t;
+  80:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** 
+  81:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** /*!
+  82:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****  * Non-volatile module context.
+  83:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****  */
+  84:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** static LoRaMacCommandsCtx_t CommandsCtx;
+  85:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** 
+  86:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** /* Memory management functions */
+  87:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** 
+  88:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** /*!
+  89:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****  * \brief Determines if a MAC command slot is free
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccSg685F.s 			page 3
+
+
+  90:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****  *
+  91:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****  * \param[IN]     slot           - Slot to check
+  92:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****  * \retval                       - Status of the operation
+  93:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****  */
+  94:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** static bool IsSlotFree( const MacCommand_t* slot )
+  95:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** {
+  27              		.loc 1 95 1 view -0
+  28              		.cfi_startproc
+  29              		@ args = 0, pretend = 0, frame = 0
+  30              		@ frame_needed = 0, uses_anonymous_args = 0
+  31              		@ link register save eliminated.
+  96:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     uint8_t* mem = ( uint8_t* )slot;
+  32              		.loc 1 96 5 view .LVU1
+  97:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** 
+  98:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     for( uint16_t size = 0; size < sizeof( MacCommand_t ); size++ )
+  33              		.loc 1 98 5 view .LVU2
+  34              	.LBB2:
+  35              		.loc 1 98 10 view .LVU3
+  36              		.loc 1 98 19 is_stmt 0 view .LVU4
+  37 0000 0023     		movs	r3, #0
+  38              	.LVL1:
+  39              	.L2:
+  40              		.loc 1 98 29 is_stmt 1 discriminator 1 view .LVU5
+  41              		.loc 1 98 5 is_stmt 0 discriminator 1 view .LVU6
+  42 0002 0F2B     		cmp	r3, #15
+  43 0004 04D8     		bhi	.L6
+  99:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     {
+ 100:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****         if( mem[size] != 0x00 )
+  44              		.loc 1 100 9 is_stmt 1 view .LVU7
+  45              		.loc 1 100 16 is_stmt 0 view .LVU8
+  46 0006 C25C     		ldrb	r2, [r0, r3]	@ zero_extendqisi2
+  47              		.loc 1 100 11 view .LVU9
+  48 0008 22B9     		cbnz	r2, .L5
+  98:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     {
+  49              		.loc 1 98 60 is_stmt 1 discriminator 2 view .LVU10
+  98:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     {
+  50              		.loc 1 98 64 is_stmt 0 discriminator 2 view .LVU11
+  51 000a 0133     		adds	r3, r3, #1
+  52              	.LVL2:
+  98:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     {
+  53              		.loc 1 98 64 discriminator 2 view .LVU12
+  54 000c 9BB2     		uxth	r3, r3
+  55              	.LVL3:
+  98:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     {
+  56              		.loc 1 98 64 discriminator 2 view .LVU13
+  57 000e F8E7     		b	.L2
+  58              	.L6:
+  98:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     {
+  59              		.loc 1 98 64 discriminator 2 view .LVU14
+  60              	.LBE2:
+ 101:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****         {
+ 102:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****             return false;
+ 103:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****         }
+ 104:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     }
+ 105:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     return true;
+  61              		.loc 1 105 12 view .LVU15
+  62 0010 0120     		movs	r0, #1
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccSg685F.s 			page 4
+
+
+  63              	.LVL4:
+  64              	.LBB3:
+  65              		.loc 1 105 12 view .LVU16
+  66 0012 7047     		bx	lr
+  67              	.LVL5:
+  68              	.L5:
+ 102:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****         }
+  69              		.loc 1 102 20 view .LVU17
+  70 0014 0020     		movs	r0, #0
+  71              	.LVL6:
+ 102:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****         }
+  72              		.loc 1 102 20 view .LVU18
+  73              	.LBE3:
+ 106:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** }
+  74              		.loc 1 106 1 view .LVU19
+  75 0016 7047     		bx	lr
+  76              		.cfi_endproc
+  77              	.LFE104:
+  79              		.section	.text.MallocNewMacCommandSlot,"ax",%progbits
+  80              		.align	1
+  81              		.syntax unified
+  82              		.thumb
+  83              		.thumb_func
+  85              	MallocNewMacCommandSlot:
+  86              	.LFB105:
+ 107:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** 
+ 108:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** /*!
+ 109:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****  * \brief Allocates a new MAC command memory slot
+ 110:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****  *
+ 111:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****  * \retval                       - Pointer to slot
+ 112:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****  */
+ 113:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** static MacCommand_t* MallocNewMacCommandSlot( void )
+ 114:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** {
+  87              		.loc 1 114 1 is_stmt 1 view -0
+  88              		.cfi_startproc
+  89              		@ args = 0, pretend = 0, frame = 0
+  90              		@ frame_needed = 0, uses_anonymous_args = 0
+  91 0000 38B5     		push	{r3, r4, r5, lr}
+  92              	.LCFI0:
+  93              		.cfi_def_cfa_offset 16
+  94              		.cfi_offset 3, -16
+  95              		.cfi_offset 4, -12
+  96              		.cfi_offset 5, -8
+  97              		.cfi_offset 14, -4
+ 115:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     uint8_t itr = 0;
+  98              		.loc 1 115 5 view .LVU21
+  99              	.LVL7:
+ 116:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** 
+ 117:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     while( IsSlotFree( ( const MacCommand_t* )&CommandsCtx.MacCommandSlots[itr] ) == false )
+ 100              		.loc 1 117 5 view .LVU22
+ 115:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     uint8_t itr = 0;
+ 101              		.loc 1 115 13 is_stmt 0 view .LVU23
+ 102 0002 0024     		movs	r4, #0
+ 103              	.LVL8:
+ 104              	.L8:
+ 105              		.loc 1 117 10 is_stmt 1 view .LVU24
+ 106              		.loc 1 117 47 is_stmt 0 view .LVU25
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccSg685F.s 			page 5
+
+
+ 107 0004 2501     		lsls	r5, r4, #4
+ 108 0006 05F10803 		add	r3, r5, #8
+ 109 000a 064D     		ldr	r5, .L13
+ 110 000c 1D44     		add	r5, r5, r3
+ 111              		.loc 1 117 12 view .LVU26
+ 112 000e 2846     		mov	r0, r5
+ 113 0010 FFF7FEFF 		bl	IsSlotFree
+ 114              	.LVL9:
+ 115              		.loc 1 117 10 view .LVU27
+ 116 0014 20B9     		cbnz	r0, .L7
+ 118:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     {
+ 119:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****         itr++;
+ 117              		.loc 1 119 9 is_stmt 1 view .LVU28
+ 118              		.loc 1 119 12 is_stmt 0 view .LVU29
+ 119 0016 0134     		adds	r4, r4, #1
+ 120              	.LVL10:
+ 121              		.loc 1 119 12 view .LVU30
+ 122 0018 E4B2     		uxtb	r4, r4
+ 123              	.LVL11:
+ 120:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****         if( itr == NUM_OF_MAC_COMMANDS )
+ 124              		.loc 1 120 9 is_stmt 1 view .LVU31
+ 125              		.loc 1 120 11 is_stmt 0 view .LVU32
+ 126 001a 0F2C     		cmp	r4, #15
+ 127 001c F2D1     		bne	.L8
+ 121:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****         {
+ 122:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****             return NULL;
+ 128              		.loc 1 122 20 view .LVU33
+ 129 001e 0025     		movs	r5, #0
+ 130              	.L7:
+ 123:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****         }
+ 124:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     }
+ 125:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** 
+ 126:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     return &CommandsCtx.MacCommandSlots[itr];
+ 127:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** }
+ 131              		.loc 1 127 1 view .LVU34
+ 132 0020 2846     		mov	r0, r5
+ 133 0022 38BD     		pop	{r3, r4, r5, pc}
+ 134              	.LVL12:
+ 135              	.L14:
+ 136              		.loc 1 127 1 view .LVU35
+ 137              		.align	2
+ 138              	.L13:
+ 139 0024 00000000 		.word	.LANCHOR0
+ 140              		.cfi_endproc
+ 141              	.LFE105:
+ 143              		.section	.text.LinkedListInit,"ax",%progbits
+ 144              		.align	1
+ 145              		.syntax unified
+ 146              		.thumb
+ 147              		.thumb_func
+ 149              	LinkedListInit:
+ 150              	.LVL13:
+ 151              	.LFB107:
+ 128:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** 
+ 129:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** /*!
+ 130:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****  * \brief Free memory slot
+ 131:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****  *
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccSg685F.s 			page 6
+
+
+ 132:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****  * \param[IN]     slot           - Slot to free
+ 133:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****  *
+ 134:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****  * \retval                       - Status of the operation
+ 135:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****  */
+ 136:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** static bool FreeMacCommandSlot( MacCommand_t* slot )
+ 137:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** {
+ 138:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     if( slot == NULL )
+ 139:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     {
+ 140:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****         return false;
+ 141:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     }
+ 142:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** 
+ 143:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     memset1( ( uint8_t* )slot, 0x00, sizeof( MacCommand_t ) );
+ 144:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** 
+ 145:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     return true;
+ 146:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** }
+ 147:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** 
+ 148:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** /* Linked list functions */
+ 149:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** 
+ 150:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** /*!
+ 151:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****  * \brief Initialize list
+ 152:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****  *
+ 153:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****  * \param[IN]     list           - List that shall be initialized
+ 154:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****  * \retval                       - Status of the operation
+ 155:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****  */
+ 156:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** static bool LinkedListInit( MacCommandsList_t* list )
+ 157:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** {
+ 152              		.loc 1 157 1 is_stmt 1 view -0
+ 153              		.cfi_startproc
+ 154              		@ args = 0, pretend = 0, frame = 0
+ 155              		@ frame_needed = 0, uses_anonymous_args = 0
+ 156              		@ link register save eliminated.
+ 158:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     if( list == NULL )
+ 157              		.loc 1 158 5 view .LVU37
+ 158              		.loc 1 158 7 is_stmt 0 view .LVU38
+ 159 0000 20B1     		cbz	r0, .L17
+ 159:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     {
+ 160:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****         return false;
+ 161:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     }
+ 162:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** 
+ 163:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     list->First = NULL;
+ 160              		.loc 1 163 5 is_stmt 1 view .LVU39
+ 161              		.loc 1 163 17 is_stmt 0 view .LVU40
+ 162 0002 0022     		movs	r2, #0
+ 163 0004 0260     		str	r2, [r0]
+ 164:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     list->Last = NULL;
+ 164              		.loc 1 164 5 is_stmt 1 view .LVU41
+ 165              		.loc 1 164 16 is_stmt 0 view .LVU42
+ 166 0006 4260     		str	r2, [r0, #4]
+ 165:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** 
+ 166:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     return true;
+ 167              		.loc 1 166 5 is_stmt 1 view .LVU43
+ 168              		.loc 1 166 12 is_stmt 0 view .LVU44
+ 169 0008 0120     		movs	r0, #1
+ 170              	.LVL14:
+ 171              		.loc 1 166 12 view .LVU45
+ 172 000a 7047     		bx	lr
+ 173              	.LVL15:
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccSg685F.s 			page 7
+
+
+ 174              	.L17:
+ 160:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     }
+ 175              		.loc 1 160 16 view .LVU46
+ 176 000c 0020     		movs	r0, #0
+ 177              	.LVL16:
+ 167:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** }
+ 178              		.loc 1 167 1 view .LVU47
+ 179 000e 7047     		bx	lr
+ 180              		.cfi_endproc
+ 181              	.LFE107:
+ 183              		.section	.text.LinkedListAdd,"ax",%progbits
+ 184              		.align	1
+ 185              		.syntax unified
+ 186              		.thumb
+ 187              		.thumb_func
+ 189              	LinkedListAdd:
+ 190              	.LVL17:
+ 191              	.LFB108:
+ 168:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** 
+ 169:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** /*!
+ 170:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****  * \brief Add an element to the list
+ 171:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****  *
+ 172:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****  * \param[IN]     list           - List where the element shall be added.
+ 173:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****  * \param[IN]     element        - Element to add
+ 174:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****  * \retval                       - Status of the operation
+ 175:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****  */
+ 176:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** static bool LinkedListAdd( MacCommandsList_t* list, MacCommand_t* element )
+ 177:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** {
+ 192              		.loc 1 177 1 is_stmt 1 view -0
+ 193              		.cfi_startproc
+ 194              		@ args = 0, pretend = 0, frame = 0
+ 195              		@ frame_needed = 0, uses_anonymous_args = 0
+ 196              		@ link register save eliminated.
+ 178:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     if( ( list == NULL ) || ( element == NULL ) )
+ 197              		.loc 1 178 5 view .LVU49
+ 198              		.loc 1 178 7 is_stmt 0 view .LVU50
+ 199 0000 0346     		mov	r3, r0
+ 200 0002 60B1     		cbz	r0, .L22
+ 201              		.loc 1 178 26 discriminator 1 view .LVU51
+ 202 0004 69B1     		cbz	r1, .L23
+ 179:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     {
+ 180:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****         return false;
+ 181:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     }
+ 182:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** 
+ 183:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     // Check if this is the first entry to enter the list.
+ 184:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     if( list->First == NULL )
+ 203              		.loc 1 184 5 is_stmt 1 view .LVU52
+ 204              		.loc 1 184 13 is_stmt 0 view .LVU53
+ 205 0006 0268     		ldr	r2, [r0]
+ 206              		.loc 1 184 7 view .LVU54
+ 207 0008 3AB1     		cbz	r2, .L24
+ 208              	.L20:
+ 185:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     {
+ 186:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****         list->First = element;
+ 187:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     }
+ 188:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** 
+ 189:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     // Check if the last entry exists and update its next point.
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccSg685F.s 			page 8
+
+
+ 190:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     if( list->Last )
+ 209              		.loc 1 190 5 is_stmt 1 view .LVU55
+ 210              		.loc 1 190 13 is_stmt 0 view .LVU56
+ 211 000a 5A68     		ldr	r2, [r3, #4]
+ 212              		.loc 1 190 7 view .LVU57
+ 213 000c 02B1     		cbz	r2, .L21
+ 191:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     {
+ 192:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****         list->Last->Next = element;
+ 214              		.loc 1 192 9 is_stmt 1 view .LVU58
+ 215              		.loc 1 192 26 is_stmt 0 view .LVU59
+ 216 000e 1160     		str	r1, [r2]
+ 217              	.L21:
+ 193:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     }
+ 194:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** 
+ 195:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     // Update the next point of this entry.
+ 196:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     element->Next = NULL;
+ 218              		.loc 1 196 5 is_stmt 1 view .LVU60
+ 219              		.loc 1 196 19 is_stmt 0 view .LVU61
+ 220 0010 0022     		movs	r2, #0
+ 221 0012 0A60     		str	r2, [r1]
+ 197:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** 
+ 198:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     // Update the last entry of the list.
+ 199:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     list->Last = element;
+ 222              		.loc 1 199 5 is_stmt 1 view .LVU62
+ 223              		.loc 1 199 16 is_stmt 0 view .LVU63
+ 224 0014 5960     		str	r1, [r3, #4]
+ 200:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** 
+ 201:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     return true;
+ 225              		.loc 1 201 5 is_stmt 1 view .LVU64
+ 226              		.loc 1 201 12 is_stmt 0 view .LVU65
+ 227 0016 0120     		movs	r0, #1
+ 228              	.LVL18:
+ 229              		.loc 1 201 12 view .LVU66
+ 230 0018 7047     		bx	lr
+ 231              	.LVL19:
+ 232              	.L24:
+ 186:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     }
+ 233              		.loc 1 186 9 is_stmt 1 view .LVU67
+ 186:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     }
+ 234              		.loc 1 186 21 is_stmt 0 view .LVU68
+ 235 001a 0160     		str	r1, [r0]
+ 236 001c F5E7     		b	.L20
+ 237              	.L22:
+ 180:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     }
+ 238              		.loc 1 180 16 view .LVU69
+ 239 001e 0020     		movs	r0, #0
+ 240              	.LVL20:
+ 180:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     }
+ 241              		.loc 1 180 16 view .LVU70
+ 242 0020 7047     		bx	lr
+ 243              	.LVL21:
+ 244              	.L23:
+ 180:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     }
+ 245              		.loc 1 180 16 view .LVU71
+ 246 0022 0020     		movs	r0, #0
+ 247              	.LVL22:
+ 202:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** }
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccSg685F.s 			page 9
+
+
+ 248              		.loc 1 202 1 view .LVU72
+ 249 0024 7047     		bx	lr
+ 250              		.cfi_endproc
+ 251              	.LFE108:
+ 253              		.section	.text.LinkedListGetPrevious,"ax",%progbits
+ 254              		.align	1
+ 255              		.syntax unified
+ 256              		.thumb
+ 257              		.thumb_func
+ 259              	LinkedListGetPrevious:
+ 260              	.LVL23:
+ 261              	.LFB109:
+ 203:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** 
+ 204:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** /*!
+ 205:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****  * \brief Return the previous element in the list.
+ 206:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****  *
+ 207:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****  * \param[IN]     list           - List
+ 208:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****  * \param[IN]     element        - Element where the previous element shall be searched
+ 209:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****  * \retval                       - Status of the operation
+ 210:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****  */
+ 211:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** static MacCommand_t* LinkedListGetPrevious( MacCommandsList_t* list, MacCommand_t* element )
+ 212:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** {
+ 262              		.loc 1 212 1 is_stmt 1 view -0
+ 263              		.cfi_startproc
+ 264              		@ args = 0, pretend = 0, frame = 0
+ 265              		@ frame_needed = 0, uses_anonymous_args = 0
+ 266              		@ link register save eliminated.
+ 213:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     if( ( list == NULL ) || ( element == NULL ) )
+ 267              		.loc 1 213 5 view .LVU74
+ 268              		.loc 1 213 7 is_stmt 0 view .LVU75
+ 269 0000 60B1     		cbz	r0, .L28
+ 270              		.loc 1 213 26 discriminator 1 view .LVU76
+ 271 0002 61B1     		cbz	r1, .L29
+ 214:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     {
+ 215:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****         return NULL;
+ 216:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     }
+ 217:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** 
+ 218:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     MacCommand_t* curElement;
+ 272              		.loc 1 218 5 is_stmt 1 view .LVU77
+ 219:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** 
+ 220:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     // Start at the head of the list
+ 221:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     curElement = list->First;
+ 273              		.loc 1 221 5 view .LVU78
+ 274              		.loc 1 221 16 is_stmt 0 view .LVU79
+ 275 0004 0068     		ldr	r0, [r0]
+ 276              	.LVL24:
+ 222:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** 
+ 223:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     // When current element is the first of the list, there's no previous element so we can return 
+ 224:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     if( element != curElement )
+ 277              		.loc 1 224 5 is_stmt 1 view .LVU80
+ 278              		.loc 1 224 7 is_stmt 0 view .LVU81
+ 279 0006 8142     		cmp	r1, r0
+ 280 0008 02D1     		bne	.L27
+ 225:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     {
+ 226:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****         // Loop through all elements until the end is reached or the next of current is the current
+ 227:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****         while( ( curElement != NULL ) && ( curElement->Next != element ) )
+ 228:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****         {
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccSg685F.s 			page 10
+
+
+ 229:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****             curElement = curElement->Next;
+ 230:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****         }
+ 231:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     }
+ 232:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     else
+ 233:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     {
+ 234:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****         curElement = NULL;
+ 281              		.loc 1 234 20 view .LVU82
+ 282 000a 0020     		movs	r0, #0
+ 283              	.LVL25:
+ 284              	.L25:
+ 235:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     }
+ 236:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** 
+ 237:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     return curElement;
+ 238:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** }
+ 285              		.loc 1 238 1 view .LVU83
+ 286 000c 7047     		bx	lr
+ 287              	.LVL26:
+ 288              	.L31:
+ 229:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****         }
+ 289              		.loc 1 229 24 view .LVU84
+ 290 000e 1846     		mov	r0, r3
+ 291              	.LVL27:
+ 292              	.L27:
+ 227:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****         {
+ 293              		.loc 1 227 14 is_stmt 1 view .LVU85
+ 294 0010 0028     		cmp	r0, #0
+ 295 0012 FBD0     		beq	.L25
+ 227:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****         {
+ 296              		.loc 1 227 54 is_stmt 0 discriminator 1 view .LVU86
+ 297 0014 0368     		ldr	r3, [r0]
+ 227:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****         {
+ 298              		.loc 1 227 39 discriminator 1 view .LVU87
+ 299 0016 8B42     		cmp	r3, r1
+ 300 0018 F9D1     		bne	.L31
+ 301 001a 7047     		bx	lr
+ 302              	.LVL28:
+ 303              	.L28:
+ 227:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****         {
+ 304              		.loc 1 227 39 discriminator 1 view .LVU88
+ 305 001c 7047     		bx	lr
+ 306              	.L29:
+ 215:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     }
+ 307              		.loc 1 215 16 view .LVU89
+ 308 001e 0846     		mov	r0, r1
+ 309              	.LVL29:
+ 215:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     }
+ 310              		.loc 1 215 16 view .LVU90
+ 311 0020 7047     		bx	lr
+ 312              		.cfi_endproc
+ 313              	.LFE109:
+ 315              		.section	.text.LinkedListRemove,"ax",%progbits
+ 316              		.align	1
+ 317              		.syntax unified
+ 318              		.thumb
+ 319              		.thumb_func
+ 321              	LinkedListRemove:
+ 322              	.LVL30:
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccSg685F.s 			page 11
+
+
+ 323              	.LFB110:
+ 239:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** 
+ 240:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** /*!
+ 241:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****  * \brief Remove an element from the list
+ 242:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****  *
+ 243:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****  * \param[IN]     list           - List where the element shall be removed from.
+ 244:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****  * \param[IN]     element        - Element to remove
+ 245:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****  * \retval                       - Status of the operation
+ 246:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****  */
+ 247:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** static bool LinkedListRemove( MacCommandsList_t* list, MacCommand_t* element )
+ 248:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** {
+ 324              		.loc 1 248 1 is_stmt 1 view -0
+ 325              		.cfi_startproc
+ 326              		@ args = 0, pretend = 0, frame = 0
+ 327              		@ frame_needed = 0, uses_anonymous_args = 0
+ 249:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     if( ( list == NULL ) || ( element == NULL ) )
+ 328              		.loc 1 249 5 view .LVU92
+ 329              		.loc 1 249 7 is_stmt 0 view .LVU93
+ 330 0000 B8B1     		cbz	r0, .L37
+ 248:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     if( ( list == NULL ) || ( element == NULL ) )
+ 331              		.loc 1 248 1 discriminator 1 view .LVU94
+ 332 0002 38B5     		push	{r3, r4, r5, lr}
+ 333              	.LCFI1:
+ 334              		.cfi_def_cfa_offset 16
+ 335              		.cfi_offset 3, -16
+ 336              		.cfi_offset 4, -12
+ 337              		.cfi_offset 5, -8
+ 338              		.cfi_offset 14, -4
+ 339 0004 0C46     		mov	r4, r1
+ 340 0006 0546     		mov	r5, r0
+ 341              		.loc 1 249 26 discriminator 1 view .LVU95
+ 342 0008 A9B1     		cbz	r1, .L38
+ 250:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     {
+ 251:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****         return false;
+ 252:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     }
+ 253:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** 
+ 254:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     MacCommand_t* PrevElement = LinkedListGetPrevious( list, element );
+ 343              		.loc 1 254 5 is_stmt 1 view .LVU96
+ 344              		.loc 1 254 33 is_stmt 0 view .LVU97
+ 345 000a FFF7FEFF 		bl	LinkedListGetPrevious
+ 346              	.LVL31:
+ 255:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** 
+ 256:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     if( list->First == element )
+ 347              		.loc 1 256 5 is_stmt 1 view .LVU98
+ 348              		.loc 1 256 13 is_stmt 0 view .LVU99
+ 349 000e 2B68     		ldr	r3, [r5]
+ 350              		.loc 1 256 7 view .LVU100
+ 351 0010 A342     		cmp	r3, r4
+ 352 0012 09D0     		beq	.L43
+ 353              	.L34:
+ 257:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     {
+ 258:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****         list->First = element->Next;
+ 259:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     }
+ 260:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** 
+ 261:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     if( list->Last == element )
+ 354              		.loc 1 261 5 is_stmt 1 view .LVU101
+ 355              		.loc 1 261 13 is_stmt 0 view .LVU102
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccSg685F.s 			page 12
+
+
+ 356 0014 6B68     		ldr	r3, [r5, #4]
+ 357              		.loc 1 261 7 view .LVU103
+ 358 0016 A342     		cmp	r3, r4
+ 359 0018 09D0     		beq	.L44
+ 360              	.L35:
+ 262:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     {
+ 263:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****         list->Last = PrevElement;
+ 264:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     }
+ 265:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** 
+ 266:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     if( PrevElement != NULL )
+ 361              		.loc 1 266 5 is_stmt 1 view .LVU104
+ 362              		.loc 1 266 7 is_stmt 0 view .LVU105
+ 363 001a 08B1     		cbz	r0, .L36
+ 267:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     {
+ 268:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****         PrevElement->Next = element->Next;
+ 364              		.loc 1 268 9 is_stmt 1 view .LVU106
+ 365              		.loc 1 268 36 is_stmt 0 view .LVU107
+ 366 001c 2368     		ldr	r3, [r4]
+ 367              		.loc 1 268 27 view .LVU108
+ 368 001e 0360     		str	r3, [r0]
+ 369              	.L36:
+ 269:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     }
+ 270:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** 
+ 271:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     element->Next = NULL;
+ 370              		.loc 1 271 5 is_stmt 1 view .LVU109
+ 371              		.loc 1 271 19 is_stmt 0 view .LVU110
+ 372 0020 0023     		movs	r3, #0
+ 373 0022 2360     		str	r3, [r4]
+ 272:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** 
+ 273:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     return true;
+ 374              		.loc 1 273 5 is_stmt 1 view .LVU111
+ 375              		.loc 1 273 12 is_stmt 0 view .LVU112
+ 376 0024 0120     		movs	r0, #1
+ 377              	.LVL32:
+ 378              	.L33:
+ 274:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** }
+ 379              		.loc 1 274 1 view .LVU113
+ 380 0026 38BD     		pop	{r3, r4, r5, pc}
+ 381              	.LVL33:
+ 382              	.L43:
+ 258:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     }
+ 383              		.loc 1 258 9 is_stmt 1 view .LVU114
+ 258:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     }
+ 384              		.loc 1 258 30 is_stmt 0 view .LVU115
+ 385 0028 2368     		ldr	r3, [r4]
+ 258:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     }
+ 386              		.loc 1 258 21 view .LVU116
+ 387 002a 2B60     		str	r3, [r5]
+ 388 002c F2E7     		b	.L34
+ 389              	.L44:
+ 263:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     }
+ 390              		.loc 1 263 9 is_stmt 1 view .LVU117
+ 263:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     }
+ 391              		.loc 1 263 20 is_stmt 0 view .LVU118
+ 392 002e 6860     		str	r0, [r5, #4]
+ 393 0030 F3E7     		b	.L35
+ 394              	.LVL34:
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccSg685F.s 			page 13
+
+
+ 395              	.L37:
+ 396              	.LCFI2:
+ 397              		.cfi_def_cfa_offset 0
+ 398              		.cfi_restore 3
+ 399              		.cfi_restore 4
+ 400              		.cfi_restore 5
+ 401              		.cfi_restore 14
+ 251:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     }
+ 402              		.loc 1 251 16 view .LVU119
+ 403 0032 0020     		movs	r0, #0
+ 404              	.LVL35:
+ 405              		.loc 1 274 1 view .LVU120
+ 406 0034 7047     		bx	lr
+ 407              	.LVL36:
+ 408              	.L38:
+ 409              	.LCFI3:
+ 410              		.cfi_def_cfa_offset 16
+ 411              		.cfi_offset 3, -16
+ 412              		.cfi_offset 4, -12
+ 413              		.cfi_offset 5, -8
+ 414              		.cfi_offset 14, -4
+ 251:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     }
+ 415              		.loc 1 251 16 view .LVU121
+ 416 0036 0020     		movs	r0, #0
+ 417              	.LVL37:
+ 251:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     }
+ 418              		.loc 1 251 16 view .LVU122
+ 419 0038 F5E7     		b	.L33
+ 420              		.cfi_endproc
+ 421              	.LFE110:
+ 423              		.section	.text.IsSticky,"ax",%progbits
+ 424              		.align	1
+ 425              		.syntax unified
+ 426              		.thumb
+ 427              		.thumb_func
+ 429              	IsSticky:
+ 430              	.LVL38:
+ 431              	.LFB111:
+ 275:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** 
+ 276:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** /*
+ 277:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****  * \brief Determines if a MAC command is sticky or not
+ 278:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****  *
+ 279:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****  * \param[IN]   cid                - MAC command identifier
+ 280:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****  *
+ 281:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****  * \retval                     - Status of the operation
+ 282:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****  */
+ 283:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** static bool IsSticky( uint8_t cid )
+ 284:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** {
+ 432              		.loc 1 284 1 is_stmt 1 view -0
+ 433              		.cfi_startproc
+ 434              		@ args = 0, pretend = 0, frame = 0
+ 435              		@ frame_needed = 0, uses_anonymous_args = 0
+ 436              		@ link register save eliminated.
+ 285:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     switch( cid )
+ 437              		.loc 1 285 5 view .LVU124
+ 438 0000 0528     		cmp	r0, #5
+ 439 0002 06D0     		beq	.L47
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccSg685F.s 			page 14
+
+
+ 440 0004 07D3     		bcc	.L48
+ 441 0006 0838     		subs	r0, r0, #8
+ 442              	.LVL39:
+ 443              		.loc 1 285 5 is_stmt 0 view .LVU125
+ 444 0008 C0B2     		uxtb	r0, r0
+ 445 000a 0228     		cmp	r0, #2
+ 446 000c 05D9     		bls	.L49
+ 286:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     {
+ 287:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****         case MOTE_MAC_DL_CHANNEL_ANS:
+ 288:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****         case MOTE_MAC_RX_PARAM_SETUP_ANS:
+ 289:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****         case MOTE_MAC_RX_TIMING_SETUP_ANS:
+ 290:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****         case MOTE_MAC_TX_PARAM_SETUP_ANS:
+ 291:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****             return true;
+ 292:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****         default:
+ 293:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****             return false;
+ 447              		.loc 1 293 20 view .LVU126
+ 448 000e 0020     		movs	r0, #0
+ 449 0010 7047     		bx	lr
+ 450              	.LVL40:
+ 451              	.L47:
+ 285:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     switch( cid )
+ 452              		.loc 1 285 5 view .LVU127
+ 453 0012 0120     		movs	r0, #1
+ 454              	.LVL41:
+ 285:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     switch( cid )
+ 455              		.loc 1 285 5 view .LVU128
+ 456 0014 7047     		bx	lr
+ 457              	.LVL42:
+ 458              	.L48:
+ 459              		.loc 1 293 20 view .LVU129
+ 460 0016 0020     		movs	r0, #0
+ 461              	.LVL43:
+ 462              		.loc 1 293 20 view .LVU130
+ 463 0018 7047     		bx	lr
+ 464              	.L49:
+ 285:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     switch( cid )
+ 465              		.loc 1 285 5 view .LVU131
+ 466 001a 0120     		movs	r0, #1
+ 294:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     }
+ 295:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** }
+ 467              		.loc 1 295 1 view .LVU132
+ 468 001c 7047     		bx	lr
+ 469              		.cfi_endproc
+ 470              	.LFE111:
+ 472              		.section	.text.FreeMacCommandSlot,"ax",%progbits
+ 473              		.align	1
+ 474              		.syntax unified
+ 475              		.thumb
+ 476              		.thumb_func
+ 478              	FreeMacCommandSlot:
+ 479              	.LVL44:
+ 480              	.LFB106:
+ 137:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     if( slot == NULL )
+ 481              		.loc 1 137 1 is_stmt 1 view -0
+ 482              		.cfi_startproc
+ 483              		@ args = 0, pretend = 0, frame = 0
+ 484              		@ frame_needed = 0, uses_anonymous_args = 0
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccSg685F.s 			page 15
+
+
+ 138:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     {
+ 485              		.loc 1 138 5 view .LVU134
+ 138:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     {
+ 486              		.loc 1 138 7 is_stmt 0 view .LVU135
+ 487 0000 30B1     		cbz	r0, .L52
+ 137:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     if( slot == NULL )
+ 488              		.loc 1 137 1 view .LVU136
+ 489 0002 08B5     		push	{r3, lr}
+ 490              	.LCFI4:
+ 491              		.cfi_def_cfa_offset 8
+ 492              		.cfi_offset 3, -8
+ 493              		.cfi_offset 14, -4
+ 143:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** 
+ 494              		.loc 1 143 5 is_stmt 1 view .LVU137
+ 495 0004 1022     		movs	r2, #16
+ 496 0006 0021     		movs	r1, #0
+ 497 0008 FFF7FEFF 		bl	memset1
+ 498              	.LVL45:
+ 145:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** }
+ 499              		.loc 1 145 5 view .LVU138
+ 145:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** }
+ 500              		.loc 1 145 12 is_stmt 0 view .LVU139
+ 501 000c 0120     		movs	r0, #1
+ 146:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** 
+ 502              		.loc 1 146 1 view .LVU140
+ 503 000e 08BD     		pop	{r3, pc}
+ 504              	.LVL46:
+ 505              	.L52:
+ 506              	.LCFI5:
+ 507              		.cfi_def_cfa_offset 0
+ 508              		.cfi_restore 3
+ 509              		.cfi_restore 14
+ 140:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     }
+ 510              		.loc 1 140 16 view .LVU141
+ 511 0010 0020     		movs	r0, #0
+ 512              	.LVL47:
+ 146:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** 
+ 513              		.loc 1 146 1 view .LVU142
+ 514 0012 7047     		bx	lr
+ 515              		.cfi_endproc
+ 516              	.LFE106:
+ 518              		.section	.text.LoRaMacCommandsInit,"ax",%progbits
+ 519              		.align	1
+ 520              		.global	LoRaMacCommandsInit
+ 521              		.syntax unified
+ 522              		.thumb
+ 523              		.thumb_func
+ 525              	LoRaMacCommandsInit:
+ 526              	.LFB112:
+ 296:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** 
+ 297:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** LoRaMacCommandStatus_t LoRaMacCommandsInit( void )
+ 298:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** {
+ 527              		.loc 1 298 1 is_stmt 1 view -0
+ 528              		.cfi_startproc
+ 529              		@ args = 0, pretend = 0, frame = 0
+ 530              		@ frame_needed = 0, uses_anonymous_args = 0
+ 531 0000 10B5     		push	{r4, lr}
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccSg685F.s 			page 16
+
+
+ 532              	.LCFI6:
+ 533              		.cfi_def_cfa_offset 8
+ 534              		.cfi_offset 4, -8
+ 535              		.cfi_offset 14, -4
+ 299:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     // Initialize with default
+ 300:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     memset1( ( uint8_t* )&CommandsCtx, 0, sizeof( CommandsCtx ) );
+ 536              		.loc 1 300 5 view .LVU144
+ 537 0002 054C     		ldr	r4, .L59
+ 538 0004 FC22     		movs	r2, #252
+ 539 0006 0021     		movs	r1, #0
+ 540 0008 2046     		mov	r0, r4
+ 541 000a FFF7FEFF 		bl	memset1
+ 542              	.LVL48:
+ 301:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** 
+ 302:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     LinkedListInit( &CommandsCtx.MacCommandList );
+ 543              		.loc 1 302 5 view .LVU145
+ 544 000e 2046     		mov	r0, r4
+ 545 0010 FFF7FEFF 		bl	LinkedListInit
+ 546              	.LVL49:
+ 303:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** 
+ 304:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     return LORAMAC_COMMANDS_SUCCESS;
+ 547              		.loc 1 304 5 view .LVU146
+ 305:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** }
+ 548              		.loc 1 305 1 is_stmt 0 view .LVU147
+ 549 0014 0020     		movs	r0, #0
+ 550 0016 10BD     		pop	{r4, pc}
+ 551              	.L60:
+ 552              		.align	2
+ 553              	.L59:
+ 554 0018 00000000 		.word	.LANCHOR0
+ 555              		.cfi_endproc
+ 556              	.LFE112:
+ 558              		.section	.text.LoRaMacCommandsAddCmd,"ax",%progbits
+ 559              		.align	1
+ 560              		.global	LoRaMacCommandsAddCmd
+ 561              		.syntax unified
+ 562              		.thumb
+ 563              		.thumb_func
+ 565              	LoRaMacCommandsAddCmd:
+ 566              	.LVL50:
+ 567              	.LFB113:
+ 306:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** 
+ 307:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** LoRaMacCommandStatus_t LoRaMacCommandsAddCmd( uint8_t cid, uint8_t* payload, size_t payloadSize )
+ 308:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** {
+ 568              		.loc 1 308 1 is_stmt 1 view -0
+ 569              		.cfi_startproc
+ 570              		@ args = 0, pretend = 0, frame = 0
+ 571              		@ frame_needed = 0, uses_anonymous_args = 0
+ 309:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     if( payload == NULL )
+ 572              		.loc 1 309 5 view .LVU149
+ 573              		.loc 1 309 7 is_stmt 0 view .LVU150
+ 574 0000 01B3     		cbz	r1, .L63
+ 308:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     if( payload == NULL )
+ 575              		.loc 1 308 1 view .LVU151
+ 576 0002 F8B5     		push	{r3, r4, r5, r6, r7, lr}
+ 577              	.LCFI7:
+ 578              		.cfi_def_cfa_offset 24
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccSg685F.s 			page 17
+
+
+ 579              		.cfi_offset 3, -24
+ 580              		.cfi_offset 4, -20
+ 581              		.cfi_offset 5, -16
+ 582              		.cfi_offset 6, -12
+ 583              		.cfi_offset 7, -8
+ 584              		.cfi_offset 14, -4
+ 585 0004 0546     		mov	r5, r0
+ 586 0006 1446     		mov	r4, r2
+ 587 0008 0F46     		mov	r7, r1
+ 310:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     {
+ 311:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****         return LORAMAC_COMMANDS_ERROR_NPE;
+ 312:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     }
+ 313:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     MacCommand_t* newCmd;
+ 588              		.loc 1 313 5 is_stmt 1 view .LVU152
+ 314:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** 
+ 315:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     // Allocate a memory slot
+ 316:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     newCmd = MallocNewMacCommandSlot( );
+ 589              		.loc 1 316 5 view .LVU153
+ 590              		.loc 1 316 14 is_stmt 0 view .LVU154
+ 591 000a FFF7FEFF 		bl	MallocNewMacCommandSlot
+ 592              	.LVL51:
+ 317:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** 
+ 318:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     if( newCmd == NULL )
+ 593              		.loc 1 318 5 is_stmt 1 view .LVU155
+ 594              		.loc 1 318 7 is_stmt 0 view .LVU156
+ 595 000e 0646     		mov	r6, r0
+ 596 0010 D0B1     		cbz	r0, .L64
+ 319:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     {
+ 320:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****         return LORAMAC_COMMANDS_ERROR_MEMORY;
+ 321:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     }
+ 322:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** 
+ 323:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     // Add it to the list of Mac commands
+ 324:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     if( LinkedListAdd( &CommandsCtx.MacCommandList, newCmd ) == false )
+ 597              		.loc 1 324 5 is_stmt 1 view .LVU157
+ 598              		.loc 1 324 9 is_stmt 0 view .LVU158
+ 599 0012 0146     		mov	r1, r0
+ 600 0014 0E48     		ldr	r0, .L70
+ 601              	.LVL52:
+ 602              		.loc 1 324 9 view .LVU159
+ 603 0016 FFF7FEFF 		bl	LinkedListAdd
+ 604              	.LVL53:
+ 605              		.loc 1 324 7 view .LVU160
+ 606 001a B8B1     		cbz	r0, .L65
+ 325:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     {
+ 326:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****         return LORAMAC_COMMANDS_ERROR;
+ 327:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     }
+ 328:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** 
+ 329:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     // Set Values
+ 330:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     newCmd->CID = cid;
+ 607              		.loc 1 330 5 is_stmt 1 view .LVU161
+ 608              		.loc 1 330 17 is_stmt 0 view .LVU162
+ 609 001c 3571     		strb	r5, [r6, #4]
+ 331:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     newCmd->PayloadSize = payloadSize;
+ 610              		.loc 1 331 5 is_stmt 1 view .LVU163
+ 611              		.loc 1 331 25 is_stmt 0 view .LVU164
+ 612 001e B460     		str	r4, [r6, #8]
+ 332:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     memcpy1( ( uint8_t* )newCmd->Payload, payload, payloadSize );
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccSg685F.s 			page 18
+
+
+ 613              		.loc 1 332 5 is_stmt 1 view .LVU165
+ 614 0020 A2B2     		uxth	r2, r4
+ 615 0022 3946     		mov	r1, r7
+ 616 0024 701D     		adds	r0, r6, #5
+ 617 0026 FFF7FEFF 		bl	memcpy1
+ 618              	.LVL54:
+ 333:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     newCmd->IsSticky = IsSticky( cid );
+ 619              		.loc 1 333 5 view .LVU166
+ 620              		.loc 1 333 24 is_stmt 0 view .LVU167
+ 621 002a 2846     		mov	r0, r5
+ 622 002c FFF7FEFF 		bl	IsSticky
+ 623              	.LVL55:
+ 624              		.loc 1 333 22 view .LVU168
+ 625 0030 3073     		strb	r0, [r6, #12]
+ 334:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** 
+ 335:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     CommandsCtx.SerializedCmdsSize += ( CID_FIELD_SIZE + payloadSize );
+ 626              		.loc 1 335 5 is_stmt 1 view .LVU169
+ 627              		.loc 1 335 36 is_stmt 0 view .LVU170
+ 628 0032 074B     		ldr	r3, .L70
+ 629 0034 D3F8F820 		ldr	r2, [r3, #248]
+ 630 0038 1444     		add	r4, r4, r2
+ 631              	.LVL56:
+ 632              		.loc 1 335 36 view .LVU171
+ 633 003a 0134     		adds	r4, r4, #1
+ 634 003c C3F8F840 		str	r4, [r3, #248]
+ 336:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** 
+ 337:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     return LORAMAC_COMMANDS_SUCCESS;
+ 635              		.loc 1 337 5 is_stmt 1 view .LVU172
+ 636              		.loc 1 337 12 is_stmt 0 view .LVU173
+ 637 0040 0020     		movs	r0, #0
+ 638              	.L62:
+ 338:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** }
+ 639              		.loc 1 338 1 view .LVU174
+ 640 0042 F8BD     		pop	{r3, r4, r5, r6, r7, pc}
+ 641              	.LVL57:
+ 642              	.L63:
+ 643              	.LCFI8:
+ 644              		.cfi_def_cfa_offset 0
+ 645              		.cfi_restore 3
+ 646              		.cfi_restore 4
+ 647              		.cfi_restore 5
+ 648              		.cfi_restore 6
+ 649              		.cfi_restore 7
+ 650              		.cfi_restore 14
+ 311:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     }
+ 651              		.loc 1 311 16 view .LVU175
+ 652 0044 0120     		movs	r0, #1
+ 653              	.LVL58:
+ 654              		.loc 1 338 1 view .LVU176
+ 655 0046 7047     		bx	lr
+ 656              	.LVL59:
+ 657              	.L64:
+ 658              	.LCFI9:
+ 659              		.cfi_def_cfa_offset 24
+ 660              		.cfi_offset 3, -24
+ 661              		.cfi_offset 4, -20
+ 662              		.cfi_offset 5, -16
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccSg685F.s 			page 19
+
+
+ 663              		.cfi_offset 6, -12
+ 664              		.cfi_offset 7, -8
+ 665              		.cfi_offset 14, -4
+ 320:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     }
+ 666              		.loc 1 320 16 view .LVU177
+ 667 0048 0220     		movs	r0, #2
+ 668              	.LVL60:
+ 320:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     }
+ 669              		.loc 1 320 16 view .LVU178
+ 670 004a FAE7     		b	.L62
+ 671              	.L65:
+ 326:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     }
+ 672              		.loc 1 326 16 view .LVU179
+ 673 004c 0520     		movs	r0, #5
+ 674 004e F8E7     		b	.L62
+ 675              	.L71:
+ 676              		.align	2
+ 677              	.L70:
+ 678 0050 00000000 		.word	.LANCHOR0
+ 679              		.cfi_endproc
+ 680              	.LFE113:
+ 682              		.section	.text.LoRaMacCommandsRemoveCmd,"ax",%progbits
+ 683              		.align	1
+ 684              		.global	LoRaMacCommandsRemoveCmd
+ 685              		.syntax unified
+ 686              		.thumb
+ 687              		.thumb_func
+ 689              	LoRaMacCommandsRemoveCmd:
+ 690              	.LVL61:
+ 691              	.LFB114:
+ 339:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** 
+ 340:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** LoRaMacCommandStatus_t LoRaMacCommandsRemoveCmd( MacCommand_t* macCmd )
+ 341:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** {
+ 692              		.loc 1 341 1 is_stmt 1 view -0
+ 693              		.cfi_startproc
+ 694              		@ args = 0, pretend = 0, frame = 0
+ 695              		@ frame_needed = 0, uses_anonymous_args = 0
+ 342:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     if( macCmd == NULL )
+ 696              		.loc 1 342 5 view .LVU181
+ 697              		.loc 1 342 7 is_stmt 0 view .LVU182
+ 698 0000 A0B1     		cbz	r0, .L74
+ 341:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     if( macCmd == NULL )
+ 699              		.loc 1 341 1 view .LVU183
+ 700 0002 10B5     		push	{r4, lr}
+ 701              	.LCFI10:
+ 702              		.cfi_def_cfa_offset 8
+ 703              		.cfi_offset 4, -8
+ 704              		.cfi_offset 14, -4
+ 705 0004 0446     		mov	r4, r0
+ 343:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     {
+ 344:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****         return LORAMAC_COMMANDS_ERROR_NPE;
+ 345:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     }
+ 346:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** 
+ 347:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     // Remove the Mac command element from MacCommandList
+ 348:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     if( LinkedListRemove( &CommandsCtx.MacCommandList, macCmd ) == false )
+ 706              		.loc 1 348 5 is_stmt 1 view .LVU184
+ 707              		.loc 1 348 9 is_stmt 0 view .LVU185
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccSg685F.s 			page 20
+
+
+ 708 0006 0146     		mov	r1, r0
+ 709 0008 0B48     		ldr	r0, .L81
+ 710              	.LVL62:
+ 711              		.loc 1 348 9 view .LVU186
+ 712 000a FFF7FEFF 		bl	LinkedListRemove
+ 713              	.LVL63:
+ 714              		.loc 1 348 7 view .LVU187
+ 715 000e 78B1     		cbz	r0, .L75
+ 349:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     {
+ 350:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****         return LORAMAC_COMMANDS_ERROR_CMD_NOT_FOUND;
+ 351:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     }
+ 352:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** 
+ 353:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     CommandsCtx.SerializedCmdsSize -= ( CID_FIELD_SIZE + macCmd->PayloadSize );
+ 716              		.loc 1 353 5 is_stmt 1 view .LVU188
+ 717              		.loc 1 353 64 is_stmt 0 view .LVU189
+ 718 0010 A168     		ldr	r1, [r4, #8]
+ 719              		.loc 1 353 36 view .LVU190
+ 720 0012 094A     		ldr	r2, .L81
+ 721 0014 D2F8F830 		ldr	r3, [r2, #248]
+ 722 0018 5B1A     		subs	r3, r3, r1
+ 723 001a 013B     		subs	r3, r3, #1
+ 724 001c C2F8F830 		str	r3, [r2, #248]
+ 354:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** 
+ 355:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     // Free the MacCommand Slot
+ 356:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     if( FreeMacCommandSlot( macCmd ) == false )
+ 725              		.loc 1 356 5 is_stmt 1 view .LVU191
+ 726              		.loc 1 356 9 is_stmt 0 view .LVU192
+ 727 0020 2046     		mov	r0, r4
+ 728 0022 FFF7FEFF 		bl	FreeMacCommandSlot
+ 729              	.LVL64:
+ 730              		.loc 1 356 7 view .LVU193
+ 731 0026 28B1     		cbz	r0, .L76
+ 357:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     {
+ 358:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****         return LORAMAC_COMMANDS_ERROR;
+ 359:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     }
+ 360:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** 
+ 361:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     return LORAMAC_COMMANDS_SUCCESS;
+ 732              		.loc 1 361 12 view .LVU194
+ 733 0028 0020     		movs	r0, #0
+ 734              	.L73:
+ 362:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** }
+ 735              		.loc 1 362 1 view .LVU195
+ 736 002a 10BD     		pop	{r4, pc}
+ 737              	.LVL65:
+ 738              	.L74:
+ 739              	.LCFI11:
+ 740              		.cfi_def_cfa_offset 0
+ 741              		.cfi_restore 4
+ 742              		.cfi_restore 14
+ 344:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     }
+ 743              		.loc 1 344 16 view .LVU196
+ 744 002c 0120     		movs	r0, #1
+ 745              	.LVL66:
+ 746              		.loc 1 362 1 view .LVU197
+ 747 002e 7047     		bx	lr
+ 748              	.LVL67:
+ 749              	.L75:
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccSg685F.s 			page 21
+
+
+ 750              	.LCFI12:
+ 751              		.cfi_def_cfa_offset 8
+ 752              		.cfi_offset 4, -8
+ 753              		.cfi_offset 14, -4
+ 350:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     }
+ 754              		.loc 1 350 16 view .LVU198
+ 755 0030 0320     		movs	r0, #3
+ 756 0032 FAE7     		b	.L73
+ 757              	.L76:
+ 358:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     }
+ 758              		.loc 1 358 16 view .LVU199
+ 759 0034 0520     		movs	r0, #5
+ 760 0036 F8E7     		b	.L73
+ 761              	.L82:
+ 762              		.align	2
+ 763              	.L81:
+ 764 0038 00000000 		.word	.LANCHOR0
+ 765              		.cfi_endproc
+ 766              	.LFE114:
+ 768              		.section	.text.LoRaMacCommandsGetCmd,"ax",%progbits
+ 769              		.align	1
+ 770              		.global	LoRaMacCommandsGetCmd
+ 771              		.syntax unified
+ 772              		.thumb
+ 773              		.thumb_func
+ 775              	LoRaMacCommandsGetCmd:
+ 776              	.LVL68:
+ 777              	.LFB115:
+ 363:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** 
+ 364:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** LoRaMacCommandStatus_t LoRaMacCommandsGetCmd( uint8_t cid, MacCommand_t** macCmd )
+ 365:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** {
+ 778              		.loc 1 365 1 is_stmt 1 view -0
+ 779              		.cfi_startproc
+ 780              		@ args = 0, pretend = 0, frame = 0
+ 781              		@ frame_needed = 0, uses_anonymous_args = 0
+ 782              		@ link register save eliminated.
+ 366:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     MacCommand_t* curElement;
+ 783              		.loc 1 366 5 view .LVU201
+ 367:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** 
+ 368:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     // Start at the head of the list
+ 369:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     curElement = CommandsCtx.MacCommandList.First;
+ 784              		.loc 1 369 5 view .LVU202
+ 785              		.loc 1 369 16 is_stmt 0 view .LVU203
+ 786 0000 064B     		ldr	r3, .L89
+ 787 0002 1B68     		ldr	r3, [r3]
+ 788              	.LVL69:
+ 370:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** 
+ 371:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     // Loop through all elements until we find the element with the given CID
+ 372:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     while( ( curElement != NULL ) && ( curElement->CID != cid ) )
+ 789              		.loc 1 372 5 is_stmt 1 view .LVU204
+ 790              		.loc 1 372 10 is_stmt 0 view .LVU205
+ 791 0004 00E0     		b	.L84
+ 792              	.L86:
+ 373:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     {
+ 374:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****         curElement = curElement->Next;
+ 793              		.loc 1 374 9 is_stmt 1 view .LVU206
+ 794              		.loc 1 374 20 is_stmt 0 view .LVU207
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccSg685F.s 			page 22
+
+
+ 795 0006 1B68     		ldr	r3, [r3]
+ 796              	.LVL70:
+ 797              	.L84:
+ 372:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     {
+ 798              		.loc 1 372 10 is_stmt 1 view .LVU208
+ 799 0008 13B1     		cbz	r3, .L85
+ 372:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     {
+ 800              		.loc 1 372 50 is_stmt 0 discriminator 1 view .LVU209
+ 801 000a 1A79     		ldrb	r2, [r3, #4]	@ zero_extendqisi2
+ 372:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     {
+ 802              		.loc 1 372 35 discriminator 1 view .LVU210
+ 803 000c 8242     		cmp	r2, r0
+ 804 000e FAD1     		bne	.L86
+ 805              	.L85:
+ 375:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     }
+ 376:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** 
+ 377:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     // Update the pointer anyway
+ 378:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     *macCmd = curElement;
+ 806              		.loc 1 378 5 is_stmt 1 view .LVU211
+ 807              		.loc 1 378 13 is_stmt 0 view .LVU212
+ 808 0010 0B60     		str	r3, [r1]
+ 379:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** 
+ 380:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     // Handle error in case if we reached the end without finding it.
+ 381:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     if( curElement == NULL )
+ 809              		.loc 1 381 5 is_stmt 1 view .LVU213
+ 810              		.loc 1 381 7 is_stmt 0 view .LVU214
+ 811 0012 0BB1     		cbz	r3, .L88
+ 382:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     {
+ 383:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****         return LORAMAC_COMMANDS_ERROR_CMD_NOT_FOUND;
+ 384:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     }
+ 385:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     return LORAMAC_COMMANDS_SUCCESS;
+ 812              		.loc 1 385 12 view .LVU215
+ 813 0014 0020     		movs	r0, #0
+ 814              	.LVL71:
+ 815              		.loc 1 385 12 view .LVU216
+ 816 0016 7047     		bx	lr
+ 817              	.LVL72:
+ 818              	.L88:
+ 383:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     }
+ 819              		.loc 1 383 16 view .LVU217
+ 820 0018 0320     		movs	r0, #3
+ 821              	.LVL73:
+ 386:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** }
+ 822              		.loc 1 386 1 view .LVU218
+ 823 001a 7047     		bx	lr
+ 824              	.L90:
+ 825              		.align	2
+ 826              	.L89:
+ 827 001c 00000000 		.word	.LANCHOR0
+ 828              		.cfi_endproc
+ 829              	.LFE115:
+ 831              		.section	.text.LoRaMacCommandsRemoveNoneStickyCmds,"ax",%progbits
+ 832              		.align	1
+ 833              		.global	LoRaMacCommandsRemoveNoneStickyCmds
+ 834              		.syntax unified
+ 835              		.thumb
+ 836              		.thumb_func
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccSg685F.s 			page 23
+
+
+ 838              	LoRaMacCommandsRemoveNoneStickyCmds:
+ 839              	.LFB116:
+ 387:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** 
+ 388:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** LoRaMacCommandStatus_t LoRaMacCommandsRemoveNoneStickyCmds( void )
+ 389:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** {
+ 840              		.loc 1 389 1 is_stmt 1 view -0
+ 841              		.cfi_startproc
+ 842              		@ args = 0, pretend = 0, frame = 0
+ 843              		@ frame_needed = 0, uses_anonymous_args = 0
+ 390:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     MacCommand_t* curElement;
+ 844              		.loc 1 390 5 view .LVU220
+ 391:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     MacCommand_t* nexElement;
+ 845              		.loc 1 391 5 view .LVU221
+ 392:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** 
+ 393:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     // Start at the head of the list
+ 394:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     curElement = CommandsCtx.MacCommandList.First;
+ 846              		.loc 1 394 5 view .LVU222
+ 847              		.loc 1 394 16 is_stmt 0 view .LVU223
+ 848 0000 0A4B     		ldr	r3, .L105
+ 849 0002 1868     		ldr	r0, [r3]
+ 850              	.LVL74:
+ 395:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** 
+ 396:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     // Loop through all elements
+ 397:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     while( curElement != NULL )
+ 851              		.loc 1 397 5 is_stmt 1 view .LVU224
+ 852              	.L97:
+ 853              		.loc 1 397 10 view .LVU225
+ 854 0004 20B1     		cbz	r0, .L103
+ 398:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     {
+ 399:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****         if( curElement->IsSticky == false )
+ 855              		.loc 1 399 9 view .LVU226
+ 856              		.loc 1 399 23 is_stmt 0 view .LVU227
+ 857 0006 037B     		ldrb	r3, [r0, #12]	@ zero_extendqisi2
+ 858              		.loc 1 399 11 view .LVU228
+ 859 0008 1BB1     		cbz	r3, .L102
+ 400:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****         {
+ 401:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****             nexElement = curElement->Next;
+ 402:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****             LoRaMacCommandsRemoveCmd( curElement );
+ 403:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****             curElement = nexElement;
+ 404:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****         }
+ 405:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****         else
+ 406:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****         {
+ 407:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****             curElement = curElement->Next;
+ 860              		.loc 1 407 13 is_stmt 1 view .LVU229
+ 861              		.loc 1 407 24 is_stmt 0 view .LVU230
+ 862 000a 0068     		ldr	r0, [r0]
+ 863              	.LVL75:
+ 864              		.loc 1 407 24 view .LVU231
+ 865 000c FAE7     		b	.L97
+ 866              	.LVL76:
+ 867              	.L104:
+ 868              	.LCFI13:
+ 869              		.cfi_def_cfa_offset 8
+ 870              		.cfi_offset 4, -8
+ 871              		.cfi_offset 14, -4
+ 408:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****         }
+ 409:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     }
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccSg685F.s 			page 24
+
+
+ 410:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** 
+ 411:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     return LORAMAC_COMMANDS_SUCCESS;
+ 872              		.loc 1 411 5 is_stmt 1 view .LVU232
+ 412:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** }
+ 873              		.loc 1 412 1 is_stmt 0 view .LVU233
+ 874 000e 10BD     		pop	{r4, pc}
+ 875              	.LVL77:
+ 876              	.L103:
+ 877              	.LCFI14:
+ 878              		.cfi_def_cfa_offset 0
+ 879              		.cfi_restore 4
+ 880              		.cfi_restore 14
+ 881              		.loc 1 412 1 view .LVU234
+ 882 0010 7047     		bx	lr
+ 883              	.L102:
+ 389:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     MacCommand_t* curElement;
+ 884              		.loc 1 389 1 view .LVU235
+ 885 0012 10B5     		push	{r4, lr}
+ 886              	.LCFI15:
+ 887              		.cfi_def_cfa_offset 8
+ 888              		.cfi_offset 4, -8
+ 889              		.cfi_offset 14, -4
+ 890              	.L98:
+ 401:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****             LoRaMacCommandsRemoveCmd( curElement );
+ 891              		.loc 1 401 13 is_stmt 1 view .LVU236
+ 401:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****             LoRaMacCommandsRemoveCmd( curElement );
+ 892              		.loc 1 401 24 is_stmt 0 view .LVU237
+ 893 0014 0468     		ldr	r4, [r0]
+ 894              	.LVL78:
+ 402:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****             curElement = nexElement;
+ 895              		.loc 1 402 13 is_stmt 1 view .LVU238
+ 896 0016 FFF7FEFF 		bl	LoRaMacCommandsRemoveCmd
+ 897              	.LVL79:
+ 403:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****         }
+ 898              		.loc 1 403 13 view .LVU239
+ 403:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****         }
+ 899              		.loc 1 403 24 is_stmt 0 view .LVU240
+ 900 001a 2046     		mov	r0, r4
+ 901              	.LVL80:
+ 902              	.L92:
+ 397:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     {
+ 903              		.loc 1 397 10 is_stmt 1 view .LVU241
+ 904 001c 0028     		cmp	r0, #0
+ 905 001e F6D0     		beq	.L104
+ 399:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****         {
+ 906              		.loc 1 399 9 view .LVU242
+ 399:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****         {
+ 907              		.loc 1 399 23 is_stmt 0 view .LVU243
+ 908 0020 037B     		ldrb	r3, [r0, #12]	@ zero_extendqisi2
+ 399:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****         {
+ 909              		.loc 1 399 11 view .LVU244
+ 910 0022 002B     		cmp	r3, #0
+ 911 0024 F6D0     		beq	.L98
+ 407:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****         }
+ 912              		.loc 1 407 13 is_stmt 1 view .LVU245
+ 407:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****         }
+ 913              		.loc 1 407 24 is_stmt 0 view .LVU246
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccSg685F.s 			page 25
+
+
+ 914 0026 0068     		ldr	r0, [r0]
+ 915              	.LVL81:
+ 407:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****         }
+ 916              		.loc 1 407 24 view .LVU247
+ 917 0028 F8E7     		b	.L92
+ 918              	.L106:
+ 919 002a 00BF     		.align	2
+ 920              	.L105:
+ 921 002c 00000000 		.word	.LANCHOR0
+ 922              		.cfi_endproc
+ 923              	.LFE116:
+ 925              		.section	.text.LoRaMacCommandsRemoveStickyAnsCmds,"ax",%progbits
+ 926              		.align	1
+ 927              		.global	LoRaMacCommandsRemoveStickyAnsCmds
+ 928              		.syntax unified
+ 929              		.thumb
+ 930              		.thumb_func
+ 932              	LoRaMacCommandsRemoveStickyAnsCmds:
+ 933              	.LFB117:
+ 413:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** 
+ 414:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** LoRaMacCommandStatus_t LoRaMacCommandsRemoveStickyAnsCmds( void )
+ 415:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** {
+ 934              		.loc 1 415 1 is_stmt 1 view -0
+ 935              		.cfi_startproc
+ 936              		@ args = 0, pretend = 0, frame = 0
+ 937              		@ frame_needed = 0, uses_anonymous_args = 0
+ 938 0000 38B5     		push	{r3, r4, r5, lr}
+ 939              	.LCFI16:
+ 940              		.cfi_def_cfa_offset 16
+ 941              		.cfi_offset 3, -16
+ 942              		.cfi_offset 4, -12
+ 943              		.cfi_offset 5, -8
+ 944              		.cfi_offset 14, -4
+ 416:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     MacCommand_t* curElement;
+ 945              		.loc 1 416 5 view .LVU249
+ 417:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     MacCommand_t* nexElement;
+ 946              		.loc 1 417 5 view .LVU250
+ 418:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** 
+ 419:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     // Start at the head of the list
+ 420:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     curElement = CommandsCtx.MacCommandList.First;
+ 947              		.loc 1 420 5 view .LVU251
+ 948              		.loc 1 420 16 is_stmt 0 view .LVU252
+ 949 0002 084B     		ldr	r3, .L113
+ 950 0004 1C68     		ldr	r4, [r3]
+ 951              	.LVL82:
+ 421:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** 
+ 422:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     // Loop through all elements
+ 423:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     while( curElement != NULL )
+ 952              		.loc 1 423 5 is_stmt 1 view .LVU253
+ 953              		.loc 1 423 10 is_stmt 0 view .LVU254
+ 954 0006 00E0     		b	.L108
+ 955              	.LVL83:
+ 956              	.L109:
+ 415:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     MacCommand_t* curElement;
+ 957              		.loc 1 415 1 view .LVU255
+ 958 0008 2C46     		mov	r4, r5
+ 959              	.LVL84:
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccSg685F.s 			page 26
+
+
+ 960              	.L108:
+ 961              		.loc 1 423 10 is_stmt 1 view .LVU256
+ 962 000a 4CB1     		cbz	r4, .L112
+ 424:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     {
+ 425:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****         nexElement = curElement->Next;
+ 963              		.loc 1 425 9 view .LVU257
+ 964              		.loc 1 425 20 is_stmt 0 view .LVU258
+ 965 000c 2568     		ldr	r5, [r4]
+ 966              	.LVL85:
+ 426:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****         if( IsSticky( curElement->CID ) == true )
+ 967              		.loc 1 426 9 is_stmt 1 view .LVU259
+ 968              		.loc 1 426 13 is_stmt 0 view .LVU260
+ 969 000e 2079     		ldrb	r0, [r4, #4]	@ zero_extendqisi2
+ 970 0010 FFF7FEFF 		bl	IsSticky
+ 971              	.LVL86:
+ 972              		.loc 1 426 11 view .LVU261
+ 973 0014 0028     		cmp	r0, #0
+ 974 0016 F7D0     		beq	.L109
+ 427:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****         {
+ 428:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****             LoRaMacCommandsRemoveCmd( curElement );
+ 975              		.loc 1 428 13 is_stmt 1 view .LVU262
+ 976 0018 2046     		mov	r0, r4
+ 977 001a FFF7FEFF 		bl	LoRaMacCommandsRemoveCmd
+ 978              	.LVL87:
+ 979 001e F3E7     		b	.L109
+ 980              	.LVL88:
+ 981              	.L112:
+ 429:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****         }
+ 430:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****         curElement = nexElement;
+ 431:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     }
+ 432:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** 
+ 433:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     return LORAMAC_COMMANDS_SUCCESS;
+ 982              		.loc 1 433 5 view .LVU263
+ 434:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** }
+ 983              		.loc 1 434 1 is_stmt 0 view .LVU264
+ 984 0020 0020     		movs	r0, #0
+ 985 0022 38BD     		pop	{r3, r4, r5, pc}
+ 986              	.LVL89:
+ 987              	.L114:
+ 988              		.loc 1 434 1 view .LVU265
+ 989              		.align	2
+ 990              	.L113:
+ 991 0024 00000000 		.word	.LANCHOR0
+ 992              		.cfi_endproc
+ 993              	.LFE117:
+ 995              		.section	.text.LoRaMacCommandsGetSizeSerializedCmds,"ax",%progbits
+ 996              		.align	1
+ 997              		.global	LoRaMacCommandsGetSizeSerializedCmds
+ 998              		.syntax unified
+ 999              		.thumb
+ 1000              		.thumb_func
+ 1002              	LoRaMacCommandsGetSizeSerializedCmds:
+ 1003              	.LVL90:
+ 1004              	.LFB118:
+ 435:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** 
+ 436:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** LoRaMacCommandStatus_t LoRaMacCommandsGetSizeSerializedCmds( size_t* size )
+ 437:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** {
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccSg685F.s 			page 27
+
+
+ 1005              		.loc 1 437 1 is_stmt 1 view -0
+ 1006              		.cfi_startproc
+ 1007              		@ args = 0, pretend = 0, frame = 0
+ 1008              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1009              		@ link register save eliminated.
+ 438:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     if( size == NULL )
+ 1010              		.loc 1 438 5 view .LVU267
+ 1011              		.loc 1 438 7 is_stmt 0 view .LVU268
+ 1012 0000 28B1     		cbz	r0, .L117
+ 439:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     {
+ 440:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****         return LORAMAC_COMMANDS_ERROR_NPE;
+ 441:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     }
+ 442:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     *size = CommandsCtx.SerializedCmdsSize;
+ 1013              		.loc 1 442 5 is_stmt 1 view .LVU269
+ 1014              		.loc 1 442 24 is_stmt 0 view .LVU270
+ 1015 0002 044A     		ldr	r2, .L118
+ 1016 0004 D2F8F820 		ldr	r2, [r2, #248]
+ 1017              		.loc 1 442 11 view .LVU271
+ 1018 0008 0260     		str	r2, [r0]
+ 443:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     return LORAMAC_COMMANDS_SUCCESS;
+ 1019              		.loc 1 443 5 is_stmt 1 view .LVU272
+ 1020              		.loc 1 443 12 is_stmt 0 view .LVU273
+ 1021 000a 0020     		movs	r0, #0
+ 1022              	.LVL91:
+ 1023              		.loc 1 443 12 view .LVU274
+ 1024 000c 7047     		bx	lr
+ 1025              	.LVL92:
+ 1026              	.L117:
+ 440:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     }
+ 1027              		.loc 1 440 16 view .LVU275
+ 1028 000e 0120     		movs	r0, #1
+ 1029              	.LVL93:
+ 444:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** }
+ 1030              		.loc 1 444 1 view .LVU276
+ 1031 0010 7047     		bx	lr
+ 1032              	.L119:
+ 1033 0012 00BF     		.align	2
+ 1034              	.L118:
+ 1035 0014 00000000 		.word	.LANCHOR0
+ 1036              		.cfi_endproc
+ 1037              	.LFE118:
+ 1039              		.section	.text.LoRaMacCommandsSerializeCmds,"ax",%progbits
+ 1040              		.align	1
+ 1041              		.global	LoRaMacCommandsSerializeCmds
+ 1042              		.syntax unified
+ 1043              		.thumb
+ 1044              		.thumb_func
+ 1046              	LoRaMacCommandsSerializeCmds:
+ 1047              	.LVL94:
+ 1048              	.LFB119:
+ 445:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** 
+ 446:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** LoRaMacCommandStatus_t LoRaMacCommandsSerializeCmds( size_t availableSize, size_t* effectiveSize, u
+ 447:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** {
+ 1049              		.loc 1 447 1 is_stmt 1 view -0
+ 1050              		.cfi_startproc
+ 1051              		@ args = 0, pretend = 0, frame = 0
+ 1052              		@ frame_needed = 0, uses_anonymous_args = 0
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccSg685F.s 			page 28
+
+
+ 1053              		.loc 1 447 1 is_stmt 0 view .LVU278
+ 1054 0000 2DE9F041 		push	{r4, r5, r6, r7, r8, lr}
+ 1055              	.LCFI17:
+ 1056              		.cfi_def_cfa_offset 24
+ 1057              		.cfi_offset 4, -24
+ 1058              		.cfi_offset 5, -20
+ 1059              		.cfi_offset 6, -16
+ 1060              		.cfi_offset 7, -12
+ 1061              		.cfi_offset 8, -8
+ 1062              		.cfi_offset 14, -4
+ 448:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     MacCommand_t* curElement = CommandsCtx.MacCommandList.First;
+ 1063              		.loc 1 448 5 is_stmt 1 view .LVU279
+ 1064              		.loc 1 448 19 is_stmt 0 view .LVU280
+ 1065 0004 164B     		ldr	r3, .L131
+ 1066 0006 1C68     		ldr	r4, [r3]
+ 1067              	.LVL95:
+ 449:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     MacCommand_t* nextElement;
+ 1068              		.loc 1 449 5 is_stmt 1 view .LVU281
+ 450:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     uint8_t itr = 0;
+ 1069              		.loc 1 450 5 view .LVU282
+ 451:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** 
+ 452:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     if( ( buffer == NULL ) || ( effectiveSize == NULL ) )
+ 1070              		.loc 1 452 5 view .LVU283
+ 1071              		.loc 1 452 7 is_stmt 0 view .LVU284
+ 1072 0008 2AB3     		cbz	r2, .L127
+ 1073 000a 0746     		mov	r7, r0
+ 1074 000c 8846     		mov	r8, r1
+ 1075 000e 1646     		mov	r6, r2
+ 1076              		.loc 1 452 28 discriminator 1 view .LVU285
+ 1077 0010 19B3     		cbz	r1, .L128
+ 450:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     uint8_t itr = 0;
+ 1078              		.loc 1 450 13 view .LVU286
+ 1079 0012 0021     		movs	r1, #0
+ 1080              	.LVL96:
+ 1081              	.L122:
+ 453:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     {
+ 454:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****         return LORAMAC_COMMANDS_ERROR_NPE;
+ 455:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     }
+ 456:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** 
+ 457:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     // Loop through all elements which fits into the buffer
+ 458:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     while( curElement != NULL )
+ 1082              		.loc 1 458 10 is_stmt 1 view .LVU287
+ 1083 0014 94B1     		cbz	r4, .L125
+ 459:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     {
+ 460:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****         // If the next MAC command still fits into the buffer, add it.
+ 461:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****         if( ( availableSize - itr ) >= ( CID_FIELD_SIZE + curElement->PayloadSize ) )
+ 1084              		.loc 1 461 9 view .LVU288
+ 1085              		.loc 1 461 29 is_stmt 0 view .LVU289
+ 1086 0016 7A1A     		subs	r2, r7, r1
+ 1087              		.loc 1 461 69 view .LVU290
+ 1088 0018 A368     		ldr	r3, [r4, #8]
+ 1089              		.loc 1 461 57 view .LVU291
+ 1090 001a 0133     		adds	r3, r3, #1
+ 1091              		.loc 1 461 11 view .LVU292
+ 1092 001c 9A42     		cmp	r2, r3
+ 1093 001e 0DD3     		bcc	.L125
+ 462:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****         {
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccSg685F.s 			page 29
+
+
+ 463:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****             buffer[itr++] = curElement->CID;
+ 1094              		.loc 1 463 13 is_stmt 1 view .LVU293
+ 1095              		.loc 1 463 23 is_stmt 0 view .LVU294
+ 1096 0020 4D1C     		adds	r5, r1, #1
+ 1097 0022 EDB2     		uxtb	r5, r5
+ 1098              	.LVL97:
+ 1099              		.loc 1 463 39 view .LVU295
+ 1100 0024 2379     		ldrb	r3, [r4, #4]	@ zero_extendqisi2
+ 1101              		.loc 1 463 27 view .LVU296
+ 1102 0026 7354     		strb	r3, [r6, r1]
+ 464:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****             memcpy1( &buffer[itr], curElement->Payload, curElement->PayloadSize );
+ 1103              		.loc 1 464 13 is_stmt 1 view .LVU297
+ 1104 0028 2289     		ldrh	r2, [r4, #8]
+ 1105 002a 611D     		adds	r1, r4, #5
+ 1106 002c 7019     		adds	r0, r6, r5
+ 1107 002e FFF7FEFF 		bl	memcpy1
+ 1108              	.LVL98:
+ 465:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****             itr += curElement->PayloadSize;
+ 1109              		.loc 1 465 13 view .LVU298
+ 1110              		.loc 1 465 30 is_stmt 0 view .LVU299
+ 1111 0032 A368     		ldr	r3, [r4, #8]
+ 1112              		.loc 1 465 17 view .LVU300
+ 1113 0034 1D44     		add	r5, r5, r3
+ 1114              	.LVL99:
+ 1115              		.loc 1 465 17 view .LVU301
+ 1116 0036 E9B2     		uxtb	r1, r5
+ 1117              	.LVL100:
+ 466:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****         }
+ 467:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****         else
+ 468:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****         {
+ 469:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****             break;
+ 470:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****         }
+ 471:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****         curElement = curElement->Next;
+ 1118              		.loc 1 471 9 is_stmt 1 view .LVU302
+ 1119              		.loc 1 471 20 is_stmt 0 view .LVU303
+ 1120 0038 2468     		ldr	r4, [r4]
+ 1121              	.LVL101:
+ 1122              		.loc 1 471 20 view .LVU304
+ 1123 003a EBE7     		b	.L122
+ 1124              	.LVL102:
+ 1125              	.L125:
+ 472:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     }
+ 473:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** 
+ 474:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     // Remove all commands which do not fit into the buffer
+ 475:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     while( curElement != NULL )
+ 1126              		.loc 1 475 10 is_stmt 1 view .LVU305
+ 1127 003c 2CB1     		cbz	r4, .L130
+ 476:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     {
+ 477:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****         // Store the next element before removing the current one
+ 478:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****         nextElement = curElement->Next;
+ 1128              		.loc 1 478 9 view .LVU306
+ 1129              		.loc 1 478 21 is_stmt 0 view .LVU307
+ 1130 003e 2568     		ldr	r5, [r4]
+ 1131              	.LVL103:
+ 479:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****         LoRaMacCommandsRemoveCmd( curElement );
+ 1132              		.loc 1 479 9 is_stmt 1 view .LVU308
+ 1133 0040 2046     		mov	r0, r4
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccSg685F.s 			page 30
+
+
+ 1134 0042 FFF7FEFF 		bl	LoRaMacCommandsRemoveCmd
+ 1135              	.LVL104:
+ 480:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****         curElement = nextElement;
+ 1136              		.loc 1 480 9 view .LVU309
+ 1137              		.loc 1 480 20 is_stmt 0 view .LVU310
+ 1138 0046 2C46     		mov	r4, r5
+ 1139 0048 F8E7     		b	.L125
+ 1140              	.LVL105:
+ 1141              	.L130:
+ 481:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     }
+ 482:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** 
+ 483:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     // Fetch the effective size of the mac commands
+ 484:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     LoRaMacCommandsGetSizeSerializedCmds( effectiveSize );
+ 1142              		.loc 1 484 5 is_stmt 1 view .LVU311
+ 1143 004a 4046     		mov	r0, r8
+ 1144 004c FFF7FEFF 		bl	LoRaMacCommandsGetSizeSerializedCmds
+ 1145              	.LVL106:
+ 485:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** 
+ 486:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     return LORAMAC_COMMANDS_SUCCESS;
+ 1146              		.loc 1 486 5 view .LVU312
+ 1147              		.loc 1 486 12 is_stmt 0 view .LVU313
+ 1148 0050 0020     		movs	r0, #0
+ 1149              	.LVL107:
+ 1150              	.L121:
+ 487:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** }
+ 1151              		.loc 1 487 1 view .LVU314
+ 1152 0052 BDE8F081 		pop	{r4, r5, r6, r7, r8, pc}
+ 1153              	.LVL108:
+ 1154              	.L127:
+ 454:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     }
+ 1155              		.loc 1 454 16 view .LVU315
+ 1156 0056 0120     		movs	r0, #1
+ 1157              	.LVL109:
+ 454:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     }
+ 1158              		.loc 1 454 16 view .LVU316
+ 1159 0058 FBE7     		b	.L121
+ 1160              	.LVL110:
+ 1161              	.L128:
+ 454:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     }
+ 1162              		.loc 1 454 16 view .LVU317
+ 1163 005a 0120     		movs	r0, #1
+ 1164              	.LVL111:
+ 454:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     }
+ 1165              		.loc 1 454 16 view .LVU318
+ 1166 005c F9E7     		b	.L121
+ 1167              	.L132:
+ 1168 005e 00BF     		.align	2
+ 1169              	.L131:
+ 1170 0060 00000000 		.word	.LANCHOR0
+ 1171              		.cfi_endproc
+ 1172              	.LFE119:
+ 1174              		.section	.text.LoRaMacCommandsStickyCmdsPending,"ax",%progbits
+ 1175              		.align	1
+ 1176              		.global	LoRaMacCommandsStickyCmdsPending
+ 1177              		.syntax unified
+ 1178              		.thumb
+ 1179              		.thumb_func
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccSg685F.s 			page 31
+
+
+ 1181              	LoRaMacCommandsStickyCmdsPending:
+ 1182              	.LVL112:
+ 1183              	.LFB120:
+ 488:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** 
+ 489:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** LoRaMacCommandStatus_t LoRaMacCommandsStickyCmdsPending( bool* cmdsPending )
+ 490:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** {
+ 1184              		.loc 1 490 1 is_stmt 1 view -0
+ 1185              		.cfi_startproc
+ 1186              		@ args = 0, pretend = 0, frame = 0
+ 1187              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1188              		@ link register save eliminated.
+ 491:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     if( cmdsPending == NULL )
+ 1189              		.loc 1 491 5 view .LVU320
+ 1190              		.loc 1 491 7 is_stmt 0 view .LVU321
+ 1191 0000 0146     		mov	r1, r0
+ 1192 0002 70B1     		cbz	r0, .L138
+ 492:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     {
+ 493:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****         return LORAMAC_COMMANDS_ERROR_NPE;
+ 494:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     }
+ 495:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     MacCommand_t* curElement;
+ 1193              		.loc 1 495 5 is_stmt 1 view .LVU322
+ 496:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     curElement = CommandsCtx.MacCommandList.First;
+ 1194              		.loc 1 496 5 view .LVU323
+ 1195              		.loc 1 496 16 is_stmt 0 view .LVU324
+ 1196 0004 084B     		ldr	r3, .L141
+ 1197 0006 1B68     		ldr	r3, [r3]
+ 1198              	.LVL113:
+ 497:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** 
+ 498:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     *cmdsPending = false;
+ 1199              		.loc 1 498 5 is_stmt 1 view .LVU325
+ 1200              		.loc 1 498 18 is_stmt 0 view .LVU326
+ 1201 0008 0022     		movs	r2, #0
+ 1202 000a 0270     		strb	r2, [r0]
+ 499:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** 
+ 500:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     // Loop through all elements
+ 501:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     while( curElement != NULL )
+ 1203              		.loc 1 501 5 is_stmt 1 view .LVU327
+ 1204              	.L135:
+ 1205              		.loc 1 501 10 view .LVU328
+ 1206 000c 3BB1     		cbz	r3, .L139
+ 502:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     {
+ 503:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****         if( curElement->IsSticky == true )
+ 1207              		.loc 1 503 9 view .LVU329
+ 1208              		.loc 1 503 23 is_stmt 0 view .LVU330
+ 1209 000e 1A7B     		ldrb	r2, [r3, #12]	@ zero_extendqisi2
+ 1210              		.loc 1 503 11 view .LVU331
+ 1211 0010 0AB9     		cbnz	r2, .L140
+ 504:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****         {
+ 505:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****             // Found one sticky MAC command
+ 506:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****             *cmdsPending = true;
+ 507:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****             return LORAMAC_COMMANDS_SUCCESS;
+ 508:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****         }
+ 509:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****         curElement = curElement->Next;
+ 1212              		.loc 1 509 9 is_stmt 1 view .LVU332
+ 1213              		.loc 1 509 20 is_stmt 0 view .LVU333
+ 1214 0012 1B68     		ldr	r3, [r3]
+ 1215              	.LVL114:
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccSg685F.s 			page 32
+
+
+ 1216              		.loc 1 509 20 view .LVU334
+ 1217 0014 FAE7     		b	.L135
+ 1218              	.L140:
+ 506:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****             return LORAMAC_COMMANDS_SUCCESS;
+ 1219              		.loc 1 506 13 is_stmt 1 view .LVU335
+ 506:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****             return LORAMAC_COMMANDS_SUCCESS;
+ 1220              		.loc 1 506 26 is_stmt 0 view .LVU336
+ 1221 0016 0123     		movs	r3, #1
+ 1222              	.LVL115:
+ 506:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****             return LORAMAC_COMMANDS_SUCCESS;
+ 1223              		.loc 1 506 26 view .LVU337
+ 1224 0018 0B70     		strb	r3, [r1]
+ 507:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****         }
+ 1225              		.loc 1 507 13 is_stmt 1 view .LVU338
+ 507:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****         }
+ 1226              		.loc 1 507 20 is_stmt 0 view .LVU339
+ 1227 001a 0020     		movs	r0, #0
+ 1228              	.LVL116:
+ 507:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****         }
+ 1229              		.loc 1 507 20 view .LVU340
+ 1230 001c 7047     		bx	lr
+ 1231              	.LVL117:
+ 1232              	.L139:
+ 510:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     }
+ 511:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** 
+ 512:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     return LORAMAC_COMMANDS_SUCCESS;
+ 1233              		.loc 1 512 12 view .LVU341
+ 1234 001e 0020     		movs	r0, #0
+ 1235              	.LVL118:
+ 1236              		.loc 1 512 12 view .LVU342
+ 1237 0020 7047     		bx	lr
+ 1238              	.LVL119:
+ 1239              	.L138:
+ 493:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     }
+ 1240              		.loc 1 493 16 view .LVU343
+ 1241 0022 0120     		movs	r0, #1
+ 1242              	.LVL120:
+ 513:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** }
+ 1243              		.loc 1 513 1 view .LVU344
+ 1244 0024 7047     		bx	lr
+ 1245              	.L142:
+ 1246 0026 00BF     		.align	2
+ 1247              	.L141:
+ 1248 0028 00000000 		.word	.LANCHOR0
+ 1249              		.cfi_endproc
+ 1250              	.LFE120:
+ 1252              		.section	.text.LoRaMacCommandsGetCmdSize,"ax",%progbits
+ 1253              		.align	1
+ 1254              		.global	LoRaMacCommandsGetCmdSize
+ 1255              		.syntax unified
+ 1256              		.thumb
+ 1257              		.thumb_func
+ 1259              	LoRaMacCommandsGetCmdSize:
+ 1260              	.LVL121:
+ 1261              	.LFB121:
+ 514:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** 
+ 515:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** uint8_t LoRaMacCommandsGetCmdSize( uint8_t cid )
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccSg685F.s 			page 33
+
+
+ 516:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** {
+ 1262              		.loc 1 516 1 is_stmt 1 view -0
+ 1263              		.cfi_startproc
+ 1264              		@ args = 0, pretend = 0, frame = 0
+ 1265              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1266              		@ link register save eliminated.
+ 517:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     uint8_t cidSize = 0;
+ 1267              		.loc 1 517 5 view .LVU346
+ 518:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** 
+ 519:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     // Decode Frame MAC commands
+ 520:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     switch( cid )
+ 1268              		.loc 1 520 5 view .LVU347
+ 1269 0000 831E     		subs	r3, r0, #2
+ 1270 0002 112B     		cmp	r3, #17
+ 1271 0004 0AD8     		bhi	.L144
+ 1272 0006 DFE803F0 		tbb	[pc, r3]
+ 1273              	.L146:
+ 1274 000a 23       		.byte	(.L160-.L146)/2
+ 1275 000b 0B       		.byte	(.L158-.L146)/2
+ 1276 000c 0D       		.byte	(.L157-.L146)/2
+ 1277 000d 24       		.byte	(.L159-.L146)/2
+ 1278 000e 0F       		.byte	(.L155-.L146)/2
+ 1279 000f 11       		.byte	(.L154-.L146)/2
+ 1280 0010 13       		.byte	(.L153-.L146)/2
+ 1281 0011 15       		.byte	(.L152-.L146)/2
+ 1282 0012 17       		.byte	(.L151-.L146)/2
+ 1283 0013 09       		.byte	(.L144-.L146)/2
+ 1284 0014 09       		.byte	(.L144-.L146)/2
+ 1285 0015 19       		.byte	(.L150-.L146)/2
+ 1286 0016 09       		.byte	(.L144-.L146)/2
+ 1287 0017 09       		.byte	(.L144-.L146)/2
+ 1288 0018 1B       		.byte	(.L149-.L146)/2
+ 1289 0019 1D       		.byte	(.L148-.L146)/2
+ 1290 001a 1F       		.byte	(.L147-.L146)/2
+ 1291 001b 21       		.byte	(.L145-.L146)/2
+ 1292              		.p2align 1
+ 1293              	.L144:
+ 1294 001c 0020     		movs	r0, #0
+ 1295              	.LVL122:
+ 1296              		.loc 1 520 5 is_stmt 0 view .LVU348
+ 1297 001e 7047     		bx	lr
+ 1298              	.LVL123:
+ 1299              	.L158:
+ 521:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     {
+ 522:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****         case SRV_MAC_LINK_CHECK_ANS:
+ 523:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****         {
+ 524:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****             // cid + Margin + GwCnt
+ 525:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****             cidSize = 3;
+ 526:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****             break;
+ 527:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****         }
+ 528:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****         case SRV_MAC_LINK_ADR_REQ:
+ 529:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****         {
+ 530:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****             // cid + DataRate_TXPower + ChMask (2) + Redundancy
+ 531:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****             cidSize = 5;
+ 1300              		.loc 1 531 13 is_stmt 1 view .LVU349
+ 532:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****             break;
+ 1301              		.loc 1 532 13 view .LVU350
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccSg685F.s 			page 34
+
+
+ 531:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****             break;
+ 1302              		.loc 1 531 21 is_stmt 0 view .LVU351
+ 1303 0020 0520     		movs	r0, #5
+ 1304              	.LVL124:
+ 1305              		.loc 1 532 13 view .LVU352
+ 1306 0022 7047     		bx	lr
+ 1307              	.LVL125:
+ 1308              	.L157:
+ 533:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****         }
+ 534:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****         case SRV_MAC_DUTY_CYCLE_REQ:
+ 535:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****         {
+ 536:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****             // cid + DutyCyclePL
+ 537:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****             cidSize = 2;
+ 1309              		.loc 1 537 13 is_stmt 1 view .LVU353
+ 538:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****             break;
+ 1310              		.loc 1 538 13 view .LVU354
+ 537:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****             break;
+ 1311              		.loc 1 537 21 is_stmt 0 view .LVU355
+ 1312 0024 0220     		movs	r0, #2
+ 1313              	.LVL126:
+ 1314              		.loc 1 538 13 view .LVU356
+ 1315 0026 7047     		bx	lr
+ 1316              	.LVL127:
+ 1317              	.L155:
+ 539:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****         }
+ 540:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****         case SRV_MAC_RX_PARAM_SETUP_REQ:
+ 541:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****         {
+ 542:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****             // cid + DLsettings + Frequency (3)
+ 543:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****             cidSize = 5;
+ 544:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****             break;
+ 545:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****         }
+ 546:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****         case SRV_MAC_DEV_STATUS_REQ:
+ 547:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****         {
+ 548:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****             // cid
+ 549:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****             cidSize = 1;
+ 1318              		.loc 1 549 13 is_stmt 1 view .LVU357
+ 550:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****             break;
+ 1319              		.loc 1 550 13 view .LVU358
+ 549:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****             break;
+ 1320              		.loc 1 549 21 is_stmt 0 view .LVU359
+ 1321 0028 0120     		movs	r0, #1
+ 1322              	.LVL128:
+ 1323              		.loc 1 550 13 view .LVU360
+ 1324 002a 7047     		bx	lr
+ 1325              	.LVL129:
+ 1326              	.L154:
+ 551:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****         }
+ 552:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****         case SRV_MAC_NEW_CHANNEL_REQ:
+ 553:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****         {
+ 554:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****             // cid + ChIndex + Frequency (3) + DrRange
+ 555:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****             cidSize = 6;
+ 1327              		.loc 1 555 13 is_stmt 1 view .LVU361
+ 556:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****             break;
+ 1328              		.loc 1 556 13 view .LVU362
+ 555:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****             break;
+ 1329              		.loc 1 555 21 is_stmt 0 view .LVU363
+ 1330 002c 0620     		movs	r0, #6
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccSg685F.s 			page 35
+
+
+ 1331              	.LVL130:
+ 1332              		.loc 1 556 13 view .LVU364
+ 1333 002e 7047     		bx	lr
+ 1334              	.LVL131:
+ 1335              	.L153:
+ 557:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****         }
+ 558:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****         case SRV_MAC_RX_TIMING_SETUP_REQ:
+ 559:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****         {
+ 560:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****             // cid + Settings
+ 561:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****             cidSize = 2;
+ 1336              		.loc 1 561 13 is_stmt 1 view .LVU365
+ 562:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****             break;
+ 1337              		.loc 1 562 13 view .LVU366
+ 561:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****             break;
+ 1338              		.loc 1 561 21 is_stmt 0 view .LVU367
+ 1339 0030 0220     		movs	r0, #2
+ 1340              	.LVL132:
+ 1341              		.loc 1 562 13 view .LVU368
+ 1342 0032 7047     		bx	lr
+ 1343              	.LVL133:
+ 1344              	.L152:
+ 563:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****         }
+ 564:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****         case SRV_MAC_TX_PARAM_SETUP_REQ:
+ 565:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****         {
+ 566:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****             // cid + EIRP_DwellTime
+ 567:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****             cidSize = 2;
+ 1345              		.loc 1 567 13 is_stmt 1 view .LVU369
+ 568:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****             break;
+ 1346              		.loc 1 568 13 view .LVU370
+ 567:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****             break;
+ 1347              		.loc 1 567 21 is_stmt 0 view .LVU371
+ 1348 0034 0220     		movs	r0, #2
+ 1349              	.LVL134:
+ 1350              		.loc 1 568 13 view .LVU372
+ 1351 0036 7047     		bx	lr
+ 1352              	.LVL135:
+ 1353              	.L151:
+ 569:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****         }
+ 570:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****         case SRV_MAC_DL_CHANNEL_REQ:
+ 571:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****         {
+ 572:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****             // cid + ChIndex + Frequency (3)
+ 573:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****             cidSize = 5;
+ 1354              		.loc 1 573 13 is_stmt 1 view .LVU373
+ 574:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****             break;
+ 1355              		.loc 1 574 13 view .LVU374
+ 573:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****             break;
+ 1356              		.loc 1 573 21 is_stmt 0 view .LVU375
+ 1357 0038 0520     		movs	r0, #5
+ 1358              	.LVL136:
+ 1359              		.loc 1 574 13 view .LVU376
+ 1360 003a 7047     		bx	lr
+ 1361              	.LVL137:
+ 1362              	.L150:
+ 575:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****         }
+ 576:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****         case SRV_MAC_DEVICE_TIME_ANS:
+ 577:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****         {
+ 578:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****             // cid + Seconds (4) + Fractional seconds (1)
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccSg685F.s 			page 36
+
+
+ 579:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****             cidSize = 6;
+ 1363              		.loc 1 579 13 is_stmt 1 view .LVU377
+ 580:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****             break;
+ 1364              		.loc 1 580 13 view .LVU378
+ 579:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****             break;
+ 1365              		.loc 1 579 21 is_stmt 0 view .LVU379
+ 1366 003c 0620     		movs	r0, #6
+ 1367              	.LVL138:
+ 1368              		.loc 1 580 13 view .LVU380
+ 1369 003e 7047     		bx	lr
+ 1370              	.LVL139:
+ 1371              	.L149:
+ 581:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****         }
+ 582:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****         case SRV_MAC_PING_SLOT_INFO_ANS:
+ 583:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****         {
+ 584:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****             // cid
+ 585:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****             cidSize = 1;
+ 1372              		.loc 1 585 13 is_stmt 1 view .LVU381
+ 586:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****             break;
+ 1373              		.loc 1 586 13 view .LVU382
+ 585:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****             break;
+ 1374              		.loc 1 585 21 is_stmt 0 view .LVU383
+ 1375 0040 0120     		movs	r0, #1
+ 1376              	.LVL140:
+ 1377              		.loc 1 586 13 view .LVU384
+ 1378 0042 7047     		bx	lr
+ 1379              	.LVL141:
+ 1380              	.L148:
+ 587:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****         }
+ 588:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****         case SRV_MAC_PING_SLOT_CHANNEL_REQ:
+ 589:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****         {
+ 590:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****             // cid + Frequency (3) + DR
+ 591:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****             cidSize = 5;
+ 1381              		.loc 1 591 13 is_stmt 1 view .LVU385
+ 592:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****             break;
+ 1382              		.loc 1 592 13 view .LVU386
+ 591:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****             break;
+ 1383              		.loc 1 591 21 is_stmt 0 view .LVU387
+ 1384 0044 0520     		movs	r0, #5
+ 1385              	.LVL142:
+ 1386              		.loc 1 592 13 view .LVU388
+ 1387 0046 7047     		bx	lr
+ 1388              	.LVL143:
+ 1389              	.L147:
+ 593:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****         }
+ 594:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****         case SRV_MAC_BEACON_TIMING_ANS:
+ 595:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****         {
+ 596:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****             // cid + TimingDelay (2) + Channel
+ 597:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****             cidSize = 4;
+ 1390              		.loc 1 597 13 is_stmt 1 view .LVU389
+ 598:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****             break;
+ 1391              		.loc 1 598 13 view .LVU390
+ 597:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****             break;
+ 1392              		.loc 1 597 21 is_stmt 0 view .LVU391
+ 1393 0048 0420     		movs	r0, #4
+ 1394              	.LVL144:
+ 1395              		.loc 1 598 13 view .LVU392
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccSg685F.s 			page 37
+
+
+ 1396 004a 7047     		bx	lr
+ 1397              	.LVL145:
+ 1398              	.L145:
+ 599:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****         }
+ 600:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****         case SRV_MAC_BEACON_FREQ_REQ:
+ 601:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****         {
+ 602:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****             // cid + Frequency (3)
+ 603:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****             cidSize = 4;
+ 1399              		.loc 1 603 13 is_stmt 1 view .LVU393
+ 604:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****             break;
+ 1400              		.loc 1 604 13 view .LVU394
+ 603:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****             break;
+ 1401              		.loc 1 603 21 is_stmt 0 view .LVU395
+ 1402 004c 0420     		movs	r0, #4
+ 1403              	.LVL146:
+ 1404              		.loc 1 604 13 view .LVU396
+ 1405 004e 7047     		bx	lr
+ 1406              	.LVL147:
+ 1407              	.L160:
+ 525:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****             break;
+ 1408              		.loc 1 525 21 view .LVU397
+ 1409 0050 0320     		movs	r0, #3
+ 1410              	.LVL148:
+ 1411              	.L159:
+ 605:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****         }
+ 606:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****         default:
+ 607:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****         {
+ 608:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****             // Unknown command. ABORT MAC commands processing
+ 609:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****             break;
+ 610:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****         }
+ 611:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     }
+ 612:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c ****     return cidSize;
+ 1412              		.loc 1 612 5 is_stmt 1 view .LVU398
+ 613:Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.c **** }
+ 1413              		.loc 1 613 1 is_stmt 0 view .LVU399
+ 1414 0052 7047     		bx	lr
+ 1415              		.cfi_endproc
+ 1416              	.LFE121:
+ 1418              		.section	.bss.CommandsCtx,"aw",%nobits
+ 1419              		.align	2
+ 1420              		.set	.LANCHOR0,. + 0
+ 1423              	CommandsCtx:
+ 1424 0000 00000000 		.space	252
+ 1424      00000000 
+ 1424      00000000 
+ 1424      00000000 
+ 1424      00000000 
+ 1425              		.text
+ 1426              	.Letext0:
+ 1427              		.file 2 "c:\\program files (x86)\\gnu arm embedded toolchain\\10 2021.10\\lib\\gcc\\arm-none-eabi\
+ 1428              		.file 3 "c:\\program files (x86)\\gnu arm embedded toolchain\\10 2021.10\\arm-none-eabi\\include\\
+ 1429              		.file 4 "c:\\program files (x86)\\gnu arm embedded toolchain\\10 2021.10\\arm-none-eabi\\include\\
+ 1430              		.file 5 "Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacTypes.h"
+ 1431              		.file 6 "Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCommands.h"
+ 1432              		.file 7 "Middlewares/Third_Party/LoRaWAN/Mac/LoRaMac.h"
+ 1433              		.file 8 "Middlewares/Third_Party/LoRaWAN/Utilities/utilities.h"
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccSg685F.s 			page 38
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 LoRaMacCommands.c
+C:\Users\NATHAN~1\AppData\Local\Temp\ccSg685F.s:18     .text.IsSlotFree:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\ccSg685F.s:23     .text.IsSlotFree:00000000 IsSlotFree
+C:\Users\NATHAN~1\AppData\Local\Temp\ccSg685F.s:80     .text.MallocNewMacCommandSlot:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\ccSg685F.s:85     .text.MallocNewMacCommandSlot:00000000 MallocNewMacCommandSlot
+C:\Users\NATHAN~1\AppData\Local\Temp\ccSg685F.s:139    .text.MallocNewMacCommandSlot:00000024 $d
+C:\Users\NATHAN~1\AppData\Local\Temp\ccSg685F.s:144    .text.LinkedListInit:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\ccSg685F.s:149    .text.LinkedListInit:00000000 LinkedListInit
+C:\Users\NATHAN~1\AppData\Local\Temp\ccSg685F.s:184    .text.LinkedListAdd:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\ccSg685F.s:189    .text.LinkedListAdd:00000000 LinkedListAdd
+C:\Users\NATHAN~1\AppData\Local\Temp\ccSg685F.s:254    .text.LinkedListGetPrevious:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\ccSg685F.s:259    .text.LinkedListGetPrevious:00000000 LinkedListGetPrevious
+C:\Users\NATHAN~1\AppData\Local\Temp\ccSg685F.s:316    .text.LinkedListRemove:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\ccSg685F.s:321    .text.LinkedListRemove:00000000 LinkedListRemove
+C:\Users\NATHAN~1\AppData\Local\Temp\ccSg685F.s:424    .text.IsSticky:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\ccSg685F.s:429    .text.IsSticky:00000000 IsSticky
+C:\Users\NATHAN~1\AppData\Local\Temp\ccSg685F.s:473    .text.FreeMacCommandSlot:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\ccSg685F.s:478    .text.FreeMacCommandSlot:00000000 FreeMacCommandSlot
+C:\Users\NATHAN~1\AppData\Local\Temp\ccSg685F.s:519    .text.LoRaMacCommandsInit:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\ccSg685F.s:525    .text.LoRaMacCommandsInit:00000000 LoRaMacCommandsInit
+C:\Users\NATHAN~1\AppData\Local\Temp\ccSg685F.s:554    .text.LoRaMacCommandsInit:00000018 $d
+C:\Users\NATHAN~1\AppData\Local\Temp\ccSg685F.s:559    .text.LoRaMacCommandsAddCmd:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\ccSg685F.s:565    .text.LoRaMacCommandsAddCmd:00000000 LoRaMacCommandsAddCmd
+C:\Users\NATHAN~1\AppData\Local\Temp\ccSg685F.s:678    .text.LoRaMacCommandsAddCmd:00000050 $d
+C:\Users\NATHAN~1\AppData\Local\Temp\ccSg685F.s:683    .text.LoRaMacCommandsRemoveCmd:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\ccSg685F.s:689    .text.LoRaMacCommandsRemoveCmd:00000000 LoRaMacCommandsRemoveCmd
+C:\Users\NATHAN~1\AppData\Local\Temp\ccSg685F.s:764    .text.LoRaMacCommandsRemoveCmd:00000038 $d
+C:\Users\NATHAN~1\AppData\Local\Temp\ccSg685F.s:769    .text.LoRaMacCommandsGetCmd:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\ccSg685F.s:775    .text.LoRaMacCommandsGetCmd:00000000 LoRaMacCommandsGetCmd
+C:\Users\NATHAN~1\AppData\Local\Temp\ccSg685F.s:827    .text.LoRaMacCommandsGetCmd:0000001c $d
+C:\Users\NATHAN~1\AppData\Local\Temp\ccSg685F.s:832    .text.LoRaMacCommandsRemoveNoneStickyCmds:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\ccSg685F.s:838    .text.LoRaMacCommandsRemoveNoneStickyCmds:00000000 LoRaMacCommandsRemoveNoneStickyCmds
+C:\Users\NATHAN~1\AppData\Local\Temp\ccSg685F.s:921    .text.LoRaMacCommandsRemoveNoneStickyCmds:0000002c $d
+C:\Users\NATHAN~1\AppData\Local\Temp\ccSg685F.s:926    .text.LoRaMacCommandsRemoveStickyAnsCmds:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\ccSg685F.s:932    .text.LoRaMacCommandsRemoveStickyAnsCmds:00000000 LoRaMacCommandsRemoveStickyAnsCmds
+C:\Users\NATHAN~1\AppData\Local\Temp\ccSg685F.s:991    .text.LoRaMacCommandsRemoveStickyAnsCmds:00000024 $d
+C:\Users\NATHAN~1\AppData\Local\Temp\ccSg685F.s:996    .text.LoRaMacCommandsGetSizeSerializedCmds:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\ccSg685F.s:1002   .text.LoRaMacCommandsGetSizeSerializedCmds:00000000 LoRaMacCommandsGetSizeSerializedCmds
+C:\Users\NATHAN~1\AppData\Local\Temp\ccSg685F.s:1035   .text.LoRaMacCommandsGetSizeSerializedCmds:00000014 $d
+C:\Users\NATHAN~1\AppData\Local\Temp\ccSg685F.s:1040   .text.LoRaMacCommandsSerializeCmds:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\ccSg685F.s:1046   .text.LoRaMacCommandsSerializeCmds:00000000 LoRaMacCommandsSerializeCmds
+C:\Users\NATHAN~1\AppData\Local\Temp\ccSg685F.s:1170   .text.LoRaMacCommandsSerializeCmds:00000060 $d
+C:\Users\NATHAN~1\AppData\Local\Temp\ccSg685F.s:1175   .text.LoRaMacCommandsStickyCmdsPending:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\ccSg685F.s:1181   .text.LoRaMacCommandsStickyCmdsPending:00000000 LoRaMacCommandsStickyCmdsPending
+C:\Users\NATHAN~1\AppData\Local\Temp\ccSg685F.s:1248   .text.LoRaMacCommandsStickyCmdsPending:00000028 $d
+C:\Users\NATHAN~1\AppData\Local\Temp\ccSg685F.s:1253   .text.LoRaMacCommandsGetCmdSize:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\ccSg685F.s:1259   .text.LoRaMacCommandsGetCmdSize:00000000 LoRaMacCommandsGetCmdSize
+C:\Users\NATHAN~1\AppData\Local\Temp\ccSg685F.s:1274   .text.LoRaMacCommandsGetCmdSize:0000000a $d
+C:\Users\NATHAN~1\AppData\Local\Temp\ccSg685F.s:1292   .text.LoRaMacCommandsGetCmdSize:0000001c $t
+C:\Users\NATHAN~1\AppData\Local\Temp\ccSg685F.s:1419   .bss.CommandsCtx:00000000 $d
+C:\Users\NATHAN~1\AppData\Local\Temp\ccSg685F.s:1423   .bss.CommandsCtx:00000000 CommandsCtx
+
+UNDEFINED SYMBOLS
+memset1
+memcpy1
