@@ -1,0 +1,621 @@
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\cclAUJvx.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"RegionBaseUS.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.section	.text.FindAvailable125kHzChannels,"ax",%progbits
+  18              		.align	1
+  19              		.syntax unified
+  20              		.thumb
+  21              		.thumb_func
+  23              	FindAvailable125kHzChannels:
+  24              	.LVL0:
+  25              	.LFB104:
+  26              		.file 1 "Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c"
+   1:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c **** /*!
+   2:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****  * \file      RegionBaseUS.c
+   3:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****  *
+   4:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****  * \brief     Implementations common with US region.
+   5:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****  *
+   6:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****  * \copyright Revised BSD License, see section \ref LICENSE.
+   7:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****  *
+   8:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****  * \code
+   9:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****  *                ______                              _
+  10:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****  *               / _____)             _              | |
+  11:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****  *              ( (____  _____ ____ _| |_ _____  ____| |__
+  12:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****  *               \____ \| ___ |    (_   _) ___ |/ ___)  _ \
+  13:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****  *               _____) ) ____| | | || |_| ____( (___| | | |
+  14:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****  *              (______/|_____)_|_|_| \__)_____)\____)_| |_|
+  15:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****  *              (C)2013-2017 Semtech
+  16:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****  *
+  17:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****  *               ___ _____ _   ___ _  _____ ___  ___  ___ ___
+  18:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****  *              / __|_   _/_\ / __| |/ / __/ _ \| _ \/ __| __|
+  19:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****  *              \__ \ | |/ _ \ (__| ' <| _| (_) |   / (__| _|
+  20:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****  *              |___/ |_/_/ \_\___|_|\_\_| \___/|_|_\\___|___|
+  21:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****  *              embedded.connectivity.solutions===============
+  22:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****  *
+  23:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****  * \endcode
+  24:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****  *
+  25:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****  * \author    Miguel Luis ( Semtech )
+  26:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****  *
+  27:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****  * \author    Gregory Cristian ( Semtech )
+  28:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****  *
+  29:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****  * \author    Daniel Jaeckle ( STACKFORCE )
+  30:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****  *
+  31:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****  * \author    Phanindra Kumar Yellapu ( STACKFORCE )
+  32:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****  */
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\cclAUJvx.s 			page 2
+
+
+  33:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c **** #include "LoRaMacTypes.h"
+  34:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c **** #include "Region/Region.h"
+  35:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c **** #include "RegionBaseUS.h"
+  36:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c **** 
+  37:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c **** 
+  38:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c **** /*!
+  39:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****  * \brief Searches for available 125 kHz channels in the given channel mask.
+  40:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****  *
+  41:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****  * \param [IN] currentChannelMaskLeft The remaining channel mask.
+  42:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****  *
+  43:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****  * \param [OUT] findAvailableChannelsIndex List containing the indexes of all available 125 kHz cha
+  44:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****  *
+  45:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****  * \param [OUT] availableChannels Number of available 125 kHz channels.
+  46:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****  *
+  47:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****  * \retval Status
+  48:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****  */
+  49:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c **** static LoRaMacStatus_t FindAvailable125kHzChannels( uint16_t currentChannelMaskLeft,
+  50:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****                                                     uint8_t* findAvailableChannelsIndex, uint8_t* a
+  51:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c **** {
+  27              		.loc 1 51 1 view -0
+  28              		.cfi_startproc
+  29              		@ args = 0, pretend = 0, frame = 0
+  30              		@ frame_needed = 0, uses_anonymous_args = 0
+  31              		@ link register save eliminated.
+  52:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****     // Nullpointer check
+  53:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****     if( findAvailableChannelsIndex == NULL || availableChannels == NULL )
+  32              		.loc 1 53 5 view .LVU1
+  33              		.loc 1 53 7 is_stmt 0 view .LVU2
+  34 0000 8C46     		mov	ip, r1
+  35 0002 A9B1     		cbz	r1, .L6
+  36              		.loc 1 53 44 discriminator 1 view .LVU3
+  37 0004 B2B1     		cbz	r2, .L7
+  54:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****     {
+  55:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****         return LORAMAC_STATUS_PARAMETER_INVALID;
+  56:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****     }
+  57:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c **** 
+  58:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****     // Initialize counter
+  59:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****     *availableChannels = 0;
+  38              		.loc 1 59 5 is_stmt 1 view .LVU4
+  39              		.loc 1 59 24 is_stmt 0 view .LVU5
+  40 0006 0023     		movs	r3, #0
+  41 0008 1370     		strb	r3, [r2]
+  60:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****     for( uint8_t i = 0; i < 8; i++ )
+  42              		.loc 1 60 5 is_stmt 1 view .LVU6
+  43              	.LBB2:
+  44              		.loc 1 60 10 view .LVU7
+  45              	.LVL1:
+  46              		.loc 1 60 5 is_stmt 0 view .LVU8
+  47 000a 01E0     		b	.L3
+  48              	.LVL2:
+  49              	.L4:
+  50              		.loc 1 60 32 is_stmt 1 discriminator 2 view .LVU9
+  51              		.loc 1 60 33 is_stmt 0 discriminator 2 view .LVU10
+  52 000c 0133     		adds	r3, r3, #1
+  53              	.LVL3:
+  54              		.loc 1 60 33 discriminator 2 view .LVU11
+  55 000e DBB2     		uxtb	r3, r3
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\cclAUJvx.s 			page 3
+
+
+  56              	.LVL4:
+  57              	.L3:
+  58              		.loc 1 60 25 is_stmt 1 discriminator 1 view .LVU12
+  59              		.loc 1 60 5 is_stmt 0 discriminator 1 view .LVU13
+  60 0010 072B     		cmp	r3, #7
+  61 0012 0BD8     		bhi	.L8
+  61:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****     {
+  62:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****         // Find available channels
+  63:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****         if( ( currentChannelMaskLeft & ( 1 << i ) ) != 0 )
+  62              		.loc 1 63 9 is_stmt 1 view .LVU14
+  63              		.loc 1 63 53 is_stmt 0 view .LVU15
+  64 0014 40FA03F1 		asr	r1, r0, r3
+  65              		.loc 1 63 11 view .LVU16
+  66 0018 11F0010F 		tst	r1, #1
+  67 001c F6D0     		beq	.L4
+  64:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****         {
+  65:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****             // Save available channel index
+  66:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****             findAvailableChannelsIndex[*availableChannels] = i;
+  68              		.loc 1 66 13 is_stmt 1 view .LVU17
+  69              		.loc 1 66 40 is_stmt 0 view .LVU18
+  70 001e 1178     		ldrb	r1, [r2]	@ zero_extendqisi2
+  71              		.loc 1 66 60 view .LVU19
+  72 0020 0CF80130 		strb	r3, [ip, r1]
+  67:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****             // Increment counter of available channels if the current channel is available
+  68:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****             ( *availableChannels )++;
+  73              		.loc 1 68 13 is_stmt 1 view .LVU20
+  74              		.loc 1 68 15 is_stmt 0 view .LVU21
+  75 0024 1178     		ldrb	r1, [r2]	@ zero_extendqisi2
+  76              		.loc 1 68 35 view .LVU22
+  77 0026 0131     		adds	r1, r1, #1
+  78 0028 1170     		strb	r1, [r2]
+  79 002a EFE7     		b	.L4
+  80              	.L8:
+  81              		.loc 1 68 35 view .LVU23
+  82              	.LBE2:
+  69:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****         }
+  70:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****     }
+  71:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c **** 
+  72:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****     return LORAMAC_STATUS_OK;
+  83              		.loc 1 72 12 view .LVU24
+  84 002c 0020     		movs	r0, #0
+  85              	.LVL5:
+  86              	.LBB3:
+  87              		.loc 1 72 12 view .LVU25
+  88 002e 7047     		bx	lr
+  89              	.LVL6:
+  90              	.L6:
+  91              		.loc 1 72 12 view .LVU26
+  92              	.LBE3:
+  55:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****     }
+  93              		.loc 1 55 16 view .LVU27
+  94 0030 0320     		movs	r0, #3
+  95              	.LVL7:
+  55:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****     }
+  96              		.loc 1 55 16 view .LVU28
+  97 0032 7047     		bx	lr
+  98              	.LVL8:
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\cclAUJvx.s 			page 4
+
+
+  99              	.L7:
+  55:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****     }
+ 100              		.loc 1 55 16 view .LVU29
+ 101 0034 0320     		movs	r0, #3
+ 102              	.LVL9:
+  73:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c **** }
+ 103              		.loc 1 73 1 view .LVU30
+ 104 0036 7047     		bx	lr
+ 105              		.cfi_endproc
+ 106              	.LFE104:
+ 108              		.section	.text.RegionBaseUSComputeNext125kHzJoinChannel,"ax",%progbits
+ 109              		.align	1
+ 110              		.global	RegionBaseUSComputeNext125kHzJoinChannel
+ 111              		.syntax unified
+ 112              		.thumb
+ 113              		.thumb_func
+ 115              	RegionBaseUSComputeNext125kHzJoinChannel:
+ 116              	.LVL10:
+ 117              	.LFB105:
+  74:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c **** 
+  75:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c **** LoRaMacStatus_t RegionBaseUSComputeNext125kHzJoinChannel( uint16_t* channelsMaskRemaining,
+  76:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****                                                           uint8_t* groupsCurrentIndex, uint8_t* new
+  77:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c **** {
+ 118              		.loc 1 77 1 is_stmt 1 view -0
+ 119              		.cfi_startproc
+ 120              		@ args = 0, pretend = 0, frame = 16
+ 121              		@ frame_needed = 0, uses_anonymous_args = 0
+ 122              		.loc 1 77 1 is_stmt 0 view .LVU32
+ 123 0000 F0B5     		push	{r4, r5, r6, r7, lr}
+ 124              	.LCFI0:
+ 125              		.cfi_def_cfa_offset 20
+ 126              		.cfi_offset 4, -20
+ 127              		.cfi_offset 5, -16
+ 128              		.cfi_offset 6, -12
+ 129              		.cfi_offset 7, -8
+ 130              		.cfi_offset 14, -4
+ 131 0002 85B0     		sub	sp, sp, #20
+ 132              	.LCFI1:
+ 133              		.cfi_def_cfa_offset 40
+  78:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****     uint8_t currentChannelMaskLeftIndex;
+ 134              		.loc 1 78 5 is_stmt 1 view .LVU33
+  79:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****     uint16_t currentChannelMaskLeft;
+ 135              		.loc 1 79 5 view .LVU34
+  80:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****     uint8_t findAvailableChannelsIndex[8] = { 0 };
+ 136              		.loc 1 80 5 view .LVU35
+ 137              		.loc 1 80 13 is_stmt 0 view .LVU36
+ 138 0004 0023     		movs	r3, #0
+ 139 0006 0293     		str	r3, [sp, #8]
+ 140 0008 0393     		str	r3, [sp, #12]
+  81:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****     uint8_t availableChannels = 0;
+ 141              		.loc 1 81 5 is_stmt 1 view .LVU37
+ 142              		.loc 1 81 13 is_stmt 0 view .LVU38
+ 143 000a 8DF80730 		strb	r3, [sp, #7]
+  82:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****     uint8_t startIndex;
+ 144              		.loc 1 82 5 is_stmt 1 view .LVU39
+  83:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c **** 
+  84:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****     // Null pointer check
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\cclAUJvx.s 			page 5
+
+
+  85:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****     if( channelsMaskRemaining == NULL || groupsCurrentIndex == NULL || newChannelIndex == NULL )
+ 145              		.loc 1 85 5 view .LVU40
+ 146              		.loc 1 85 7 is_stmt 0 view .LVU41
+ 147 000e 0028     		cmp	r0, #0
+ 148 0010 3ED0     		beq	.L17
+ 149 0012 0D46     		mov	r5, r1
+ 150 0014 1746     		mov	r7, r2
+ 151 0016 0646     		mov	r6, r0
+ 152              		.loc 1 85 39 discriminator 1 view .LVU42
+ 153 0018 0029     		cmp	r1, #0
+ 154 001a 3BD0     		beq	.L18
+ 155              		.loc 1 85 69 discriminator 2 view .LVU43
+ 156 001c 002A     		cmp	r2, #0
+ 157 001e 3BD0     		beq	.L19
+  86:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****     {
+  87:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****         return LORAMAC_STATUS_PARAMETER_INVALID;
+  88:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****     }
+  89:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c **** 
+  90:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****     // copy the current index.
+  91:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****     startIndex = *groupsCurrentIndex;
+ 158              		.loc 1 91 5 is_stmt 1 view .LVU44
+ 159              		.loc 1 91 16 is_stmt 0 view .LVU45
+ 160 0020 0C78     		ldrb	r4, [r1]	@ zero_extendqisi2
+ 161              	.LVL11:
+ 162              		.loc 1 91 16 view .LVU46
+ 163 0022 17E0     		b	.L16
+ 164              	.LVL12:
+ 165              	.L11:
+  92:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c **** 
+  93:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****     do
+  94:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****     {
+  95:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****         // Current ChannelMaskRemaining, two groups per channel mask. For example Group 0 and 1 (8 
+  96:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****         currentChannelMaskLeftIndex = (uint8_t) startIndex / 2;
+  97:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c **** 
+  98:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****         // For even numbers we need the 8 LSBs and for uneven the 8 MSBs
+  99:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****         if( ( startIndex % 2 ) == 0 )
+ 100:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****         {
+ 101:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****             currentChannelMaskLeft = ( channelsMaskRemaining[currentChannelMaskLeftIndex] & 0x00FF 
+ 102:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****         }
+ 103:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****         else
+ 104:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****         {
+ 105:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****             currentChannelMaskLeft = ( ( channelsMaskRemaining[currentChannelMaskLeftIndex] >> 8 ) 
+ 166              		.loc 1 105 13 is_stmt 1 view .LVU47
+ 167              		.loc 1 105 63 is_stmt 0 view .LVU48
+ 168 0024 36F81300 		ldrh	r0, [r6, r3, lsl #1]
+ 169              		.loc 1 105 36 view .LVU49
+ 170 0028 000A     		lsrs	r0, r0, #8
+ 171              	.LVL13:
+ 172              		.loc 1 105 36 view .LVU50
+ 173 002a 19E0     		b	.L12
+ 174              	.LVL14:
+ 175              	.L23:
+ 106:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****         }
+ 107:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c **** 
+ 108:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c **** 
+ 109:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****         if( FindAvailable125kHzChannels( currentChannelMaskLeft, findAvailableChannelsIndex, &avail
+ 110:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****         {
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\cclAUJvx.s 			page 6
+
+
+ 111:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****             return LORAMAC_STATUS_PARAMETER_INVALID;
+ 112:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****         }
+ 113:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c **** 
+ 114:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****         if ( availableChannels > 0 )
+ 115:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****         {
+ 116:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****             // Choose randomly a free channel 125kHz
+ 117:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****             *newChannelIndex = ( startIndex * 8 ) + findAvailableChannelsIndex[randr( 0, ( availabl
+ 176              		.loc 1 117 13 is_stmt 1 view .LVU51
+ 177              		.loc 1 117 80 is_stmt 0 view .LVU52
+ 178 002c 0139     		subs	r1, r1, #1
+ 179 002e 0020     		movs	r0, #0
+ 180 0030 FFF7FEFF 		bl	randr
+ 181              	.LVL15:
+ 182              		.loc 1 117 79 view .LVU53
+ 183 0034 00F11003 		add	r3, r0, #16
+ 184 0038 0DEB0300 		add	r0, sp, r3
+ 185 003c 10F8083C 		ldrb	r3, [r0, #-8]	@ zero_extendqisi2
+ 186              		.loc 1 117 51 view .LVU54
+ 187 0040 03EBC403 		add	r3, r3, r4, lsl #3
+ 188              		.loc 1 117 30 view .LVU55
+ 189 0044 3B70     		strb	r3, [r7]
+ 190 0046 16E0     		b	.L13
+ 191              	.LVL16:
+ 192              	.L14:
+ 118:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****         }
+ 119:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c **** 
+ 120:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****         // Increment start index
+ 121:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****         startIndex++;
+ 122:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****         if ( startIndex > 7 )
+ 123:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****         {
+ 124:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****             startIndex = 0;
+ 125:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****         }
+ 126:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****     } while( ( availableChannels == 0 ) && ( startIndex != *groupsCurrentIndex ) );
+ 193              		.loc 1 126 12 is_stmt 1 view .LVU56
+ 194              		.loc 1 126 34 is_stmt 0 view .LVU57
+ 195 0048 9DF80730 		ldrb	r3, [sp, #7]	@ zero_extendqisi2
+ 196              		.loc 1 126 5 view .LVU58
+ 197 004c CBB9     		cbnz	r3, .L15
+ 198              		.loc 1 126 60 discriminator 1 view .LVU59
+ 199 004e 2A78     		ldrb	r2, [r5]	@ zero_extendqisi2
+ 200              		.loc 1 126 41 discriminator 1 view .LVU60
+ 201 0050 A242     		cmp	r2, r4
+ 202 0052 16D0     		beq	.L15
+ 203              	.L16:
+  93:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****     {
+ 204              		.loc 1 93 5 is_stmt 1 view .LVU61
+  96:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c **** 
+ 205              		.loc 1 96 9 view .LVU62
+  96:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c **** 
+ 206              		.loc 1 96 37 is_stmt 0 view .LVU63
+ 207 0054 6308     		lsrs	r3, r4, #1
+ 208              	.LVL17:
+  99:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****         {
+ 209              		.loc 1 99 9 is_stmt 1 view .LVU64
+  99:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****         {
+ 210              		.loc 1 99 11 is_stmt 0 view .LVU65
+ 211 0056 14F0010F 		tst	r4, #1
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\cclAUJvx.s 			page 7
+
+
+ 212 005a E3D1     		bne	.L11
+ 101:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****         }
+ 213              		.loc 1 101 13 is_stmt 1 view .LVU66
+ 101:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****         }
+ 214              		.loc 1 101 36 is_stmt 0 view .LVU67
+ 215 005c 16F81300 		ldrb	r0, [r6, r3, lsl #1]	@ zero_extendqisi2
+ 216              	.LVL18:
+ 217              	.L12:
+ 109:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****         {
+ 218              		.loc 1 109 9 is_stmt 1 view .LVU68
+ 109:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****         {
+ 219              		.loc 1 109 13 is_stmt 0 view .LVU69
+ 220 0060 0DF10702 		add	r2, sp, #7
+ 221 0064 02A9     		add	r1, sp, #8
+ 222 0066 FFF7FEFF 		bl	FindAvailable125kHzChannels
+ 223              	.LVL19:
+ 109:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****         {
+ 224              		.loc 1 109 11 view .LVU70
+ 225 006a 0328     		cmp	r0, #3
+ 226 006c 0BD0     		beq	.L10
+ 114:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****         {
+ 227              		.loc 1 114 9 is_stmt 1 view .LVU71
+ 114:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****         {
+ 228              		.loc 1 114 32 is_stmt 0 view .LVU72
+ 229 006e 9DF80710 		ldrb	r1, [sp, #7]	@ zero_extendqisi2
+ 114:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****         {
+ 230              		.loc 1 114 12 view .LVU73
+ 231 0072 0029     		cmp	r1, #0
+ 232 0074 DAD1     		bne	.L23
+ 233              	.L13:
+ 121:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****         if ( startIndex > 7 )
+ 234              		.loc 1 121 9 is_stmt 1 view .LVU74
+ 121:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****         if ( startIndex > 7 )
+ 235              		.loc 1 121 19 is_stmt 0 view .LVU75
+ 236 0076 0134     		adds	r4, r4, #1
+ 237              	.LVL20:
+ 121:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****         if ( startIndex > 7 )
+ 238              		.loc 1 121 19 view .LVU76
+ 239 0078 E4B2     		uxtb	r4, r4
+ 240              	.LVL21:
+ 122:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****         {
+ 241              		.loc 1 122 9 is_stmt 1 view .LVU77
+ 122:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****         {
+ 242              		.loc 1 122 12 is_stmt 0 view .LVU78
+ 243 007a 072C     		cmp	r4, #7
+ 244 007c E4D9     		bls	.L14
+ 124:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****         }
+ 245              		.loc 1 124 24 view .LVU79
+ 246 007e 0024     		movs	r4, #0
+ 247              	.LVL22:
+ 124:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****         }
+ 248              		.loc 1 124 24 view .LVU80
+ 249 0080 E2E7     		b	.L14
+ 250              	.LVL23:
+ 251              	.L15:
+ 127:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c **** 
+ 128:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****     if ( availableChannels > 0 )
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\cclAUJvx.s 			page 8
+
+
+ 252              		.loc 1 128 5 is_stmt 1 view .LVU81
+ 253              		.loc 1 128 8 is_stmt 0 view .LVU82
+ 254 0082 13B9     		cbnz	r3, .L24
+ 129:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****     {
+ 130:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****         *groupsCurrentIndex = startIndex;
+ 131:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****         return LORAMAC_STATUS_OK;
+ 132:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****     }
+ 133:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c **** 
+ 134:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****     return LORAMAC_STATUS_PARAMETER_INVALID;
+ 255              		.loc 1 134 12 view .LVU83
+ 256 0084 0320     		movs	r0, #3
+ 257              	.LVL24:
+ 258              	.L10:
+ 135:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c **** }
+ 259              		.loc 1 135 1 view .LVU84
+ 260 0086 05B0     		add	sp, sp, #20
+ 261              	.LCFI2:
+ 262              		.cfi_remember_state
+ 263              		.cfi_def_cfa_offset 20
+ 264              		@ sp needed
+ 265 0088 F0BD     		pop	{r4, r5, r6, r7, pc}
+ 266              	.LVL25:
+ 267              	.L24:
+ 268              	.LCFI3:
+ 269              		.cfi_restore_state
+ 130:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****         return LORAMAC_STATUS_OK;
+ 270              		.loc 1 130 9 is_stmt 1 view .LVU85
+ 130:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****         return LORAMAC_STATUS_OK;
+ 271              		.loc 1 130 29 is_stmt 0 view .LVU86
+ 272 008a 2C70     		strb	r4, [r5]
+ 131:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****     }
+ 273              		.loc 1 131 9 is_stmt 1 view .LVU87
+ 131:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****     }
+ 274              		.loc 1 131 16 is_stmt 0 view .LVU88
+ 275 008c 0020     		movs	r0, #0
+ 276 008e FAE7     		b	.L10
+ 277              	.LVL26:
+ 278              	.L17:
+  87:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****     }
+ 279              		.loc 1 87 16 view .LVU89
+ 280 0090 0320     		movs	r0, #3
+ 281              	.LVL27:
+  87:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****     }
+ 282              		.loc 1 87 16 view .LVU90
+ 283 0092 F8E7     		b	.L10
+ 284              	.LVL28:
+ 285              	.L18:
+  87:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****     }
+ 286              		.loc 1 87 16 view .LVU91
+ 287 0094 0320     		movs	r0, #3
+ 288              	.LVL29:
+  87:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****     }
+ 289              		.loc 1 87 16 view .LVU92
+ 290 0096 F6E7     		b	.L10
+ 291              	.LVL30:
+ 292              	.L19:
+  87:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****     }
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\cclAUJvx.s 			page 9
+
+
+ 293              		.loc 1 87 16 view .LVU93
+ 294 0098 0320     		movs	r0, #3
+ 295              	.LVL31:
+  87:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****     }
+ 296              		.loc 1 87 16 view .LVU94
+ 297 009a F4E7     		b	.L10
+ 298              		.cfi_endproc
+ 299              	.LFE105:
+ 301              		.section	.text.RegionBaseUSVerifyFrequencyGroup,"ax",%progbits
+ 302              		.align	1
+ 303              		.global	RegionBaseUSVerifyFrequencyGroup
+ 304              		.syntax unified
+ 305              		.thumb
+ 306              		.thumb_func
+ 308              	RegionBaseUSVerifyFrequencyGroup:
+ 309              	.LVL32:
+ 310              	.LFB106:
+ 136:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c **** 
+ 137:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c **** bool RegionBaseUSVerifyFrequencyGroup( uint32_t freq, uint32_t minFreq, uint32_t maxFreq, uint32_t 
+ 138:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c **** {
+ 311              		.loc 1 138 1 is_stmt 1 view -0
+ 312              		.cfi_startproc
+ 313              		@ args = 0, pretend = 0, frame = 0
+ 314              		@ frame_needed = 0, uses_anonymous_args = 0
+ 315              		@ link register save eliminated.
+ 139:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****     if( ( freq < minFreq ) ||
+ 316              		.loc 1 139 5 view .LVU96
+ 317              		.loc 1 139 7 is_stmt 0 view .LVU97
+ 318 0000 8842     		cmp	r0, r1
+ 319 0002 09D3     		bcc	.L27
+ 320              		.loc 1 139 28 discriminator 1 view .LVU98
+ 321 0004 9042     		cmp	r0, r2
+ 322 0006 09D8     		bhi	.L28
+ 140:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****         ( freq > maxFreq ) ||
+ 141:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****         ( ( ( freq - ( uint32_t ) minFreq ) % ( uint32_t ) stepwidth ) != 0 ) )
+ 323              		.loc 1 141 20 view .LVU99
+ 324 0008 401A     		subs	r0, r0, r1
+ 325              	.LVL33:
+ 326              		.loc 1 141 45 view .LVU100
+ 327 000a B0FBF3F1 		udiv	r1, r0, r3
+ 328              	.LVL34:
+ 329              		.loc 1 141 45 view .LVU101
+ 330 000e 03FB1100 		mls	r0, r3, r1, r0
+ 140:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****         ( freq > maxFreq ) ||
+ 331              		.loc 1 140 28 view .LVU102
+ 332 0012 28B9     		cbnz	r0, .L29
+ 142:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****     {
+ 143:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****         return false;
+ 144:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****     }
+ 145:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****     return true;
+ 333              		.loc 1 145 12 view .LVU103
+ 334 0014 0120     		movs	r0, #1
+ 335 0016 7047     		bx	lr
+ 336              	.LVL35:
+ 337              	.L27:
+ 143:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****     }
+ 338              		.loc 1 143 16 view .LVU104
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\cclAUJvx.s 			page 10
+
+
+ 339 0018 0020     		movs	r0, #0
+ 340              	.LVL36:
+ 143:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****     }
+ 341              		.loc 1 143 16 view .LVU105
+ 342 001a 7047     		bx	lr
+ 343              	.LVL37:
+ 344              	.L28:
+ 143:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****     }
+ 345              		.loc 1 143 16 view .LVU106
+ 346 001c 0020     		movs	r0, #0
+ 347              	.LVL38:
+ 143:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****     }
+ 348              		.loc 1 143 16 view .LVU107
+ 349 001e 7047     		bx	lr
+ 350              	.LVL39:
+ 351              	.L29:
+ 143:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****     }
+ 352              		.loc 1 143 16 view .LVU108
+ 353 0020 0020     		movs	r0, #0
+ 146:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c **** }
+ 354              		.loc 1 146 1 view .LVU109
+ 355 0022 7047     		bx	lr
+ 356              		.cfi_endproc
+ 357              	.LFE106:
+ 359              		.section	.text.RegionBaseUSCalcDownlinkFrequency,"ax",%progbits
+ 360              		.align	1
+ 361              		.global	RegionBaseUSCalcDownlinkFrequency
+ 362              		.syntax unified
+ 363              		.thumb
+ 364              		.thumb_func
+ 366              	RegionBaseUSCalcDownlinkFrequency:
+ 367              	.LVL40:
+ 368              	.LFB107:
+ 147:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c **** 
+ 148:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c **** uint32_t RegionBaseUSCalcDownlinkFrequency( uint8_t channel, uint32_t frequency,
+ 149:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****                                             uint32_t stepwidth )
+ 150:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c **** {
+ 369              		.loc 1 150 1 is_stmt 1 view -0
+ 370              		.cfi_startproc
+ 371              		@ args = 0, pretend = 0, frame = 0
+ 372              		@ frame_needed = 0, uses_anonymous_args = 0
+ 373              		@ link register save eliminated.
+ 151:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****     // Calculate the frequency
+ 152:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c ****     return frequency + ( channel * stepwidth );
+ 374              		.loc 1 152 5 view .LVU111
+ 153:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionBaseUS.c **** }
+ 375              		.loc 1 153 1 is_stmt 0 view .LVU112
+ 376 0000 02FB0010 		mla	r0, r2, r0, r1
+ 377              	.LVL41:
+ 378              		.loc 1 153 1 view .LVU113
+ 379 0004 7047     		bx	lr
+ 380              		.cfi_endproc
+ 381              	.LFE107:
+ 383              		.text
+ 384              	.Letext0:
+ 385              		.file 2 "c:\\program files (x86)\\gnu arm embedded toolchain\\10 2021.10\\arm-none-eabi\\include\\
+ 386              		.file 3 "c:\\program files (x86)\\gnu arm embedded toolchain\\10 2021.10\\arm-none-eabi\\include\\
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\cclAUJvx.s 			page 11
+
+
+ 387              		.file 4 "Middlewares/Third_Party/LoRaWAN/Mac/LoRaMac.h"
+ 388              		.file 5 "Middlewares/Third_Party/LoRaWAN/Utilities/utilities.h"
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\cclAUJvx.s 			page 12
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 RegionBaseUS.c
+C:\Users\NATHAN~1\AppData\Local\Temp\cclAUJvx.s:18     .text.FindAvailable125kHzChannels:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\cclAUJvx.s:23     .text.FindAvailable125kHzChannels:00000000 FindAvailable125kHzChannels
+C:\Users\NATHAN~1\AppData\Local\Temp\cclAUJvx.s:109    .text.RegionBaseUSComputeNext125kHzJoinChannel:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\cclAUJvx.s:115    .text.RegionBaseUSComputeNext125kHzJoinChannel:00000000 RegionBaseUSComputeNext125kHzJoinChannel
+C:\Users\NATHAN~1\AppData\Local\Temp\cclAUJvx.s:302    .text.RegionBaseUSVerifyFrequencyGroup:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\cclAUJvx.s:308    .text.RegionBaseUSVerifyFrequencyGroup:00000000 RegionBaseUSVerifyFrequencyGroup
+C:\Users\NATHAN~1\AppData\Local\Temp\cclAUJvx.s:360    .text.RegionBaseUSCalcDownlinkFrequency:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\cclAUJvx.s:366    .text.RegionBaseUSCalcDownlinkFrequency:00000000 RegionBaseUSCalcDownlinkFrequency
+
+UNDEFINED SYMBOLS
+randr

@@ -1,0 +1,3073 @@
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccBsqBgz.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"stm32_timer.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.section	.text.UTIL_TIMER_Init,"ax",%progbits
+  18              		.align	1
+  19              		.global	UTIL_TIMER_Init
+  20              		.syntax unified
+  21              		.thumb
+  22              		.thumb_func
+  24              	UTIL_TIMER_Init:
+  25              	.LFB104:
+  26              		.file 1 "Utilities/timer/stm32_timer.c"
+   1:Utilities/timer/stm32_timer.c **** /*!
+   2:Utilities/timer/stm32_timer.c ****  * \file      timer.c
+   3:Utilities/timer/stm32_timer.c ****  *
+   4:Utilities/timer/stm32_timer.c ****  * \brief     Timer objects and scheduling management implementation
+   5:Utilities/timer/stm32_timer.c ****  *
+   6:Utilities/timer/stm32_timer.c ****  * \copyright Revised BSD License, see section \ref LICENSE.
+   7:Utilities/timer/stm32_timer.c ****  *
+   8:Utilities/timer/stm32_timer.c ****  * \code
+   9:Utilities/timer/stm32_timer.c ****  *                ______                              _
+  10:Utilities/timer/stm32_timer.c ****  *               / _____)             _              | |
+  11:Utilities/timer/stm32_timer.c ****  *              ( (____  _____ ____ _| |_ _____  ____| |__
+  12:Utilities/timer/stm32_timer.c ****  *               \____ \| ___ |    (_   _) ___ |/ ___)  _ \
+  13:Utilities/timer/stm32_timer.c ****  *               _____) ) ____| | | || |_| ____( (___| | | |
+  14:Utilities/timer/stm32_timer.c ****  *              (______/|_____)_|_|_| \__)_____)\____)_| |_|
+  15:Utilities/timer/stm32_timer.c ****  *              (C)2013-2017 Semtech
+  16:Utilities/timer/stm32_timer.c ****  *
+  17:Utilities/timer/stm32_timer.c ****  * \endcode
+  18:Utilities/timer/stm32_timer.c ****  *
+  19:Utilities/timer/stm32_timer.c ****  * \author    Miguel Luis ( Semtech )
+  20:Utilities/timer/stm32_timer.c ****  *
+  21:Utilities/timer/stm32_timer.c ****  * \author    Gregory Cristian ( Semtech )
+  22:Utilities/timer/stm32_timer.c ****  */
+  23:Utilities/timer/stm32_timer.c **** 
+  24:Utilities/timer/stm32_timer.c **** /******************************************************************************
+  25:Utilities/timer/stm32_timer.c ****  * @file    stm32_timer.c
+  26:Utilities/timer/stm32_timer.c ****  * @author  MCD Application Team
+  27:Utilities/timer/stm32_timer.c ****  * @brief   Time server utility
+  28:Utilities/timer/stm32_timer.c ****  ******************************************************************************
+  29:Utilities/timer/stm32_timer.c ****  * @attention
+  30:Utilities/timer/stm32_timer.c ****  *
+  31:Utilities/timer/stm32_timer.c ****  * <h2><center>&copy; Copyright (c) 2019 STMicroelectronics.
+  32:Utilities/timer/stm32_timer.c ****  * All rights reserved.</center></h2>
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccBsqBgz.s 			page 2
+
+
+  33:Utilities/timer/stm32_timer.c ****  *
+  34:Utilities/timer/stm32_timer.c ****  * This software component is licensed by ST under BSD 3-Clause license,
+  35:Utilities/timer/stm32_timer.c ****  * the "License"; You may not use this file except in compliance with the
+  36:Utilities/timer/stm32_timer.c ****  * License. You may obtain a copy of the License at:
+  37:Utilities/timer/stm32_timer.c ****  *                        opensource.org/licenses/BSD-3-Clause
+  38:Utilities/timer/stm32_timer.c ****  *
+  39:Utilities/timer/stm32_timer.c ****  *
+  40:Utilities/timer/stm32_timer.c ****  ******************************************************************************
+  41:Utilities/timer/stm32_timer.c ****  */
+  42:Utilities/timer/stm32_timer.c **** 
+  43:Utilities/timer/stm32_timer.c **** /* Includes ------------------------------------------------------------------*/
+  44:Utilities/timer/stm32_timer.c **** #include "stm32_timer.h"
+  45:Utilities/timer/stm32_timer.c **** 
+  46:Utilities/timer/stm32_timer.c **** /** @addtogroup TIMER_SERVER
+  47:Utilities/timer/stm32_timer.c ****   * @{
+  48:Utilities/timer/stm32_timer.c ****   */
+  49:Utilities/timer/stm32_timer.c **** 
+  50:Utilities/timer/stm32_timer.c **** /* Private macro -----------------------------------------------------------*/
+  51:Utilities/timer/stm32_timer.c **** /**
+  52:Utilities/timer/stm32_timer.c ****  * @defgroup TIMER_SERVER_private_macro TIMER_SERVER private macros
+  53:Utilities/timer/stm32_timer.c ****  *  @{
+  54:Utilities/timer/stm32_timer.c ****  */
+  55:Utilities/timer/stm32_timer.c **** /**
+  56:Utilities/timer/stm32_timer.c ****   * @brief macro definition to initialize a critical section.
+  57:Utilities/timer/stm32_timer.c ****   *
+  58:Utilities/timer/stm32_timer.c ****   */
+  59:Utilities/timer/stm32_timer.c **** #ifndef UTIL_TIMER_INIT_CRITICAL_SECTION
+  60:Utilities/timer/stm32_timer.c ****   #define UTIL_TIMER_INIT_CRITICAL_SECTION( )
+  61:Utilities/timer/stm32_timer.c **** #endif
+  62:Utilities/timer/stm32_timer.c **** 
+  63:Utilities/timer/stm32_timer.c **** /**
+  64:Utilities/timer/stm32_timer.c ****   * @brief macro definition to enter a critical section.
+  65:Utilities/timer/stm32_timer.c ****   *
+  66:Utilities/timer/stm32_timer.c ****   */
+  67:Utilities/timer/stm32_timer.c **** #ifndef UTIL_TIMER_ENTER_CRITICAL_SECTION
+  68:Utilities/timer/stm32_timer.c ****   #define UTIL_TIMER_ENTER_CRITICAL_SECTION( )   UTILS_ENTER_CRITICAL_SECTION( )
+  69:Utilities/timer/stm32_timer.c **** #endif
+  70:Utilities/timer/stm32_timer.c **** 
+  71:Utilities/timer/stm32_timer.c **** /**
+  72:Utilities/timer/stm32_timer.c ****   * @brief macro definition to exit a critical section.
+  73:Utilities/timer/stm32_timer.c ****   *
+  74:Utilities/timer/stm32_timer.c ****   */
+  75:Utilities/timer/stm32_timer.c **** #ifndef UTIL_TIMER_EXIT_CRITICAL_SECTION
+  76:Utilities/timer/stm32_timer.c ****   #define UTIL_TIMER_EXIT_CRITICAL_SECTION( )    UTILS_EXIT_CRITICAL_SECTION( )
+  77:Utilities/timer/stm32_timer.c **** #endif
+  78:Utilities/timer/stm32_timer.c **** /**
+  79:Utilities/timer/stm32_timer.c ****   *  @}
+  80:Utilities/timer/stm32_timer.c ****   */
+  81:Utilities/timer/stm32_timer.c ****  
+  82:Utilities/timer/stm32_timer.c **** /* Private variables -----------------------------------------------------------*/
+  83:Utilities/timer/stm32_timer.c **** /**
+  84:Utilities/timer/stm32_timer.c ****  * @defgroup TIMER_SERVER_private_varaible TIMER_SERVER private variable
+  85:Utilities/timer/stm32_timer.c ****  *  @{
+  86:Utilities/timer/stm32_timer.c ****  */
+  87:Utilities/timer/stm32_timer.c **** 
+  88:Utilities/timer/stm32_timer.c **** /**
+  89:Utilities/timer/stm32_timer.c ****   * @brief Timers list head pointer
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccBsqBgz.s 			page 3
+
+
+  90:Utilities/timer/stm32_timer.c ****   *
+  91:Utilities/timer/stm32_timer.c ****   */
+  92:Utilities/timer/stm32_timer.c **** static UTIL_TIMER_Object_t *TimerListHead = NULL;
+  93:Utilities/timer/stm32_timer.c **** 
+  94:Utilities/timer/stm32_timer.c **** /**
+  95:Utilities/timer/stm32_timer.c ****   *  @}
+  96:Utilities/timer/stm32_timer.c ****   */
+  97:Utilities/timer/stm32_timer.c **** 
+  98:Utilities/timer/stm32_timer.c **** /**
+  99:Utilities/timer/stm32_timer.c ****  * @defgroup TIMER_SERVER_private_function TIMER_SERVER private function
+ 100:Utilities/timer/stm32_timer.c ****  *  @{
+ 101:Utilities/timer/stm32_timer.c ****  */
+ 102:Utilities/timer/stm32_timer.c **** 
+ 103:Utilities/timer/stm32_timer.c **** void TimerInsertNewHeadTimer( UTIL_TIMER_Object_t *TimerObject );
+ 104:Utilities/timer/stm32_timer.c **** void TimerInsertTimer( UTIL_TIMER_Object_t *TimerObject );
+ 105:Utilities/timer/stm32_timer.c **** void TimerSetTimeout( UTIL_TIMER_Object_t *TimerObject );
+ 106:Utilities/timer/stm32_timer.c **** bool TimerExists( UTIL_TIMER_Object_t *TimerObject );
+ 107:Utilities/timer/stm32_timer.c **** 
+ 108:Utilities/timer/stm32_timer.c **** /**
+ 109:Utilities/timer/stm32_timer.c ****   *  @}
+ 110:Utilities/timer/stm32_timer.c ****   */
+ 111:Utilities/timer/stm32_timer.c **** 
+ 112:Utilities/timer/stm32_timer.c **** /* Functions Definition ------------------------------------------------------*/
+ 113:Utilities/timer/stm32_timer.c **** /**
+ 114:Utilities/timer/stm32_timer.c ****   * @addtogroup TIMER_SERVER_exported_function
+ 115:Utilities/timer/stm32_timer.c ****   *  @{
+ 116:Utilities/timer/stm32_timer.c ****   */
+ 117:Utilities/timer/stm32_timer.c **** 
+ 118:Utilities/timer/stm32_timer.c **** UTIL_TIMER_Status_t UTIL_TIMER_Init(void)
+ 119:Utilities/timer/stm32_timer.c **** {
+  27              		.loc 1 119 1 view -0
+  28              		.cfi_startproc
+  29              		@ args = 0, pretend = 0, frame = 0
+  30              		@ frame_needed = 0, uses_anonymous_args = 0
+  31 0000 08B5     		push	{r3, lr}
+  32              	.LCFI0:
+  33              		.cfi_def_cfa_offset 8
+  34              		.cfi_offset 3, -8
+  35              		.cfi_offset 14, -4
+ 120:Utilities/timer/stm32_timer.c ****   UTIL_TIMER_INIT_CRITICAL_SECTION();
+  36              		.loc 1 120 37 view .LVU1
+ 121:Utilities/timer/stm32_timer.c ****   TimerListHead = NULL;
+  37              		.loc 1 121 3 view .LVU2
+  38              		.loc 1 121 17 is_stmt 0 view .LVU3
+  39 0002 034B     		ldr	r3, .L3
+  40 0004 0022     		movs	r2, #0
+  41 0006 1A60     		str	r2, [r3]
+ 122:Utilities/timer/stm32_timer.c ****   return UTIL_TimerDriver.InitTimer();
+  42              		.loc 1 122 3 is_stmt 1 view .LVU4
+  43              		.loc 1 122 26 is_stmt 0 view .LVU5
+  44 0008 024B     		ldr	r3, .L3+4
+  45 000a 1B68     		ldr	r3, [r3]
+  46              		.loc 1 122 10 view .LVU6
+  47 000c 9847     		blx	r3
+  48              	.LVL0:
+ 123:Utilities/timer/stm32_timer.c **** }
+  49              		.loc 1 123 1 view .LVU7
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccBsqBgz.s 			page 4
+
+
+  50 000e 08BD     		pop	{r3, pc}
+  51              	.L4:
+  52              		.align	2
+  53              	.L3:
+  54 0010 00000000 		.word	.LANCHOR0
+  55 0014 00000000 		.word	UTIL_TimerDriver
+  56              		.cfi_endproc
+  57              	.LFE104:
+  59              		.section	.text.UTIL_TIMER_DeInit,"ax",%progbits
+  60              		.align	1
+  61              		.global	UTIL_TIMER_DeInit
+  62              		.syntax unified
+  63              		.thumb
+  64              		.thumb_func
+  66              	UTIL_TIMER_DeInit:
+  67              	.LFB105:
+ 124:Utilities/timer/stm32_timer.c **** 
+ 125:Utilities/timer/stm32_timer.c **** UTIL_TIMER_Status_t UTIL_TIMER_DeInit(void)
+ 126:Utilities/timer/stm32_timer.c **** {
+  68              		.loc 1 126 1 is_stmt 1 view -0
+  69              		.cfi_startproc
+  70              		@ args = 0, pretend = 0, frame = 0
+  71              		@ frame_needed = 0, uses_anonymous_args = 0
+  72 0000 08B5     		push	{r3, lr}
+  73              	.LCFI1:
+  74              		.cfi_def_cfa_offset 8
+  75              		.cfi_offset 3, -8
+  76              		.cfi_offset 14, -4
+ 127:Utilities/timer/stm32_timer.c ****   return UTIL_TimerDriver.DeInitTimer();
+  77              		.loc 1 127 3 view .LVU9
+  78              		.loc 1 127 26 is_stmt 0 view .LVU10
+  79 0002 024B     		ldr	r3, .L7
+  80 0004 5B68     		ldr	r3, [r3, #4]
+  81              		.loc 1 127 10 view .LVU11
+  82 0006 9847     		blx	r3
+  83              	.LVL1:
+ 128:Utilities/timer/stm32_timer.c **** }
+  84              		.loc 1 128 1 view .LVU12
+  85 0008 08BD     		pop	{r3, pc}
+  86              	.L8:
+  87 000a 00BF     		.align	2
+  88              	.L7:
+  89 000c 00000000 		.word	UTIL_TimerDriver
+  90              		.cfi_endproc
+  91              	.LFE105:
+  93              		.section	.text.UTIL_TIMER_Create,"ax",%progbits
+  94              		.align	1
+  95              		.global	UTIL_TIMER_Create
+  96              		.syntax unified
+  97              		.thumb
+  98              		.thumb_func
+ 100              	UTIL_TIMER_Create:
+ 101              	.LVL2:
+ 102              	.LFB106:
+ 129:Utilities/timer/stm32_timer.c **** 
+ 130:Utilities/timer/stm32_timer.c **** UTIL_TIMER_Status_t UTIL_TIMER_Create( UTIL_TIMER_Object_t *TimerObject, uint32_t PeriodValue, UTIL
+ 131:Utilities/timer/stm32_timer.c **** {
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccBsqBgz.s 			page 5
+
+
+ 103              		.loc 1 131 1 is_stmt 1 view -0
+ 104              		.cfi_startproc
+ 105              		@ args = 4, pretend = 0, frame = 0
+ 106              		@ frame_needed = 0, uses_anonymous_args = 0
+ 132:Utilities/timer/stm32_timer.c ****   if((TimerObject != NULL) && (Callback != NULL))
+ 107              		.loc 1 132 3 view .LVU14
+ 108              		.loc 1 132 5 is_stmt 0 view .LVU15
+ 109 0000 A8B1     		cbz	r0, .L11
+ 131:Utilities/timer/stm32_timer.c ****   if((TimerObject != NULL) && (Callback != NULL))
+ 110              		.loc 1 131 1 discriminator 1 view .LVU16
+ 111 0002 F8B5     		push	{r3, r4, r5, r6, r7, lr}
+ 112              	.LCFI2:
+ 113              		.cfi_def_cfa_offset 24
+ 114              		.cfi_offset 3, -24
+ 115              		.cfi_offset 4, -20
+ 116              		.cfi_offset 5, -16
+ 117              		.cfi_offset 6, -12
+ 118              		.cfi_offset 7, -8
+ 119              		.cfi_offset 14, -4
+ 120 0004 1746     		mov	r7, r2
+ 121 0006 1E46     		mov	r6, r3
+ 122 0008 0446     		mov	r4, r0
+ 123              		.loc 1 132 28 discriminator 1 view .LVU17
+ 124 000a 93B1     		cbz	r3, .L12
+ 133:Utilities/timer/stm32_timer.c ****   {
+ 134:Utilities/timer/stm32_timer.c ****     TimerObject->Timestamp = 0U;
+ 125              		.loc 1 134 5 is_stmt 1 view .LVU18
+ 126              		.loc 1 134 28 is_stmt 0 view .LVU19
+ 127 000c 0025     		movs	r5, #0
+ 128 000e 0560     		str	r5, [r0]
+ 135:Utilities/timer/stm32_timer.c ****     TimerObject->ReloadValue = UTIL_TimerDriver.ms2Tick(PeriodValue);
+ 129              		.loc 1 135 5 is_stmt 1 view .LVU20
+ 130              		.loc 1 135 48 is_stmt 0 view .LVU21
+ 131 0010 094B     		ldr	r3, .L17
+ 132              	.LVL3:
+ 133              		.loc 1 135 48 view .LVU22
+ 134 0012 5B6A     		ldr	r3, [r3, #36]
+ 135              		.loc 1 135 32 view .LVU23
+ 136 0014 0846     		mov	r0, r1
+ 137              	.LVL4:
+ 138              		.loc 1 135 32 view .LVU24
+ 139 0016 9847     		blx	r3
+ 140              	.LVL5:
+ 141              		.loc 1 135 30 view .LVU25
+ 142 0018 6060     		str	r0, [r4, #4]
+ 136:Utilities/timer/stm32_timer.c ****     TimerObject->IsPending = 0U;
+ 143              		.loc 1 136 5 is_stmt 1 view .LVU26
+ 144              		.loc 1 136 28 is_stmt 0 view .LVU27
+ 145 001a 2572     		strb	r5, [r4, #8]
+ 137:Utilities/timer/stm32_timer.c ****     TimerObject->IsRunning = 0U;
+ 146              		.loc 1 137 5 is_stmt 1 view .LVU28
+ 147              		.loc 1 137 28 is_stmt 0 view .LVU29
+ 148 001c 6572     		strb	r5, [r4, #9]
+ 138:Utilities/timer/stm32_timer.c ****     TimerObject->IsReloadStopped = 0U;
+ 149              		.loc 1 138 5 is_stmt 1 view .LVU30
+ 150              		.loc 1 138 34 is_stmt 0 view .LVU31
+ 151 001e A572     		strb	r5, [r4, #10]
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccBsqBgz.s 			page 6
+
+
+ 139:Utilities/timer/stm32_timer.c ****     TimerObject->Callback = Callback;
+ 152              		.loc 1 139 5 is_stmt 1 view .LVU32
+ 153              		.loc 1 139 27 is_stmt 0 view .LVU33
+ 154 0020 E660     		str	r6, [r4, #12]
+ 140:Utilities/timer/stm32_timer.c ****     TimerObject->argument = Argument;
+ 155              		.loc 1 140 5 is_stmt 1 view .LVU34
+ 156              		.loc 1 140 27 is_stmt 0 view .LVU35
+ 157 0022 069B     		ldr	r3, [sp, #24]
+ 158 0024 2361     		str	r3, [r4, #16]
+ 141:Utilities/timer/stm32_timer.c ****     TimerObject->Mode = Mode;
+ 159              		.loc 1 141 5 is_stmt 1 view .LVU36
+ 160              		.loc 1 141 23 is_stmt 0 view .LVU37
+ 161 0026 E772     		strb	r7, [r4, #11]
+ 142:Utilities/timer/stm32_timer.c ****     TimerObject->Next = NULL;
+ 162              		.loc 1 142 5 is_stmt 1 view .LVU38
+ 163              		.loc 1 142 23 is_stmt 0 view .LVU39
+ 164 0028 6561     		str	r5, [r4, #20]
+ 143:Utilities/timer/stm32_timer.c ****     return UTIL_TIMER_OK;
+ 165              		.loc 1 143 5 is_stmt 1 view .LVU40
+ 166              		.loc 1 143 12 is_stmt 0 view .LVU41
+ 167 002a 2846     		mov	r0, r5
+ 168              	.L10:
+ 144:Utilities/timer/stm32_timer.c ****   }
+ 145:Utilities/timer/stm32_timer.c ****   else
+ 146:Utilities/timer/stm32_timer.c ****   {
+ 147:Utilities/timer/stm32_timer.c ****     return UTIL_TIMER_INVALID_PARAM;
+ 148:Utilities/timer/stm32_timer.c ****   }
+ 149:Utilities/timer/stm32_timer.c **** }
+ 169              		.loc 1 149 1 view .LVU42
+ 170 002c F8BD     		pop	{r3, r4, r5, r6, r7, pc}
+ 171              	.LVL6:
+ 172              	.L11:
+ 173              	.LCFI3:
+ 174              		.cfi_def_cfa_offset 0
+ 175              		.cfi_restore 3
+ 176              		.cfi_restore 4
+ 177              		.cfi_restore 5
+ 178              		.cfi_restore 6
+ 179              		.cfi_restore 7
+ 180              		.cfi_restore 14
+ 147:Utilities/timer/stm32_timer.c ****   }
+ 181              		.loc 1 147 12 view .LVU43
+ 182 002e 0120     		movs	r0, #1
+ 183              	.LVL7:
+ 184              		.loc 1 149 1 view .LVU44
+ 185 0030 7047     		bx	lr
+ 186              	.LVL8:
+ 187              	.L12:
+ 188              	.LCFI4:
+ 189              		.cfi_def_cfa_offset 24
+ 190              		.cfi_offset 3, -24
+ 191              		.cfi_offset 4, -20
+ 192              		.cfi_offset 5, -16
+ 193              		.cfi_offset 6, -12
+ 194              		.cfi_offset 7, -8
+ 195              		.cfi_offset 14, -4
+ 147:Utilities/timer/stm32_timer.c ****   }
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccBsqBgz.s 			page 7
+
+
+ 196              		.loc 1 147 12 view .LVU45
+ 197 0032 0120     		movs	r0, #1
+ 198              	.LVL9:
+ 147:Utilities/timer/stm32_timer.c ****   }
+ 199              		.loc 1 147 12 view .LVU46
+ 200 0034 FAE7     		b	.L10
+ 201              	.L18:
+ 202 0036 00BF     		.align	2
+ 203              	.L17:
+ 204 0038 00000000 		.word	UTIL_TimerDriver
+ 205              		.cfi_endproc
+ 206              	.LFE106:
+ 208              		.section	.text.UTIL_TIMER_SetReloadMode,"ax",%progbits
+ 209              		.align	1
+ 210              		.global	UTIL_TIMER_SetReloadMode
+ 211              		.syntax unified
+ 212              		.thumb
+ 213              		.thumb_func
+ 215              	UTIL_TIMER_SetReloadMode:
+ 216              	.LVL10:
+ 217              	.LFB111:
+ 150:Utilities/timer/stm32_timer.c **** 
+ 151:Utilities/timer/stm32_timer.c **** UTIL_TIMER_Status_t UTIL_TIMER_Start( UTIL_TIMER_Object_t *TimerObject)
+ 152:Utilities/timer/stm32_timer.c **** {
+ 153:Utilities/timer/stm32_timer.c ****   UTIL_TIMER_Status_t  ret = UTIL_TIMER_OK;
+ 154:Utilities/timer/stm32_timer.c ****   uint32_t elapsedTime;
+ 155:Utilities/timer/stm32_timer.c ****   uint32_t minValue;
+ 156:Utilities/timer/stm32_timer.c ****   uint32_t ticks;
+ 157:Utilities/timer/stm32_timer.c ****     
+ 158:Utilities/timer/stm32_timer.c ****   if(( TimerObject != NULL ) && ( TimerExists( TimerObject ) == false ) && (TimerObject->IsRunning 
+ 159:Utilities/timer/stm32_timer.c ****   {
+ 160:Utilities/timer/stm32_timer.c ****     UTIL_TIMER_ENTER_CRITICAL_SECTION();
+ 161:Utilities/timer/stm32_timer.c ****     ticks = TimerObject->ReloadValue;
+ 162:Utilities/timer/stm32_timer.c ****     minValue = UTIL_TimerDriver.GetMinimumTimeout( );
+ 163:Utilities/timer/stm32_timer.c ****     
+ 164:Utilities/timer/stm32_timer.c ****     if( ticks < minValue )
+ 165:Utilities/timer/stm32_timer.c ****     {
+ 166:Utilities/timer/stm32_timer.c ****       ticks = minValue;
+ 167:Utilities/timer/stm32_timer.c ****     }
+ 168:Utilities/timer/stm32_timer.c ****     
+ 169:Utilities/timer/stm32_timer.c ****     TimerObject->Timestamp = ticks;
+ 170:Utilities/timer/stm32_timer.c ****     TimerObject->IsPending = 0U;
+ 171:Utilities/timer/stm32_timer.c ****     TimerObject->IsRunning = 1U;
+ 172:Utilities/timer/stm32_timer.c ****     TimerObject->IsReloadStopped = 0U;
+ 173:Utilities/timer/stm32_timer.c ****     if( TimerListHead == NULL )
+ 174:Utilities/timer/stm32_timer.c ****     {
+ 175:Utilities/timer/stm32_timer.c ****       UTIL_TimerDriver.SetTimerContext();
+ 176:Utilities/timer/stm32_timer.c ****       TimerInsertNewHeadTimer( TimerObject ); /* insert a timeout at now+obj->Timestamp */
+ 177:Utilities/timer/stm32_timer.c ****     }
+ 178:Utilities/timer/stm32_timer.c ****     else 
+ 179:Utilities/timer/stm32_timer.c ****     {
+ 180:Utilities/timer/stm32_timer.c ****       elapsedTime = UTIL_TimerDriver.GetTimerElapsedTime( );
+ 181:Utilities/timer/stm32_timer.c ****       TimerObject->Timestamp += elapsedTime;
+ 182:Utilities/timer/stm32_timer.c ****       
+ 183:Utilities/timer/stm32_timer.c ****       if( TimerObject->Timestamp < TimerListHead->Timestamp )
+ 184:Utilities/timer/stm32_timer.c ****       {
+ 185:Utilities/timer/stm32_timer.c ****         TimerInsertNewHeadTimer( TimerObject);
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccBsqBgz.s 			page 8
+
+
+ 186:Utilities/timer/stm32_timer.c ****       }
+ 187:Utilities/timer/stm32_timer.c ****       else
+ 188:Utilities/timer/stm32_timer.c ****       {
+ 189:Utilities/timer/stm32_timer.c ****         TimerInsertTimer( TimerObject);
+ 190:Utilities/timer/stm32_timer.c ****       }
+ 191:Utilities/timer/stm32_timer.c ****     }
+ 192:Utilities/timer/stm32_timer.c ****     UTIL_TIMER_EXIT_CRITICAL_SECTION();
+ 193:Utilities/timer/stm32_timer.c ****   }
+ 194:Utilities/timer/stm32_timer.c ****   else
+ 195:Utilities/timer/stm32_timer.c ****   {
+ 196:Utilities/timer/stm32_timer.c ****     ret =  UTIL_TIMER_INVALID_PARAM;
+ 197:Utilities/timer/stm32_timer.c ****   }
+ 198:Utilities/timer/stm32_timer.c ****   return ret;
+ 199:Utilities/timer/stm32_timer.c **** }
+ 200:Utilities/timer/stm32_timer.c **** 
+ 201:Utilities/timer/stm32_timer.c **** UTIL_TIMER_Status_t UTIL_TIMER_StartWithPeriod( UTIL_TIMER_Object_t *TimerObject, uint32_t PeriodVa
+ 202:Utilities/timer/stm32_timer.c **** {
+ 203:Utilities/timer/stm32_timer.c ****   UTIL_TIMER_Status_t  ret = UTIL_TIMER_OK;
+ 204:Utilities/timer/stm32_timer.c **** 
+ 205:Utilities/timer/stm32_timer.c ****   if(NULL == TimerObject)
+ 206:Utilities/timer/stm32_timer.c ****   {
+ 207:Utilities/timer/stm32_timer.c ****     ret = UTIL_TIMER_INVALID_PARAM;
+ 208:Utilities/timer/stm32_timer.c ****   }
+ 209:Utilities/timer/stm32_timer.c ****   else
+ 210:Utilities/timer/stm32_timer.c ****   {
+ 211:Utilities/timer/stm32_timer.c ****     TimerObject->ReloadValue = UTIL_TimerDriver.ms2Tick(PeriodValue);
+ 212:Utilities/timer/stm32_timer.c ****     if(TimerExists(TimerObject))
+ 213:Utilities/timer/stm32_timer.c ****     {
+ 214:Utilities/timer/stm32_timer.c ****       (void)UTIL_TIMER_Stop(TimerObject);
+ 215:Utilities/timer/stm32_timer.c ****     }
+ 216:Utilities/timer/stm32_timer.c ****     ret = UTIL_TIMER_Start(TimerObject);
+ 217:Utilities/timer/stm32_timer.c ****   }
+ 218:Utilities/timer/stm32_timer.c ****   return ret;
+ 219:Utilities/timer/stm32_timer.c **** }
+ 220:Utilities/timer/stm32_timer.c **** 
+ 221:Utilities/timer/stm32_timer.c **** UTIL_TIMER_Status_t UTIL_TIMER_Stop( UTIL_TIMER_Object_t *TimerObject )
+ 222:Utilities/timer/stm32_timer.c **** {
+ 223:Utilities/timer/stm32_timer.c ****   UTIL_TIMER_Status_t  ret = UTIL_TIMER_OK;
+ 224:Utilities/timer/stm32_timer.c **** 
+ 225:Utilities/timer/stm32_timer.c ****   if (NULL != TimerObject)
+ 226:Utilities/timer/stm32_timer.c ****   {
+ 227:Utilities/timer/stm32_timer.c ****     UTIL_TIMER_ENTER_CRITICAL_SECTION();
+ 228:Utilities/timer/stm32_timer.c ****     UTIL_TIMER_Object_t* prev = TimerListHead;
+ 229:Utilities/timer/stm32_timer.c ****     UTIL_TIMER_Object_t* cur = TimerListHead;
+ 230:Utilities/timer/stm32_timer.c ****     TimerObject->IsReloadStopped = 1U;
+ 231:Utilities/timer/stm32_timer.c ****     
+ 232:Utilities/timer/stm32_timer.c ****     /* List is empty or the Obj to stop does not exist  */
+ 233:Utilities/timer/stm32_timer.c ****     if(NULL != TimerListHead)
+ 234:Utilities/timer/stm32_timer.c ****     {
+ 235:Utilities/timer/stm32_timer.c ****       TimerObject->IsRunning = 0U;
+ 236:Utilities/timer/stm32_timer.c ****       
+ 237:Utilities/timer/stm32_timer.c ****       if( TimerListHead == TimerObject ) /* Stop the Head */
+ 238:Utilities/timer/stm32_timer.c ****       {
+ 239:Utilities/timer/stm32_timer.c ****           TimerListHead->IsPending = 0;
+ 240:Utilities/timer/stm32_timer.c ****           if( TimerListHead->Next != NULL )
+ 241:Utilities/timer/stm32_timer.c ****           {
+ 242:Utilities/timer/stm32_timer.c ****             TimerListHead = TimerListHead->Next;
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccBsqBgz.s 			page 9
+
+
+ 243:Utilities/timer/stm32_timer.c ****             TimerSetTimeout( TimerListHead );
+ 244:Utilities/timer/stm32_timer.c ****           }
+ 245:Utilities/timer/stm32_timer.c ****           else
+ 246:Utilities/timer/stm32_timer.c ****           {
+ 247:Utilities/timer/stm32_timer.c ****             UTIL_TimerDriver.StopTimerEvt( );
+ 248:Utilities/timer/stm32_timer.c ****             TimerListHead = NULL;
+ 249:Utilities/timer/stm32_timer.c ****           }
+ 250:Utilities/timer/stm32_timer.c ****       }
+ 251:Utilities/timer/stm32_timer.c ****       else /* Stop an object within the list */
+ 252:Utilities/timer/stm32_timer.c ****       {      
+ 253:Utilities/timer/stm32_timer.c ****         while( cur != NULL )
+ 254:Utilities/timer/stm32_timer.c ****         {
+ 255:Utilities/timer/stm32_timer.c ****           if( cur == TimerObject )
+ 256:Utilities/timer/stm32_timer.c ****           {
+ 257:Utilities/timer/stm32_timer.c ****             if( cur->Next != NULL )
+ 258:Utilities/timer/stm32_timer.c ****             {
+ 259:Utilities/timer/stm32_timer.c ****               cur = cur->Next;
+ 260:Utilities/timer/stm32_timer.c ****               prev->Next = cur;
+ 261:Utilities/timer/stm32_timer.c ****             }
+ 262:Utilities/timer/stm32_timer.c ****             else
+ 263:Utilities/timer/stm32_timer.c ****             {
+ 264:Utilities/timer/stm32_timer.c ****               cur = NULL;
+ 265:Utilities/timer/stm32_timer.c ****               prev->Next = cur;
+ 266:Utilities/timer/stm32_timer.c ****             }
+ 267:Utilities/timer/stm32_timer.c ****             break;
+ 268:Utilities/timer/stm32_timer.c ****           }
+ 269:Utilities/timer/stm32_timer.c ****           else
+ 270:Utilities/timer/stm32_timer.c ****           {
+ 271:Utilities/timer/stm32_timer.c ****             prev = cur;
+ 272:Utilities/timer/stm32_timer.c ****             cur = cur->Next;
+ 273:Utilities/timer/stm32_timer.c ****           }
+ 274:Utilities/timer/stm32_timer.c ****         }   
+ 275:Utilities/timer/stm32_timer.c ****       }
+ 276:Utilities/timer/stm32_timer.c ****       ret = UTIL_TIMER_OK;
+ 277:Utilities/timer/stm32_timer.c ****     }
+ 278:Utilities/timer/stm32_timer.c ****     UTIL_TIMER_EXIT_CRITICAL_SECTION();
+ 279:Utilities/timer/stm32_timer.c ****   }
+ 280:Utilities/timer/stm32_timer.c ****   else
+ 281:Utilities/timer/stm32_timer.c ****   {
+ 282:Utilities/timer/stm32_timer.c ****     ret = UTIL_TIMER_INVALID_PARAM;
+ 283:Utilities/timer/stm32_timer.c ****   }
+ 284:Utilities/timer/stm32_timer.c ****   return ret;
+ 285:Utilities/timer/stm32_timer.c **** }
+ 286:Utilities/timer/stm32_timer.c **** 
+ 287:Utilities/timer/stm32_timer.c **** UTIL_TIMER_Status_t UTIL_TIMER_SetPeriod(UTIL_TIMER_Object_t *TimerObject, uint32_t NewPeriodValue)
+ 288:Utilities/timer/stm32_timer.c **** {
+ 289:Utilities/timer/stm32_timer.c ****   UTIL_TIMER_Status_t  ret = UTIL_TIMER_OK;
+ 290:Utilities/timer/stm32_timer.c ****   
+ 291:Utilities/timer/stm32_timer.c ****   if(NULL == TimerObject)
+ 292:Utilities/timer/stm32_timer.c ****   {
+ 293:Utilities/timer/stm32_timer.c **** 	  ret = UTIL_TIMER_INVALID_PARAM;
+ 294:Utilities/timer/stm32_timer.c ****   }
+ 295:Utilities/timer/stm32_timer.c ****   else
+ 296:Utilities/timer/stm32_timer.c ****   {
+ 297:Utilities/timer/stm32_timer.c ****     TimerObject->ReloadValue = UTIL_TimerDriver.ms2Tick(NewPeriodValue);
+ 298:Utilities/timer/stm32_timer.c ****     if(TimerExists(TimerObject))
+ 299:Utilities/timer/stm32_timer.c ****     {
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccBsqBgz.s 			page 10
+
+
+ 300:Utilities/timer/stm32_timer.c ****       (void)UTIL_TIMER_Stop(TimerObject);
+ 301:Utilities/timer/stm32_timer.c ****       ret = UTIL_TIMER_Start(TimerObject);
+ 302:Utilities/timer/stm32_timer.c ****     }
+ 303:Utilities/timer/stm32_timer.c ****   }
+ 304:Utilities/timer/stm32_timer.c ****   return ret;
+ 305:Utilities/timer/stm32_timer.c **** }
+ 306:Utilities/timer/stm32_timer.c **** 
+ 307:Utilities/timer/stm32_timer.c **** UTIL_TIMER_Status_t UTIL_TIMER_SetReloadMode(UTIL_TIMER_Object_t *TimerObject, UTIL_TIMER_Mode_t Re
+ 308:Utilities/timer/stm32_timer.c **** {
+ 218              		.loc 1 308 1 is_stmt 1 view -0
+ 219              		.cfi_startproc
+ 220              		@ args = 0, pretend = 0, frame = 0
+ 221              		@ frame_needed = 0, uses_anonymous_args = 0
+ 222              		@ link register save eliminated.
+ 309:Utilities/timer/stm32_timer.c ****   UTIL_TIMER_Status_t  ret = UTIL_TIMER_OK;
+ 223              		.loc 1 309 3 view .LVU48
+ 310:Utilities/timer/stm32_timer.c **** 
+ 311:Utilities/timer/stm32_timer.c ****   if(NULL == TimerObject)
+ 224              		.loc 1 311 3 view .LVU49
+ 225              		.loc 1 311 5 is_stmt 0 view .LVU50
+ 226 0000 10B1     		cbz	r0, .L21
+ 312:Utilities/timer/stm32_timer.c ****   {
+ 313:Utilities/timer/stm32_timer.c **** 	ret = UTIL_TIMER_INVALID_PARAM;
+ 314:Utilities/timer/stm32_timer.c ****   }
+ 315:Utilities/timer/stm32_timer.c ****   else
+ 316:Utilities/timer/stm32_timer.c ****   {
+ 317:Utilities/timer/stm32_timer.c **** 	TimerObject->Mode = ReloadMode;
+ 227              		.loc 1 317 2 is_stmt 1 view .LVU51
+ 228              		.loc 1 317 20 is_stmt 0 view .LVU52
+ 229 0002 C172     		strb	r1, [r0, #11]
+ 309:Utilities/timer/stm32_timer.c **** 
+ 230              		.loc 1 309 24 view .LVU53
+ 231 0004 0020     		movs	r0, #0
+ 232              	.LVL11:
+ 309:Utilities/timer/stm32_timer.c **** 
+ 233              		.loc 1 309 24 view .LVU54
+ 234 0006 7047     		bx	lr
+ 235              	.LVL12:
+ 236              	.L21:
+ 313:Utilities/timer/stm32_timer.c ****   }
+ 237              		.loc 1 313 6 view .LVU55
+ 238 0008 0120     		movs	r0, #1
+ 239              	.LVL13:
+ 318:Utilities/timer/stm32_timer.c ****   }
+ 319:Utilities/timer/stm32_timer.c ****   return ret;
+ 240              		.loc 1 319 3 is_stmt 1 view .LVU56
+ 320:Utilities/timer/stm32_timer.c **** }
+ 241              		.loc 1 320 1 is_stmt 0 view .LVU57
+ 242 000a 7047     		bx	lr
+ 243              		.cfi_endproc
+ 244              	.LFE111:
+ 246              		.section	.text.UTIL_TIMER_IsRunning,"ax",%progbits
+ 247              		.align	1
+ 248              		.global	UTIL_TIMER_IsRunning
+ 249              		.syntax unified
+ 250              		.thumb
+ 251              		.thumb_func
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccBsqBgz.s 			page 11
+
+
+ 253              	UTIL_TIMER_IsRunning:
+ 254              	.LVL14:
+ 255              	.LFB113:
+ 321:Utilities/timer/stm32_timer.c **** 
+ 322:Utilities/timer/stm32_timer.c **** UTIL_TIMER_Status_t UTIL_TIMER_GetRemainingTime(UTIL_TIMER_Object_t *TimerObject, uint32_t *Elapsed
+ 323:Utilities/timer/stm32_timer.c **** {
+ 324:Utilities/timer/stm32_timer.c ****   UTIL_TIMER_Status_t ret = UTIL_TIMER_OK;
+ 325:Utilities/timer/stm32_timer.c ****   if(TimerExists(TimerObject))
+ 326:Utilities/timer/stm32_timer.c ****   {
+ 327:Utilities/timer/stm32_timer.c ****     uint32_t time = UTIL_TimerDriver.GetTimerElapsedTime();
+ 328:Utilities/timer/stm32_timer.c ****     if (TimerObject->Timestamp < time )
+ 329:Utilities/timer/stm32_timer.c ****     {
+ 330:Utilities/timer/stm32_timer.c ****       *ElapsedTime = 0;
+ 331:Utilities/timer/stm32_timer.c ****     }
+ 332:Utilities/timer/stm32_timer.c ****     else
+ 333:Utilities/timer/stm32_timer.c ****     {
+ 334:Utilities/timer/stm32_timer.c ****       *ElapsedTime = TimerObject->Timestamp - time;
+ 335:Utilities/timer/stm32_timer.c ****     }
+ 336:Utilities/timer/stm32_timer.c ****   }
+ 337:Utilities/timer/stm32_timer.c ****   else
+ 338:Utilities/timer/stm32_timer.c ****   {
+ 339:Utilities/timer/stm32_timer.c ****     ret = UTIL_TIMER_INVALID_PARAM;
+ 340:Utilities/timer/stm32_timer.c ****   }
+ 341:Utilities/timer/stm32_timer.c ****   return ret;
+ 342:Utilities/timer/stm32_timer.c **** }
+ 343:Utilities/timer/stm32_timer.c **** 
+ 344:Utilities/timer/stm32_timer.c **** uint32_t UTIL_TIMER_IsRunning( UTIL_TIMER_Object_t *TimerObject )
+ 345:Utilities/timer/stm32_timer.c **** {
+ 256              		.loc 1 345 1 is_stmt 1 view -0
+ 257              		.cfi_startproc
+ 258              		@ args = 0, pretend = 0, frame = 0
+ 259              		@ frame_needed = 0, uses_anonymous_args = 0
+ 260              		@ link register save eliminated.
+ 346:Utilities/timer/stm32_timer.c ****   if( TimerObject != NULL )
+ 261              		.loc 1 346 3 view .LVU59
+ 262              		.loc 1 346 5 is_stmt 0 view .LVU60
+ 263 0000 08B1     		cbz	r0, .L24
+ 347:Utilities/timer/stm32_timer.c ****   {
+ 348:Utilities/timer/stm32_timer.c ****     return TimerObject->IsRunning;
+ 264              		.loc 1 348 5 is_stmt 1 view .LVU61
+ 265              		.loc 1 348 23 is_stmt 0 view .LVU62
+ 266 0002 407A     		ldrb	r0, [r0, #9]	@ zero_extendqisi2
+ 267              	.LVL15:
+ 268              		.loc 1 348 23 view .LVU63
+ 269 0004 7047     		bx	lr
+ 270              	.LVL16:
+ 271              	.L24:
+ 349:Utilities/timer/stm32_timer.c ****   }
+ 350:Utilities/timer/stm32_timer.c ****   else
+ 351:Utilities/timer/stm32_timer.c ****   {
+ 352:Utilities/timer/stm32_timer.c ****     return 0;
+ 272              		.loc 1 352 12 view .LVU64
+ 273 0006 0020     		movs	r0, #0
+ 274              	.LVL17:
+ 353:Utilities/timer/stm32_timer.c ****   }
+ 354:Utilities/timer/stm32_timer.c **** }
+ 275              		.loc 1 354 1 view .LVU65
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccBsqBgz.s 			page 12
+
+
+ 276 0008 7047     		bx	lr
+ 277              		.cfi_endproc
+ 278              	.LFE113:
+ 280              		.section	.text.UTIL_TIMER_GetCurrentTime,"ax",%progbits
+ 281              		.align	1
+ 282              		.global	UTIL_TIMER_GetCurrentTime
+ 283              		.syntax unified
+ 284              		.thumb
+ 285              		.thumb_func
+ 287              	UTIL_TIMER_GetCurrentTime:
+ 288              	.LFB116:
+ 355:Utilities/timer/stm32_timer.c **** 
+ 356:Utilities/timer/stm32_timer.c **** uint32_t UTIL_TIMER_GetFirstRemainingTime(void)
+ 357:Utilities/timer/stm32_timer.c **** {
+ 358:Utilities/timer/stm32_timer.c **** 	uint32_t NextTimer = 0xFFFFFFFFU;
+ 359:Utilities/timer/stm32_timer.c **** 
+ 360:Utilities/timer/stm32_timer.c **** 	if(TimerListHead != NULL)
+ 361:Utilities/timer/stm32_timer.c **** 	{
+ 362:Utilities/timer/stm32_timer.c **** 		(void)UTIL_TIMER_GetRemainingTime(TimerListHead, &NextTimer);
+ 363:Utilities/timer/stm32_timer.c **** 	}
+ 364:Utilities/timer/stm32_timer.c **** 	return NextTimer;
+ 365:Utilities/timer/stm32_timer.c **** }
+ 366:Utilities/timer/stm32_timer.c **** 
+ 367:Utilities/timer/stm32_timer.c **** void UTIL_TIMER_IRQ_Handler( void )
+ 368:Utilities/timer/stm32_timer.c **** {
+ 369:Utilities/timer/stm32_timer.c ****   UTIL_TIMER_Object_t* cur;
+ 370:Utilities/timer/stm32_timer.c ****   uint32_t old, now, DeltaContext;
+ 371:Utilities/timer/stm32_timer.c **** 
+ 372:Utilities/timer/stm32_timer.c ****   UTIL_TIMER_ENTER_CRITICAL_SECTION();
+ 373:Utilities/timer/stm32_timer.c **** 
+ 374:Utilities/timer/stm32_timer.c ****   old  =  UTIL_TimerDriver.GetTimerContext( );
+ 375:Utilities/timer/stm32_timer.c ****   now  =  UTIL_TimerDriver.SetTimerContext( );
+ 376:Utilities/timer/stm32_timer.c **** 
+ 377:Utilities/timer/stm32_timer.c ****   DeltaContext = now  - old; /*intentional wrap around */
+ 378:Utilities/timer/stm32_timer.c ****   
+ 379:Utilities/timer/stm32_timer.c ****   /* update timeStamp based upon new Time Reference*/
+ 380:Utilities/timer/stm32_timer.c ****   /* because delta context should never exceed 2^32*/
+ 381:Utilities/timer/stm32_timer.c ****   if ( TimerListHead != NULL )
+ 382:Utilities/timer/stm32_timer.c ****   {
+ 383:Utilities/timer/stm32_timer.c ****     cur = TimerListHead;
+ 384:Utilities/timer/stm32_timer.c **** 	do {
+ 385:Utilities/timer/stm32_timer.c ****       if (cur->Timestamp > DeltaContext)
+ 386:Utilities/timer/stm32_timer.c ****       {
+ 387:Utilities/timer/stm32_timer.c ****         cur->Timestamp -= DeltaContext;
+ 388:Utilities/timer/stm32_timer.c ****       }
+ 389:Utilities/timer/stm32_timer.c ****       else
+ 390:Utilities/timer/stm32_timer.c ****       {
+ 391:Utilities/timer/stm32_timer.c ****         cur->Timestamp = 0;
+ 392:Utilities/timer/stm32_timer.c ****       }
+ 393:Utilities/timer/stm32_timer.c ****       cur = cur->Next;
+ 394:Utilities/timer/stm32_timer.c ****     } while(cur != NULL);
+ 395:Utilities/timer/stm32_timer.c ****   }
+ 396:Utilities/timer/stm32_timer.c **** 
+ 397:Utilities/timer/stm32_timer.c ****   /* Execute expired timer and update the list */
+ 398:Utilities/timer/stm32_timer.c ****   while ((TimerListHead != NULL) && ((TimerListHead->Timestamp == 0U) || (TimerListHead->Timestamp 
+ 399:Utilities/timer/stm32_timer.c ****   {
+ 400:Utilities/timer/stm32_timer.c ****       cur = TimerListHead;
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccBsqBgz.s 			page 13
+
+
+ 401:Utilities/timer/stm32_timer.c ****       TimerListHead = TimerListHead->Next;
+ 402:Utilities/timer/stm32_timer.c ****       cur->IsPending = 0;
+ 403:Utilities/timer/stm32_timer.c ****       cur->IsRunning = 0;
+ 404:Utilities/timer/stm32_timer.c ****       cur->Callback(cur->argument);
+ 405:Utilities/timer/stm32_timer.c ****       if(( cur->Mode == UTIL_TIMER_PERIODIC) && (cur->IsReloadStopped == 0U))
+ 406:Utilities/timer/stm32_timer.c ****       {
+ 407:Utilities/timer/stm32_timer.c ****         (void)UTIL_TIMER_Start(cur);
+ 408:Utilities/timer/stm32_timer.c ****       }
+ 409:Utilities/timer/stm32_timer.c ****   }
+ 410:Utilities/timer/stm32_timer.c **** 
+ 411:Utilities/timer/stm32_timer.c ****   /* start the next TimerListHead if it exists and it is not pending*/
+ 412:Utilities/timer/stm32_timer.c ****   if(( TimerListHead != NULL ) && (TimerListHead->IsPending == 0U))
+ 413:Utilities/timer/stm32_timer.c ****   {
+ 414:Utilities/timer/stm32_timer.c ****     TimerSetTimeout( TimerListHead );
+ 415:Utilities/timer/stm32_timer.c ****   }
+ 416:Utilities/timer/stm32_timer.c ****   UTIL_TIMER_EXIT_CRITICAL_SECTION();
+ 417:Utilities/timer/stm32_timer.c **** }
+ 418:Utilities/timer/stm32_timer.c **** 
+ 419:Utilities/timer/stm32_timer.c **** UTIL_TIMER_Time_t UTIL_TIMER_GetCurrentTime(void)
+ 420:Utilities/timer/stm32_timer.c **** {
+ 289              		.loc 1 420 1 is_stmt 1 view -0
+ 290              		.cfi_startproc
+ 291              		@ args = 0, pretend = 0, frame = 0
+ 292              		@ frame_needed = 0, uses_anonymous_args = 0
+ 293 0000 10B5     		push	{r4, lr}
+ 294              	.LCFI5:
+ 295              		.cfi_def_cfa_offset 8
+ 296              		.cfi_offset 4, -8
+ 297              		.cfi_offset 14, -4
+ 421:Utilities/timer/stm32_timer.c ****   uint32_t now = UTIL_TimerDriver.GetTimerValue( );
+ 298              		.loc 1 421 3 view .LVU67
+ 299              		.loc 1 421 34 is_stmt 0 view .LVU68
+ 300 0002 034C     		ldr	r4, .L27
+ 301 0004 E369     		ldr	r3, [r4, #28]
+ 302              		.loc 1 421 18 view .LVU69
+ 303 0006 9847     		blx	r3
+ 304              	.LVL18:
+ 422:Utilities/timer/stm32_timer.c ****   return  UTIL_TimerDriver.Tick2ms(now);
+ 305              		.loc 1 422 3 is_stmt 1 view .LVU70
+ 306              		.loc 1 422 27 is_stmt 0 view .LVU71
+ 307 0008 A36A     		ldr	r3, [r4, #40]
+ 308              		.loc 1 422 11 view .LVU72
+ 309 000a 9847     		blx	r3
+ 310              	.LVL19:
+ 423:Utilities/timer/stm32_timer.c **** }
+ 311              		.loc 1 423 1 view .LVU73
+ 312 000c 10BD     		pop	{r4, pc}
+ 313              	.L28:
+ 314 000e 00BF     		.align	2
+ 315              	.L27:
+ 316 0010 00000000 		.word	UTIL_TimerDriver
+ 317              		.cfi_endproc
+ 318              	.LFE116:
+ 320              		.section	.text.UTIL_TIMER_GetElapsedTime,"ax",%progbits
+ 321              		.align	1
+ 322              		.global	UTIL_TIMER_GetElapsedTime
+ 323              		.syntax unified
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccBsqBgz.s 			page 14
+
+
+ 324              		.thumb
+ 325              		.thumb_func
+ 327              	UTIL_TIMER_GetElapsedTime:
+ 328              	.LVL20:
+ 329              	.LFB117:
+ 424:Utilities/timer/stm32_timer.c **** 
+ 425:Utilities/timer/stm32_timer.c **** UTIL_TIMER_Time_t UTIL_TIMER_GetElapsedTime(UTIL_TIMER_Time_t past )
+ 426:Utilities/timer/stm32_timer.c **** {
+ 330              		.loc 1 426 1 is_stmt 1 view -0
+ 331              		.cfi_startproc
+ 332              		@ args = 0, pretend = 0, frame = 0
+ 333              		@ frame_needed = 0, uses_anonymous_args = 0
+ 334              		.loc 1 426 1 is_stmt 0 view .LVU75
+ 335 0000 70B5     		push	{r4, r5, r6, lr}
+ 336              	.LCFI6:
+ 337              		.cfi_def_cfa_offset 16
+ 338              		.cfi_offset 4, -16
+ 339              		.cfi_offset 5, -12
+ 340              		.cfi_offset 6, -8
+ 341              		.cfi_offset 14, -4
+ 342 0002 0646     		mov	r6, r0
+ 427:Utilities/timer/stm32_timer.c ****   uint32_t nowInTicks = UTIL_TimerDriver.GetTimerValue( );
+ 343              		.loc 1 427 3 is_stmt 1 view .LVU76
+ 344              		.loc 1 427 41 is_stmt 0 view .LVU77
+ 345 0004 054D     		ldr	r5, .L31
+ 346 0006 EB69     		ldr	r3, [r5, #28]
+ 347              		.loc 1 427 25 view .LVU78
+ 348 0008 9847     		blx	r3
+ 349              	.LVL21:
+ 350              		.loc 1 427 25 view .LVU79
+ 351 000a 0446     		mov	r4, r0
+ 352              	.LVL22:
+ 428:Utilities/timer/stm32_timer.c ****   uint32_t pastInTicks = UTIL_TimerDriver.ms2Tick( past );
+ 353              		.loc 1 428 3 is_stmt 1 view .LVU80
+ 354              		.loc 1 428 42 is_stmt 0 view .LVU81
+ 355 000c 6B6A     		ldr	r3, [r5, #36]
+ 356              		.loc 1 428 26 view .LVU82
+ 357 000e 3046     		mov	r0, r6
+ 358              	.LVL23:
+ 359              		.loc 1 428 26 view .LVU83
+ 360 0010 9847     		blx	r3
+ 361              	.LVL24:
+ 429:Utilities/timer/stm32_timer.c ****   /* intentional wrap around. Works Ok if tick duation below 1ms */
+ 430:Utilities/timer/stm32_timer.c ****   return UTIL_TimerDriver.Tick2ms( nowInTicks- pastInTicks );
+ 362              		.loc 1 430 3 is_stmt 1 view .LVU84
+ 363              		.loc 1 430 26 is_stmt 0 view .LVU85
+ 364 0012 AB6A     		ldr	r3, [r5, #40]
+ 365              		.loc 1 430 10 view .LVU86
+ 366 0014 201A     		subs	r0, r4, r0
+ 367              	.LVL25:
+ 368              		.loc 1 430 10 view .LVU87
+ 369 0016 9847     		blx	r3
+ 370              	.LVL26:
+ 431:Utilities/timer/stm32_timer.c **** }
+ 371              		.loc 1 431 1 view .LVU88
+ 372 0018 70BD     		pop	{r4, r5, r6, pc}
+ 373              	.LVL27:
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccBsqBgz.s 			page 15
+
+
+ 374              	.L32:
+ 375              		.loc 1 431 1 view .LVU89
+ 376 001a 00BF     		.align	2
+ 377              	.L31:
+ 378 001c 00000000 		.word	UTIL_TimerDriver
+ 379              		.cfi_endproc
+ 380              	.LFE117:
+ 382              		.section	.text.TimerExists,"ax",%progbits
+ 383              		.align	1
+ 384              		.global	TimerExists
+ 385              		.syntax unified
+ 386              		.thumb
+ 387              		.thumb_func
+ 389              	TimerExists:
+ 390              	.LVL28:
+ 391              	.LFB118:
+ 432:Utilities/timer/stm32_timer.c **** 
+ 433:Utilities/timer/stm32_timer.c **** /**
+ 434:Utilities/timer/stm32_timer.c ****   *  @}
+ 435:Utilities/timer/stm32_timer.c ****   */
+ 436:Utilities/timer/stm32_timer.c **** 
+ 437:Utilities/timer/stm32_timer.c **** /**************************** Private functions *******************************/
+ 438:Utilities/timer/stm32_timer.c **** 
+ 439:Utilities/timer/stm32_timer.c **** /**
+ 440:Utilities/timer/stm32_timer.c ****   *  @addtogroup TIMER_SERVER_private_function
+ 441:Utilities/timer/stm32_timer.c ****   *
+ 442:Utilities/timer/stm32_timer.c ****   *  @{
+ 443:Utilities/timer/stm32_timer.c ****   */
+ 444:Utilities/timer/stm32_timer.c **** /**
+ 445:Utilities/timer/stm32_timer.c ****  * @brief Check if the Object to be added is not already in the list
+ 446:Utilities/timer/stm32_timer.c ****  *
+ 447:Utilities/timer/stm32_timer.c ****  * @param TimerObject Structure containing the timer object parameters
+ 448:Utilities/timer/stm32_timer.c ****  * @retval 1 (the object is already in the list) or 0
+ 449:Utilities/timer/stm32_timer.c ****  */
+ 450:Utilities/timer/stm32_timer.c **** bool TimerExists( UTIL_TIMER_Object_t *TimerObject )
+ 451:Utilities/timer/stm32_timer.c **** {
+ 392              		.loc 1 451 1 is_stmt 1 view -0
+ 393              		.cfi_startproc
+ 394              		@ args = 0, pretend = 0, frame = 0
+ 395              		@ frame_needed = 0, uses_anonymous_args = 0
+ 396              		@ link register save eliminated.
+ 452:Utilities/timer/stm32_timer.c ****   UTIL_TIMER_Object_t* cur = TimerListHead;
+ 397              		.loc 1 452 3 view .LVU91
+ 398              		.loc 1 452 24 is_stmt 0 view .LVU92
+ 399 0000 054B     		ldr	r3, .L40
+ 400 0002 1B68     		ldr	r3, [r3]
+ 401              	.LVL29:
+ 453:Utilities/timer/stm32_timer.c **** 
+ 454:Utilities/timer/stm32_timer.c ****   while( cur != NULL )
+ 402              		.loc 1 454 3 is_stmt 1 view .LVU93
+ 403              		.loc 1 454 8 is_stmt 0 view .LVU94
+ 404 0004 00E0     		b	.L34
+ 405              	.L39:
+ 455:Utilities/timer/stm32_timer.c ****   {
+ 456:Utilities/timer/stm32_timer.c ****     if( cur == TimerObject )
+ 457:Utilities/timer/stm32_timer.c ****     {
+ 458:Utilities/timer/stm32_timer.c ****       return true;
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccBsqBgz.s 			page 16
+
+
+ 459:Utilities/timer/stm32_timer.c ****     }
+ 460:Utilities/timer/stm32_timer.c ****     cur = cur->Next;
+ 406              		.loc 1 460 5 is_stmt 1 view .LVU95
+ 407              		.loc 1 460 9 is_stmt 0 view .LVU96
+ 408 0006 5B69     		ldr	r3, [r3, #20]
+ 409              	.LVL30:
+ 410              	.L34:
+ 454:Utilities/timer/stm32_timer.c ****   {
+ 411              		.loc 1 454 8 is_stmt 1 view .LVU97
+ 412 0008 1BB1     		cbz	r3, .L38
+ 456:Utilities/timer/stm32_timer.c ****     {
+ 413              		.loc 1 456 5 view .LVU98
+ 456:Utilities/timer/stm32_timer.c ****     {
+ 414              		.loc 1 456 7 is_stmt 0 view .LVU99
+ 415 000a 8342     		cmp	r3, r0
+ 416 000c FBD1     		bne	.L39
+ 458:Utilities/timer/stm32_timer.c ****     }
+ 417              		.loc 1 458 14 view .LVU100
+ 418 000e 0120     		movs	r0, #1
+ 419              	.LVL31:
+ 461:Utilities/timer/stm32_timer.c ****   }
+ 462:Utilities/timer/stm32_timer.c ****   return false;
+ 463:Utilities/timer/stm32_timer.c **** }
+ 420              		.loc 1 463 1 view .LVU101
+ 421 0010 7047     		bx	lr
+ 422              	.LVL32:
+ 423              	.L38:
+ 462:Utilities/timer/stm32_timer.c **** }
+ 424              		.loc 1 462 10 view .LVU102
+ 425 0012 0020     		movs	r0, #0
+ 426              	.LVL33:
+ 462:Utilities/timer/stm32_timer.c **** }
+ 427              		.loc 1 462 10 view .LVU103
+ 428 0014 7047     		bx	lr
+ 429              	.L41:
+ 430 0016 00BF     		.align	2
+ 431              	.L40:
+ 432 0018 00000000 		.word	.LANCHOR0
+ 433              		.cfi_endproc
+ 434              	.LFE118:
+ 436              		.section	.text.UTIL_TIMER_GetRemainingTime,"ax",%progbits
+ 437              		.align	1
+ 438              		.global	UTIL_TIMER_GetRemainingTime
+ 439              		.syntax unified
+ 440              		.thumb
+ 441              		.thumb_func
+ 443              	UTIL_TIMER_GetRemainingTime:
+ 444              	.LVL34:
+ 445              	.LFB112:
+ 323:Utilities/timer/stm32_timer.c ****   UTIL_TIMER_Status_t ret = UTIL_TIMER_OK;
+ 446              		.loc 1 323 1 is_stmt 1 view -0
+ 447              		.cfi_startproc
+ 448              		@ args = 0, pretend = 0, frame = 0
+ 449              		@ frame_needed = 0, uses_anonymous_args = 0
+ 323:Utilities/timer/stm32_timer.c ****   UTIL_TIMER_Status_t ret = UTIL_TIMER_OK;
+ 450              		.loc 1 323 1 is_stmt 0 view .LVU105
+ 451 0000 38B5     		push	{r3, r4, r5, lr}
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccBsqBgz.s 			page 17
+
+
+ 452              	.LCFI7:
+ 453              		.cfi_def_cfa_offset 16
+ 454              		.cfi_offset 3, -16
+ 455              		.cfi_offset 4, -12
+ 456              		.cfi_offset 5, -8
+ 457              		.cfi_offset 14, -4
+ 458 0002 0446     		mov	r4, r0
+ 459 0004 0D46     		mov	r5, r1
+ 324:Utilities/timer/stm32_timer.c ****   if(TimerExists(TimerObject))
+ 460              		.loc 1 324 3 is_stmt 1 view .LVU106
+ 461              	.LVL35:
+ 325:Utilities/timer/stm32_timer.c ****   {
+ 462              		.loc 1 325 3 view .LVU107
+ 325:Utilities/timer/stm32_timer.c ****   {
+ 463              		.loc 1 325 6 is_stmt 0 view .LVU108
+ 464 0006 FFF7FEFF 		bl	TimerExists
+ 465              	.LVL36:
+ 325:Utilities/timer/stm32_timer.c ****   {
+ 466              		.loc 1 325 5 view .LVU109
+ 467 000a 60B1     		cbz	r0, .L45
+ 468              	.LBB22:
+ 327:Utilities/timer/stm32_timer.c ****     if (TimerObject->Timestamp < time )
+ 469              		.loc 1 327 5 is_stmt 1 view .LVU110
+ 327:Utilities/timer/stm32_timer.c ****     if (TimerObject->Timestamp < time )
+ 470              		.loc 1 327 37 is_stmt 0 view .LVU111
+ 471 000c 074B     		ldr	r3, .L47
+ 472 000e 9B69     		ldr	r3, [r3, #24]
+ 327:Utilities/timer/stm32_timer.c ****     if (TimerObject->Timestamp < time )
+ 473              		.loc 1 327 21 view .LVU112
+ 474 0010 9847     		blx	r3
+ 475              	.LVL37:
+ 328:Utilities/timer/stm32_timer.c ****     {
+ 476              		.loc 1 328 5 is_stmt 1 view .LVU113
+ 328:Utilities/timer/stm32_timer.c ****     {
+ 477              		.loc 1 328 20 is_stmt 0 view .LVU114
+ 478 0012 2368     		ldr	r3, [r4]
+ 328:Utilities/timer/stm32_timer.c ****     {
+ 479              		.loc 1 328 8 view .LVU115
+ 480 0014 8342     		cmp	r3, r0
+ 481 0016 02D2     		bcs	.L44
+ 330:Utilities/timer/stm32_timer.c ****     }
+ 482              		.loc 1 330 7 is_stmt 1 view .LVU116
+ 330:Utilities/timer/stm32_timer.c ****     }
+ 483              		.loc 1 330 20 is_stmt 0 view .LVU117
+ 484 0018 0020     		movs	r0, #0
+ 485              	.LVL38:
+ 330:Utilities/timer/stm32_timer.c ****     }
+ 486              		.loc 1 330 20 view .LVU118
+ 487 001a 2860     		str	r0, [r5]
+ 488 001c 04E0     		b	.L43
+ 489              	.LVL39:
+ 490              	.L44:
+ 334:Utilities/timer/stm32_timer.c ****     }
+ 491              		.loc 1 334 7 is_stmt 1 view .LVU119
+ 334:Utilities/timer/stm32_timer.c ****     }
+ 492              		.loc 1 334 45 is_stmt 0 view .LVU120
+ 493 001e 181A     		subs	r0, r3, r0
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccBsqBgz.s 			page 18
+
+
+ 494              	.LVL40:
+ 334:Utilities/timer/stm32_timer.c ****     }
+ 495              		.loc 1 334 20 view .LVU121
+ 496 0020 2860     		str	r0, [r5]
+ 497              	.LBE22:
+ 324:Utilities/timer/stm32_timer.c ****   if(TimerExists(TimerObject))
+ 498              		.loc 1 324 23 view .LVU122
+ 499 0022 0020     		movs	r0, #0
+ 500 0024 00E0     		b	.L43
+ 501              	.L45:
+ 339:Utilities/timer/stm32_timer.c ****   }
+ 502              		.loc 1 339 9 view .LVU123
+ 503 0026 0120     		movs	r0, #1
+ 504              	.L43:
+ 505              	.LVL41:
+ 341:Utilities/timer/stm32_timer.c **** }
+ 506              		.loc 1 341 3 is_stmt 1 view .LVU124
+ 342:Utilities/timer/stm32_timer.c **** 
+ 507              		.loc 1 342 1 is_stmt 0 view .LVU125
+ 508 0028 38BD     		pop	{r3, r4, r5, pc}
+ 509              	.LVL42:
+ 510              	.L48:
+ 342:Utilities/timer/stm32_timer.c **** 
+ 511              		.loc 1 342 1 view .LVU126
+ 512 002a 00BF     		.align	2
+ 513              	.L47:
+ 514 002c 00000000 		.word	UTIL_TimerDriver
+ 515              		.cfi_endproc
+ 516              	.LFE112:
+ 518              		.section	.text.UTIL_TIMER_GetFirstRemainingTime,"ax",%progbits
+ 519              		.align	1
+ 520              		.global	UTIL_TIMER_GetFirstRemainingTime
+ 521              		.syntax unified
+ 522              		.thumb
+ 523              		.thumb_func
+ 525              	UTIL_TIMER_GetFirstRemainingTime:
+ 526              	.LFB114:
+ 357:Utilities/timer/stm32_timer.c **** 	uint32_t NextTimer = 0xFFFFFFFFU;
+ 527              		.loc 1 357 1 is_stmt 1 view -0
+ 528              		.cfi_startproc
+ 529              		@ args = 0, pretend = 0, frame = 8
+ 530              		@ frame_needed = 0, uses_anonymous_args = 0
+ 531 0000 00B5     		push	{lr}
+ 532              	.LCFI8:
+ 533              		.cfi_def_cfa_offset 4
+ 534              		.cfi_offset 14, -4
+ 535 0002 83B0     		sub	sp, sp, #12
+ 536              	.LCFI9:
+ 537              		.cfi_def_cfa_offset 16
+ 358:Utilities/timer/stm32_timer.c **** 
+ 538              		.loc 1 358 2 view .LVU128
+ 358:Utilities/timer/stm32_timer.c **** 
+ 539              		.loc 1 358 11 is_stmt 0 view .LVU129
+ 540 0004 4FF0FF33 		mov	r3, #-1
+ 541 0008 0193     		str	r3, [sp, #4]
+ 360:Utilities/timer/stm32_timer.c **** 	{
+ 542              		.loc 1 360 2 is_stmt 1 view .LVU130
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccBsqBgz.s 			page 19
+
+
+ 360:Utilities/timer/stm32_timer.c **** 	{
+ 543              		.loc 1 360 19 is_stmt 0 view .LVU131
+ 544 000a 054B     		ldr	r3, .L52
+ 545 000c 1868     		ldr	r0, [r3]
+ 360:Utilities/timer/stm32_timer.c **** 	{
+ 546              		.loc 1 360 4 view .LVU132
+ 547 000e 10B1     		cbz	r0, .L50
+ 362:Utilities/timer/stm32_timer.c **** 	}
+ 548              		.loc 1 362 3 is_stmt 1 view .LVU133
+ 362:Utilities/timer/stm32_timer.c **** 	}
+ 549              		.loc 1 362 9 is_stmt 0 view .LVU134
+ 550 0010 01A9     		add	r1, sp, #4
+ 551 0012 FFF7FEFF 		bl	UTIL_TIMER_GetRemainingTime
+ 552              	.LVL43:
+ 553              	.L50:
+ 364:Utilities/timer/stm32_timer.c **** }
+ 554              		.loc 1 364 2 is_stmt 1 view .LVU135
+ 365:Utilities/timer/stm32_timer.c **** 
+ 555              		.loc 1 365 1 is_stmt 0 view .LVU136
+ 556 0016 0198     		ldr	r0, [sp, #4]
+ 557 0018 03B0     		add	sp, sp, #12
+ 558              	.LCFI10:
+ 559              		.cfi_def_cfa_offset 4
+ 560              		@ sp needed
+ 561 001a 5DF804FB 		ldr	pc, [sp], #4
+ 562              	.L53:
+ 563 001e 00BF     		.align	2
+ 564              	.L52:
+ 565 0020 00000000 		.word	.LANCHOR0
+ 566              		.cfi_endproc
+ 567              	.LFE114:
+ 569              		.section	.text.TimerSetTimeout,"ax",%progbits
+ 570              		.align	1
+ 571              		.global	TimerSetTimeout
+ 572              		.syntax unified
+ 573              		.thumb
+ 574              		.thumb_func
+ 576              	TimerSetTimeout:
+ 577              	.LVL44:
+ 578              	.LFB119:
+ 464:Utilities/timer/stm32_timer.c **** 
+ 465:Utilities/timer/stm32_timer.c **** /**
+ 466:Utilities/timer/stm32_timer.c ****  * @brief Sets a timeout with the duration "timestamp"
+ 467:Utilities/timer/stm32_timer.c ****  *
+ 468:Utilities/timer/stm32_timer.c ****  * @param TimerObject Structure containing the timer object parameters
+ 469:Utilities/timer/stm32_timer.c ****  */
+ 470:Utilities/timer/stm32_timer.c **** void TimerSetTimeout( UTIL_TIMER_Object_t *TimerObject )
+ 471:Utilities/timer/stm32_timer.c **** {
+ 579              		.loc 1 471 1 is_stmt 1 view -0
+ 580              		.cfi_startproc
+ 581              		@ args = 0, pretend = 0, frame = 0
+ 582              		@ frame_needed = 0, uses_anonymous_args = 0
+ 583              		.loc 1 471 1 is_stmt 0 view .LVU138
+ 584 0000 F8B5     		push	{r3, r4, r5, r6, r7, lr}
+ 585              	.LCFI11:
+ 586              		.cfi_def_cfa_offset 24
+ 587              		.cfi_offset 3, -24
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccBsqBgz.s 			page 20
+
+
+ 588              		.cfi_offset 4, -20
+ 589              		.cfi_offset 5, -16
+ 590              		.cfi_offset 6, -12
+ 591              		.cfi_offset 7, -8
+ 592              		.cfi_offset 14, -4
+ 593 0002 0446     		mov	r4, r0
+ 472:Utilities/timer/stm32_timer.c ****   uint32_t minTicks= UTIL_TimerDriver.GetMinimumTimeout( );
+ 594              		.loc 1 472 3 is_stmt 1 view .LVU139
+ 595              		.loc 1 472 38 is_stmt 0 view .LVU140
+ 596 0004 094E     		ldr	r6, .L57
+ 597 0006 336A     		ldr	r3, [r6, #32]
+ 598              		.loc 1 472 22 view .LVU141
+ 599 0008 9847     		blx	r3
+ 600              	.LVL45:
+ 601              		.loc 1 472 22 view .LVU142
+ 602 000a 0546     		mov	r5, r0
+ 603              	.LVL46:
+ 473:Utilities/timer/stm32_timer.c ****   TimerObject->IsPending = 1;
+ 604              		.loc 1 473 3 is_stmt 1 view .LVU143
+ 605              		.loc 1 473 26 is_stmt 0 view .LVU144
+ 606 000c 0123     		movs	r3, #1
+ 607 000e 2372     		strb	r3, [r4, #8]
+ 474:Utilities/timer/stm32_timer.c **** 
+ 475:Utilities/timer/stm32_timer.c ****   /* In case deadline too soon */
+ 476:Utilities/timer/stm32_timer.c ****   if(TimerObject->Timestamp  < (UTIL_TimerDriver.GetTimerElapsedTime(  ) + minTicks) )
+ 608              		.loc 1 476 3 is_stmt 1 view .LVU145
+ 609              		.loc 1 476 17 is_stmt 0 view .LVU146
+ 610 0010 2768     		ldr	r7, [r4]
+ 611              		.loc 1 476 49 view .LVU147
+ 612 0012 B669     		ldr	r6, [r6, #24]
+ 613              		.loc 1 476 33 view .LVU148
+ 614 0014 B047     		blx	r6
+ 615              	.LVL47:
+ 616              		.loc 1 476 74 view .LVU149
+ 617 0016 2844     		add	r0, r0, r5
+ 618              		.loc 1 476 5 view .LVU150
+ 619 0018 8742     		cmp	r7, r0
+ 620 001a 02D2     		bcs	.L55
+ 477:Utilities/timer/stm32_timer.c ****   {
+ 478:Utilities/timer/stm32_timer.c **** 	  TimerObject->Timestamp = UTIL_TimerDriver.GetTimerElapsedTime(  ) + minTicks;
+ 621              		.loc 1 478 4 is_stmt 1 view .LVU151
+ 622              		.loc 1 478 29 is_stmt 0 view .LVU152
+ 623 001c B047     		blx	r6
+ 624              	.LVL48:
+ 625              		.loc 1 478 70 view .LVU153
+ 626 001e 0544     		add	r5, r5, r0
+ 627              	.LVL49:
+ 628              		.loc 1 478 27 view .LVU154
+ 629 0020 2560     		str	r5, [r4]
+ 630              	.L55:
+ 479:Utilities/timer/stm32_timer.c ****   }
+ 480:Utilities/timer/stm32_timer.c ****   UTIL_TimerDriver.StartTimerEvt( TimerObject->Timestamp );
+ 631              		.loc 1 480 3 is_stmt 1 view .LVU155
+ 632              		.loc 1 480 19 is_stmt 0 view .LVU156
+ 633 0022 024B     		ldr	r3, .L57
+ 634 0024 9B68     		ldr	r3, [r3, #8]
+ 635              		.loc 1 480 3 view .LVU157
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccBsqBgz.s 			page 21
+
+
+ 636 0026 2068     		ldr	r0, [r4]
+ 637 0028 9847     		blx	r3
+ 638              	.LVL50:
+ 481:Utilities/timer/stm32_timer.c **** }
+ 639              		.loc 1 481 1 view .LVU158
+ 640 002a F8BD     		pop	{r3, r4, r5, r6, r7, pc}
+ 641              	.LVL51:
+ 642              	.L58:
+ 643              		.loc 1 481 1 view .LVU159
+ 644              		.align	2
+ 645              	.L57:
+ 646 002c 00000000 		.word	UTIL_TimerDriver
+ 647              		.cfi_endproc
+ 648              	.LFE119:
+ 650              		.section	.text.UTIL_TIMER_Stop,"ax",%progbits
+ 651              		.align	1
+ 652              		.global	UTIL_TIMER_Stop
+ 653              		.syntax unified
+ 654              		.thumb
+ 655              		.thumb_func
+ 657              	UTIL_TIMER_Stop:
+ 658              	.LVL52:
+ 659              	.LFB109:
+ 222:Utilities/timer/stm32_timer.c ****   UTIL_TIMER_Status_t  ret = UTIL_TIMER_OK;
+ 660              		.loc 1 222 1 is_stmt 1 view -0
+ 661              		.cfi_startproc
+ 662              		@ args = 0, pretend = 0, frame = 0
+ 663              		@ frame_needed = 0, uses_anonymous_args = 0
+ 223:Utilities/timer/stm32_timer.c **** 
+ 664              		.loc 1 223 3 view .LVU161
+ 225:Utilities/timer/stm32_timer.c ****   {
+ 665              		.loc 1 225 3 view .LVU162
+ 225:Utilities/timer/stm32_timer.c ****   {
+ 666              		.loc 1 225 6 is_stmt 0 view .LVU163
+ 667 0000 68B3     		cbz	r0, .L67
+ 222:Utilities/timer/stm32_timer.c ****   UTIL_TIMER_Status_t  ret = UTIL_TIMER_OK;
+ 668              		.loc 1 222 1 view .LVU164
+ 669 0002 10B5     		push	{r4, lr}
+ 670              	.LCFI12:
+ 671              		.cfi_def_cfa_offset 8
+ 672              		.cfi_offset 4, -8
+ 673              		.cfi_offset 14, -4
+ 674 0004 0246     		mov	r2, r0
+ 675              	.LBB23:
+ 227:Utilities/timer/stm32_timer.c ****     UTIL_TIMER_Object_t* prev = TimerListHead;
+ 676              		.loc 1 227 5 is_stmt 1 view .LVU165
+ 677              	.LBB24:
+ 678              	.LBI24:
+ 679              		.file 2 "Drivers/CMSIS/Include/cmsis_gcc.h"
+   1:Drivers/CMSIS/Include/cmsis_gcc.h **** /**************************************************************************//**
+   2:Drivers/CMSIS/Include/cmsis_gcc.h ****  * @file     cmsis_gcc.h
+   3:Drivers/CMSIS/Include/cmsis_gcc.h ****  * @brief    CMSIS compiler GCC header file
+   4:Drivers/CMSIS/Include/cmsis_gcc.h ****  * @version  V5.2.0
+   5:Drivers/CMSIS/Include/cmsis_gcc.h ****  * @date     08. May 2019
+   6:Drivers/CMSIS/Include/cmsis_gcc.h ****  ******************************************************************************/
+   7:Drivers/CMSIS/Include/cmsis_gcc.h **** /*
+   8:Drivers/CMSIS/Include/cmsis_gcc.h ****  * Copyright (c) 2009-2019 Arm Limited. All rights reserved.
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccBsqBgz.s 			page 22
+
+
+   9:Drivers/CMSIS/Include/cmsis_gcc.h ****  *
+  10:Drivers/CMSIS/Include/cmsis_gcc.h ****  * SPDX-License-Identifier: Apache-2.0
+  11:Drivers/CMSIS/Include/cmsis_gcc.h ****  *
+  12:Drivers/CMSIS/Include/cmsis_gcc.h ****  * Licensed under the Apache License, Version 2.0 (the License); you may
+  13:Drivers/CMSIS/Include/cmsis_gcc.h ****  * not use this file except in compliance with the License.
+  14:Drivers/CMSIS/Include/cmsis_gcc.h ****  * You may obtain a copy of the License at
+  15:Drivers/CMSIS/Include/cmsis_gcc.h ****  *
+  16:Drivers/CMSIS/Include/cmsis_gcc.h ****  * www.apache.org/licenses/LICENSE-2.0
+  17:Drivers/CMSIS/Include/cmsis_gcc.h ****  *
+  18:Drivers/CMSIS/Include/cmsis_gcc.h ****  * Unless required by applicable law or agreed to in writing, software
+  19:Drivers/CMSIS/Include/cmsis_gcc.h ****  * distributed under the License is distributed on an AS IS BASIS, WITHOUT
+  20:Drivers/CMSIS/Include/cmsis_gcc.h ****  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  21:Drivers/CMSIS/Include/cmsis_gcc.h ****  * See the License for the specific language governing permissions and
+  22:Drivers/CMSIS/Include/cmsis_gcc.h ****  * limitations under the License.
+  23:Drivers/CMSIS/Include/cmsis_gcc.h ****  */
+  24:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+  25:Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef __CMSIS_GCC_H
+  26:Drivers/CMSIS/Include/cmsis_gcc.h **** #define __CMSIS_GCC_H
+  27:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+  28:Drivers/CMSIS/Include/cmsis_gcc.h **** /* ignore some GCC warnings */
+  29:Drivers/CMSIS/Include/cmsis_gcc.h **** #pragma GCC diagnostic push
+  30:Drivers/CMSIS/Include/cmsis_gcc.h **** #pragma GCC diagnostic ignored "-Wsign-conversion"
+  31:Drivers/CMSIS/Include/cmsis_gcc.h **** #pragma GCC diagnostic ignored "-Wconversion"
+  32:Drivers/CMSIS/Include/cmsis_gcc.h **** #pragma GCC diagnostic ignored "-Wunused-parameter"
+  33:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+  34:Drivers/CMSIS/Include/cmsis_gcc.h **** /* Fallback for __has_builtin */
+  35:Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef __has_builtin
+  36:Drivers/CMSIS/Include/cmsis_gcc.h ****   #define __has_builtin(x) (0)
+  37:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+  38:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+  39:Drivers/CMSIS/Include/cmsis_gcc.h **** /* CMSIS compiler specific defines */
+  40:Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef   __ASM
+  41:Drivers/CMSIS/Include/cmsis_gcc.h ****   #define __ASM                                  __asm
+  42:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+  43:Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef   __INLINE
+  44:Drivers/CMSIS/Include/cmsis_gcc.h ****   #define __INLINE                               inline
+  45:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+  46:Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef   __STATIC_INLINE
+  47:Drivers/CMSIS/Include/cmsis_gcc.h ****   #define __STATIC_INLINE                        static inline
+  48:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+  49:Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef   __STATIC_FORCEINLINE                 
+  50:Drivers/CMSIS/Include/cmsis_gcc.h ****   #define __STATIC_FORCEINLINE                   __attribute__((always_inline)) static inline
+  51:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif                                           
+  52:Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef   __NO_RETURN
+  53:Drivers/CMSIS/Include/cmsis_gcc.h ****   #define __NO_RETURN                            __attribute__((__noreturn__))
+  54:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+  55:Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef   __USED
+  56:Drivers/CMSIS/Include/cmsis_gcc.h ****   #define __USED                                 __attribute__((used))
+  57:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+  58:Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef   __WEAK
+  59:Drivers/CMSIS/Include/cmsis_gcc.h ****   #define __WEAK                                 __attribute__((weak))
+  60:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+  61:Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef   __PACKED
+  62:Drivers/CMSIS/Include/cmsis_gcc.h ****   #define __PACKED                               __attribute__((packed, aligned(1)))
+  63:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+  64:Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef   __PACKED_STRUCT
+  65:Drivers/CMSIS/Include/cmsis_gcc.h ****   #define __PACKED_STRUCT                        struct __attribute__((packed, aligned(1)))
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccBsqBgz.s 			page 23
+
+
+  66:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+  67:Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef   __PACKED_UNION
+  68:Drivers/CMSIS/Include/cmsis_gcc.h ****   #define __PACKED_UNION                         union __attribute__((packed, aligned(1)))
+  69:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+  70:Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef   __UNALIGNED_UINT32        /* deprecated */
+  71:Drivers/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic push
+  72:Drivers/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wpacked"
+  73:Drivers/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wattributes"
+  74:Drivers/CMSIS/Include/cmsis_gcc.h ****   struct __attribute__((packed)) T_UINT32 { uint32_t v; };
+  75:Drivers/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic pop
+  76:Drivers/CMSIS/Include/cmsis_gcc.h ****   #define __UNALIGNED_UINT32(x)                  (((struct T_UINT32 *)(x))->v)
+  77:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+  78:Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef   __UNALIGNED_UINT16_WRITE
+  79:Drivers/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic push
+  80:Drivers/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wpacked"
+  81:Drivers/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wattributes"
+  82:Drivers/CMSIS/Include/cmsis_gcc.h ****   __PACKED_STRUCT T_UINT16_WRITE { uint16_t v; };
+  83:Drivers/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic pop
+  84:Drivers/CMSIS/Include/cmsis_gcc.h ****   #define __UNALIGNED_UINT16_WRITE(addr, val)    (void)((((struct T_UINT16_WRITE *)(void *)(addr))-
+  85:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+  86:Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef   __UNALIGNED_UINT16_READ
+  87:Drivers/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic push
+  88:Drivers/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wpacked"
+  89:Drivers/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wattributes"
+  90:Drivers/CMSIS/Include/cmsis_gcc.h ****   __PACKED_STRUCT T_UINT16_READ { uint16_t v; };
+  91:Drivers/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic pop
+  92:Drivers/CMSIS/Include/cmsis_gcc.h ****   #define __UNALIGNED_UINT16_READ(addr)          (((const struct T_UINT16_READ *)(const void *)(add
+  93:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+  94:Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef   __UNALIGNED_UINT32_WRITE
+  95:Drivers/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic push
+  96:Drivers/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wpacked"
+  97:Drivers/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wattributes"
+  98:Drivers/CMSIS/Include/cmsis_gcc.h ****   __PACKED_STRUCT T_UINT32_WRITE { uint32_t v; };
+  99:Drivers/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic pop
+ 100:Drivers/CMSIS/Include/cmsis_gcc.h ****   #define __UNALIGNED_UINT32_WRITE(addr, val)    (void)((((struct T_UINT32_WRITE *)(void *)(addr))-
+ 101:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+ 102:Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef   __UNALIGNED_UINT32_READ
+ 103:Drivers/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic push
+ 104:Drivers/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wpacked"
+ 105:Drivers/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wattributes"
+ 106:Drivers/CMSIS/Include/cmsis_gcc.h ****   __PACKED_STRUCT T_UINT32_READ { uint32_t v; };
+ 107:Drivers/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic pop
+ 108:Drivers/CMSIS/Include/cmsis_gcc.h ****   #define __UNALIGNED_UINT32_READ(addr)          (((const struct T_UINT32_READ *)(const void *)(add
+ 109:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+ 110:Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef   __ALIGNED
+ 111:Drivers/CMSIS/Include/cmsis_gcc.h ****   #define __ALIGNED(x)                           __attribute__((aligned(x)))
+ 112:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+ 113:Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef   __RESTRICT
+ 114:Drivers/CMSIS/Include/cmsis_gcc.h ****   #define __RESTRICT                             __restrict
+ 115:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+ 116:Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef   __COMPILER_BARRIER
+ 117:Drivers/CMSIS/Include/cmsis_gcc.h ****   #define __COMPILER_BARRIER()                   __ASM volatile("":::"memory")
+ 118:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+ 119:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 120:Drivers/CMSIS/Include/cmsis_gcc.h **** /* #########################  Startup and Lowlevel Init  ######################## */
+ 121:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 122:Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef __PROGRAM_START
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccBsqBgz.s 			page 24
+
+
+ 123:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 124:Drivers/CMSIS/Include/cmsis_gcc.h **** /**
+ 125:Drivers/CMSIS/Include/cmsis_gcc.h ****   \brief   Initializes data and bss sections
+ 126:Drivers/CMSIS/Include/cmsis_gcc.h ****   \details This default implementations initialized all data and additional bss
+ 127:Drivers/CMSIS/Include/cmsis_gcc.h ****            sections relying on .copy.table and .zero.table specified properly
+ 128:Drivers/CMSIS/Include/cmsis_gcc.h ****            in the used linker script.
+ 129:Drivers/CMSIS/Include/cmsis_gcc.h ****   
+ 130:Drivers/CMSIS/Include/cmsis_gcc.h ****  */
+ 131:Drivers/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE __NO_RETURN void __cmsis_start(void)
+ 132:Drivers/CMSIS/Include/cmsis_gcc.h **** {
+ 133:Drivers/CMSIS/Include/cmsis_gcc.h ****   extern void _start(void) __NO_RETURN;
+ 134:Drivers/CMSIS/Include/cmsis_gcc.h ****   
+ 135:Drivers/CMSIS/Include/cmsis_gcc.h ****   typedef struct {
+ 136:Drivers/CMSIS/Include/cmsis_gcc.h ****     uint32_t const* src;
+ 137:Drivers/CMSIS/Include/cmsis_gcc.h ****     uint32_t* dest;
+ 138:Drivers/CMSIS/Include/cmsis_gcc.h ****     uint32_t  wlen;
+ 139:Drivers/CMSIS/Include/cmsis_gcc.h ****   } __copy_table_t;
+ 140:Drivers/CMSIS/Include/cmsis_gcc.h ****   
+ 141:Drivers/CMSIS/Include/cmsis_gcc.h ****   typedef struct {
+ 142:Drivers/CMSIS/Include/cmsis_gcc.h ****     uint32_t* dest;
+ 143:Drivers/CMSIS/Include/cmsis_gcc.h ****     uint32_t  wlen;
+ 144:Drivers/CMSIS/Include/cmsis_gcc.h ****   } __zero_table_t;
+ 145:Drivers/CMSIS/Include/cmsis_gcc.h ****   
+ 146:Drivers/CMSIS/Include/cmsis_gcc.h ****   extern const __copy_table_t __copy_table_start__;
+ 147:Drivers/CMSIS/Include/cmsis_gcc.h ****   extern const __copy_table_t __copy_table_end__;
+ 148:Drivers/CMSIS/Include/cmsis_gcc.h ****   extern const __zero_table_t __zero_table_start__;
+ 149:Drivers/CMSIS/Include/cmsis_gcc.h ****   extern const __zero_table_t __zero_table_end__;
+ 150:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 151:Drivers/CMSIS/Include/cmsis_gcc.h ****   for (__copy_table_t const* pTable = &__copy_table_start__; pTable < &__copy_table_end__; ++pTable
+ 152:Drivers/CMSIS/Include/cmsis_gcc.h ****     for(uint32_t i=0u; i<pTable->wlen; ++i) {
+ 153:Drivers/CMSIS/Include/cmsis_gcc.h ****       pTable->dest[i] = pTable->src[i];
+ 154:Drivers/CMSIS/Include/cmsis_gcc.h ****     }
+ 155:Drivers/CMSIS/Include/cmsis_gcc.h ****   }
+ 156:Drivers/CMSIS/Include/cmsis_gcc.h ****  
+ 157:Drivers/CMSIS/Include/cmsis_gcc.h ****   for (__zero_table_t const* pTable = &__zero_table_start__; pTable < &__zero_table_end__; ++pTable
+ 158:Drivers/CMSIS/Include/cmsis_gcc.h ****     for(uint32_t i=0u; i<pTable->wlen; ++i) {
+ 159:Drivers/CMSIS/Include/cmsis_gcc.h ****       pTable->dest[i] = 0u;
+ 160:Drivers/CMSIS/Include/cmsis_gcc.h ****     }
+ 161:Drivers/CMSIS/Include/cmsis_gcc.h ****   }
+ 162:Drivers/CMSIS/Include/cmsis_gcc.h ****  
+ 163:Drivers/CMSIS/Include/cmsis_gcc.h ****   _start();
+ 164:Drivers/CMSIS/Include/cmsis_gcc.h **** }
+ 165:Drivers/CMSIS/Include/cmsis_gcc.h ****   
+ 166:Drivers/CMSIS/Include/cmsis_gcc.h **** #define __PROGRAM_START           __cmsis_start
+ 167:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+ 168:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 169:Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef __INITIAL_SP
+ 170:Drivers/CMSIS/Include/cmsis_gcc.h **** #define __INITIAL_SP              __StackTop
+ 171:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+ 172:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 173:Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef __STACK_LIMIT
+ 174:Drivers/CMSIS/Include/cmsis_gcc.h **** #define __STACK_LIMIT             __StackLimit
+ 175:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+ 176:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 177:Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef __VECTOR_TABLE
+ 178:Drivers/CMSIS/Include/cmsis_gcc.h **** #define __VECTOR_TABLE            __Vectors
+ 179:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccBsqBgz.s 			page 25
+
+
+ 180:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 181:Drivers/CMSIS/Include/cmsis_gcc.h **** #ifndef __VECTOR_TABLE_ATTRIBUTE
+ 182:Drivers/CMSIS/Include/cmsis_gcc.h **** #define __VECTOR_TABLE_ATTRIBUTE  __attribute((used, section(".vectors")))
+ 183:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+ 184:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 185:Drivers/CMSIS/Include/cmsis_gcc.h **** /* ###########################  Core Function Access  ########################### */
+ 186:Drivers/CMSIS/Include/cmsis_gcc.h **** /** \ingroup  CMSIS_Core_FunctionInterface
+ 187:Drivers/CMSIS/Include/cmsis_gcc.h ****     \defgroup CMSIS_Core_RegAccFunctions CMSIS Core Register Access Functions
+ 188:Drivers/CMSIS/Include/cmsis_gcc.h ****   @{
+ 189:Drivers/CMSIS/Include/cmsis_gcc.h ****  */
+ 190:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 191:Drivers/CMSIS/Include/cmsis_gcc.h **** /**
+ 192:Drivers/CMSIS/Include/cmsis_gcc.h ****   \brief   Enable IRQ Interrupts
+ 193:Drivers/CMSIS/Include/cmsis_gcc.h ****   \details Enables IRQ interrupts by clearing the I-bit in the CPSR.
+ 194:Drivers/CMSIS/Include/cmsis_gcc.h ****            Can only be executed in Privileged modes.
+ 195:Drivers/CMSIS/Include/cmsis_gcc.h ****  */
+ 196:Drivers/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE void __enable_irq(void)
+ 197:Drivers/CMSIS/Include/cmsis_gcc.h **** {
+ 198:Drivers/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("cpsie i" : : : "memory");
+ 199:Drivers/CMSIS/Include/cmsis_gcc.h **** }
+ 200:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 201:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 202:Drivers/CMSIS/Include/cmsis_gcc.h **** /**
+ 203:Drivers/CMSIS/Include/cmsis_gcc.h ****   \brief   Disable IRQ Interrupts
+ 204:Drivers/CMSIS/Include/cmsis_gcc.h ****   \details Disables IRQ interrupts by setting the I-bit in the CPSR.
+ 205:Drivers/CMSIS/Include/cmsis_gcc.h ****            Can only be executed in Privileged modes.
+ 206:Drivers/CMSIS/Include/cmsis_gcc.h ****  */
+ 207:Drivers/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE void __disable_irq(void)
+ 208:Drivers/CMSIS/Include/cmsis_gcc.h **** {
+ 209:Drivers/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("cpsid i" : : : "memory");
+ 210:Drivers/CMSIS/Include/cmsis_gcc.h **** }
+ 211:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 212:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 213:Drivers/CMSIS/Include/cmsis_gcc.h **** /**
+ 214:Drivers/CMSIS/Include/cmsis_gcc.h ****   \brief   Get Control Register
+ 215:Drivers/CMSIS/Include/cmsis_gcc.h ****   \details Returns the content of the Control Register.
+ 216:Drivers/CMSIS/Include/cmsis_gcc.h ****   \return               Control Register value
+ 217:Drivers/CMSIS/Include/cmsis_gcc.h ****  */
+ 218:Drivers/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __get_CONTROL(void)
+ 219:Drivers/CMSIS/Include/cmsis_gcc.h **** {
+ 220:Drivers/CMSIS/Include/cmsis_gcc.h ****   uint32_t result;
+ 221:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 222:Drivers/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("MRS %0, control" : "=r" (result) );
+ 223:Drivers/CMSIS/Include/cmsis_gcc.h ****   return(result);
+ 224:Drivers/CMSIS/Include/cmsis_gcc.h **** }
+ 225:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 226:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 227:Drivers/CMSIS/Include/cmsis_gcc.h **** #if (defined (__ARM_FEATURE_CMSE ) && (__ARM_FEATURE_CMSE == 3))
+ 228:Drivers/CMSIS/Include/cmsis_gcc.h **** /**
+ 229:Drivers/CMSIS/Include/cmsis_gcc.h ****   \brief   Get Control Register (non-secure)
+ 230:Drivers/CMSIS/Include/cmsis_gcc.h ****   \details Returns the content of the non-secure Control Register when in secure mode.
+ 231:Drivers/CMSIS/Include/cmsis_gcc.h ****   \return               non-secure Control Register value
+ 232:Drivers/CMSIS/Include/cmsis_gcc.h ****  */
+ 233:Drivers/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __TZ_get_CONTROL_NS(void)
+ 234:Drivers/CMSIS/Include/cmsis_gcc.h **** {
+ 235:Drivers/CMSIS/Include/cmsis_gcc.h ****   uint32_t result;
+ 236:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccBsqBgz.s 			page 26
+
+
+ 237:Drivers/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("MRS %0, control_ns" : "=r" (result) );
+ 238:Drivers/CMSIS/Include/cmsis_gcc.h ****   return(result);
+ 239:Drivers/CMSIS/Include/cmsis_gcc.h **** }
+ 240:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+ 241:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 242:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 243:Drivers/CMSIS/Include/cmsis_gcc.h **** /**
+ 244:Drivers/CMSIS/Include/cmsis_gcc.h ****   \brief   Set Control Register
+ 245:Drivers/CMSIS/Include/cmsis_gcc.h ****   \details Writes the given value to the Control Register.
+ 246:Drivers/CMSIS/Include/cmsis_gcc.h ****   \param [in]    control  Control Register value to set
+ 247:Drivers/CMSIS/Include/cmsis_gcc.h ****  */
+ 248:Drivers/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE void __set_CONTROL(uint32_t control)
+ 249:Drivers/CMSIS/Include/cmsis_gcc.h **** {
+ 250:Drivers/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("MSR control, %0" : : "r" (control) : "memory");
+ 251:Drivers/CMSIS/Include/cmsis_gcc.h **** }
+ 252:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 253:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 254:Drivers/CMSIS/Include/cmsis_gcc.h **** #if (defined (__ARM_FEATURE_CMSE ) && (__ARM_FEATURE_CMSE == 3))
+ 255:Drivers/CMSIS/Include/cmsis_gcc.h **** /**
+ 256:Drivers/CMSIS/Include/cmsis_gcc.h ****   \brief   Set Control Register (non-secure)
+ 257:Drivers/CMSIS/Include/cmsis_gcc.h ****   \details Writes the given value to the non-secure Control Register when in secure state.
+ 258:Drivers/CMSIS/Include/cmsis_gcc.h ****   \param [in]    control  Control Register value to set
+ 259:Drivers/CMSIS/Include/cmsis_gcc.h ****  */
+ 260:Drivers/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE void __TZ_set_CONTROL_NS(uint32_t control)
+ 261:Drivers/CMSIS/Include/cmsis_gcc.h **** {
+ 262:Drivers/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("MSR control_ns, %0" : : "r" (control) : "memory");
+ 263:Drivers/CMSIS/Include/cmsis_gcc.h **** }
+ 264:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+ 265:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 266:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 267:Drivers/CMSIS/Include/cmsis_gcc.h **** /**
+ 268:Drivers/CMSIS/Include/cmsis_gcc.h ****   \brief   Get IPSR Register
+ 269:Drivers/CMSIS/Include/cmsis_gcc.h ****   \details Returns the content of the IPSR Register.
+ 270:Drivers/CMSIS/Include/cmsis_gcc.h ****   \return               IPSR Register value
+ 271:Drivers/CMSIS/Include/cmsis_gcc.h ****  */
+ 272:Drivers/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __get_IPSR(void)
+ 273:Drivers/CMSIS/Include/cmsis_gcc.h **** {
+ 274:Drivers/CMSIS/Include/cmsis_gcc.h ****   uint32_t result;
+ 275:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 276:Drivers/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("MRS %0, ipsr" : "=r" (result) );
+ 277:Drivers/CMSIS/Include/cmsis_gcc.h ****   return(result);
+ 278:Drivers/CMSIS/Include/cmsis_gcc.h **** }
+ 279:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 280:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 281:Drivers/CMSIS/Include/cmsis_gcc.h **** /**
+ 282:Drivers/CMSIS/Include/cmsis_gcc.h ****   \brief   Get APSR Register
+ 283:Drivers/CMSIS/Include/cmsis_gcc.h ****   \details Returns the content of the APSR Register.
+ 284:Drivers/CMSIS/Include/cmsis_gcc.h ****   \return               APSR Register value
+ 285:Drivers/CMSIS/Include/cmsis_gcc.h ****  */
+ 286:Drivers/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __get_APSR(void)
+ 287:Drivers/CMSIS/Include/cmsis_gcc.h **** {
+ 288:Drivers/CMSIS/Include/cmsis_gcc.h ****   uint32_t result;
+ 289:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 290:Drivers/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("MRS %0, apsr" : "=r" (result) );
+ 291:Drivers/CMSIS/Include/cmsis_gcc.h ****   return(result);
+ 292:Drivers/CMSIS/Include/cmsis_gcc.h **** }
+ 293:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccBsqBgz.s 			page 27
+
+
+ 294:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 295:Drivers/CMSIS/Include/cmsis_gcc.h **** /**
+ 296:Drivers/CMSIS/Include/cmsis_gcc.h ****   \brief   Get xPSR Register
+ 297:Drivers/CMSIS/Include/cmsis_gcc.h ****   \details Returns the content of the xPSR Register.
+ 298:Drivers/CMSIS/Include/cmsis_gcc.h ****   \return               xPSR Register value
+ 299:Drivers/CMSIS/Include/cmsis_gcc.h ****  */
+ 300:Drivers/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __get_xPSR(void)
+ 301:Drivers/CMSIS/Include/cmsis_gcc.h **** {
+ 302:Drivers/CMSIS/Include/cmsis_gcc.h ****   uint32_t result;
+ 303:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 304:Drivers/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("MRS %0, xpsr" : "=r" (result) );
+ 305:Drivers/CMSIS/Include/cmsis_gcc.h ****   return(result);
+ 306:Drivers/CMSIS/Include/cmsis_gcc.h **** }
+ 307:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 308:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 309:Drivers/CMSIS/Include/cmsis_gcc.h **** /**
+ 310:Drivers/CMSIS/Include/cmsis_gcc.h ****   \brief   Get Process Stack Pointer
+ 311:Drivers/CMSIS/Include/cmsis_gcc.h ****   \details Returns the current value of the Process Stack Pointer (PSP).
+ 312:Drivers/CMSIS/Include/cmsis_gcc.h ****   \return               PSP Register value
+ 313:Drivers/CMSIS/Include/cmsis_gcc.h ****  */
+ 314:Drivers/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __get_PSP(void)
+ 315:Drivers/CMSIS/Include/cmsis_gcc.h **** {
+ 316:Drivers/CMSIS/Include/cmsis_gcc.h ****   uint32_t result;
+ 317:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 318:Drivers/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("MRS %0, psp"  : "=r" (result) );
+ 319:Drivers/CMSIS/Include/cmsis_gcc.h ****   return(result);
+ 320:Drivers/CMSIS/Include/cmsis_gcc.h **** }
+ 321:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 322:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 323:Drivers/CMSIS/Include/cmsis_gcc.h **** #if (defined (__ARM_FEATURE_CMSE ) && (__ARM_FEATURE_CMSE == 3))
+ 324:Drivers/CMSIS/Include/cmsis_gcc.h **** /**
+ 325:Drivers/CMSIS/Include/cmsis_gcc.h ****   \brief   Get Process Stack Pointer (non-secure)
+ 326:Drivers/CMSIS/Include/cmsis_gcc.h ****   \details Returns the current value of the non-secure Process Stack Pointer (PSP) when in secure s
+ 327:Drivers/CMSIS/Include/cmsis_gcc.h ****   \return               PSP Register value
+ 328:Drivers/CMSIS/Include/cmsis_gcc.h ****  */
+ 329:Drivers/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __TZ_get_PSP_NS(void)
+ 330:Drivers/CMSIS/Include/cmsis_gcc.h **** {
+ 331:Drivers/CMSIS/Include/cmsis_gcc.h ****   uint32_t result;
+ 332:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 333:Drivers/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("MRS %0, psp_ns"  : "=r" (result) );
+ 334:Drivers/CMSIS/Include/cmsis_gcc.h ****   return(result);
+ 335:Drivers/CMSIS/Include/cmsis_gcc.h **** }
+ 336:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+ 337:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 338:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 339:Drivers/CMSIS/Include/cmsis_gcc.h **** /**
+ 340:Drivers/CMSIS/Include/cmsis_gcc.h ****   \brief   Set Process Stack Pointer
+ 341:Drivers/CMSIS/Include/cmsis_gcc.h ****   \details Assigns the given value to the Process Stack Pointer (PSP).
+ 342:Drivers/CMSIS/Include/cmsis_gcc.h ****   \param [in]    topOfProcStack  Process Stack Pointer value to set
+ 343:Drivers/CMSIS/Include/cmsis_gcc.h ****  */
+ 344:Drivers/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE void __set_PSP(uint32_t topOfProcStack)
+ 345:Drivers/CMSIS/Include/cmsis_gcc.h **** {
+ 346:Drivers/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("MSR psp, %0" : : "r" (topOfProcStack) : );
+ 347:Drivers/CMSIS/Include/cmsis_gcc.h **** }
+ 348:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 349:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 350:Drivers/CMSIS/Include/cmsis_gcc.h **** #if (defined (__ARM_FEATURE_CMSE ) && (__ARM_FEATURE_CMSE == 3))
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccBsqBgz.s 			page 28
+
+
+ 351:Drivers/CMSIS/Include/cmsis_gcc.h **** /**
+ 352:Drivers/CMSIS/Include/cmsis_gcc.h ****   \brief   Set Process Stack Pointer (non-secure)
+ 353:Drivers/CMSIS/Include/cmsis_gcc.h ****   \details Assigns the given value to the non-secure Process Stack Pointer (PSP) when in secure sta
+ 354:Drivers/CMSIS/Include/cmsis_gcc.h ****   \param [in]    topOfProcStack  Process Stack Pointer value to set
+ 355:Drivers/CMSIS/Include/cmsis_gcc.h ****  */
+ 356:Drivers/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE void __TZ_set_PSP_NS(uint32_t topOfProcStack)
+ 357:Drivers/CMSIS/Include/cmsis_gcc.h **** {
+ 358:Drivers/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("MSR psp_ns, %0" : : "r" (topOfProcStack) : );
+ 359:Drivers/CMSIS/Include/cmsis_gcc.h **** }
+ 360:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+ 361:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 362:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 363:Drivers/CMSIS/Include/cmsis_gcc.h **** /**
+ 364:Drivers/CMSIS/Include/cmsis_gcc.h ****   \brief   Get Main Stack Pointer
+ 365:Drivers/CMSIS/Include/cmsis_gcc.h ****   \details Returns the current value of the Main Stack Pointer (MSP).
+ 366:Drivers/CMSIS/Include/cmsis_gcc.h ****   \return               MSP Register value
+ 367:Drivers/CMSIS/Include/cmsis_gcc.h ****  */
+ 368:Drivers/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __get_MSP(void)
+ 369:Drivers/CMSIS/Include/cmsis_gcc.h **** {
+ 370:Drivers/CMSIS/Include/cmsis_gcc.h ****   uint32_t result;
+ 371:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 372:Drivers/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("MRS %0, msp" : "=r" (result) );
+ 373:Drivers/CMSIS/Include/cmsis_gcc.h ****   return(result);
+ 374:Drivers/CMSIS/Include/cmsis_gcc.h **** }
+ 375:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 376:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 377:Drivers/CMSIS/Include/cmsis_gcc.h **** #if (defined (__ARM_FEATURE_CMSE ) && (__ARM_FEATURE_CMSE == 3))
+ 378:Drivers/CMSIS/Include/cmsis_gcc.h **** /**
+ 379:Drivers/CMSIS/Include/cmsis_gcc.h ****   \brief   Get Main Stack Pointer (non-secure)
+ 380:Drivers/CMSIS/Include/cmsis_gcc.h ****   \details Returns the current value of the non-secure Main Stack Pointer (MSP) when in secure stat
+ 381:Drivers/CMSIS/Include/cmsis_gcc.h ****   \return               MSP Register value
+ 382:Drivers/CMSIS/Include/cmsis_gcc.h ****  */
+ 383:Drivers/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __TZ_get_MSP_NS(void)
+ 384:Drivers/CMSIS/Include/cmsis_gcc.h **** {
+ 385:Drivers/CMSIS/Include/cmsis_gcc.h ****   uint32_t result;
+ 386:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 387:Drivers/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("MRS %0, msp_ns" : "=r" (result) );
+ 388:Drivers/CMSIS/Include/cmsis_gcc.h ****   return(result);
+ 389:Drivers/CMSIS/Include/cmsis_gcc.h **** }
+ 390:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+ 391:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 392:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 393:Drivers/CMSIS/Include/cmsis_gcc.h **** /**
+ 394:Drivers/CMSIS/Include/cmsis_gcc.h ****   \brief   Set Main Stack Pointer
+ 395:Drivers/CMSIS/Include/cmsis_gcc.h ****   \details Assigns the given value to the Main Stack Pointer (MSP).
+ 396:Drivers/CMSIS/Include/cmsis_gcc.h ****   \param [in]    topOfMainStack  Main Stack Pointer value to set
+ 397:Drivers/CMSIS/Include/cmsis_gcc.h ****  */
+ 398:Drivers/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE void __set_MSP(uint32_t topOfMainStack)
+ 399:Drivers/CMSIS/Include/cmsis_gcc.h **** {
+ 400:Drivers/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("MSR msp, %0" : : "r" (topOfMainStack) : );
+ 401:Drivers/CMSIS/Include/cmsis_gcc.h **** }
+ 402:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 403:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 404:Drivers/CMSIS/Include/cmsis_gcc.h **** #if (defined (__ARM_FEATURE_CMSE ) && (__ARM_FEATURE_CMSE == 3))
+ 405:Drivers/CMSIS/Include/cmsis_gcc.h **** /**
+ 406:Drivers/CMSIS/Include/cmsis_gcc.h ****   \brief   Set Main Stack Pointer (non-secure)
+ 407:Drivers/CMSIS/Include/cmsis_gcc.h ****   \details Assigns the given value to the non-secure Main Stack Pointer (MSP) when in secure state.
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccBsqBgz.s 			page 29
+
+
+ 408:Drivers/CMSIS/Include/cmsis_gcc.h ****   \param [in]    topOfMainStack  Main Stack Pointer value to set
+ 409:Drivers/CMSIS/Include/cmsis_gcc.h ****  */
+ 410:Drivers/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE void __TZ_set_MSP_NS(uint32_t topOfMainStack)
+ 411:Drivers/CMSIS/Include/cmsis_gcc.h **** {
+ 412:Drivers/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("MSR msp_ns, %0" : : "r" (topOfMainStack) : );
+ 413:Drivers/CMSIS/Include/cmsis_gcc.h **** }
+ 414:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+ 415:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 416:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 417:Drivers/CMSIS/Include/cmsis_gcc.h **** #if (defined (__ARM_FEATURE_CMSE ) && (__ARM_FEATURE_CMSE == 3))
+ 418:Drivers/CMSIS/Include/cmsis_gcc.h **** /**
+ 419:Drivers/CMSIS/Include/cmsis_gcc.h ****   \brief   Get Stack Pointer (non-secure)
+ 420:Drivers/CMSIS/Include/cmsis_gcc.h ****   \details Returns the current value of the non-secure Stack Pointer (SP) when in secure state.
+ 421:Drivers/CMSIS/Include/cmsis_gcc.h ****   \return               SP Register value
+ 422:Drivers/CMSIS/Include/cmsis_gcc.h ****  */
+ 423:Drivers/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __TZ_get_SP_NS(void)
+ 424:Drivers/CMSIS/Include/cmsis_gcc.h **** {
+ 425:Drivers/CMSIS/Include/cmsis_gcc.h ****   uint32_t result;
+ 426:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 427:Drivers/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("MRS %0, sp_ns" : "=r" (result) );
+ 428:Drivers/CMSIS/Include/cmsis_gcc.h ****   return(result);
+ 429:Drivers/CMSIS/Include/cmsis_gcc.h **** }
+ 430:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 431:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 432:Drivers/CMSIS/Include/cmsis_gcc.h **** /**
+ 433:Drivers/CMSIS/Include/cmsis_gcc.h ****   \brief   Set Stack Pointer (non-secure)
+ 434:Drivers/CMSIS/Include/cmsis_gcc.h ****   \details Assigns the given value to the non-secure Stack Pointer (SP) when in secure state.
+ 435:Drivers/CMSIS/Include/cmsis_gcc.h ****   \param [in]    topOfStack  Stack Pointer value to set
+ 436:Drivers/CMSIS/Include/cmsis_gcc.h ****  */
+ 437:Drivers/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE void __TZ_set_SP_NS(uint32_t topOfStack)
+ 438:Drivers/CMSIS/Include/cmsis_gcc.h **** {
+ 439:Drivers/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("MSR sp_ns, %0" : : "r" (topOfStack) : );
+ 440:Drivers/CMSIS/Include/cmsis_gcc.h **** }
+ 441:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+ 442:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 443:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 444:Drivers/CMSIS/Include/cmsis_gcc.h **** /**
+ 445:Drivers/CMSIS/Include/cmsis_gcc.h ****   \brief   Get Priority Mask
+ 446:Drivers/CMSIS/Include/cmsis_gcc.h ****   \details Returns the current state of the priority mask bit from the Priority Mask Register.
+ 447:Drivers/CMSIS/Include/cmsis_gcc.h ****   \return               Priority Mask value
+ 448:Drivers/CMSIS/Include/cmsis_gcc.h ****  */
+ 449:Drivers/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __get_PRIMASK(void)
+ 680              		.loc 2 449 31 view .LVU166
+ 681              	.LBB25:
+ 450:Drivers/CMSIS/Include/cmsis_gcc.h **** {
+ 451:Drivers/CMSIS/Include/cmsis_gcc.h ****   uint32_t result;
+ 682              		.loc 2 451 3 view .LVU167
+ 452:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 453:Drivers/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("MRS %0, primask" : "=r" (result) :: "memory");
+ 683              		.loc 2 453 3 view .LVU168
+ 684              		.syntax unified
+ 685              	@ 453 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+ 686 0006 EFF31084 		MRS r4, primask
+ 687              	@ 0 "" 2
+ 688              	.LVL53:
+ 454:Drivers/CMSIS/Include/cmsis_gcc.h ****   return(result);
+ 689              		.loc 2 454 3 view .LVU169
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccBsqBgz.s 			page 30
+
+
+ 690              		.loc 2 454 3 is_stmt 0 view .LVU170
+ 691              		.thumb
+ 692              		.syntax unified
+ 693              	.LBE25:
+ 694              	.LBE24:
+ 227:Utilities/timer/stm32_timer.c ****     UTIL_TIMER_Object_t* prev = TimerListHead;
+ 695              		.loc 1 227 5 is_stmt 1 view .LVU171
+ 696              	.LBB26:
+ 697              	.LBI26:
+ 207:Drivers/CMSIS/Include/cmsis_gcc.h **** {
+ 698              		.loc 2 207 27 view .LVU172
+ 699              	.LBB27:
+ 209:Drivers/CMSIS/Include/cmsis_gcc.h **** }
+ 700              		.loc 2 209 3 view .LVU173
+ 701              		.syntax unified
+ 702              	@ 209 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+ 703 000a 72B6     		cpsid i
+ 704              	@ 0 "" 2
+ 705              		.thumb
+ 706              		.syntax unified
+ 707              	.LBE27:
+ 708              	.LBE26:
+ 228:Utilities/timer/stm32_timer.c ****     UTIL_TIMER_Object_t* cur = TimerListHead;
+ 709              		.loc 1 228 5 view .LVU174
+ 228:Utilities/timer/stm32_timer.c ****     UTIL_TIMER_Object_t* cur = TimerListHead;
+ 710              		.loc 1 228 26 is_stmt 0 view .LVU175
+ 711 000c 154B     		ldr	r3, .L75
+ 712 000e 1968     		ldr	r1, [r3]
+ 713              	.LVL54:
+ 229:Utilities/timer/stm32_timer.c ****     TimerObject->IsReloadStopped = 1U;
+ 714              		.loc 1 229 5 is_stmt 1 view .LVU176
+ 230:Utilities/timer/stm32_timer.c ****     
+ 715              		.loc 1 230 5 view .LVU177
+ 230:Utilities/timer/stm32_timer.c ****     
+ 716              		.loc 1 230 34 is_stmt 0 view .LVU178
+ 717 0010 0123     		movs	r3, #1
+ 718 0012 8372     		strb	r3, [r0, #10]
+ 233:Utilities/timer/stm32_timer.c ****     {
+ 719              		.loc 1 233 5 is_stmt 1 view .LVU179
+ 233:Utilities/timer/stm32_timer.c ****     {
+ 720              		.loc 1 233 7 is_stmt 0 view .LVU180
+ 721 0014 E1B1     		cbz	r1, .L61
+ 235:Utilities/timer/stm32_timer.c ****       
+ 722              		.loc 1 235 7 is_stmt 1 view .LVU181
+ 235:Utilities/timer/stm32_timer.c ****       
+ 723              		.loc 1 235 30 is_stmt 0 view .LVU182
+ 724 0016 0023     		movs	r3, #0
+ 725 0018 4372     		strb	r3, [r0, #9]
+ 237:Utilities/timer/stm32_timer.c ****       {
+ 726              		.loc 1 237 7 is_stmt 1 view .LVU183
+ 237:Utilities/timer/stm32_timer.c ****       {
+ 727              		.loc 1 237 9 is_stmt 0 view .LVU184
+ 728 001a 8842     		cmp	r0, r1
+ 729 001c 06D0     		beq	.L73
+ 229:Utilities/timer/stm32_timer.c ****     TimerObject->IsReloadStopped = 1U;
+ 730              		.loc 1 229 26 view .LVU185
+ 731 001e 0B46     		mov	r3, r1
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccBsqBgz.s 			page 31
+
+
+ 732              	.LVL55:
+ 733              	.L62:
+ 253:Utilities/timer/stm32_timer.c ****         {
+ 734              		.loc 1 253 14 is_stmt 1 view .LVU186
+ 735 0020 B3B1     		cbz	r3, .L61
+ 255:Utilities/timer/stm32_timer.c ****           {
+ 736              		.loc 1 255 11 view .LVU187
+ 255:Utilities/timer/stm32_timer.c ****           {
+ 737              		.loc 1 255 13 is_stmt 0 view .LVU188
+ 738 0022 9342     		cmp	r3, r2
+ 739 0024 11D0     		beq	.L74
+ 271:Utilities/timer/stm32_timer.c ****             cur = cur->Next;
+ 740              		.loc 1 271 13 is_stmt 1 view .LVU189
+ 741              	.LVL56:
+ 272:Utilities/timer/stm32_timer.c ****           }
+ 742              		.loc 1 272 13 view .LVU190
+ 271:Utilities/timer/stm32_timer.c ****             cur = cur->Next;
+ 743              		.loc 1 271 18 is_stmt 0 view .LVU191
+ 744 0026 1946     		mov	r1, r3
+ 272:Utilities/timer/stm32_timer.c ****           }
+ 745              		.loc 1 272 17 view .LVU192
+ 746 0028 5B69     		ldr	r3, [r3, #20]
+ 747              	.LVL57:
+ 272:Utilities/timer/stm32_timer.c ****           }
+ 748              		.loc 1 272 17 view .LVU193
+ 749 002a F9E7     		b	.L62
+ 750              	.LVL58:
+ 751              	.L73:
+ 239:Utilities/timer/stm32_timer.c ****           if( TimerListHead->Next != NULL )
+ 752              		.loc 1 239 11 is_stmt 1 view .LVU194
+ 239:Utilities/timer/stm32_timer.c ****           if( TimerListHead->Next != NULL )
+ 753              		.loc 1 239 36 is_stmt 0 view .LVU195
+ 754 002c 0B72     		strb	r3, [r1, #8]
+ 240:Utilities/timer/stm32_timer.c ****           {
+ 755              		.loc 1 240 11 is_stmt 1 view .LVU196
+ 240:Utilities/timer/stm32_timer.c ****           {
+ 756              		.loc 1 240 28 is_stmt 0 view .LVU197
+ 757 002e 4869     		ldr	r0, [r1, #20]
+ 758              	.LVL59:
+ 240:Utilities/timer/stm32_timer.c ****           {
+ 759              		.loc 1 240 13 view .LVU198
+ 760 0030 20B1     		cbz	r0, .L63
+ 242:Utilities/timer/stm32_timer.c ****             TimerSetTimeout( TimerListHead );
+ 761              		.loc 1 242 13 is_stmt 1 view .LVU199
+ 242:Utilities/timer/stm32_timer.c ****             TimerSetTimeout( TimerListHead );
+ 762              		.loc 1 242 27 is_stmt 0 view .LVU200
+ 763 0032 0C4B     		ldr	r3, .L75
+ 764 0034 1860     		str	r0, [r3]
+ 243:Utilities/timer/stm32_timer.c ****           }
+ 765              		.loc 1 243 13 is_stmt 1 view .LVU201
+ 766 0036 FFF7FEFF 		bl	TimerSetTimeout
+ 767              	.LVL60:
+ 243:Utilities/timer/stm32_timer.c ****           }
+ 768              		.loc 1 243 13 is_stmt 0 view .LVU202
+ 769 003a 09E0     		b	.L61
+ 770              	.LVL61:
+ 771              	.L63:
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccBsqBgz.s 			page 32
+
+
+ 247:Utilities/timer/stm32_timer.c ****             TimerListHead = NULL;
+ 772              		.loc 1 247 13 is_stmt 1 view .LVU203
+ 247:Utilities/timer/stm32_timer.c ****             TimerListHead = NULL;
+ 773              		.loc 1 247 29 is_stmt 0 view .LVU204
+ 774 003c 0A4B     		ldr	r3, .L75+4
+ 775 003e DB68     		ldr	r3, [r3, #12]
+ 247:Utilities/timer/stm32_timer.c ****             TimerListHead = NULL;
+ 776              		.loc 1 247 13 view .LVU205
+ 777 0040 9847     		blx	r3
+ 778              	.LVL62:
+ 248:Utilities/timer/stm32_timer.c ****           }
+ 779              		.loc 1 248 13 is_stmt 1 view .LVU206
+ 248:Utilities/timer/stm32_timer.c ****           }
+ 780              		.loc 1 248 27 is_stmt 0 view .LVU207
+ 781 0042 084B     		ldr	r3, .L75
+ 782 0044 0022     		movs	r2, #0
+ 783 0046 1A60     		str	r2, [r3]
+ 784 0048 02E0     		b	.L61
+ 785              	.LVL63:
+ 786              	.L74:
+ 257:Utilities/timer/stm32_timer.c ****             {
+ 787              		.loc 1 257 13 is_stmt 1 view .LVU208
+ 257:Utilities/timer/stm32_timer.c ****             {
+ 788              		.loc 1 257 20 is_stmt 0 view .LVU209
+ 789 004a 5B69     		ldr	r3, [r3, #20]
+ 790              	.LVL64:
+ 257:Utilities/timer/stm32_timer.c ****             {
+ 791              		.loc 1 257 15 view .LVU210
+ 792 004c 23B1     		cbz	r3, .L65
+ 259:Utilities/timer/stm32_timer.c ****               prev->Next = cur;
+ 793              		.loc 1 259 15 is_stmt 1 view .LVU211
+ 794              	.LVL65:
+ 260:Utilities/timer/stm32_timer.c ****             }
+ 795              		.loc 1 260 15 view .LVU212
+ 260:Utilities/timer/stm32_timer.c ****             }
+ 796              		.loc 1 260 26 is_stmt 0 view .LVU213
+ 797 004e 4B61     		str	r3, [r1, #20]
+ 798              	.LVL66:
+ 799              	.L61:
+ 278:Utilities/timer/stm32_timer.c ****   }
+ 800              		.loc 1 278 5 is_stmt 1 view .LVU214
+ 801              	.LBB28:
+ 802              	.LBI28:
+ 455:Drivers/CMSIS/Include/cmsis_gcc.h **** }
+ 456:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 457:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 458:Drivers/CMSIS/Include/cmsis_gcc.h **** #if (defined (__ARM_FEATURE_CMSE ) && (__ARM_FEATURE_CMSE == 3))
+ 459:Drivers/CMSIS/Include/cmsis_gcc.h **** /**
+ 460:Drivers/CMSIS/Include/cmsis_gcc.h ****   \brief   Get Priority Mask (non-secure)
+ 461:Drivers/CMSIS/Include/cmsis_gcc.h ****   \details Returns the current state of the non-secure priority mask bit from the Priority Mask Reg
+ 462:Drivers/CMSIS/Include/cmsis_gcc.h ****   \return               Priority Mask value
+ 463:Drivers/CMSIS/Include/cmsis_gcc.h ****  */
+ 464:Drivers/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __TZ_get_PRIMASK_NS(void)
+ 465:Drivers/CMSIS/Include/cmsis_gcc.h **** {
+ 466:Drivers/CMSIS/Include/cmsis_gcc.h ****   uint32_t result;
+ 467:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 468:Drivers/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("MRS %0, primask_ns" : "=r" (result) :: "memory");
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccBsqBgz.s 			page 33
+
+
+ 469:Drivers/CMSIS/Include/cmsis_gcc.h ****   return(result);
+ 470:Drivers/CMSIS/Include/cmsis_gcc.h **** }
+ 471:Drivers/CMSIS/Include/cmsis_gcc.h **** #endif
+ 472:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 473:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 474:Drivers/CMSIS/Include/cmsis_gcc.h **** /**
+ 475:Drivers/CMSIS/Include/cmsis_gcc.h ****   \brief   Set Priority Mask
+ 476:Drivers/CMSIS/Include/cmsis_gcc.h ****   \details Assigns the given value to the Priority Mask Register.
+ 477:Drivers/CMSIS/Include/cmsis_gcc.h ****   \param [in]    priMask  Priority Mask
+ 478:Drivers/CMSIS/Include/cmsis_gcc.h ****  */
+ 479:Drivers/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE void __set_PRIMASK(uint32_t priMask)
+ 803              		.loc 2 479 27 view .LVU215
+ 804              	.LBB29:
+ 480:Drivers/CMSIS/Include/cmsis_gcc.h **** {
+ 481:Drivers/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("MSR primask, %0" : : "r" (priMask) : "memory");
+ 805              		.loc 2 481 3 view .LVU216
+ 806              		.syntax unified
+ 807              	@ 481 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+ 808 0050 84F31088 		MSR primask, r4
+ 809              	@ 0 "" 2
+ 482:Drivers/CMSIS/Include/cmsis_gcc.h **** }
+ 810              		.loc 2 482 1 is_stmt 0 view .LVU217
+ 811              		.thumb
+ 812              		.syntax unified
+ 813 0054 0020     		movs	r0, #0
+ 814              	.LVL67:
+ 815              		.loc 2 482 1 view .LVU218
+ 816              	.LBE29:
+ 817              	.LBE28:
+ 818              	.LBE23:
+ 284:Utilities/timer/stm32_timer.c **** }
+ 819              		.loc 1 284 3 is_stmt 1 view .LVU219
+ 285:Utilities/timer/stm32_timer.c **** 
+ 820              		.loc 1 285 1 is_stmt 0 view .LVU220
+ 821 0056 10BD     		pop	{r4, pc}
+ 822              	.LVL68:
+ 823              	.L65:
+ 824              	.LBB30:
+ 264:Utilities/timer/stm32_timer.c ****               prev->Next = cur;
+ 825              		.loc 1 264 15 is_stmt 1 view .LVU221
+ 265:Utilities/timer/stm32_timer.c ****             }
+ 826              		.loc 1 265 15 view .LVU222
+ 265:Utilities/timer/stm32_timer.c ****             }
+ 827              		.loc 1 265 26 is_stmt 0 view .LVU223
+ 828 0058 0023     		movs	r3, #0
+ 829 005a 4B61     		str	r3, [r1, #20]
+ 830 005c F8E7     		b	.L61
+ 831              	.LVL69:
+ 832              	.L67:
+ 833              	.LCFI13:
+ 834              		.cfi_def_cfa_offset 0
+ 835              		.cfi_restore 4
+ 836              		.cfi_restore 14
+ 265:Utilities/timer/stm32_timer.c ****             }
+ 837              		.loc 1 265 26 view .LVU224
+ 838              	.LBE30:
+ 282:Utilities/timer/stm32_timer.c ****   }
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccBsqBgz.s 			page 34
+
+
+ 839              		.loc 1 282 9 view .LVU225
+ 840 005e 0120     		movs	r0, #1
+ 841              	.LVL70:
+ 284:Utilities/timer/stm32_timer.c **** }
+ 842              		.loc 1 284 3 is_stmt 1 view .LVU226
+ 285:Utilities/timer/stm32_timer.c **** 
+ 843              		.loc 1 285 1 is_stmt 0 view .LVU227
+ 844 0060 7047     		bx	lr
+ 845              	.L76:
+ 846 0062 00BF     		.align	2
+ 847              	.L75:
+ 848 0064 00000000 		.word	.LANCHOR0
+ 849 0068 00000000 		.word	UTIL_TimerDriver
+ 850              		.cfi_endproc
+ 851              	.LFE109:
+ 853              		.section	.text.TimerInsertTimer,"ax",%progbits
+ 854              		.align	1
+ 855              		.global	TimerInsertTimer
+ 856              		.syntax unified
+ 857              		.thumb
+ 858              		.thumb_func
+ 860              	TimerInsertTimer:
+ 861              	.LVL71:
+ 862              	.LFB120:
+ 482:Utilities/timer/stm32_timer.c **** 
+ 483:Utilities/timer/stm32_timer.c **** /**
+ 484:Utilities/timer/stm32_timer.c ****  * @brief Adds a timer to the list.
+ 485:Utilities/timer/stm32_timer.c ****  *
+ 486:Utilities/timer/stm32_timer.c ****  * @remark The list is automatically sorted. The list head always contains the
+ 487:Utilities/timer/stm32_timer.c ****  *     next timer to expire.
+ 488:Utilities/timer/stm32_timer.c ****  *
+ 489:Utilities/timer/stm32_timer.c ****  * @param TimerObject Structure containing the timer object parameters
+ 490:Utilities/timer/stm32_timer.c ****  */
+ 491:Utilities/timer/stm32_timer.c **** void TimerInsertTimer( UTIL_TIMER_Object_t *TimerObject)
+ 492:Utilities/timer/stm32_timer.c **** {
+ 863              		.loc 1 492 1 is_stmt 1 view -0
+ 864              		.cfi_startproc
+ 865              		@ args = 0, pretend = 0, frame = 0
+ 866              		@ frame_needed = 0, uses_anonymous_args = 0
+ 867              		@ link register save eliminated.
+ 493:Utilities/timer/stm32_timer.c ****   UTIL_TIMER_Object_t* cur = TimerListHead;
+ 868              		.loc 1 493 3 view .LVU229
+ 869              		.loc 1 493 24 is_stmt 0 view .LVU230
+ 870 0000 094B     		ldr	r3, .L84
+ 871 0002 1A68     		ldr	r2, [r3]
+ 872              	.LVL72:
+ 494:Utilities/timer/stm32_timer.c ****   UTIL_TIMER_Object_t* next = TimerListHead->Next;
+ 873              		.loc 1 494 3 is_stmt 1 view .LVU231
+ 874              		.loc 1 494 24 is_stmt 0 view .LVU232
+ 875 0004 5369     		ldr	r3, [r2, #20]
+ 876              	.LVL73:
+ 495:Utilities/timer/stm32_timer.c **** 
+ 496:Utilities/timer/stm32_timer.c ****   while (cur->Next != NULL )
+ 877              		.loc 1 496 3 is_stmt 1 view .LVU233
+ 878              		.loc 1 496 9 is_stmt 0 view .LVU234
+ 879 0006 01E0     		b	.L78
+ 880              	.L83:
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccBsqBgz.s 			page 35
+
+
+ 497:Utilities/timer/stm32_timer.c ****   {  
+ 498:Utilities/timer/stm32_timer.c ****     if( TimerObject->Timestamp  > next->Timestamp )
+ 499:Utilities/timer/stm32_timer.c ****     {
+ 500:Utilities/timer/stm32_timer.c ****         cur = next;
+ 881              		.loc 1 500 9 is_stmt 1 view .LVU235
+ 882              	.LVL74:
+ 501:Utilities/timer/stm32_timer.c ****         next = next->Next;
+ 883              		.loc 1 501 9 view .LVU236
+ 500:Utilities/timer/stm32_timer.c ****         next = next->Next;
+ 884              		.loc 1 500 13 is_stmt 0 view .LVU237
+ 885 0008 1A46     		mov	r2, r3
+ 886              		.loc 1 501 14 view .LVU238
+ 887 000a 5B69     		ldr	r3, [r3, #20]
+ 888              	.LVL75:
+ 889              	.L78:
+ 496:Utilities/timer/stm32_timer.c ****   {  
+ 890              		.loc 1 496 9 is_stmt 1 view .LVU239
+ 496:Utilities/timer/stm32_timer.c ****   {  
+ 891              		.loc 1 496 13 is_stmt 0 view .LVU240
+ 892 000c 5169     		ldr	r1, [r2, #20]
+ 496:Utilities/timer/stm32_timer.c ****   {  
+ 893              		.loc 1 496 9 view .LVU241
+ 894 000e 39B1     		cbz	r1, .L82
+ 498:Utilities/timer/stm32_timer.c ****     {
+ 895              		.loc 1 498 5 is_stmt 1 view .LVU242
+ 498:Utilities/timer/stm32_timer.c ****     {
+ 896              		.loc 1 498 39 is_stmt 0 view .LVU243
+ 897 0010 1968     		ldr	r1, [r3]
+ 498:Utilities/timer/stm32_timer.c ****     {
+ 898              		.loc 1 498 7 view .LVU244
+ 899 0012 D0F800C0 		ldr	ip, [r0]
+ 900 0016 8C45     		cmp	ip, r1
+ 901 0018 F6D8     		bhi	.L83
+ 502:Utilities/timer/stm32_timer.c ****     }
+ 503:Utilities/timer/stm32_timer.c ****     else
+ 504:Utilities/timer/stm32_timer.c ****     {
+ 505:Utilities/timer/stm32_timer.c ****         cur->Next = TimerObject;
+ 902              		.loc 1 505 9 is_stmt 1 view .LVU245
+ 903              		.loc 1 505 19 is_stmt 0 view .LVU246
+ 904 001a 5061     		str	r0, [r2, #20]
+ 506:Utilities/timer/stm32_timer.c ****         TimerObject->Next = next;
+ 905              		.loc 1 506 9 is_stmt 1 view .LVU247
+ 906              		.loc 1 506 27 is_stmt 0 view .LVU248
+ 907 001c 4361     		str	r3, [r0, #20]
+ 507:Utilities/timer/stm32_timer.c ****         return;
+ 908              		.loc 1 507 9 is_stmt 1 view .LVU249
+ 909 001e 7047     		bx	lr
+ 910              	.L82:
+ 508:Utilities/timer/stm32_timer.c **** 
+ 509:Utilities/timer/stm32_timer.c ****     }
+ 510:Utilities/timer/stm32_timer.c ****   }
+ 511:Utilities/timer/stm32_timer.c ****   cur->Next = TimerObject;
+ 911              		.loc 1 511 3 view .LVU250
+ 912              		.loc 1 511 13 is_stmt 0 view .LVU251
+ 913 0020 5061     		str	r0, [r2, #20]
+ 512:Utilities/timer/stm32_timer.c ****   TimerObject->Next = NULL;
+ 914              		.loc 1 512 3 is_stmt 1 view .LVU252
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccBsqBgz.s 			page 36
+
+
+ 915              		.loc 1 512 21 is_stmt 0 view .LVU253
+ 916 0022 0023     		movs	r3, #0
+ 917              	.LVL76:
+ 918              		.loc 1 512 21 view .LVU254
+ 919 0024 4361     		str	r3, [r0, #20]
+ 513:Utilities/timer/stm32_timer.c **** }
+ 920              		.loc 1 513 1 view .LVU255
+ 921 0026 7047     		bx	lr
+ 922              	.L85:
+ 923              		.align	2
+ 924              	.L84:
+ 925 0028 00000000 		.word	.LANCHOR0
+ 926              		.cfi_endproc
+ 927              	.LFE120:
+ 929              		.section	.text.TimerInsertNewHeadTimer,"ax",%progbits
+ 930              		.align	1
+ 931              		.global	TimerInsertNewHeadTimer
+ 932              		.syntax unified
+ 933              		.thumb
+ 934              		.thumb_func
+ 936              	TimerInsertNewHeadTimer:
+ 937              	.LVL77:
+ 938              	.LFB121:
+ 514:Utilities/timer/stm32_timer.c **** 
+ 515:Utilities/timer/stm32_timer.c **** /**
+ 516:Utilities/timer/stm32_timer.c ****  * @brief Adds or replace the head timer of the list.
+ 517:Utilities/timer/stm32_timer.c ****  *
+ 518:Utilities/timer/stm32_timer.c ****  * @param TimerObject Structure containing the timer object parameters
+ 519:Utilities/timer/stm32_timer.c ****  *
+ 520:Utilities/timer/stm32_timer.c ****  * @remark The list is automatically sorted. The list head always contains the
+ 521:Utilities/timer/stm32_timer.c ****  *         next timer to expire.
+ 522:Utilities/timer/stm32_timer.c ****  */
+ 523:Utilities/timer/stm32_timer.c **** void TimerInsertNewHeadTimer( UTIL_TIMER_Object_t *TimerObject )
+ 524:Utilities/timer/stm32_timer.c **** {
+ 939              		.loc 1 524 1 is_stmt 1 view -0
+ 940              		.cfi_startproc
+ 941              		@ args = 0, pretend = 0, frame = 0
+ 942              		@ frame_needed = 0, uses_anonymous_args = 0
+ 943              		.loc 1 524 1 is_stmt 0 view .LVU257
+ 944 0000 08B5     		push	{r3, lr}
+ 945              	.LCFI14:
+ 946              		.cfi_def_cfa_offset 8
+ 947              		.cfi_offset 3, -8
+ 948              		.cfi_offset 14, -4
+ 525:Utilities/timer/stm32_timer.c ****   UTIL_TIMER_Object_t* cur = TimerListHead;
+ 949              		.loc 1 525 3 is_stmt 1 view .LVU258
+ 950              		.loc 1 525 24 is_stmt 0 view .LVU259
+ 951 0002 054B     		ldr	r3, .L89
+ 952 0004 1B68     		ldr	r3, [r3]
+ 953              	.LVL78:
+ 526:Utilities/timer/stm32_timer.c **** 
+ 527:Utilities/timer/stm32_timer.c ****   if( cur != NULL )
+ 954              		.loc 1 527 3 is_stmt 1 view .LVU260
+ 955              		.loc 1 527 5 is_stmt 0 view .LVU261
+ 956 0006 0BB1     		cbz	r3, .L87
+ 528:Utilities/timer/stm32_timer.c ****   {
+ 529:Utilities/timer/stm32_timer.c ****     cur->IsPending = 0;
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccBsqBgz.s 			page 37
+
+
+ 957              		.loc 1 529 5 is_stmt 1 view .LVU262
+ 958              		.loc 1 529 20 is_stmt 0 view .LVU263
+ 959 0008 0022     		movs	r2, #0
+ 960 000a 1A72     		strb	r2, [r3, #8]
+ 961              	.L87:
+ 530:Utilities/timer/stm32_timer.c ****   }
+ 531:Utilities/timer/stm32_timer.c **** 
+ 532:Utilities/timer/stm32_timer.c ****   TimerObject->Next = cur;
+ 962              		.loc 1 532 3 is_stmt 1 view .LVU264
+ 963              		.loc 1 532 21 is_stmt 0 view .LVU265
+ 964 000c 4361     		str	r3, [r0, #20]
+ 533:Utilities/timer/stm32_timer.c ****   TimerListHead = TimerObject;
+ 965              		.loc 1 533 3 is_stmt 1 view .LVU266
+ 966              		.loc 1 533 17 is_stmt 0 view .LVU267
+ 967 000e 024B     		ldr	r3, .L89
+ 968              	.LVL79:
+ 969              		.loc 1 533 17 view .LVU268
+ 970 0010 1860     		str	r0, [r3]
+ 971              	.LVL80:
+ 534:Utilities/timer/stm32_timer.c ****   TimerSetTimeout( TimerListHead );
+ 972              		.loc 1 534 3 is_stmt 1 view .LVU269
+ 973 0012 FFF7FEFF 		bl	TimerSetTimeout
+ 974              	.LVL81:
+ 535:Utilities/timer/stm32_timer.c **** }
+ 975              		.loc 1 535 1 is_stmt 0 view .LVU270
+ 976 0016 08BD     		pop	{r3, pc}
+ 977              	.L90:
+ 978              		.align	2
+ 979              	.L89:
+ 980 0018 00000000 		.word	.LANCHOR0
+ 981              		.cfi_endproc
+ 982              	.LFE121:
+ 984              		.section	.text.UTIL_TIMER_Start,"ax",%progbits
+ 985              		.align	1
+ 986              		.global	UTIL_TIMER_Start
+ 987              		.syntax unified
+ 988              		.thumb
+ 989              		.thumb_func
+ 991              	UTIL_TIMER_Start:
+ 992              	.LVL82:
+ 993              	.LFB107:
+ 152:Utilities/timer/stm32_timer.c ****   UTIL_TIMER_Status_t  ret = UTIL_TIMER_OK;
+ 994              		.loc 1 152 1 is_stmt 1 view -0
+ 995              		.cfi_startproc
+ 996              		@ args = 0, pretend = 0, frame = 0
+ 997              		@ frame_needed = 0, uses_anonymous_args = 0
+ 152:Utilities/timer/stm32_timer.c ****   UTIL_TIMER_Status_t  ret = UTIL_TIMER_OK;
+ 998              		.loc 1 152 1 is_stmt 0 view .LVU272
+ 999 0000 F8B5     		push	{r3, r4, r5, r6, r7, lr}
+ 1000              	.LCFI15:
+ 1001              		.cfi_def_cfa_offset 24
+ 1002              		.cfi_offset 3, -24
+ 1003              		.cfi_offset 4, -20
+ 1004              		.cfi_offset 5, -16
+ 1005              		.cfi_offset 6, -12
+ 1006              		.cfi_offset 7, -8
+ 1007              		.cfi_offset 14, -4
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccBsqBgz.s 			page 38
+
+
+ 153:Utilities/timer/stm32_timer.c ****   uint32_t elapsedTime;
+ 1008              		.loc 1 153 3 is_stmt 1 view .LVU273
+ 1009              	.LVL83:
+ 154:Utilities/timer/stm32_timer.c ****   uint32_t minValue;
+ 1010              		.loc 1 154 3 view .LVU274
+ 155:Utilities/timer/stm32_timer.c ****   uint32_t ticks;
+ 1011              		.loc 1 155 3 view .LVU275
+ 156:Utilities/timer/stm32_timer.c ****     
+ 1012              		.loc 1 156 3 view .LVU276
+ 158:Utilities/timer/stm32_timer.c ****   {
+ 1013              		.loc 1 158 3 view .LVU277
+ 158:Utilities/timer/stm32_timer.c ****   {
+ 1014              		.loc 1 158 5 is_stmt 0 view .LVU278
+ 1015 0002 0028     		cmp	r0, #0
+ 1016 0004 36D0     		beq	.L97
+ 1017 0006 0446     		mov	r4, r0
+ 158:Utilities/timer/stm32_timer.c ****   {
+ 1018              		.loc 1 158 35 discriminator 1 view .LVU279
+ 1019 0008 FFF7FEFF 		bl	TimerExists
+ 1020              	.LVL84:
+ 158:Utilities/timer/stm32_timer.c ****   {
+ 1021              		.loc 1 158 30 discriminator 1 view .LVU280
+ 1022 000c 0028     		cmp	r0, #0
+ 1023 000e 34D1     		bne	.L98
+ 158:Utilities/timer/stm32_timer.c ****   {
+ 1024              		.loc 1 158 88 discriminator 2 view .LVU281
+ 1025 0010 657A     		ldrb	r5, [r4, #9]	@ zero_extendqisi2
+ 158:Utilities/timer/stm32_timer.c ****   {
+ 1026              		.loc 1 158 73 discriminator 2 view .LVU282
+ 1027 0012 002D     		cmp	r5, #0
+ 1028 0014 33D1     		bne	.L99
+ 1029              	.LBB31:
+ 160:Utilities/timer/stm32_timer.c ****     ticks = TimerObject->ReloadValue;
+ 1030              		.loc 1 160 5 is_stmt 1 view .LVU283
+ 1031              	.LBB32:
+ 1032              	.LBI32:
+ 449:Drivers/CMSIS/Include/cmsis_gcc.h **** {
+ 1033              		.loc 2 449 31 view .LVU284
+ 1034              	.LBB33:
+ 451:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 1035              		.loc 2 451 3 view .LVU285
+ 453:Drivers/CMSIS/Include/cmsis_gcc.h ****   return(result);
+ 1036              		.loc 2 453 3 view .LVU286
+ 1037              		.syntax unified
+ 1038              	@ 453 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+ 1039 0016 EFF31086 		MRS r6, primask
+ 1040              	@ 0 "" 2
+ 1041              	.LVL85:
+ 454:Drivers/CMSIS/Include/cmsis_gcc.h **** }
+ 1042              		.loc 2 454 3 view .LVU287
+ 454:Drivers/CMSIS/Include/cmsis_gcc.h **** }
+ 1043              		.loc 2 454 3 is_stmt 0 view .LVU288
+ 1044              		.thumb
+ 1045              		.syntax unified
+ 1046              	.LBE33:
+ 1047              	.LBE32:
+ 160:Utilities/timer/stm32_timer.c ****     ticks = TimerObject->ReloadValue;
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccBsqBgz.s 			page 39
+
+
+ 1048              		.loc 1 160 5 is_stmt 1 view .LVU289
+ 1049              	.LBB34:
+ 1050              	.LBI34:
+ 207:Drivers/CMSIS/Include/cmsis_gcc.h **** {
+ 1051              		.loc 2 207 27 view .LVU290
+ 1052              	.LBB35:
+ 209:Drivers/CMSIS/Include/cmsis_gcc.h **** }
+ 1053              		.loc 2 209 3 view .LVU291
+ 1054              		.syntax unified
+ 1055              	@ 209 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+ 1056 001a 72B6     		cpsid i
+ 1057              	@ 0 "" 2
+ 1058              		.thumb
+ 1059              		.syntax unified
+ 1060              	.LBE35:
+ 1061              	.LBE34:
+ 161:Utilities/timer/stm32_timer.c ****     minValue = UTIL_TimerDriver.GetMinimumTimeout( );
+ 1062              		.loc 1 161 5 view .LVU292
+ 161:Utilities/timer/stm32_timer.c ****     minValue = UTIL_TimerDriver.GetMinimumTimeout( );
+ 1063              		.loc 1 161 11 is_stmt 0 view .LVU293
+ 1064 001c 6768     		ldr	r7, [r4, #4]
+ 1065              	.LVL86:
+ 162:Utilities/timer/stm32_timer.c ****     
+ 1066              		.loc 1 162 5 is_stmt 1 view .LVU294
+ 162:Utilities/timer/stm32_timer.c ****     
+ 1067              		.loc 1 162 32 is_stmt 0 view .LVU295
+ 1068 001e 194B     		ldr	r3, .L102
+ 1069 0020 1B6A     		ldr	r3, [r3, #32]
+ 162:Utilities/timer/stm32_timer.c ****     
+ 1070              		.loc 1 162 16 view .LVU296
+ 1071 0022 9847     		blx	r3
+ 1072              	.LVL87:
+ 164:Utilities/timer/stm32_timer.c ****     {
+ 1073              		.loc 1 164 5 is_stmt 1 view .LVU297
+ 164:Utilities/timer/stm32_timer.c ****     {
+ 1074              		.loc 1 164 7 is_stmt 0 view .LVU298
+ 1075 0024 8742     		cmp	r7, r0
+ 1076 0026 00D3     		bcc	.L93
+ 161:Utilities/timer/stm32_timer.c ****     minValue = UTIL_TimerDriver.GetMinimumTimeout( );
+ 1077              		.loc 1 161 11 view .LVU299
+ 1078 0028 3846     		mov	r0, r7
+ 1079              	.LVL88:
+ 1080              	.L93:
+ 169:Utilities/timer/stm32_timer.c ****     TimerObject->IsPending = 0U;
+ 1081              		.loc 1 169 5 is_stmt 1 view .LVU300
+ 169:Utilities/timer/stm32_timer.c ****     TimerObject->IsPending = 0U;
+ 1082              		.loc 1 169 28 is_stmt 0 view .LVU301
+ 1083 002a 2060     		str	r0, [r4]
+ 170:Utilities/timer/stm32_timer.c ****     TimerObject->IsRunning = 1U;
+ 1084              		.loc 1 170 5 is_stmt 1 view .LVU302
+ 170:Utilities/timer/stm32_timer.c ****     TimerObject->IsRunning = 1U;
+ 1085              		.loc 1 170 28 is_stmt 0 view .LVU303
+ 1086 002c 0023     		movs	r3, #0
+ 1087 002e 2372     		strb	r3, [r4, #8]
+ 171:Utilities/timer/stm32_timer.c ****     TimerObject->IsReloadStopped = 0U;
+ 1088              		.loc 1 171 5 is_stmt 1 view .LVU304
+ 171:Utilities/timer/stm32_timer.c ****     TimerObject->IsReloadStopped = 0U;
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccBsqBgz.s 			page 40
+
+
+ 1089              		.loc 1 171 28 is_stmt 0 view .LVU305
+ 1090 0030 0122     		movs	r2, #1
+ 1091 0032 6272     		strb	r2, [r4, #9]
+ 172:Utilities/timer/stm32_timer.c ****     if( TimerListHead == NULL )
+ 1092              		.loc 1 172 5 is_stmt 1 view .LVU306
+ 172:Utilities/timer/stm32_timer.c ****     if( TimerListHead == NULL )
+ 1093              		.loc 1 172 34 is_stmt 0 view .LVU307
+ 1094 0034 A372     		strb	r3, [r4, #10]
+ 173:Utilities/timer/stm32_timer.c ****     {
+ 1095              		.loc 1 173 5 is_stmt 1 view .LVU308
+ 173:Utilities/timer/stm32_timer.c ****     {
+ 1096              		.loc 1 173 23 is_stmt 0 view .LVU309
+ 1097 0036 144B     		ldr	r3, .L102+4
+ 1098 0038 1B68     		ldr	r3, [r3]
+ 173:Utilities/timer/stm32_timer.c ****     {
+ 1099              		.loc 1 173 7 view .LVU310
+ 1100 003a 83B1     		cbz	r3, .L101
+ 180:Utilities/timer/stm32_timer.c ****       TimerObject->Timestamp += elapsedTime;
+ 1101              		.loc 1 180 7 is_stmt 1 view .LVU311
+ 180:Utilities/timer/stm32_timer.c ****       TimerObject->Timestamp += elapsedTime;
+ 1102              		.loc 1 180 37 is_stmt 0 view .LVU312
+ 1103 003c 114B     		ldr	r3, .L102
+ 1104 003e 9B69     		ldr	r3, [r3, #24]
+ 180:Utilities/timer/stm32_timer.c ****       TimerObject->Timestamp += elapsedTime;
+ 1105              		.loc 1 180 21 view .LVU313
+ 1106 0040 9847     		blx	r3
+ 1107              	.LVL89:
+ 181:Utilities/timer/stm32_timer.c ****       
+ 1108              		.loc 1 181 7 is_stmt 1 view .LVU314
+ 181:Utilities/timer/stm32_timer.c ****       
+ 1109              		.loc 1 181 30 is_stmt 0 view .LVU315
+ 1110 0042 2368     		ldr	r3, [r4]
+ 1111 0044 1844     		add	r0, r0, r3
+ 1112              	.LVL90:
+ 181:Utilities/timer/stm32_timer.c ****       
+ 1113              		.loc 1 181 30 view .LVU316
+ 1114 0046 2060     		str	r0, [r4]
+ 183:Utilities/timer/stm32_timer.c ****       {
+ 1115              		.loc 1 183 7 is_stmt 1 view .LVU317
+ 183:Utilities/timer/stm32_timer.c ****       {
+ 1116              		.loc 1 183 49 is_stmt 0 view .LVU318
+ 1117 0048 0F4B     		ldr	r3, .L102+4
+ 1118 004a 1B68     		ldr	r3, [r3]
+ 1119 004c 1B68     		ldr	r3, [r3]
+ 183:Utilities/timer/stm32_timer.c ****       {
+ 1120              		.loc 1 183 9 view .LVU319
+ 1121 004e 9842     		cmp	r0, r3
+ 1122 0050 0CD2     		bcs	.L96
+ 185:Utilities/timer/stm32_timer.c ****       }
+ 1123              		.loc 1 185 9 is_stmt 1 view .LVU320
+ 1124 0052 2046     		mov	r0, r4
+ 1125 0054 FFF7FEFF 		bl	TimerInsertNewHeadTimer
+ 1126              	.LVL91:
+ 1127              	.L95:
+ 192:Utilities/timer/stm32_timer.c ****   }
+ 1128              		.loc 1 192 5 view .LVU321
+ 1129              	.LBB36:
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccBsqBgz.s 			page 41
+
+
+ 1130              	.LBI36:
+ 479:Drivers/CMSIS/Include/cmsis_gcc.h **** {
+ 1131              		.loc 2 479 27 view .LVU322
+ 1132              	.LBB37:
+ 481:Drivers/CMSIS/Include/cmsis_gcc.h **** }
+ 1133              		.loc 2 481 3 view .LVU323
+ 1134              		.syntax unified
+ 1135              	@ 481 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+ 1136 0058 86F31088 		MSR primask, r6
+ 1137              	@ 0 "" 2
+ 1138              		.loc 2 482 1 is_stmt 0 view .LVU324
+ 1139              		.thumb
+ 1140              		.syntax unified
+ 1141 005c 0BE0     		b	.L92
+ 1142              	.LVL92:
+ 1143              	.L101:
+ 1144              		.loc 2 482 1 view .LVU325
+ 1145              	.LBE37:
+ 1146              	.LBE36:
+ 175:Utilities/timer/stm32_timer.c ****       TimerInsertNewHeadTimer( TimerObject ); /* insert a timeout at now+obj->Timestamp */
+ 1147              		.loc 1 175 7 is_stmt 1 view .LVU326
+ 175:Utilities/timer/stm32_timer.c ****       TimerInsertNewHeadTimer( TimerObject ); /* insert a timeout at now+obj->Timestamp */
+ 1148              		.loc 1 175 23 is_stmt 0 view .LVU327
+ 1149 005e 094B     		ldr	r3, .L102
+ 1150 0060 1B69     		ldr	r3, [r3, #16]
+ 175:Utilities/timer/stm32_timer.c ****       TimerInsertNewHeadTimer( TimerObject ); /* insert a timeout at now+obj->Timestamp */
+ 1151              		.loc 1 175 7 view .LVU328
+ 1152 0062 9847     		blx	r3
+ 1153              	.LVL93:
+ 176:Utilities/timer/stm32_timer.c ****     }
+ 1154              		.loc 1 176 7 is_stmt 1 view .LVU329
+ 1155 0064 2046     		mov	r0, r4
+ 1156 0066 FFF7FEFF 		bl	TimerInsertNewHeadTimer
+ 1157              	.LVL94:
+ 1158 006a F5E7     		b	.L95
+ 1159              	.L96:
+ 189:Utilities/timer/stm32_timer.c ****       }
+ 1160              		.loc 1 189 9 view .LVU330
+ 1161 006c 2046     		mov	r0, r4
+ 1162 006e FFF7FEFF 		bl	TimerInsertTimer
+ 1163              	.LVL95:
+ 1164 0072 F1E7     		b	.L95
+ 1165              	.LVL96:
+ 1166              	.L97:
+ 189:Utilities/timer/stm32_timer.c ****       }
+ 1167              		.loc 1 189 9 is_stmt 0 view .LVU331
+ 1168              	.LBE31:
+ 196:Utilities/timer/stm32_timer.c ****   }
+ 1169              		.loc 1 196 9 view .LVU332
+ 1170 0074 0125     		movs	r5, #1
+ 1171              	.LVL97:
+ 1172              	.L92:
+ 198:Utilities/timer/stm32_timer.c **** }
+ 1173              		.loc 1 198 3 is_stmt 1 view .LVU333
+ 199:Utilities/timer/stm32_timer.c **** 
+ 1174              		.loc 1 199 1 is_stmt 0 view .LVU334
+ 1175 0076 2846     		mov	r0, r5
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccBsqBgz.s 			page 42
+
+
+ 1176 0078 F8BD     		pop	{r3, r4, r5, r6, r7, pc}
+ 1177              	.LVL98:
+ 1178              	.L98:
+ 196:Utilities/timer/stm32_timer.c ****   }
+ 1179              		.loc 1 196 9 view .LVU335
+ 1180 007a 0125     		movs	r5, #1
+ 1181 007c FBE7     		b	.L92
+ 1182              	.L99:
+ 1183 007e 0125     		movs	r5, #1
+ 1184 0080 F9E7     		b	.L92
+ 1185              	.L103:
+ 1186 0082 00BF     		.align	2
+ 1187              	.L102:
+ 1188 0084 00000000 		.word	UTIL_TimerDriver
+ 1189 0088 00000000 		.word	.LANCHOR0
+ 1190              		.cfi_endproc
+ 1191              	.LFE107:
+ 1193              		.section	.text.UTIL_TIMER_StartWithPeriod,"ax",%progbits
+ 1194              		.align	1
+ 1195              		.global	UTIL_TIMER_StartWithPeriod
+ 1196              		.syntax unified
+ 1197              		.thumb
+ 1198              		.thumb_func
+ 1200              	UTIL_TIMER_StartWithPeriod:
+ 1201              	.LVL99:
+ 1202              	.LFB108:
+ 202:Utilities/timer/stm32_timer.c ****   UTIL_TIMER_Status_t  ret = UTIL_TIMER_OK;
+ 1203              		.loc 1 202 1 is_stmt 1 view -0
+ 1204              		.cfi_startproc
+ 1205              		@ args = 0, pretend = 0, frame = 0
+ 1206              		@ frame_needed = 0, uses_anonymous_args = 0
+ 203:Utilities/timer/stm32_timer.c **** 
+ 1207              		.loc 1 203 3 view .LVU337
+ 205:Utilities/timer/stm32_timer.c ****   {
+ 1208              		.loc 1 205 3 view .LVU338
+ 205:Utilities/timer/stm32_timer.c ****   {
+ 1209              		.loc 1 205 5 is_stmt 0 view .LVU339
+ 1210 0000 90B1     		cbz	r0, .L107
+ 202:Utilities/timer/stm32_timer.c ****   UTIL_TIMER_Status_t  ret = UTIL_TIMER_OK;
+ 1211              		.loc 1 202 1 view .LVU340
+ 1212 0002 10B5     		push	{r4, lr}
+ 1213              	.LCFI16:
+ 1214              		.cfi_def_cfa_offset 8
+ 1215              		.cfi_offset 4, -8
+ 1216              		.cfi_offset 14, -4
+ 1217 0004 0446     		mov	r4, r0
+ 211:Utilities/timer/stm32_timer.c ****     if(TimerExists(TimerObject))
+ 1218              		.loc 1 211 5 is_stmt 1 view .LVU341
+ 211:Utilities/timer/stm32_timer.c ****     if(TimerExists(TimerObject))
+ 1219              		.loc 1 211 48 is_stmt 0 view .LVU342
+ 1220 0006 094B     		ldr	r3, .L113
+ 1221 0008 5B6A     		ldr	r3, [r3, #36]
+ 211:Utilities/timer/stm32_timer.c ****     if(TimerExists(TimerObject))
+ 1222              		.loc 1 211 32 view .LVU343
+ 1223 000a 0846     		mov	r0, r1
+ 1224              	.LVL100:
+ 211:Utilities/timer/stm32_timer.c ****     if(TimerExists(TimerObject))
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccBsqBgz.s 			page 43
+
+
+ 1225              		.loc 1 211 32 view .LVU344
+ 1226 000c 9847     		blx	r3
+ 1227              	.LVL101:
+ 211:Utilities/timer/stm32_timer.c ****     if(TimerExists(TimerObject))
+ 1228              		.loc 1 211 30 view .LVU345
+ 1229 000e 6060     		str	r0, [r4, #4]
+ 212:Utilities/timer/stm32_timer.c ****     {
+ 1230              		.loc 1 212 5 is_stmt 1 view .LVU346
+ 212:Utilities/timer/stm32_timer.c ****     {
+ 1231              		.loc 1 212 8 is_stmt 0 view .LVU347
+ 1232 0010 2046     		mov	r0, r4
+ 1233 0012 FFF7FEFF 		bl	TimerExists
+ 1234              	.LVL102:
+ 212:Utilities/timer/stm32_timer.c ****     {
+ 1235              		.loc 1 212 7 view .LVU348
+ 1236 0016 18B9     		cbnz	r0, .L112
+ 1237              	.L106:
+ 216:Utilities/timer/stm32_timer.c ****   }
+ 1238              		.loc 1 216 5 is_stmt 1 view .LVU349
+ 216:Utilities/timer/stm32_timer.c ****   }
+ 1239              		.loc 1 216 11 is_stmt 0 view .LVU350
+ 1240 0018 2046     		mov	r0, r4
+ 1241 001a FFF7FEFF 		bl	UTIL_TIMER_Start
+ 1242              	.LVL103:
+ 218:Utilities/timer/stm32_timer.c **** }
+ 1243              		.loc 1 218 3 is_stmt 1 view .LVU351
+ 219:Utilities/timer/stm32_timer.c **** 
+ 1244              		.loc 1 219 1 is_stmt 0 view .LVU352
+ 1245 001e 10BD     		pop	{r4, pc}
+ 1246              	.LVL104:
+ 1247              	.L112:
+ 214:Utilities/timer/stm32_timer.c ****     }
+ 1248              		.loc 1 214 7 is_stmt 1 view .LVU353
+ 214:Utilities/timer/stm32_timer.c ****     }
+ 1249              		.loc 1 214 13 is_stmt 0 view .LVU354
+ 1250 0020 2046     		mov	r0, r4
+ 1251 0022 FFF7FEFF 		bl	UTIL_TIMER_Stop
+ 1252              	.LVL105:
+ 1253 0026 F7E7     		b	.L106
+ 1254              	.LVL106:
+ 1255              	.L107:
+ 1256              	.LCFI17:
+ 1257              		.cfi_def_cfa_offset 0
+ 1258              		.cfi_restore 4
+ 1259              		.cfi_restore 14
+ 207:Utilities/timer/stm32_timer.c ****   }
+ 1260              		.loc 1 207 9 view .LVU355
+ 1261 0028 0120     		movs	r0, #1
+ 1262              	.LVL107:
+ 218:Utilities/timer/stm32_timer.c **** }
+ 1263              		.loc 1 218 3 is_stmt 1 view .LVU356
+ 219:Utilities/timer/stm32_timer.c **** 
+ 1264              		.loc 1 219 1 is_stmt 0 view .LVU357
+ 1265 002a 7047     		bx	lr
+ 1266              	.L114:
+ 1267              		.align	2
+ 1268              	.L113:
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccBsqBgz.s 			page 44
+
+
+ 1269 002c 00000000 		.word	UTIL_TimerDriver
+ 1270              		.cfi_endproc
+ 1271              	.LFE108:
+ 1273              		.section	.text.UTIL_TIMER_SetPeriod,"ax",%progbits
+ 1274              		.align	1
+ 1275              		.global	UTIL_TIMER_SetPeriod
+ 1276              		.syntax unified
+ 1277              		.thumb
+ 1278              		.thumb_func
+ 1280              	UTIL_TIMER_SetPeriod:
+ 1281              	.LVL108:
+ 1282              	.LFB110:
+ 288:Utilities/timer/stm32_timer.c ****   UTIL_TIMER_Status_t  ret = UTIL_TIMER_OK;
+ 1283              		.loc 1 288 1 is_stmt 1 view -0
+ 1284              		.cfi_startproc
+ 1285              		@ args = 0, pretend = 0, frame = 0
+ 1286              		@ frame_needed = 0, uses_anonymous_args = 0
+ 289:Utilities/timer/stm32_timer.c ****   
+ 1287              		.loc 1 289 3 view .LVU359
+ 291:Utilities/timer/stm32_timer.c ****   {
+ 1288              		.loc 1 291 3 view .LVU360
+ 291:Utilities/timer/stm32_timer.c ****   {
+ 1289              		.loc 1 291 5 is_stmt 0 view .LVU361
+ 1290 0000 98B1     		cbz	r0, .L117
+ 288:Utilities/timer/stm32_timer.c ****   UTIL_TIMER_Status_t  ret = UTIL_TIMER_OK;
+ 1291              		.loc 1 288 1 view .LVU362
+ 1292 0002 10B5     		push	{r4, lr}
+ 1293              	.LCFI18:
+ 1294              		.cfi_def_cfa_offset 8
+ 1295              		.cfi_offset 4, -8
+ 1296              		.cfi_offset 14, -4
+ 1297 0004 0446     		mov	r4, r0
+ 297:Utilities/timer/stm32_timer.c ****     if(TimerExists(TimerObject))
+ 1298              		.loc 1 297 5 is_stmt 1 view .LVU363
+ 297:Utilities/timer/stm32_timer.c ****     if(TimerExists(TimerObject))
+ 1299              		.loc 1 297 48 is_stmt 0 view .LVU364
+ 1300 0006 0A4B     		ldr	r3, .L124
+ 1301 0008 5B6A     		ldr	r3, [r3, #36]
+ 297:Utilities/timer/stm32_timer.c ****     if(TimerExists(TimerObject))
+ 1302              		.loc 1 297 32 view .LVU365
+ 1303 000a 0846     		mov	r0, r1
+ 1304              	.LVL109:
+ 297:Utilities/timer/stm32_timer.c ****     if(TimerExists(TimerObject))
+ 1305              		.loc 1 297 32 view .LVU366
+ 1306 000c 9847     		blx	r3
+ 1307              	.LVL110:
+ 297:Utilities/timer/stm32_timer.c ****     if(TimerExists(TimerObject))
+ 1308              		.loc 1 297 30 view .LVU367
+ 1309 000e 6060     		str	r0, [r4, #4]
+ 298:Utilities/timer/stm32_timer.c ****     {
+ 1310              		.loc 1 298 5 is_stmt 1 view .LVU368
+ 298:Utilities/timer/stm32_timer.c ****     {
+ 1311              		.loc 1 298 8 is_stmt 0 view .LVU369
+ 1312 0010 2046     		mov	r0, r4
+ 1313 0012 FFF7FEFF 		bl	TimerExists
+ 1314              	.LVL111:
+ 298:Utilities/timer/stm32_timer.c ****     {
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccBsqBgz.s 			page 45
+
+
+ 1315              		.loc 1 298 7 view .LVU370
+ 1316 0016 08B9     		cbnz	r0, .L123
+ 289:Utilities/timer/stm32_timer.c ****   
+ 1317              		.loc 1 289 24 view .LVU371
+ 1318 0018 0020     		movs	r0, #0
+ 1319              	.LVL112:
+ 1320              	.L116:
+ 304:Utilities/timer/stm32_timer.c **** }
+ 1321              		.loc 1 304 3 is_stmt 1 view .LVU372
+ 305:Utilities/timer/stm32_timer.c **** 
+ 1322              		.loc 1 305 1 is_stmt 0 view .LVU373
+ 1323 001a 10BD     		pop	{r4, pc}
+ 1324              	.LVL113:
+ 1325              	.L123:
+ 300:Utilities/timer/stm32_timer.c ****       ret = UTIL_TIMER_Start(TimerObject);
+ 1326              		.loc 1 300 7 is_stmt 1 view .LVU374
+ 300:Utilities/timer/stm32_timer.c ****       ret = UTIL_TIMER_Start(TimerObject);
+ 1327              		.loc 1 300 13 is_stmt 0 view .LVU375
+ 1328 001c 2046     		mov	r0, r4
+ 1329 001e FFF7FEFF 		bl	UTIL_TIMER_Stop
+ 1330              	.LVL114:
+ 301:Utilities/timer/stm32_timer.c ****     }
+ 1331              		.loc 1 301 7 is_stmt 1 view .LVU376
+ 301:Utilities/timer/stm32_timer.c ****     }
+ 1332              		.loc 1 301 13 is_stmt 0 view .LVU377
+ 1333 0022 2046     		mov	r0, r4
+ 1334 0024 FFF7FEFF 		bl	UTIL_TIMER_Start
+ 1335              	.LVL115:
+ 301:Utilities/timer/stm32_timer.c ****     }
+ 1336              		.loc 1 301 13 view .LVU378
+ 1337 0028 F7E7     		b	.L116
+ 1338              	.LVL116:
+ 1339              	.L117:
+ 1340              	.LCFI19:
+ 1341              		.cfi_def_cfa_offset 0
+ 1342              		.cfi_restore 4
+ 1343              		.cfi_restore 14
+ 293:Utilities/timer/stm32_timer.c ****   }
+ 1344              		.loc 1 293 8 view .LVU379
+ 1345 002a 0120     		movs	r0, #1
+ 1346              	.LVL117:
+ 304:Utilities/timer/stm32_timer.c **** }
+ 1347              		.loc 1 304 3 is_stmt 1 view .LVU380
+ 305:Utilities/timer/stm32_timer.c **** 
+ 1348              		.loc 1 305 1 is_stmt 0 view .LVU381
+ 1349 002c 7047     		bx	lr
+ 1350              	.L125:
+ 1351 002e 00BF     		.align	2
+ 1352              	.L124:
+ 1353 0030 00000000 		.word	UTIL_TimerDriver
+ 1354              		.cfi_endproc
+ 1355              	.LFE110:
+ 1357              		.section	.text.UTIL_TIMER_IRQ_Handler,"ax",%progbits
+ 1358              		.align	1
+ 1359              		.global	UTIL_TIMER_IRQ_Handler
+ 1360              		.syntax unified
+ 1361              		.thumb
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccBsqBgz.s 			page 46
+
+
+ 1362              		.thumb_func
+ 1364              	UTIL_TIMER_IRQ_Handler:
+ 1365              	.LFB115:
+ 368:Utilities/timer/stm32_timer.c ****   UTIL_TIMER_Object_t* cur;
+ 1366              		.loc 1 368 1 is_stmt 1 view -0
+ 1367              		.cfi_startproc
+ 1368              		@ args = 0, pretend = 0, frame = 0
+ 1369              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1370 0000 70B5     		push	{r4, r5, r6, lr}
+ 1371              	.LCFI20:
+ 1372              		.cfi_def_cfa_offset 16
+ 1373              		.cfi_offset 4, -16
+ 1374              		.cfi_offset 5, -12
+ 1375              		.cfi_offset 6, -8
+ 1376              		.cfi_offset 14, -4
+ 369:Utilities/timer/stm32_timer.c ****   uint32_t old, now, DeltaContext;
+ 1377              		.loc 1 369 3 view .LVU383
+ 370:Utilities/timer/stm32_timer.c **** 
+ 1378              		.loc 1 370 3 view .LVU384
+ 372:Utilities/timer/stm32_timer.c **** 
+ 1379              		.loc 1 372 3 view .LVU385
+ 1380              	.LBB38:
+ 1381              	.LBI38:
+ 449:Drivers/CMSIS/Include/cmsis_gcc.h **** {
+ 1382              		.loc 2 449 31 view .LVU386
+ 1383              	.LBB39:
+ 451:Drivers/CMSIS/Include/cmsis_gcc.h **** 
+ 1384              		.loc 2 451 3 view .LVU387
+ 453:Drivers/CMSIS/Include/cmsis_gcc.h ****   return(result);
+ 1385              		.loc 2 453 3 view .LVU388
+ 1386              		.syntax unified
+ 1387              	@ 453 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+ 1388 0002 EFF31085 		MRS r5, primask
+ 1389              	@ 0 "" 2
+ 1390              	.LVL118:
+ 454:Drivers/CMSIS/Include/cmsis_gcc.h **** }
+ 1391              		.loc 2 454 3 view .LVU389
+ 454:Drivers/CMSIS/Include/cmsis_gcc.h **** }
+ 1392              		.loc 2 454 3 is_stmt 0 view .LVU390
+ 1393              		.thumb
+ 1394              		.syntax unified
+ 1395              	.LBE39:
+ 1396              	.LBE38:
+ 372:Utilities/timer/stm32_timer.c **** 
+ 1397              		.loc 1 372 3 is_stmt 1 view .LVU391
+ 1398              	.LBB40:
+ 1399              	.LBI40:
+ 207:Drivers/CMSIS/Include/cmsis_gcc.h **** {
+ 1400              		.loc 2 207 27 view .LVU392
+ 1401              	.LBB41:
+ 209:Drivers/CMSIS/Include/cmsis_gcc.h **** }
+ 1402              		.loc 2 209 3 view .LVU393
+ 1403              		.syntax unified
+ 1404              	@ 209 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+ 1405 0006 72B6     		cpsid i
+ 1406              	@ 0 "" 2
+ 1407              		.thumb
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccBsqBgz.s 			page 47
+
+
+ 1408              		.syntax unified
+ 1409              	.LBE41:
+ 1410              	.LBE40:
+ 374:Utilities/timer/stm32_timer.c ****   now  =  UTIL_TimerDriver.SetTimerContext( );
+ 1411              		.loc 1 374 3 view .LVU394
+ 374:Utilities/timer/stm32_timer.c ****   now  =  UTIL_TimerDriver.SetTimerContext( );
+ 1412              		.loc 1 374 27 is_stmt 0 view .LVU395
+ 1413 0008 1E4C     		ldr	r4, .L139
+ 1414 000a 6369     		ldr	r3, [r4, #20]
+ 374:Utilities/timer/stm32_timer.c ****   now  =  UTIL_TimerDriver.SetTimerContext( );
+ 1415              		.loc 1 374 11 view .LVU396
+ 1416 000c 9847     		blx	r3
+ 1417              	.LVL119:
+ 1418 000e 0646     		mov	r6, r0
+ 1419              	.LVL120:
+ 375:Utilities/timer/stm32_timer.c **** 
+ 1420              		.loc 1 375 3 is_stmt 1 view .LVU397
+ 375:Utilities/timer/stm32_timer.c **** 
+ 1421              		.loc 1 375 27 is_stmt 0 view .LVU398
+ 1422 0010 2369     		ldr	r3, [r4, #16]
+ 375:Utilities/timer/stm32_timer.c **** 
+ 1423              		.loc 1 375 11 view .LVU399
+ 1424 0012 9847     		blx	r3
+ 1425              	.LVL121:
+ 377:Utilities/timer/stm32_timer.c ****   
+ 1426              		.loc 1 377 3 is_stmt 1 view .LVU400
+ 377:Utilities/timer/stm32_timer.c ****   
+ 1427              		.loc 1 377 16 is_stmt 0 view .LVU401
+ 1428 0014 841B     		subs	r4, r0, r6
+ 1429              	.LVL122:
+ 381:Utilities/timer/stm32_timer.c ****   {
+ 1430              		.loc 1 381 3 is_stmt 1 view .LVU402
+ 381:Utilities/timer/stm32_timer.c ****   {
+ 1431              		.loc 1 381 22 is_stmt 0 view .LVU403
+ 1432 0016 1C4B     		ldr	r3, .L139+4
+ 1433 0018 1B68     		ldr	r3, [r3]
+ 381:Utilities/timer/stm32_timer.c ****   {
+ 1434              		.loc 1 381 6 view .LVU404
+ 1435 001a 23B9     		cbnz	r3, .L127
+ 1436 001c 18E0     		b	.L132
+ 1437              	.LVL123:
+ 1438              	.L129:
+ 391:Utilities/timer/stm32_timer.c ****       }
+ 1439              		.loc 1 391 9 is_stmt 1 view .LVU405
+ 391:Utilities/timer/stm32_timer.c ****       }
+ 1440              		.loc 1 391 24 is_stmt 0 view .LVU406
+ 1441 001e 0022     		movs	r2, #0
+ 1442 0020 1A60     		str	r2, [r3]
+ 1443              	.L130:
+ 393:Utilities/timer/stm32_timer.c ****     } while(cur != NULL);
+ 1444              		.loc 1 393 7 is_stmt 1 view .LVU407
+ 393:Utilities/timer/stm32_timer.c ****     } while(cur != NULL);
+ 1445              		.loc 1 393 11 is_stmt 0 view .LVU408
+ 1446 0022 5B69     		ldr	r3, [r3, #20]
+ 1447              	.LVL124:
+ 394:Utilities/timer/stm32_timer.c ****   }
+ 1448              		.loc 1 394 12 is_stmt 1 view .LVU409
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccBsqBgz.s 			page 48
+
+
+ 394:Utilities/timer/stm32_timer.c ****   }
+ 1449              		.loc 1 394 5 is_stmt 0 view .LVU410
+ 1450 0024 A3B1     		cbz	r3, .L132
+ 1451              	.LVL125:
+ 1452              	.L127:
+ 384:Utilities/timer/stm32_timer.c ****       if (cur->Timestamp > DeltaContext)
+ 1453              		.loc 1 384 2 is_stmt 1 view .LVU411
+ 385:Utilities/timer/stm32_timer.c ****       {
+ 1454              		.loc 1 385 7 view .LVU412
+ 385:Utilities/timer/stm32_timer.c ****       {
+ 1455              		.loc 1 385 14 is_stmt 0 view .LVU413
+ 1456 0026 1A68     		ldr	r2, [r3]
+ 385:Utilities/timer/stm32_timer.c ****       {
+ 1457              		.loc 1 385 10 view .LVU414
+ 1458 0028 A242     		cmp	r2, r4
+ 1459 002a F8D9     		bls	.L129
+ 387:Utilities/timer/stm32_timer.c ****       }
+ 1460              		.loc 1 387 9 is_stmt 1 view .LVU415
+ 387:Utilities/timer/stm32_timer.c ****       }
+ 1461              		.loc 1 387 24 is_stmt 0 view .LVU416
+ 1462 002c 311A     		subs	r1, r6, r0
+ 1463 002e 0A44     		add	r2, r2, r1
+ 1464 0030 1A60     		str	r2, [r3]
+ 1465 0032 F6E7     		b	.L130
+ 1466              	.LVL126:
+ 1467              	.L134:
+ 400:Utilities/timer/stm32_timer.c ****       TimerListHead = TimerListHead->Next;
+ 1468              		.loc 1 400 7 is_stmt 1 view .LVU417
+ 400:Utilities/timer/stm32_timer.c ****       TimerListHead = TimerListHead->Next;
+ 1469              		.loc 1 400 11 is_stmt 0 view .LVU418
+ 1470 0034 144B     		ldr	r3, .L139+4
+ 1471 0036 1C68     		ldr	r4, [r3]
+ 1472              	.LVL127:
+ 401:Utilities/timer/stm32_timer.c ****       cur->IsPending = 0;
+ 1473              		.loc 1 401 7 is_stmt 1 view .LVU419
+ 401:Utilities/timer/stm32_timer.c ****       cur->IsPending = 0;
+ 1474              		.loc 1 401 36 is_stmt 0 view .LVU420
+ 1475 0038 6269     		ldr	r2, [r4, #20]
+ 401:Utilities/timer/stm32_timer.c ****       cur->IsPending = 0;
+ 1476              		.loc 1 401 21 view .LVU421
+ 1477 003a 1A60     		str	r2, [r3]
+ 402:Utilities/timer/stm32_timer.c ****       cur->IsRunning = 0;
+ 1478              		.loc 1 402 7 is_stmt 1 view .LVU422
+ 402:Utilities/timer/stm32_timer.c ****       cur->IsRunning = 0;
+ 1479              		.loc 1 402 22 is_stmt 0 view .LVU423
+ 1480 003c 0023     		movs	r3, #0
+ 1481 003e 2372     		strb	r3, [r4, #8]
+ 403:Utilities/timer/stm32_timer.c ****       cur->Callback(cur->argument);
+ 1482              		.loc 1 403 7 is_stmt 1 view .LVU424
+ 403:Utilities/timer/stm32_timer.c ****       cur->Callback(cur->argument);
+ 1483              		.loc 1 403 22 is_stmt 0 view .LVU425
+ 1484 0040 6372     		strb	r3, [r4, #9]
+ 404:Utilities/timer/stm32_timer.c ****       if(( cur->Mode == UTIL_TIMER_PERIODIC) && (cur->IsReloadStopped == 0U))
+ 1485              		.loc 1 404 7 is_stmt 1 view .LVU426
+ 404:Utilities/timer/stm32_timer.c ****       if(( cur->Mode == UTIL_TIMER_PERIODIC) && (cur->IsReloadStopped == 0U))
+ 1486              		.loc 1 404 10 is_stmt 0 view .LVU427
+ 1487 0042 E368     		ldr	r3, [r4, #12]
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccBsqBgz.s 			page 49
+
+
+ 404:Utilities/timer/stm32_timer.c ****       if(( cur->Mode == UTIL_TIMER_PERIODIC) && (cur->IsReloadStopped == 0U))
+ 1488              		.loc 1 404 7 view .LVU428
+ 1489 0044 2069     		ldr	r0, [r4, #16]
+ 1490 0046 9847     		blx	r3
+ 1491              	.LVL128:
+ 405:Utilities/timer/stm32_timer.c ****       {
+ 1492              		.loc 1 405 7 is_stmt 1 view .LVU429
+ 405:Utilities/timer/stm32_timer.c ****       {
+ 1493              		.loc 1 405 46 is_stmt 0 view .LVU430
+ 1494 0048 6389     		ldrh	r3, [r4, #10]
+ 405:Utilities/timer/stm32_timer.c ****       {
+ 1495              		.loc 1 405 9 view .LVU431
+ 1496 004a B3F5807F 		cmp	r3, #256
+ 1497 004e 12D0     		beq	.L137
+ 1498              	.LVL129:
+ 1499              	.L132:
+ 398:Utilities/timer/stm32_timer.c ****   {
+ 1500              		.loc 1 398 9 is_stmt 1 view .LVU432
+ 398:Utilities/timer/stm32_timer.c ****   {
+ 1501              		.loc 1 398 25 is_stmt 0 view .LVU433
+ 1502 0050 0D4B     		ldr	r3, .L139+4
+ 1503 0052 1B68     		ldr	r3, [r3]
+ 398:Utilities/timer/stm32_timer.c ****   {
+ 1504              		.loc 1 398 9 view .LVU434
+ 1505 0054 3BB1     		cbz	r3, .L133
+ 398:Utilities/timer/stm32_timer.c ****   {
+ 1506              		.loc 1 398 52 discriminator 1 view .LVU435
+ 1507 0056 1C68     		ldr	r4, [r3]
+ 398:Utilities/timer/stm32_timer.c ****   {
+ 1508              		.loc 1 398 34 discriminator 1 view .LVU436
+ 1509 0058 002C     		cmp	r4, #0
+ 1510 005a EBD0     		beq	.L134
+ 398:Utilities/timer/stm32_timer.c ****   {
+ 1511              		.loc 1 398 118 discriminator 2 view .LVU437
+ 1512 005c 094B     		ldr	r3, .L139
+ 1513 005e 9B69     		ldr	r3, [r3, #24]
+ 398:Utilities/timer/stm32_timer.c ****   {
+ 1514              		.loc 1 398 102 discriminator 2 view .LVU438
+ 1515 0060 9847     		blx	r3
+ 1516              	.LVL130:
+ 398:Utilities/timer/stm32_timer.c ****   {
+ 1517              		.loc 1 398 71 discriminator 2 view .LVU439
+ 1518 0062 8442     		cmp	r4, r0
+ 1519 0064 E6D3     		bcc	.L134
+ 1520              	.L133:
+ 412:Utilities/timer/stm32_timer.c ****   {
+ 1521              		.loc 1 412 3 is_stmt 1 view .LVU440
+ 412:Utilities/timer/stm32_timer.c ****   {
+ 1522              		.loc 1 412 22 is_stmt 0 view .LVU441
+ 1523 0066 084B     		ldr	r3, .L139+4
+ 1524 0068 1868     		ldr	r0, [r3]
+ 412:Utilities/timer/stm32_timer.c ****   {
+ 1525              		.loc 1 412 5 view .LVU442
+ 1526 006a 08B1     		cbz	r0, .L135
+ 412:Utilities/timer/stm32_timer.c ****   {
+ 1527              		.loc 1 412 49 discriminator 1 view .LVU443
+ 1528 006c 037A     		ldrb	r3, [r0, #8]	@ zero_extendqisi2
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccBsqBgz.s 			page 50
+
+
+ 412:Utilities/timer/stm32_timer.c ****   {
+ 1529              		.loc 1 412 32 discriminator 1 view .LVU444
+ 1530 006e 33B1     		cbz	r3, .L138
+ 1531              	.L135:
+ 416:Utilities/timer/stm32_timer.c **** }
+ 1532              		.loc 1 416 3 is_stmt 1 view .LVU445
+ 1533              	.LVL131:
+ 1534              	.LBB42:
+ 1535              	.LBI42:
+ 479:Drivers/CMSIS/Include/cmsis_gcc.h **** {
+ 1536              		.loc 2 479 27 view .LVU446
+ 1537              	.LBB43:
+ 481:Drivers/CMSIS/Include/cmsis_gcc.h **** }
+ 1538              		.loc 2 481 3 view .LVU447
+ 1539              		.syntax unified
+ 1540              	@ 481 "Drivers/CMSIS/Include/cmsis_gcc.h" 1
+ 1541 0070 85F31088 		MSR primask, r5
+ 1542              	@ 0 "" 2
+ 1543              	.LVL132:
+ 481:Drivers/CMSIS/Include/cmsis_gcc.h **** }
+ 1544              		.loc 2 481 3 is_stmt 0 view .LVU448
+ 1545              		.thumb
+ 1546              		.syntax unified
+ 1547              	.LBE43:
+ 1548              	.LBE42:
+ 417:Utilities/timer/stm32_timer.c **** 
+ 1549              		.loc 1 417 1 view .LVU449
+ 1550 0074 70BD     		pop	{r4, r5, r6, pc}
+ 1551              	.LVL133:
+ 1552              	.L137:
+ 407:Utilities/timer/stm32_timer.c ****       }
+ 1553              		.loc 1 407 9 is_stmt 1 view .LVU450
+ 407:Utilities/timer/stm32_timer.c ****       }
+ 1554              		.loc 1 407 15 is_stmt 0 view .LVU451
+ 1555 0076 2046     		mov	r0, r4
+ 1556 0078 FFF7FEFF 		bl	UTIL_TIMER_Start
+ 1557              	.LVL134:
+ 1558 007c E8E7     		b	.L132
+ 1559              	.LVL135:
+ 1560              	.L138:
+ 414:Utilities/timer/stm32_timer.c ****   }
+ 1561              		.loc 1 414 5 is_stmt 1 view .LVU452
+ 1562 007e FFF7FEFF 		bl	TimerSetTimeout
+ 1563              	.LVL136:
+ 1564 0082 F5E7     		b	.L135
+ 1565              	.L140:
+ 1566              		.align	2
+ 1567              	.L139:
+ 1568 0084 00000000 		.word	UTIL_TimerDriver
+ 1569 0088 00000000 		.word	.LANCHOR0
+ 1570              		.cfi_endproc
+ 1571              	.LFE115:
+ 1573              		.section	.bss.TimerListHead,"aw",%nobits
+ 1574              		.align	2
+ 1575              		.set	.LANCHOR0,. + 0
+ 1578              	TimerListHead:
+ 1579 0000 00000000 		.space	4
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccBsqBgz.s 			page 51
+
+
+ 1580              		.text
+ 1581              	.Letext0:
+ 1582              		.file 3 "c:\\program files (x86)\\gnu arm embedded toolchain\\10 2021.10\\arm-none-eabi\\include\\
+ 1583              		.file 4 "c:\\program files (x86)\\gnu arm embedded toolchain\\10 2021.10\\arm-none-eabi\\include\\
+ 1584              		.file 5 "Utilities/timer/stm32_timer.h"
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccBsqBgz.s 			page 52
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 stm32_timer.c
+C:\Users\NATHAN~1\AppData\Local\Temp\ccBsqBgz.s:18     .text.UTIL_TIMER_Init:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\ccBsqBgz.s:24     .text.UTIL_TIMER_Init:00000000 UTIL_TIMER_Init
+C:\Users\NATHAN~1\AppData\Local\Temp\ccBsqBgz.s:54     .text.UTIL_TIMER_Init:00000010 $d
+C:\Users\NATHAN~1\AppData\Local\Temp\ccBsqBgz.s:60     .text.UTIL_TIMER_DeInit:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\ccBsqBgz.s:66     .text.UTIL_TIMER_DeInit:00000000 UTIL_TIMER_DeInit
+C:\Users\NATHAN~1\AppData\Local\Temp\ccBsqBgz.s:89     .text.UTIL_TIMER_DeInit:0000000c $d
+C:\Users\NATHAN~1\AppData\Local\Temp\ccBsqBgz.s:94     .text.UTIL_TIMER_Create:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\ccBsqBgz.s:100    .text.UTIL_TIMER_Create:00000000 UTIL_TIMER_Create
+C:\Users\NATHAN~1\AppData\Local\Temp\ccBsqBgz.s:204    .text.UTIL_TIMER_Create:00000038 $d
+C:\Users\NATHAN~1\AppData\Local\Temp\ccBsqBgz.s:209    .text.UTIL_TIMER_SetReloadMode:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\ccBsqBgz.s:215    .text.UTIL_TIMER_SetReloadMode:00000000 UTIL_TIMER_SetReloadMode
+C:\Users\NATHAN~1\AppData\Local\Temp\ccBsqBgz.s:247    .text.UTIL_TIMER_IsRunning:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\ccBsqBgz.s:253    .text.UTIL_TIMER_IsRunning:00000000 UTIL_TIMER_IsRunning
+C:\Users\NATHAN~1\AppData\Local\Temp\ccBsqBgz.s:281    .text.UTIL_TIMER_GetCurrentTime:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\ccBsqBgz.s:287    .text.UTIL_TIMER_GetCurrentTime:00000000 UTIL_TIMER_GetCurrentTime
+C:\Users\NATHAN~1\AppData\Local\Temp\ccBsqBgz.s:316    .text.UTIL_TIMER_GetCurrentTime:00000010 $d
+C:\Users\NATHAN~1\AppData\Local\Temp\ccBsqBgz.s:321    .text.UTIL_TIMER_GetElapsedTime:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\ccBsqBgz.s:327    .text.UTIL_TIMER_GetElapsedTime:00000000 UTIL_TIMER_GetElapsedTime
+C:\Users\NATHAN~1\AppData\Local\Temp\ccBsqBgz.s:378    .text.UTIL_TIMER_GetElapsedTime:0000001c $d
+C:\Users\NATHAN~1\AppData\Local\Temp\ccBsqBgz.s:383    .text.TimerExists:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\ccBsqBgz.s:389    .text.TimerExists:00000000 TimerExists
+C:\Users\NATHAN~1\AppData\Local\Temp\ccBsqBgz.s:432    .text.TimerExists:00000018 $d
+C:\Users\NATHAN~1\AppData\Local\Temp\ccBsqBgz.s:437    .text.UTIL_TIMER_GetRemainingTime:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\ccBsqBgz.s:443    .text.UTIL_TIMER_GetRemainingTime:00000000 UTIL_TIMER_GetRemainingTime
+C:\Users\NATHAN~1\AppData\Local\Temp\ccBsqBgz.s:514    .text.UTIL_TIMER_GetRemainingTime:0000002c $d
+C:\Users\NATHAN~1\AppData\Local\Temp\ccBsqBgz.s:519    .text.UTIL_TIMER_GetFirstRemainingTime:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\ccBsqBgz.s:525    .text.UTIL_TIMER_GetFirstRemainingTime:00000000 UTIL_TIMER_GetFirstRemainingTime
+C:\Users\NATHAN~1\AppData\Local\Temp\ccBsqBgz.s:565    .text.UTIL_TIMER_GetFirstRemainingTime:00000020 $d
+C:\Users\NATHAN~1\AppData\Local\Temp\ccBsqBgz.s:570    .text.TimerSetTimeout:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\ccBsqBgz.s:576    .text.TimerSetTimeout:00000000 TimerSetTimeout
+C:\Users\NATHAN~1\AppData\Local\Temp\ccBsqBgz.s:646    .text.TimerSetTimeout:0000002c $d
+C:\Users\NATHAN~1\AppData\Local\Temp\ccBsqBgz.s:651    .text.UTIL_TIMER_Stop:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\ccBsqBgz.s:657    .text.UTIL_TIMER_Stop:00000000 UTIL_TIMER_Stop
+C:\Users\NATHAN~1\AppData\Local\Temp\ccBsqBgz.s:848    .text.UTIL_TIMER_Stop:00000064 $d
+C:\Users\NATHAN~1\AppData\Local\Temp\ccBsqBgz.s:854    .text.TimerInsertTimer:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\ccBsqBgz.s:860    .text.TimerInsertTimer:00000000 TimerInsertTimer
+C:\Users\NATHAN~1\AppData\Local\Temp\ccBsqBgz.s:925    .text.TimerInsertTimer:00000028 $d
+C:\Users\NATHAN~1\AppData\Local\Temp\ccBsqBgz.s:930    .text.TimerInsertNewHeadTimer:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\ccBsqBgz.s:936    .text.TimerInsertNewHeadTimer:00000000 TimerInsertNewHeadTimer
+C:\Users\NATHAN~1\AppData\Local\Temp\ccBsqBgz.s:980    .text.TimerInsertNewHeadTimer:00000018 $d
+C:\Users\NATHAN~1\AppData\Local\Temp\ccBsqBgz.s:985    .text.UTIL_TIMER_Start:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\ccBsqBgz.s:991    .text.UTIL_TIMER_Start:00000000 UTIL_TIMER_Start
+C:\Users\NATHAN~1\AppData\Local\Temp\ccBsqBgz.s:1188   .text.UTIL_TIMER_Start:00000084 $d
+C:\Users\NATHAN~1\AppData\Local\Temp\ccBsqBgz.s:1194   .text.UTIL_TIMER_StartWithPeriod:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\ccBsqBgz.s:1200   .text.UTIL_TIMER_StartWithPeriod:00000000 UTIL_TIMER_StartWithPeriod
+C:\Users\NATHAN~1\AppData\Local\Temp\ccBsqBgz.s:1269   .text.UTIL_TIMER_StartWithPeriod:0000002c $d
+C:\Users\NATHAN~1\AppData\Local\Temp\ccBsqBgz.s:1274   .text.UTIL_TIMER_SetPeriod:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\ccBsqBgz.s:1280   .text.UTIL_TIMER_SetPeriod:00000000 UTIL_TIMER_SetPeriod
+C:\Users\NATHAN~1\AppData\Local\Temp\ccBsqBgz.s:1353   .text.UTIL_TIMER_SetPeriod:00000030 $d
+C:\Users\NATHAN~1\AppData\Local\Temp\ccBsqBgz.s:1358   .text.UTIL_TIMER_IRQ_Handler:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\ccBsqBgz.s:1364   .text.UTIL_TIMER_IRQ_Handler:00000000 UTIL_TIMER_IRQ_Handler
+C:\Users\NATHAN~1\AppData\Local\Temp\ccBsqBgz.s:1568   .text.UTIL_TIMER_IRQ_Handler:00000084 $d
+C:\Users\NATHAN~1\AppData\Local\Temp\ccBsqBgz.s:1574   .bss.TimerListHead:00000000 $d
+C:\Users\NATHAN~1\AppData\Local\Temp\ccBsqBgz.s:1578   .bss.TimerListHead:00000000 TimerListHead
+
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccBsqBgz.s 			page 53
+
+
+UNDEFINED SYMBOLS
+UTIL_TimerDriver

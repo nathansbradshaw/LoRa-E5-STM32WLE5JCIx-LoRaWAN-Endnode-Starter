@@ -1,0 +1,752 @@
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\cc4d4zV5.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"sys_debug.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.section	.text.DBG_ConfigForLpm,"ax",%progbits
+  18              		.align	1
+  19              		.global	DBG_ConfigForLpm
+  20              		.syntax unified
+  21              		.thumb
+  22              		.thumb_func
+  24              	DBG_ConfigForLpm:
+  25              	.LVL0:
+  26              	.LFB992:
+  27              		.file 1 "Core/Src/sys_debug.c"
+   1:Core/Src/sys_debug.c **** /* USER CODE BEGIN Header */
+   2:Core/Src/sys_debug.c **** /**
+   3:Core/Src/sys_debug.c ****   ******************************************************************************
+   4:Core/Src/sys_debug.c ****   * @file    sys_debug.c
+   5:Core/Src/sys_debug.c ****   * @author  MCD Application Team
+   6:Core/Src/sys_debug.c ****   * @brief   Enables 4 debug pins for internal signals RealTime debugging
+   7:Core/Src/sys_debug.c ****   ******************************************************************************
+   8:Core/Src/sys_debug.c ****   * @attention
+   9:Core/Src/sys_debug.c ****   *
+  10:Core/Src/sys_debug.c ****   * Copyright (c) 2022 STMicroelectronics.
+  11:Core/Src/sys_debug.c ****   * All rights reserved.
+  12:Core/Src/sys_debug.c ****   *
+  13:Core/Src/sys_debug.c ****   * This software is licensed under terms that can be found in the LICENSE file
+  14:Core/Src/sys_debug.c ****   * in the root directory of this software component.
+  15:Core/Src/sys_debug.c ****   * If no LICENSE file comes with this software, it is provided AS-IS.
+  16:Core/Src/sys_debug.c ****   *
+  17:Core/Src/sys_debug.c ****   ******************************************************************************
+  18:Core/Src/sys_debug.c ****   */
+  19:Core/Src/sys_debug.c **** /* USER CODE END Header */
+  20:Core/Src/sys_debug.c **** 
+  21:Core/Src/sys_debug.c **** /* Includes ------------------------------------------------------------------*/
+  22:Core/Src/sys_debug.c **** #include "platform.h"
+  23:Core/Src/sys_debug.c **** #include "sys_debug.h"
+  24:Core/Src/sys_debug.c **** 
+  25:Core/Src/sys_debug.c **** /* USER CODE BEGIN Includes */
+  26:Core/Src/sys_debug.c **** 
+  27:Core/Src/sys_debug.c **** /* USER CODE END Includes */
+  28:Core/Src/sys_debug.c **** 
+  29:Core/Src/sys_debug.c **** /* External variables ---------------------------------------------------------*/
+  30:Core/Src/sys_debug.c **** /* USER CODE BEGIN EV */
+  31:Core/Src/sys_debug.c **** 
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\cc4d4zV5.s 			page 2
+
+
+  32:Core/Src/sys_debug.c **** /* USER CODE END EV */
+  33:Core/Src/sys_debug.c **** 
+  34:Core/Src/sys_debug.c **** /* Private typedef -----------------------------------------------------------*/
+  35:Core/Src/sys_debug.c **** /* USER CODE BEGIN PTD */
+  36:Core/Src/sys_debug.c **** 
+  37:Core/Src/sys_debug.c **** /* USER CODE END PTD */
+  38:Core/Src/sys_debug.c **** 
+  39:Core/Src/sys_debug.c **** /* Private define ------------------------------------------------------------*/
+  40:Core/Src/sys_debug.c **** /* USER CODE BEGIN PD */
+  41:Core/Src/sys_debug.c **** 
+  42:Core/Src/sys_debug.c **** /* USER CODE END PD */
+  43:Core/Src/sys_debug.c **** 
+  44:Core/Src/sys_debug.c **** /* Private macro -------------------------------------------------------------*/
+  45:Core/Src/sys_debug.c **** /* USER CODE BEGIN PM */
+  46:Core/Src/sys_debug.c **** 
+  47:Core/Src/sys_debug.c **** /* USER CODE END PM */
+  48:Core/Src/sys_debug.c **** 
+  49:Core/Src/sys_debug.c **** /* Private variables ---------------------------------------------------------*/
+  50:Core/Src/sys_debug.c **** /* USER CODE BEGIN PV */
+  51:Core/Src/sys_debug.c **** 
+  52:Core/Src/sys_debug.c **** /* USER CODE END PV */
+  53:Core/Src/sys_debug.c **** 
+  54:Core/Src/sys_debug.c **** /* Private function prototypes -----------------------------------------------*/
+  55:Core/Src/sys_debug.c **** /* USER CODE BEGIN PFP */
+  56:Core/Src/sys_debug.c **** 
+  57:Core/Src/sys_debug.c **** /* USER CODE END PFP */
+  58:Core/Src/sys_debug.c **** 
+  59:Core/Src/sys_debug.c **** /* Exported functions --------------------------------------------------------*/
+  60:Core/Src/sys_debug.c **** 
+  61:Core/Src/sys_debug.c **** /**
+  62:Core/Src/sys_debug.c ****   * @brief Disable debugger (serial wires pins)
+  63:Core/Src/sys_debug.c ****   */
+  64:Core/Src/sys_debug.c **** void DBG_Disable(void)
+  65:Core/Src/sys_debug.c **** {
+  66:Core/Src/sys_debug.c ****   /* USER CODE BEGIN DBG_Init_1 */
+  67:Core/Src/sys_debug.c **** 
+  68:Core/Src/sys_debug.c ****   /* USER CODE END DBG_Init_1 */
+  69:Core/Src/sys_debug.c **** 
+  70:Core/Src/sys_debug.c **** #if defined (DEBUGGER_ENABLED) && ( DEBUGGER_ENABLED == 0 ) /* DEBUGGER_DISABLED */
+  71:Core/Src/sys_debug.c ****   /* Put the debugger pin PA13 and P14 in analog for LowPower*/
+  72:Core/Src/sys_debug.c ****   GPIO_InitTypeDef GPIO_InitStruct = {0};
+  73:Core/Src/sys_debug.c ****   GPIO_InitStruct.Mode   = GPIO_MODE_ANALOG;
+  74:Core/Src/sys_debug.c ****   GPIO_InitStruct.Pull   = GPIO_NOPULL;
+  75:Core/Src/sys_debug.c ****   GPIO_InitStruct.Pin    = (GPIO_PIN_13 | GPIO_PIN_14);
+  76:Core/Src/sys_debug.c ****   /* make sure clock is enabled before setting the pins with HAL_GPIO_Init() */
+  77:Core/Src/sys_debug.c ****   __HAL_RCC_GPIOA_CLK_ENABLE() ;
+  78:Core/Src/sys_debug.c ****   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+  79:Core/Src/sys_debug.c **** 
+  80:Core/Src/sys_debug.c **** #elif !defined (DEBUGGER_ENABLED)
+  81:Core/Src/sys_debug.c **** #error "DEBUGGER_ENABLED not defined or out of range <0,1>"
+  82:Core/Src/sys_debug.c **** #endif /* DEBUGGER_OFF */
+  83:Core/Src/sys_debug.c **** 
+  84:Core/Src/sys_debug.c ****   /* Disabled HAL_DBGMCU_  */
+  85:Core/Src/sys_debug.c ****   DBG_ConfigForLpm(0);
+  86:Core/Src/sys_debug.c **** 
+  87:Core/Src/sys_debug.c ****   /* USER CODE BEGIN DBG_Init_Last */
+  88:Core/Src/sys_debug.c **** 
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\cc4d4zV5.s 			page 3
+
+
+  89:Core/Src/sys_debug.c ****   /* USER CODE END DBG_Init_Last */
+  90:Core/Src/sys_debug.c **** }
+  91:Core/Src/sys_debug.c **** 
+  92:Core/Src/sys_debug.c **** /**
+  93:Core/Src/sys_debug.c ****   * @brief Config debugger when working in Low Power Mode
+  94:Core/Src/sys_debug.c ****   * @note  When in Dual Core DbgMcu pins should be better disable only after Cm0 is started
+  95:Core/Src/sys_debug.c ****   */
+  96:Core/Src/sys_debug.c **** void DBG_ConfigForLpm(uint8_t enableDbg)
+  97:Core/Src/sys_debug.c **** {
+  28              		.loc 1 97 1 view -0
+  29              		.cfi_startproc
+  30              		@ args = 0, pretend = 0, frame = 0
+  31              		@ frame_needed = 0, uses_anonymous_args = 0
+  32              		.loc 1 97 1 is_stmt 0 view .LVU1
+  33 0000 08B5     		push	{r3, lr}
+  34              	.LCFI0:
+  35              		.cfi_def_cfa_offset 8
+  36              		.cfi_offset 3, -8
+  37              		.cfi_offset 14, -4
+  98:Core/Src/sys_debug.c ****   uint8_t enable_dbg = enableDbg;
+  38              		.loc 1 98 3 is_stmt 1 view .LVU2
+  39              	.LVL1:
+  99:Core/Src/sys_debug.c ****   /* USER CODE BEGIN DBG_ConfigForLpm_1 */
+ 100:Core/Src/sys_debug.c **** 
+ 101:Core/Src/sys_debug.c ****   /* USER CODE END DBG_ConfigForLpm_1 */
+ 102:Core/Src/sys_debug.c **** 
+ 103:Core/Src/sys_debug.c **** #if defined (DEBUGGER_ENABLED) && ( DEBUGGER_ENABLED == 0 )
+ 104:Core/Src/sys_debug.c ****   enable_dbg = 0;
+ 105:Core/Src/sys_debug.c **** #elif !defined (DEBUGGER_ENABLED)
+ 106:Core/Src/sys_debug.c **** #error "DEBUGGER_ENABLED not defined or out of range <0,1>"
+ 107:Core/Src/sys_debug.c **** #endif /* DEBUGGER_OFF */
+ 108:Core/Src/sys_debug.c **** 
+ 109:Core/Src/sys_debug.c ****   if (enable_dbg == 1)
+  40              		.loc 1 109 3 view .LVU3
+  41              		.loc 1 109 6 is_stmt 0 view .LVU4
+  42 0002 0128     		cmp	r0, #1
+  43 0004 06D0     		beq	.L5
+ 110:Core/Src/sys_debug.c ****   {
+ 111:Core/Src/sys_debug.c ****     HAL_DBGMCU_EnableDBGSleepMode();
+ 112:Core/Src/sys_debug.c ****     HAL_DBGMCU_EnableDBGStopMode();
+ 113:Core/Src/sys_debug.c ****     HAL_DBGMCU_EnableDBGStandbyMode();
+ 114:Core/Src/sys_debug.c ****   }
+ 115:Core/Src/sys_debug.c ****   else
+ 116:Core/Src/sys_debug.c ****   {
+ 117:Core/Src/sys_debug.c ****     HAL_DBGMCU_DisableDBGSleepMode();
+  44              		.loc 1 117 5 is_stmt 1 view .LVU5
+  45 0006 FFF7FEFF 		bl	HAL_DBGMCU_DisableDBGSleepMode
+  46              	.LVL2:
+ 118:Core/Src/sys_debug.c ****     HAL_DBGMCU_DisableDBGStopMode();
+  47              		.loc 1 118 5 view .LVU6
+  48 000a FFF7FEFF 		bl	HAL_DBGMCU_DisableDBGStopMode
+  49              	.LVL3:
+ 119:Core/Src/sys_debug.c ****     HAL_DBGMCU_DisableDBGStandbyMode();
+  50              		.loc 1 119 5 view .LVU7
+  51 000e FFF7FEFF 		bl	HAL_DBGMCU_DisableDBGStandbyMode
+  52              	.LVL4:
+  53              	.L1:
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\cc4d4zV5.s 			page 4
+
+
+ 120:Core/Src/sys_debug.c ****   }
+ 121:Core/Src/sys_debug.c **** 
+ 122:Core/Src/sys_debug.c ****   /* USER CODE BEGIN DBG_ConfigForLpm_Last */
+ 123:Core/Src/sys_debug.c **** 
+ 124:Core/Src/sys_debug.c ****   /* USER CODE END DBG_ConfigForLpm_Last */
+ 125:Core/Src/sys_debug.c **** }
+  54              		.loc 1 125 1 is_stmt 0 view .LVU8
+  55 0012 08BD     		pop	{r3, pc}
+  56              	.LVL5:
+  57              	.L5:
+ 111:Core/Src/sys_debug.c ****     HAL_DBGMCU_EnableDBGStopMode();
+  58              		.loc 1 111 5 is_stmt 1 view .LVU9
+  59 0014 FFF7FEFF 		bl	HAL_DBGMCU_EnableDBGSleepMode
+  60              	.LVL6:
+ 112:Core/Src/sys_debug.c ****     HAL_DBGMCU_EnableDBGStandbyMode();
+  61              		.loc 1 112 5 view .LVU10
+  62 0018 FFF7FEFF 		bl	HAL_DBGMCU_EnableDBGStopMode
+  63              	.LVL7:
+ 113:Core/Src/sys_debug.c ****   }
+  64              		.loc 1 113 5 view .LVU11
+  65 001c FFF7FEFF 		bl	HAL_DBGMCU_EnableDBGStandbyMode
+  66              	.LVL8:
+  67 0020 F7E7     		b	.L1
+  68              		.cfi_endproc
+  69              	.LFE992:
+  71              		.section	.text.DBG_Disable,"ax",%progbits
+  72              		.align	1
+  73              		.global	DBG_Disable
+  74              		.syntax unified
+  75              		.thumb
+  76              		.thumb_func
+  78              	DBG_Disable:
+  79              	.LFB991:
+  65:Core/Src/sys_debug.c ****   /* USER CODE BEGIN DBG_Init_1 */
+  80              		.loc 1 65 1 view -0
+  81              		.cfi_startproc
+  82              		@ args = 0, pretend = 0, frame = 0
+  83              		@ frame_needed = 0, uses_anonymous_args = 0
+  84 0000 08B5     		push	{r3, lr}
+  85              	.LCFI1:
+  86              		.cfi_def_cfa_offset 8
+  87              		.cfi_offset 3, -8
+  88              		.cfi_offset 14, -4
+  85:Core/Src/sys_debug.c **** 
+  89              		.loc 1 85 3 view .LVU13
+  90 0002 0020     		movs	r0, #0
+  91 0004 FFF7FEFF 		bl	DBG_ConfigForLpm
+  92              	.LVL9:
+  90:Core/Src/sys_debug.c **** 
+  93              		.loc 1 90 1 is_stmt 0 view .LVU14
+  94 0008 08BD     		pop	{r3, pc}
+  95              		.cfi_endproc
+  96              	.LFE991:
+  98              		.section	.text.DBG_ProbesInit,"ax",%progbits
+  99              		.align	1
+ 100              		.global	DBG_ProbesInit
+ 101              		.syntax unified
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\cc4d4zV5.s 			page 5
+
+
+ 102              		.thumb
+ 103              		.thumb_func
+ 105              	DBG_ProbesInit:
+ 106              	.LFB993:
+ 126:Core/Src/sys_debug.c **** 
+ 127:Core/Src/sys_debug.c **** /* USER CODE BEGIN EF */
+ 128:Core/Src/sys_debug.c **** 
+ 129:Core/Src/sys_debug.c **** /* USER CODE END EF */
+ 130:Core/Src/sys_debug.c **** 
+ 131:Core/Src/sys_debug.c **** /* Private Functions Definition -----------------------------------------------*/
+ 132:Core/Src/sys_debug.c **** void DBG_ProbesInit(void)
+ 133:Core/Src/sys_debug.c **** {
+ 107              		.loc 1 133 1 is_stmt 1 view -0
+ 108              		.cfi_startproc
+ 109              		@ args = 0, pretend = 0, frame = 0
+ 110              		@ frame_needed = 0, uses_anonymous_args = 0
+ 111              		@ link register save eliminated.
+ 134:Core/Src/sys_debug.c ****   /* USER CODE BEGIN DBG_ProbesInit_1 */
+ 135:Core/Src/sys_debug.c **** 
+ 136:Core/Src/sys_debug.c ****   /* USER CODE END DBG_ProbesInit_1 */
+ 137:Core/Src/sys_debug.c **** 
+ 138:Core/Src/sys_debug.c ****   /* SW probes */
+ 139:Core/Src/sys_debug.c **** 
+ 140:Core/Src/sys_debug.c **** #if defined (PROBE_PINS_ENABLED) && ( PROBE_PINS_ENABLED == 1 )
+ 141:Core/Src/sys_debug.c ****   GPIO_InitTypeDef  GPIO_InitStruct = {0};
+ 142:Core/Src/sys_debug.c **** 
+ 143:Core/Src/sys_debug.c ****   /* Configure the GPIO pin */
+ 144:Core/Src/sys_debug.c ****   GPIO_InitStruct.Mode   = GPIO_MODE_OUTPUT_PP;
+ 145:Core/Src/sys_debug.c ****   GPIO_InitStruct.Pull   = GPIO_PULLUP;
+ 146:Core/Src/sys_debug.c ****   GPIO_InitStruct.Speed  = GPIO_SPEED_FREQ_VERY_HIGH;
+ 147:Core/Src/sys_debug.c **** 
+ 148:Core/Src/sys_debug.c ****   /* Enable the GPIO Clock */
+ 149:Core/Src/sys_debug.c **** 
+ 150:Core/Src/sys_debug.c ****   /* Reset probe Pins */
+ 151:Core/Src/sys_debug.c **** 
+ 152:Core/Src/sys_debug.c ****   /* USER CODE BEGIN DBG_ProbesInit_2 */
+ 153:Core/Src/sys_debug.c **** 
+ 154:Core/Src/sys_debug.c ****   /* USER CODE END DBG_ProbesInit_2 */
+ 155:Core/Src/sys_debug.c ****   /* HW alternate functions for monitoring RF */
+ 156:Core/Src/sys_debug.c **** 
+ 157:Core/Src/sys_debug.c ****   /* Configure the GPIO pin */
+ 158:Core/Src/sys_debug.c ****   GPIO_InitStruct.Speed  = GPIO_SPEED_FREQ_VERY_HIGH;
+ 159:Core/Src/sys_debug.c **** 
+ 160:Core/Src/sys_debug.c ****   /*spi dbg*/
+ 161:Core/Src/sys_debug.c ****   GPIO_InitStruct.Mode   = GPIO_MODE_AF_PP;
+ 162:Core/Src/sys_debug.c ****   GPIO_InitStruct.Pull   = GPIO_NOPULL;
+ 163:Core/Src/sys_debug.c ****   GPIO_InitStruct.Pin    = (GPIO_PIN_4 | GPIO_PIN_5 | GPIO_PIN_6 | GPIO_PIN_7);
+ 164:Core/Src/sys_debug.c ****   GPIO_InitStruct.Alternate  = GPIO_AF13_DEBUG_SUBGHZSPI;
+ 165:Core/Src/sys_debug.c ****   __HAL_RCC_GPIOA_CLK_ENABLE();
+ 166:Core/Src/sys_debug.c ****   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+ 167:Core/Src/sys_debug.c **** 
+ 168:Core/Src/sys_debug.c ****   /* Busy */
+ 169:Core/Src/sys_debug.c ****   GPIO_InitStruct.Mode   = GPIO_MODE_AF_PP;
+ 170:Core/Src/sys_debug.c ****   GPIO_InitStruct.Pull   = GPIO_NOPULL;
+ 171:Core/Src/sys_debug.c ****   GPIO_InitStruct.Pin    = (GPIO_PIN_12);
+ 172:Core/Src/sys_debug.c ****   GPIO_InitStruct.Alternate  = GPIO_AF6_RF_BUSY;
+ 173:Core/Src/sys_debug.c ****   __HAL_RCC_GPIOA_CLK_ENABLE() ;
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\cc4d4zV5.s 			page 6
+
+
+ 174:Core/Src/sys_debug.c ****   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+ 175:Core/Src/sys_debug.c **** 
+ 176:Core/Src/sys_debug.c ****   /* LDO_rdy & BUCK_rdy (SMPS) */
+ 177:Core/Src/sys_debug.c ****   GPIO_InitStruct.Mode   = GPIO_MODE_AF_PP;
+ 178:Core/Src/sys_debug.c ****   GPIO_InitStruct.Pull   = GPIO_NOPULL;
+ 179:Core/Src/sys_debug.c ****   GPIO_InitStruct.Pin    = (GPIO_PIN_2);
+ 180:Core/Src/sys_debug.c ****   GPIO_InitStruct.Alternate  = GPIO_AF13_DEBUG_RF;
+ 181:Core/Src/sys_debug.c ****   __HAL_RCC_GPIOB_CLK_ENABLE();
+ 182:Core/Src/sys_debug.c ****   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+ 183:Core/Src/sys_debug.c **** 
+ 184:Core/Src/sys_debug.c ****   GPIO_InitStruct.Mode   = GPIO_MODE_AF_PP;
+ 185:Core/Src/sys_debug.c ****   GPIO_InitStruct.Pull   = GPIO_NOPULL;
+ 186:Core/Src/sys_debug.c ****   GPIO_InitStruct.Pin    = (GPIO_PIN_4);
+ 187:Core/Src/sys_debug.c ****   GPIO_InitStruct.Alternate  = GPIO_AF13_DEBUG_RF;
+ 188:Core/Src/sys_debug.c ****   __HAL_RCC_GPIOB_CLK_ENABLE();
+ 189:Core/Src/sys_debug.c ****   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+ 190:Core/Src/sys_debug.c **** 
+ 191:Core/Src/sys_debug.c **** #elif !defined (PROBE_PINS_ENABLED)
+ 192:Core/Src/sys_debug.c **** #error "PROBE_PINS_ENABLED not defined or out of range <0,1>"
+ 193:Core/Src/sys_debug.c **** #endif /* PROBE_PINS_ENABLED */
+ 194:Core/Src/sys_debug.c **** 
+ 195:Core/Src/sys_debug.c ****   /* USER CODE BEGIN DBG_ProbesInit_3 */
+ 196:Core/Src/sys_debug.c **** 
+ 197:Core/Src/sys_debug.c ****   /* USER CODE END DBG_ProbesInit_3 */
+ 198:Core/Src/sys_debug.c **** 
+ 199:Core/Src/sys_debug.c **** #if defined(CORE_CM4)
+ 200:Core/Src/sys_debug.c **** #if defined (DEBUGGER_ENABLED) && ( DEBUGGER_ENABLED == 1 )
+ 201:Core/Src/sys_debug.c ****   /*Debug power up request wakeup CBDGPWRUPREQ*/
+ 202:Core/Src/sys_debug.c ****   LL_EXTI_EnableIT_32_63(LL_EXTI_LINE_46);
+ 112              		.loc 1 202 3 view .LVU16
+ 113              	.LVL10:
+ 114              	.LBB4:
+ 115              	.LBI4:
+ 116              		.file 2 "Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h"
+   1:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** /**
+   2:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   ******************************************************************************
+   3:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   * @file    stm32wlxx_ll_exti.h
+   4:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   * @author  MCD Application Team
+   5:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   * @brief   Header file of EXTI LL module.
+   6:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   ******************************************************************************
+   7:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   * @attention
+   8:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   *
+   9:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   * <h2><center>&copy; Copyright (c) 2020 STMicroelectronics. 
+  10:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   * All rights reserved.</center></h2>
+  11:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   *
+  12:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   * This software component is licensed by ST under BSD 3-Clause license,
+  13:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   * the "License"; You may not use this file except in compliance with the 
+  14:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   * License. You may obtain a copy of the License at:
+  15:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   *                        opensource.org/licenses/BSD-3-Clause
+  16:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   *
+  17:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   ******************************************************************************
+  18:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   */
+  19:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** 
+  20:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** /* Define to prevent recursive inclusion -------------------------------------*/
+  21:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** #ifndef __STM32WLxx_LL_EXTI_H
+  22:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** #define __STM32WLxx_LL_EXTI_H
+  23:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** 
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\cc4d4zV5.s 			page 7
+
+
+  24:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** #ifdef __cplusplus
+  25:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** extern "C" {
+  26:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** #endif
+  27:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** 
+  28:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** /* Includes ------------------------------------------------------------------*/
+  29:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** #include "stm32wlxx.h"
+  30:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** 
+  31:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** /** @addtogroup STM32WLxx_LL_Driver
+  32:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   * @{
+  33:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   */
+  34:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** 
+  35:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** #if defined (EXTI)
+  36:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** 
+  37:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** /** @defgroup EXTI_LL EXTI
+  38:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   * @{
+  39:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   */
+  40:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** 
+  41:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** /* Private types -------------------------------------------------------------*/
+  42:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** /* Private variables ---------------------------------------------------------*/
+  43:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** /* Private constants ---------------------------------------------------------*/
+  44:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** /* Private Macros ------------------------------------------------------------*/
+  45:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** #if defined(USE_FULL_LL_DRIVER)
+  46:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** /** @defgroup EXTI_LL_Private_Macros EXTI Private Macros
+  47:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   * @{
+  48:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   */
+  49:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** /**
+  50:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   * @}
+  51:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   */
+  52:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** #endif /*USE_FULL_LL_DRIVER*/
+  53:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** /* Exported types ------------------------------------------------------------*/
+  54:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** #if defined(USE_FULL_LL_DRIVER)
+  55:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** /** @defgroup EXTI_LL_ES_INIT EXTI Exported Init structure
+  56:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   * @{
+  57:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   */
+  58:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** typedef struct
+  59:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** {
+  60:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** 
+  61:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   uint32_t Line_0_31;           /*!< Specifies the EXTI lines to be enabled or disabled for Lines i
+  62:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****                                      This parameter can be any combination of @ref EXTI_LL_EC_LINE 
+  63:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** 
+  64:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   uint32_t Line_32_63;          /*!< Specifies the EXTI lines to be enabled or disabled for Lines i
+  65:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****                                      This parameter can be any combination of @ref EXTI_LL_EC_LINE 
+  66:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** 
+  67:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   FunctionalState LineCommand;  /*!< Specifies the new state of the selected EXTI lines.
+  68:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****                                      This parameter can be set either to ENABLE or DISABLE */
+  69:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** 
+  70:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   uint8_t Mode;                 /*!< Specifies the mode for the EXTI lines.
+  71:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****                                      This parameter can be a value of @ref EXTI_LL_EC_MODE. */
+  72:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** 
+  73:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   uint8_t Trigger;              /*!< Specifies the trigger signal active edge for the EXTI lines.
+  74:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****                                      This parameter can be a value of @ref EXTI_LL_EC_TRIGGER. */
+  75:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** } LL_EXTI_InitTypeDef;
+  76:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** 
+  77:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** /**
+  78:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   * @}
+  79:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   */
+  80:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** #endif /*USE_FULL_LL_DRIVER*/
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\cc4d4zV5.s 			page 8
+
+
+  81:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** 
+  82:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** /* Exported constants --------------------------------------------------------*/
+  83:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** /** @defgroup EXTI_LL_Exported_Constants EXTI Exported Constants
+  84:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   * @{
+  85:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   */
+  86:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** 
+  87:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** /** @defgroup EXTI_LL_EC_LINE LINE
+  88:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   * @{
+  89:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   */
+  90:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** #define LL_EXTI_LINE_0                  EXTI_IMR1_IM0    /*!< Extended line 0 */
+  91:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** #define LL_EXTI_LINE_1                  EXTI_IMR1_IM1    /*!< Extended line 1 */
+  92:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** #define LL_EXTI_LINE_2                  EXTI_IMR1_IM2    /*!< Extended line 2 */
+  93:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** #define LL_EXTI_LINE_3                  EXTI_IMR1_IM3    /*!< Extended line 3 */
+  94:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** #define LL_EXTI_LINE_4                  EXTI_IMR1_IM4    /*!< Extended line 4 */
+  95:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** #define LL_EXTI_LINE_5                  EXTI_IMR1_IM5    /*!< Extended line 5 */
+  96:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** #define LL_EXTI_LINE_6                  EXTI_IMR1_IM6    /*!< Extended line 6 */
+  97:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** #define LL_EXTI_LINE_7                  EXTI_IMR1_IM7    /*!< Extended line 7 */
+  98:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** #define LL_EXTI_LINE_8                  EXTI_IMR1_IM8    /*!< Extended line 8 */
+  99:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** #define LL_EXTI_LINE_9                  EXTI_IMR1_IM9    /*!< Extended line 9 */
+ 100:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** #define LL_EXTI_LINE_10                 EXTI_IMR1_IM10   /*!< Extended line 10 */
+ 101:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** #define LL_EXTI_LINE_11                 EXTI_IMR1_IM11   /*!< Extended line 11 */
+ 102:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** #define LL_EXTI_LINE_12                 EXTI_IMR1_IM12   /*!< Extended line 12 */
+ 103:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** #define LL_EXTI_LINE_13                 EXTI_IMR1_IM13   /*!< Extended line 13 */
+ 104:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** #define LL_EXTI_LINE_14                 EXTI_IMR1_IM14   /*!< Extended line 14 */
+ 105:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** #define LL_EXTI_LINE_15                 EXTI_IMR1_IM15   /*!< Extended line 15 */
+ 106:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** #define LL_EXTI_LINE_16                 EXTI_IMR1_IM16   /*!< Extended line 16 */
+ 107:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** #define LL_EXTI_LINE_17                 EXTI_IMR1_IM17   /*!< Extended line 17 */
+ 108:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** #define LL_EXTI_LINE_18                 EXTI_IMR1_IM18   /*!< Extended line 18 */
+ 109:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** #define LL_EXTI_LINE_19                 EXTI_IMR1_IM19   /*!< Extended line 19 */
+ 110:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** #define LL_EXTI_LINE_20                 EXTI_IMR1_IM20   /*!< Extended line 20 */
+ 111:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** #define LL_EXTI_LINE_21                 EXTI_IMR1_IM21   /*!< Extended line 21 */
+ 112:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** #define LL_EXTI_LINE_22                 EXTI_IMR1_IM22   /*!< Extended line 22 */
+ 113:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** #define LL_EXTI_LINE_23                 EXTI_IMR1_IM23   /*!< Extended line 23 */
+ 114:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** #define LL_EXTI_LINE_24                 EXTI_IMR1_IM24   /*!< Extended line 24 */
+ 115:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** #define LL_EXTI_LINE_25                 EXTI_IMR1_IM25   /*!< Extended line 25 */
+ 116:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** #define LL_EXTI_LINE_26                 EXTI_IMR1_IM26   /*!< Extended line 26 */
+ 117:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** #define LL_EXTI_LINE_27                 EXTI_IMR1_IM27   /*!< Extended line 27 */
+ 118:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** #define LL_EXTI_LINE_28                 EXTI_IMR1_IM28   /*!< Extended line 28 */
+ 119:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** #define LL_EXTI_LINE_29                 EXTI_IMR1_IM29   /*!< Extended line 29 */
+ 120:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** #define LL_EXTI_LINE_30                 EXTI_IMR1_IM30   /*!< Extended line 30 */
+ 121:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** #define LL_EXTI_LINE_31                 EXTI_IMR1_IM31   /*!< Extended line 31 */
+ 122:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** #define LL_EXTI_LINE_ALL_0_31           0xFFFFFFFFU      /*!< All Extended line not reserved*/
+ 123:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** 
+ 124:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** #define LL_EXTI_LINE_34                 EXTI_IMR2_IM34   /*!< Extended line 34 */
+ 125:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** #if defined(DUAL_CORE)
+ 126:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** #define LL_EXTI_LINE_36                 EXTI_IMR2_IM36   /*!< Extended line 36 */
+ 127:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** #define LL_EXTI_LINE_37                 EXTI_IMR2_IM37   /*!< Extended line 37 */
+ 128:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** #endif
+ 129:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** #define LL_EXTI_LINE_38                 EXTI_IMR2_IM38   /*!< Extended line 38 */
+ 130:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** #if defined(DUAL_CORE)
+ 131:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** #define LL_EXTI_LINE_39                 EXTI_IMR2_IM39   /*!< Extended line 39 */
+ 132:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** #define LL_EXTI_LINE_40                 EXTI_IMR2_IM40   /*!< Extended line 40 */
+ 133:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** #define LL_EXTI_LINE_41                 EXTI_IMR2_IM41   /*!< Extended line 41 */
+ 134:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** #endif
+ 135:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** #define LL_EXTI_LINE_42                 EXTI_IMR2_IM42   /*!< Extended line 42 */
+ 136:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** #define LL_EXTI_LINE_43                 EXTI_IMR2_IM43   /*!< Extended line 43 */
+ 137:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** #define LL_EXTI_LINE_44                 EXTI_IMR2_IM44   /*!< Extended line 44 */
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\cc4d4zV5.s 			page 9
+
+
+ 138:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** #define LL_EXTI_LINE_45                 EXTI_IMR2_IM45   /*!< Extended line 45 */
+ 139:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** #define LL_EXTI_LINE_46                 EXTI_IMR2_IM46   /*!< Extended line 46 */
+ 140:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** #if defined(DUAL_CORE)
+ 141:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** #define LL_EXTI_LINE_ALL_32_63          (EXTI_IMR2_IM34 | EXTI_IMR2_IM36 | EXTI_IMR2_IM37 | \
+ 142:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****                                         EXTI_IMR2_IM38 | EXTI_IMR2_IM39 | EXTI_IMR2_IM40 |  \
+ 143:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****                                         EXTI_IMR2_IM41 | EXTI_IMR2_IM42 | EXTI_IMR2_IM43 |  \
+ 144:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****                                         EXTI_IMR2_IM44 | EXTI_IMR2_IM45 | EXTI_IMR2_IM46) /*!< All 
+ 145:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** #else
+ 146:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** #define LL_EXTI_LINE_ALL_32_63          (EXTI_IMR2_IM34 | EXTI_IMR2_IM38 | EXTI_IMR2_IM42 | \
+ 147:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****                                         EXTI_IMR2_IM43 | EXTI_IMR2_IM44 | EXTI_IMR2_IM45 |  \
+ 148:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****                                         EXTI_IMR2_IM46) /*!< All Extended line not reserved*/
+ 149:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** #endif
+ 150:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** 
+ 151:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** #if defined(USE_FULL_LL_DRIVER)
+ 152:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** #define LL_EXTI_LINE_NONE              (0x00000000U)  /*!< None Extended line */
+ 153:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** #endif /*USE_FULL_LL_DRIVER*/
+ 154:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** 
+ 155:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** /**
+ 156:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   * @}
+ 157:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   */
+ 158:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** #if defined(USE_FULL_LL_DRIVER)
+ 159:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** /** @defgroup EXTI_LL_EC_MODE Mode
+ 160:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   * @{
+ 161:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   */
+ 162:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** #define LL_EXTI_MODE_IT                 ((uint8_t)0x00U) /*!< Interrupt Mode */
+ 163:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** #define LL_EXTI_MODE_EVENT              ((uint8_t)0x01U) /*!< Event Mode */
+ 164:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** #define LL_EXTI_MODE_IT_EVENT           ((uint8_t)0x02U) /*!< Interrupt & Event Mode */
+ 165:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** /**
+ 166:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   * @}
+ 167:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   */
+ 168:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** 
+ 169:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** /** @defgroup EXTI_LL_EC_TRIGGER Edge Trigger
+ 170:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   * @{
+ 171:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   */
+ 172:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** #define LL_EXTI_TRIGGER_NONE            ((uint8_t)0x00U) /*!< No Trigger Mode */
+ 173:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** #define LL_EXTI_TRIGGER_RISING          ((uint8_t)0x01U) /*!< Trigger Rising Mode */
+ 174:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** #define LL_EXTI_TRIGGER_FALLING         ((uint8_t)0x02U) /*!< Trigger Falling Mode */
+ 175:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** #define LL_EXTI_TRIGGER_RISING_FALLING  ((uint8_t)0x03U) /*!< Trigger Rising & Falling Mode */
+ 176:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** /**
+ 177:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   * @}
+ 178:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   */
+ 179:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** #endif /*USE_FULL_LL_DRIVER*/
+ 180:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** 
+ 181:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** /**
+ 182:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   * @}
+ 183:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   */
+ 184:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** 
+ 185:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** /* Exported macro ------------------------------------------------------------*/
+ 186:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** /** @defgroup EXTI_LL_Exported_Macros EXTI Exported Macros
+ 187:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   * @{
+ 188:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   */
+ 189:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** 
+ 190:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** /** @defgroup EXTI_LL_EM_WRITE_READ Common Write and read registers Macros
+ 191:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   * @{
+ 192:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   */
+ 193:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** 
+ 194:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** /**
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\cc4d4zV5.s 			page 10
+
+
+ 195:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   * @brief  Write a value in EXTI register
+ 196:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   * @param  __REG__ Register to be written
+ 197:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   * @param  __VALUE__ Value to be written in the register
+ 198:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   * @retval None
+ 199:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   */
+ 200:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** #define LL_EXTI_WriteReg(__REG__, __VALUE__) WRITE_REG(EXTI->__REG__, (__VALUE__))
+ 201:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** 
+ 202:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** /**
+ 203:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   * @brief  Read a value in EXTI register
+ 204:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   * @param  __REG__ Register to be read
+ 205:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   * @retval Register value
+ 206:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   */
+ 207:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** #define LL_EXTI_ReadReg(__REG__) READ_REG(EXTI->__REG__)
+ 208:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** /**
+ 209:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   * @}
+ 210:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   */
+ 211:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** 
+ 212:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** 
+ 213:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** /**
+ 214:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   * @}
+ 215:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   */
+ 216:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** 
+ 217:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** 
+ 218:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** 
+ 219:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** /* Exported functions --------------------------------------------------------*/
+ 220:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** /** @defgroup EXTI_LL_Exported_Functions EXTI Exported Functions
+ 221:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****  * @{
+ 222:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****  */
+ 223:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** /** @defgroup EXTI_LL_EF_IT_Management IT_Management
+ 224:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   * @{
+ 225:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   */
+ 226:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** 
+ 227:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** /**
+ 228:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   * @brief  Enable ExtiLine Interrupt request for Lines in range 0 to 31
+ 229:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   * @rmtoll IMR1         IMx           LL_EXTI_EnableIT_0_31
+ 230:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   * @param  ExtiLine This parameter can be one of the following values:
+ 231:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   *         @arg @ref LL_EXTI_LINE_0
+ 232:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   *         @arg @ref LL_EXTI_LINE_1
+ 233:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   *         @arg @ref LL_EXTI_LINE_2
+ 234:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   *         @arg @ref LL_EXTI_LINE_3
+ 235:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   *         @arg @ref LL_EXTI_LINE_4
+ 236:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   *         @arg @ref LL_EXTI_LINE_5
+ 237:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   *         @arg @ref LL_EXTI_LINE_6
+ 238:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   *         @arg @ref LL_EXTI_LINE_7
+ 239:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   *         @arg @ref LL_EXTI_LINE_8
+ 240:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   *         @arg @ref LL_EXTI_LINE_9
+ 241:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   *         @arg @ref LL_EXTI_LINE_10
+ 242:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   *         @arg @ref LL_EXTI_LINE_11
+ 243:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   *         @arg @ref LL_EXTI_LINE_12
+ 244:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   *         @arg @ref LL_EXTI_LINE_13
+ 245:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   *         @arg @ref LL_EXTI_LINE_14
+ 246:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   *         @arg @ref LL_EXTI_LINE_15
+ 247:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   *         @arg @ref LL_EXTI_LINE_16
+ 248:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   *         @arg @ref LL_EXTI_LINE_17
+ 249:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   *         @arg @ref LL_EXTI_LINE_18
+ 250:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   *         @arg @ref LL_EXTI_LINE_19
+ 251:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   *         @arg @ref LL_EXTI_LINE_20
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\cc4d4zV5.s 			page 11
+
+
+ 252:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   *         @arg @ref LL_EXTI_LINE_21
+ 253:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   *         @arg @ref LL_EXTI_LINE_22
+ 254:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   *         @arg @ref LL_EXTI_LINE_23
+ 255:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   *         @arg @ref LL_EXTI_LINE_24
+ 256:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   *         @arg @ref LL_EXTI_LINE_25
+ 257:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   *         @arg @ref LL_EXTI_LINE_26
+ 258:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   *         @arg @ref LL_EXTI_LINE_27
+ 259:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   *         @arg @ref LL_EXTI_LINE_28
+ 260:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   *         @arg @ref LL_EXTI_LINE_29
+ 261:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   *         @arg @ref LL_EXTI_LINE_30
+ 262:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   *         @arg @ref LL_EXTI_LINE_31
+ 263:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   *         @arg @ref LL_EXTI_LINE_ALL_0_31
+ 264:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   * @retval None
+ 265:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   */
+ 266:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** __STATIC_INLINE void LL_EXTI_EnableIT_0_31(uint32_t ExtiLine)
+ 267:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** {
+ 268:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   SET_BIT(EXTI->IMR1, ExtiLine);
+ 269:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** }
+ 270:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** 
+ 271:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** #if defined(DUAL_CORE)
+ 272:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** /**
+ 273:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   * @brief  Enable ExtiLine Interrupt request for Lines in range 0 to 31 for cpu2
+ 274:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   * @rmtoll C2IMR1         IMx           LL_C2_EXTI_EnableIT_0_31
+ 275:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   * @param  ExtiLine This parameter can be one of the following values:
+ 276:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   *         @arg @ref LL_EXTI_LINE_0
+ 277:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   *         @arg @ref LL_EXTI_LINE_1
+ 278:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   *         @arg @ref LL_EXTI_LINE_2
+ 279:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   *         @arg @ref LL_EXTI_LINE_3
+ 280:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   *         @arg @ref LL_EXTI_LINE_4
+ 281:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   *         @arg @ref LL_EXTI_LINE_5
+ 282:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   *         @arg @ref LL_EXTI_LINE_6
+ 283:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   *         @arg @ref LL_EXTI_LINE_7
+ 284:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   *         @arg @ref LL_EXTI_LINE_8
+ 285:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   *         @arg @ref LL_EXTI_LINE_9
+ 286:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   *         @arg @ref LL_EXTI_LINE_10
+ 287:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   *         @arg @ref LL_EXTI_LINE_11
+ 288:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   *         @arg @ref LL_EXTI_LINE_12
+ 289:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   *         @arg @ref LL_EXTI_LINE_13
+ 290:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   *         @arg @ref LL_EXTI_LINE_14
+ 291:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   *         @arg @ref LL_EXTI_LINE_15
+ 292:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   *         @arg @ref LL_EXTI_LINE_16
+ 293:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   *         @arg @ref LL_EXTI_LINE_17
+ 294:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   *         @arg @ref LL_EXTI_LINE_18
+ 295:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   *         @arg @ref LL_EXTI_LINE_19
+ 296:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   *         @arg @ref LL_EXTI_LINE_20
+ 297:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   *         @arg @ref LL_EXTI_LINE_21
+ 298:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   *         @arg @ref LL_EXTI_LINE_22
+ 299:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   *         @arg @ref LL_EXTI_LINE_23
+ 300:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   *         @arg @ref LL_EXTI_LINE_24
+ 301:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   *         @arg @ref LL_EXTI_LINE_25
+ 302:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   *         @arg @ref LL_EXTI_LINE_26
+ 303:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   *         @arg @ref LL_EXTI_LINE_27
+ 304:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   *         @arg @ref LL_EXTI_LINE_28
+ 305:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   *         @arg @ref LL_EXTI_LINE_29
+ 306:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   *         @arg @ref LL_EXTI_LINE_30
+ 307:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   *         @arg @ref LL_EXTI_LINE_31
+ 308:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   *         @arg @ref LL_EXTI_LINE_ALL_0_31
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\cc4d4zV5.s 			page 12
+
+
+ 309:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   * @retval None
+ 310:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   */
+ 311:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** __STATIC_INLINE void LL_C2_EXTI_EnableIT_0_31(uint32_t ExtiLine)
+ 312:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** {
+ 313:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   SET_BIT(EXTI->C2IMR1, ExtiLine);
+ 314:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** }
+ 315:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** #endif
+ 316:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** 
+ 317:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** /**
+ 318:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   * @brief  Enable ExtiLine Interrupt request for Lines in range 32 to 63
+ 319:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   * @rmtoll IMR2         IMx           LL_EXTI_EnableIT_32_63
+ 320:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   * @param  ExtiLine This parameter can be one of the following values:
+ 321:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   *         @arg @ref LL_EXTI_LINE_34
+ 322:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   *         @arg @ref LL_EXTI_LINE_36 (*)
+ 323:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   *         @arg @ref LL_EXTI_LINE_37 (*)
+ 324:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   *         @arg @ref LL_EXTI_LINE_38
+ 325:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   *         @arg @ref LL_EXTI_LINE_39 (*)
+ 326:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   *         @arg @ref LL_EXTI_LINE_40 (*)
+ 327:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   *         @arg @ref LL_EXTI_LINE_41 (*)
+ 328:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   *         @arg @ref LL_EXTI_LINE_42
+ 329:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   *         @arg @ref LL_EXTI_LINE_43
+ 330:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   *         @arg @ref LL_EXTI_LINE_44
+ 331:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   *         @arg @ref LL_EXTI_LINE_45
+ 332:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   *         @arg @ref LL_EXTI_LINE_46
+ 333:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   *         @arg @ref LL_EXTI_LINE_ALL_32_63
+ 334:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   *         (*) value not defined in all devices
+ 335:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   * @retval None
+ 336:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   */
+ 337:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** __STATIC_INLINE void LL_EXTI_EnableIT_32_63(uint32_t ExtiLine)
+ 117              		.loc 2 337 22 view .LVU17
+ 118              	.LBB5:
+ 338:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h **** {
+ 339:Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_exti.h ****   SET_BIT(EXTI->IMR2, ExtiLine);
+ 119              		.loc 2 339 3 view .LVU18
+ 120 0000 034A     		ldr	r2, .L9
+ 121 0002 D2F89030 		ldr	r3, [r2, #144]
+ 122 0006 43F48043 		orr	r3, r3, #16384
+ 123 000a C2F89030 		str	r3, [r2, #144]
+ 124              	.LVL11:
+ 125              		.loc 2 339 3 is_stmt 0 view .LVU19
+ 126              	.LBE5:
+ 127              	.LBE4:
+ 203:Core/Src/sys_debug.c **** #elif !defined (DEBUGGER_ENABLED)
+ 204:Core/Src/sys_debug.c **** #error "DEBUGGER_ENABLED not defined or out of range <0,1>"
+ 205:Core/Src/sys_debug.c **** #endif /* DEBUGGER_OFF */
+ 206:Core/Src/sys_debug.c **** #endif /* CORE_CM4 */
+ 207:Core/Src/sys_debug.c **** 
+ 208:Core/Src/sys_debug.c ****   /* USER CODE BEGIN DBG_ProbesInit_Last */
+ 209:Core/Src/sys_debug.c **** 
+ 210:Core/Src/sys_debug.c ****   /* USER CODE END DBG_ProbesInit_Last */
+ 211:Core/Src/sys_debug.c **** }
+ 128              		.loc 1 211 1 view .LVU20
+ 129 000e 7047     		bx	lr
+ 130              	.L10:
+ 131              		.align	2
+ 132              	.L9:
+ 133 0010 00080058 		.word	1476397056
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\cc4d4zV5.s 			page 13
+
+
+ 134              		.cfi_endproc
+ 135              	.LFE993:
+ 137              		.text
+ 138              	.Letext0:
+ 139              		.file 3 "c:\\program files (x86)\\gnu arm embedded toolchain\\10 2021.10\\arm-none-eabi\\include\\
+ 140              		.file 4 "c:\\program files (x86)\\gnu arm embedded toolchain\\10 2021.10\\arm-none-eabi\\include\\
+ 141              		.file 5 "Drivers/CMSIS/Device/ST/STM32WLxx/Include/stm32wle5xx.h"
+ 142              		.file 6 "Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_hal.h"
+ 143              		.file 7 "Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_dma.h"
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\cc4d4zV5.s 			page 14
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 sys_debug.c
+C:\Users\NATHAN~1\AppData\Local\Temp\cc4d4zV5.s:18     .text.DBG_ConfigForLpm:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\cc4d4zV5.s:24     .text.DBG_ConfigForLpm:00000000 DBG_ConfigForLpm
+C:\Users\NATHAN~1\AppData\Local\Temp\cc4d4zV5.s:72     .text.DBG_Disable:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\cc4d4zV5.s:78     .text.DBG_Disable:00000000 DBG_Disable
+C:\Users\NATHAN~1\AppData\Local\Temp\cc4d4zV5.s:99     .text.DBG_ProbesInit:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\cc4d4zV5.s:105    .text.DBG_ProbesInit:00000000 DBG_ProbesInit
+C:\Users\NATHAN~1\AppData\Local\Temp\cc4d4zV5.s:133    .text.DBG_ProbesInit:00000010 $d
+
+UNDEFINED SYMBOLS
+HAL_DBGMCU_DisableDBGSleepMode
+HAL_DBGMCU_DisableDBGStopMode
+HAL_DBGMCU_DisableDBGStandbyMode
+HAL_DBGMCU_EnableDBGSleepMode
+HAL_DBGMCU_EnableDBGStopMode
+HAL_DBGMCU_EnableDBGStandbyMode

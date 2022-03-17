@@ -1,0 +1,649 @@
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\cct4LqSM.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"lora_app.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.section	.text.OnRxData,"ax",%progbits
+  18              		.align	1
+  19              		.syntax unified
+  20              		.thumb
+  21              		.thumb_func
+  23              	OnRxData:
+  24              	.LVL0:
+  25              	.LFB992:
+  26              		.file 1 "LoRaWAN/App/lora_app.c"
+   1:LoRaWAN/App/lora_app.c **** /* USER CODE BEGIN Header */
+   2:LoRaWAN/App/lora_app.c **** /**
+   3:LoRaWAN/App/lora_app.c ****   ******************************************************************************
+   4:LoRaWAN/App/lora_app.c ****   * @file    lora_app.c
+   5:LoRaWAN/App/lora_app.c ****   * @author  MCD Application Team
+   6:LoRaWAN/App/lora_app.c ****   * @brief   Application of the LRWAN Middleware
+   7:LoRaWAN/App/lora_app.c ****   ******************************************************************************
+   8:LoRaWAN/App/lora_app.c ****   * @attention
+   9:LoRaWAN/App/lora_app.c ****   *
+  10:LoRaWAN/App/lora_app.c ****   * Copyright (c) 2022 STMicroelectronics.
+  11:LoRaWAN/App/lora_app.c ****   * All rights reserved.
+  12:LoRaWAN/App/lora_app.c ****   *
+  13:LoRaWAN/App/lora_app.c ****   * This software is licensed under terms that can be found in the LICENSE file
+  14:LoRaWAN/App/lora_app.c ****   * in the root directory of this software component.
+  15:LoRaWAN/App/lora_app.c ****   * If no LICENSE file comes with this software, it is provided AS-IS.
+  16:LoRaWAN/App/lora_app.c ****   *
+  17:LoRaWAN/App/lora_app.c ****   ******************************************************************************
+  18:LoRaWAN/App/lora_app.c ****   */
+  19:LoRaWAN/App/lora_app.c **** /* USER CODE END Header */
+  20:LoRaWAN/App/lora_app.c **** 
+  21:LoRaWAN/App/lora_app.c **** /* Includes ------------------------------------------------------------------*/
+  22:LoRaWAN/App/lora_app.c **** #include "platform.h"
+  23:LoRaWAN/App/lora_app.c **** #include "Region.h" /* Needed for LORAWAN_DEFAULT_DATA_RATE */
+  24:LoRaWAN/App/lora_app.c **** #include "sys_app.h"
+  25:LoRaWAN/App/lora_app.c **** #include "lora_app.h"
+  26:LoRaWAN/App/lora_app.c **** #include "stm32_seq.h"
+  27:LoRaWAN/App/lora_app.c **** #include "stm32_timer.h"
+  28:LoRaWAN/App/lora_app.c **** #include "utilities_def.h"
+  29:LoRaWAN/App/lora_app.c **** #include "lora_app_version.h"
+  30:LoRaWAN/App/lora_app.c **** #include "lorawan_version.h"
+  31:LoRaWAN/App/lora_app.c **** #include "subghz_phy_version.h"
+  32:LoRaWAN/App/lora_app.c **** #include "lora_info.h"
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\cct4LqSM.s 			page 2
+
+
+  33:LoRaWAN/App/lora_app.c **** #include "LmHandler.h"
+  34:LoRaWAN/App/lora_app.c **** #include "stm32_lpm.h"
+  35:LoRaWAN/App/lora_app.c **** #include "adc_if.h"
+  36:LoRaWAN/App/lora_app.c **** #include "sys_conf.h"
+  37:LoRaWAN/App/lora_app.c **** #include "CayenneLpp.h"
+  38:LoRaWAN/App/lora_app.c **** #include "sys_sensors.h"
+  39:LoRaWAN/App/lora_app.c **** 
+  40:LoRaWAN/App/lora_app.c **** /* USER CODE BEGIN Includes */
+  41:LoRaWAN/App/lora_app.c **** 
+  42:LoRaWAN/App/lora_app.c **** /* USER CODE END Includes */
+  43:LoRaWAN/App/lora_app.c **** 
+  44:LoRaWAN/App/lora_app.c **** /* External variables ---------------------------------------------------------*/
+  45:LoRaWAN/App/lora_app.c **** /* USER CODE BEGIN EV */
+  46:LoRaWAN/App/lora_app.c **** 
+  47:LoRaWAN/App/lora_app.c **** /* USER CODE END EV */
+  48:LoRaWAN/App/lora_app.c **** 
+  49:LoRaWAN/App/lora_app.c **** /* Private typedef -----------------------------------------------------------*/
+  50:LoRaWAN/App/lora_app.c **** /**
+  51:LoRaWAN/App/lora_app.c ****   * @brief LoRa State Machine states
+  52:LoRaWAN/App/lora_app.c ****   */
+  53:LoRaWAN/App/lora_app.c **** typedef enum TxEventType_e
+  54:LoRaWAN/App/lora_app.c **** {
+  55:LoRaWAN/App/lora_app.c ****   /**
+  56:LoRaWAN/App/lora_app.c ****     * @brief Appdata Transmission issue based on timer every TxDutyCycleTime
+  57:LoRaWAN/App/lora_app.c ****     */
+  58:LoRaWAN/App/lora_app.c ****   TX_ON_TIMER,
+  59:LoRaWAN/App/lora_app.c ****   /**
+  60:LoRaWAN/App/lora_app.c ****     * @brief Appdata Transmission external event plugged on OnSendEvent( )
+  61:LoRaWAN/App/lora_app.c ****     */
+  62:LoRaWAN/App/lora_app.c ****   TX_ON_EVENT
+  63:LoRaWAN/App/lora_app.c ****   /* USER CODE BEGIN TxEventType_t */
+  64:LoRaWAN/App/lora_app.c **** 
+  65:LoRaWAN/App/lora_app.c ****   /* USER CODE END TxEventType_t */
+  66:LoRaWAN/App/lora_app.c **** } TxEventType_t;
+  67:LoRaWAN/App/lora_app.c **** 
+  68:LoRaWAN/App/lora_app.c **** /* USER CODE BEGIN PTD */
+  69:LoRaWAN/App/lora_app.c **** 
+  70:LoRaWAN/App/lora_app.c **** /* USER CODE END PTD */
+  71:LoRaWAN/App/lora_app.c **** 
+  72:LoRaWAN/App/lora_app.c **** /* Private define ------------------------------------------------------------*/
+  73:LoRaWAN/App/lora_app.c **** /* USER CODE BEGIN PD */
+  74:LoRaWAN/App/lora_app.c **** 
+  75:LoRaWAN/App/lora_app.c **** /* USER CODE END PD */
+  76:LoRaWAN/App/lora_app.c **** 
+  77:LoRaWAN/App/lora_app.c **** /* Private macro -------------------------------------------------------------*/
+  78:LoRaWAN/App/lora_app.c **** /* USER CODE BEGIN PM */
+  79:LoRaWAN/App/lora_app.c **** 
+  80:LoRaWAN/App/lora_app.c **** /* USER CODE END PM */
+  81:LoRaWAN/App/lora_app.c **** 
+  82:LoRaWAN/App/lora_app.c **** /* Private function prototypes -----------------------------------------------*/
+  83:LoRaWAN/App/lora_app.c **** /**
+  84:LoRaWAN/App/lora_app.c ****   * @brief  LoRa End Node send request
+  85:LoRaWAN/App/lora_app.c ****   */
+  86:LoRaWAN/App/lora_app.c **** static void SendTxData(void);
+  87:LoRaWAN/App/lora_app.c **** 
+  88:LoRaWAN/App/lora_app.c **** /**
+  89:LoRaWAN/App/lora_app.c ****   * @brief  TX timer callback function
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\cct4LqSM.s 			page 3
+
+
+  90:LoRaWAN/App/lora_app.c ****   * @param  context ptr of timer context
+  91:LoRaWAN/App/lora_app.c ****   */
+  92:LoRaWAN/App/lora_app.c **** static void OnTxTimerEvent(void *context);
+  93:LoRaWAN/App/lora_app.c **** 
+  94:LoRaWAN/App/lora_app.c **** /**
+  95:LoRaWAN/App/lora_app.c ****   * @brief  join event callback function
+  96:LoRaWAN/App/lora_app.c ****   * @param  joinParams status of join
+  97:LoRaWAN/App/lora_app.c ****   */
+  98:LoRaWAN/App/lora_app.c **** static void OnJoinRequest(LmHandlerJoinParams_t *joinParams);
+  99:LoRaWAN/App/lora_app.c **** 
+ 100:LoRaWAN/App/lora_app.c **** /**
+ 101:LoRaWAN/App/lora_app.c ****   * @brief  tx event callback function
+ 102:LoRaWAN/App/lora_app.c ****   * @param  params status of last Tx
+ 103:LoRaWAN/App/lora_app.c ****   */
+ 104:LoRaWAN/App/lora_app.c **** static void OnTxData(LmHandlerTxParams_t *params);
+ 105:LoRaWAN/App/lora_app.c **** 
+ 106:LoRaWAN/App/lora_app.c **** /**
+ 107:LoRaWAN/App/lora_app.c ****   * @brief callback when LoRa application has received a frame
+ 108:LoRaWAN/App/lora_app.c ****   * @param appData data received in the last Rx
+ 109:LoRaWAN/App/lora_app.c ****   * @param params status of last Rx
+ 110:LoRaWAN/App/lora_app.c ****   */
+ 111:LoRaWAN/App/lora_app.c **** static void OnRxData(LmHandlerAppData_t *appData, LmHandlerRxParams_t *params);
+ 112:LoRaWAN/App/lora_app.c **** 
+ 113:LoRaWAN/App/lora_app.c **** /*!
+ 114:LoRaWAN/App/lora_app.c ****  * Will be called each time a Radio IRQ is handled by the MAC layer
+ 115:LoRaWAN/App/lora_app.c ****  *
+ 116:LoRaWAN/App/lora_app.c ****  */
+ 117:LoRaWAN/App/lora_app.c **** static void OnMacProcessNotify(void);
+ 118:LoRaWAN/App/lora_app.c **** 
+ 119:LoRaWAN/App/lora_app.c **** /* USER CODE BEGIN PFP */
+ 120:LoRaWAN/App/lora_app.c **** 
+ 121:LoRaWAN/App/lora_app.c **** /* USER CODE END PFP */
+ 122:LoRaWAN/App/lora_app.c **** 
+ 123:LoRaWAN/App/lora_app.c **** /* Private variables ---------------------------------------------------------*/
+ 124:LoRaWAN/App/lora_app.c **** static ActivationType_t ActivationType = LORAWAN_DEFAULT_ACTIVATION_TYPE;
+ 125:LoRaWAN/App/lora_app.c **** 
+ 126:LoRaWAN/App/lora_app.c **** /**
+ 127:LoRaWAN/App/lora_app.c ****   * @brief LoRaWAN handler Callbacks
+ 128:LoRaWAN/App/lora_app.c ****   */
+ 129:LoRaWAN/App/lora_app.c **** static LmHandlerCallbacks_t LmHandlerCallbacks =
+ 130:LoRaWAN/App/lora_app.c **** {
+ 131:LoRaWAN/App/lora_app.c ****   .GetBatteryLevel =           GetBatteryLevel,
+ 132:LoRaWAN/App/lora_app.c ****   .GetTemperature =            GetTemperatureLevel,
+ 133:LoRaWAN/App/lora_app.c ****   .GetUniqueId =               GetUniqueId,
+ 134:LoRaWAN/App/lora_app.c ****   .GetDevAddr =                GetDevAddr,
+ 135:LoRaWAN/App/lora_app.c ****   .OnMacProcess =              OnMacProcessNotify,
+ 136:LoRaWAN/App/lora_app.c ****   .OnJoinRequest =             OnJoinRequest,
+ 137:LoRaWAN/App/lora_app.c ****   .OnTxData =                  OnTxData,
+ 138:LoRaWAN/App/lora_app.c ****   .OnRxData =                  OnRxData
+ 139:LoRaWAN/App/lora_app.c **** };
+ 140:LoRaWAN/App/lora_app.c **** 
+ 141:LoRaWAN/App/lora_app.c **** /**
+ 142:LoRaWAN/App/lora_app.c ****   * @brief LoRaWAN handler parameters
+ 143:LoRaWAN/App/lora_app.c ****   */
+ 144:LoRaWAN/App/lora_app.c **** static LmHandlerParams_t LmHandlerParams =
+ 145:LoRaWAN/App/lora_app.c **** {
+ 146:LoRaWAN/App/lora_app.c ****   .ActiveRegion =             ACTIVE_REGION,
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\cct4LqSM.s 			page 4
+
+
+ 147:LoRaWAN/App/lora_app.c ****   .DefaultClass =             LORAWAN_DEFAULT_CLASS,
+ 148:LoRaWAN/App/lora_app.c ****   .AdrEnable =                LORAWAN_ADR_STATE,
+ 149:LoRaWAN/App/lora_app.c ****   .TxDatarate =               LORAWAN_DEFAULT_DATA_RATE,
+ 150:LoRaWAN/App/lora_app.c ****   .PingPeriodicity =          LORAWAN_DEFAULT_PING_SLOT_PERIODICITY
+ 151:LoRaWAN/App/lora_app.c **** };
+ 152:LoRaWAN/App/lora_app.c **** 
+ 153:LoRaWAN/App/lora_app.c **** /**
+ 154:LoRaWAN/App/lora_app.c ****   * @brief Type of Event to generate application Tx
+ 155:LoRaWAN/App/lora_app.c ****   */
+ 156:LoRaWAN/App/lora_app.c **** static TxEventType_t EventType = TX_ON_TIMER;
+ 157:LoRaWAN/App/lora_app.c **** 
+ 158:LoRaWAN/App/lora_app.c **** /**
+ 159:LoRaWAN/App/lora_app.c ****   * @brief Timer to handle the application Tx
+ 160:LoRaWAN/App/lora_app.c ****   */
+ 161:LoRaWAN/App/lora_app.c **** static UTIL_TIMER_Object_t TxTimer;
+ 162:LoRaWAN/App/lora_app.c **** 
+ 163:LoRaWAN/App/lora_app.c **** /* USER CODE BEGIN PV */
+ 164:LoRaWAN/App/lora_app.c **** /* USER CODE END PV */
+ 165:LoRaWAN/App/lora_app.c **** 
+ 166:LoRaWAN/App/lora_app.c **** /* Exported functions ---------------------------------------------------------*/
+ 167:LoRaWAN/App/lora_app.c **** /* USER CODE BEGIN EF */
+ 168:LoRaWAN/App/lora_app.c **** 
+ 169:LoRaWAN/App/lora_app.c **** /* USER CODE END EF */
+ 170:LoRaWAN/App/lora_app.c **** 
+ 171:LoRaWAN/App/lora_app.c **** void LoRaWAN_Init(void)
+ 172:LoRaWAN/App/lora_app.c **** {
+ 173:LoRaWAN/App/lora_app.c ****   /* USER CODE BEGIN LoRaWAN_Init_1 */
+ 174:LoRaWAN/App/lora_app.c **** 
+ 175:LoRaWAN/App/lora_app.c ****   /* USER CODE END LoRaWAN_Init_1 */
+ 176:LoRaWAN/App/lora_app.c **** 
+ 177:LoRaWAN/App/lora_app.c ****   UTIL_SEQ_RegTask((1 << CFG_SEQ_Task_LmHandlerProcess), UTIL_SEQ_RFU, LmHandlerProcess);
+ 178:LoRaWAN/App/lora_app.c ****   UTIL_SEQ_RegTask((1 << CFG_SEQ_Task_LoRaSendOnTxTimerOrButtonEvent), UTIL_SEQ_RFU, SendTxData);
+ 179:LoRaWAN/App/lora_app.c ****   /* Init Info table used by LmHandler*/
+ 180:LoRaWAN/App/lora_app.c ****   LoraInfo_Init();
+ 181:LoRaWAN/App/lora_app.c **** 
+ 182:LoRaWAN/App/lora_app.c ****   /* Init the Lora Stack*/
+ 183:LoRaWAN/App/lora_app.c ****   LmHandlerInit(&LmHandlerCallbacks);
+ 184:LoRaWAN/App/lora_app.c **** 
+ 185:LoRaWAN/App/lora_app.c ****   LmHandlerConfigure(&LmHandlerParams);
+ 186:LoRaWAN/App/lora_app.c **** 
+ 187:LoRaWAN/App/lora_app.c ****   /* USER CODE BEGIN LoRaWAN_Init_2 */
+ 188:LoRaWAN/App/lora_app.c ****   /* USER CODE END LoRaWAN_Init_2 */
+ 189:LoRaWAN/App/lora_app.c **** 
+ 190:LoRaWAN/App/lora_app.c ****   LmHandlerJoin(ActivationType);
+ 191:LoRaWAN/App/lora_app.c **** 
+ 192:LoRaWAN/App/lora_app.c ****   if (EventType == TX_ON_TIMER)
+ 193:LoRaWAN/App/lora_app.c ****   {
+ 194:LoRaWAN/App/lora_app.c ****     /* send every time timer elapses */
+ 195:LoRaWAN/App/lora_app.c ****     UTIL_TIMER_Create(&TxTimer,  0xFFFFFFFFU, UTIL_TIMER_ONESHOT, OnTxTimerEvent, NULL);
+ 196:LoRaWAN/App/lora_app.c ****     UTIL_TIMER_SetPeriod(&TxTimer,  APP_TX_DUTYCYCLE);
+ 197:LoRaWAN/App/lora_app.c ****     UTIL_TIMER_Start(&TxTimer);
+ 198:LoRaWAN/App/lora_app.c ****   }
+ 199:LoRaWAN/App/lora_app.c ****   else
+ 200:LoRaWAN/App/lora_app.c ****   {
+ 201:LoRaWAN/App/lora_app.c ****     /* USER CODE BEGIN LoRaWAN_Init_3 */
+ 202:LoRaWAN/App/lora_app.c ****     /* USER CODE END LoRaWAN_Init_3 */
+ 203:LoRaWAN/App/lora_app.c ****   }
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\cct4LqSM.s 			page 5
+
+
+ 204:LoRaWAN/App/lora_app.c **** 
+ 205:LoRaWAN/App/lora_app.c ****   /* USER CODE BEGIN LoRaWAN_Init_Last */
+ 206:LoRaWAN/App/lora_app.c **** 
+ 207:LoRaWAN/App/lora_app.c ****   /* USER CODE END LoRaWAN_Init_Last */
+ 208:LoRaWAN/App/lora_app.c **** }
+ 209:LoRaWAN/App/lora_app.c **** 
+ 210:LoRaWAN/App/lora_app.c **** /* USER CODE BEGIN PB_Callbacks */
+ 211:LoRaWAN/App/lora_app.c **** 
+ 212:LoRaWAN/App/lora_app.c **** /* USER CODE END PB_Callbacks */
+ 213:LoRaWAN/App/lora_app.c **** 
+ 214:LoRaWAN/App/lora_app.c **** /* Private functions ---------------------------------------------------------*/
+ 215:LoRaWAN/App/lora_app.c **** /* USER CODE BEGIN PrFD */
+ 216:LoRaWAN/App/lora_app.c **** 
+ 217:LoRaWAN/App/lora_app.c **** /* USER CODE END PrFD */
+ 218:LoRaWAN/App/lora_app.c **** 
+ 219:LoRaWAN/App/lora_app.c **** static void OnRxData(LmHandlerAppData_t *appData, LmHandlerRxParams_t *params)
+ 220:LoRaWAN/App/lora_app.c **** {
+  27              		.loc 1 220 1 view -0
+  28              		.cfi_startproc
+  29              		@ args = 0, pretend = 0, frame = 0
+  30              		@ frame_needed = 0, uses_anonymous_args = 0
+  31              		@ link register save eliminated.
+ 221:LoRaWAN/App/lora_app.c ****   /* USER CODE BEGIN OnRxData_1 */
+ 222:LoRaWAN/App/lora_app.c ****   /* USER CODE END OnRxData_1 */
+ 223:LoRaWAN/App/lora_app.c **** }
+  32              		.loc 1 223 1 view .LVU1
+  33 0000 7047     		bx	lr
+  34              		.cfi_endproc
+  35              	.LFE992:
+  37              		.section	.text.SendTxData,"ax",%progbits
+  38              		.align	1
+  39              		.syntax unified
+  40              		.thumb
+  41              		.thumb_func
+  43              	SendTxData:
+  44              	.LFB993:
+ 224:LoRaWAN/App/lora_app.c **** 
+ 225:LoRaWAN/App/lora_app.c **** static void SendTxData(void)
+ 226:LoRaWAN/App/lora_app.c **** {
+  45              		.loc 1 226 1 view -0
+  46              		.cfi_startproc
+  47              		@ args = 0, pretend = 0, frame = 0
+  48              		@ frame_needed = 0, uses_anonymous_args = 0
+  49              		@ link register save eliminated.
+ 227:LoRaWAN/App/lora_app.c ****   /* USER CODE BEGIN SendTxData_1 */
+ 228:LoRaWAN/App/lora_app.c **** 
+ 229:LoRaWAN/App/lora_app.c ****   /* USER CODE END SendTxData_1 */
+ 230:LoRaWAN/App/lora_app.c **** }
+  50              		.loc 1 230 1 view .LVU3
+  51 0000 7047     		bx	lr
+  52              		.cfi_endproc
+  53              	.LFE993:
+  55              		.section	.text.OnTxData,"ax",%progbits
+  56              		.align	1
+  57              		.syntax unified
+  58              		.thumb
+  59              		.thumb_func
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\cct4LqSM.s 			page 6
+
+
+  61              	OnTxData:
+  62              	.LVL1:
+  63              	.LFB995:
+ 231:LoRaWAN/App/lora_app.c **** 
+ 232:LoRaWAN/App/lora_app.c **** static void OnTxTimerEvent(void *context)
+ 233:LoRaWAN/App/lora_app.c **** {
+ 234:LoRaWAN/App/lora_app.c ****   /* USER CODE BEGIN OnTxTimerEvent_1 */
+ 235:LoRaWAN/App/lora_app.c **** 
+ 236:LoRaWAN/App/lora_app.c ****   /* USER CODE END OnTxTimerEvent_1 */
+ 237:LoRaWAN/App/lora_app.c ****   UTIL_SEQ_SetTask((1 << CFG_SEQ_Task_LoRaSendOnTxTimerOrButtonEvent), CFG_SEQ_Prio_0);
+ 238:LoRaWAN/App/lora_app.c **** 
+ 239:LoRaWAN/App/lora_app.c ****   /*Wait for next tx slot*/
+ 240:LoRaWAN/App/lora_app.c ****   UTIL_TIMER_Start(&TxTimer);
+ 241:LoRaWAN/App/lora_app.c ****   /* USER CODE BEGIN OnTxTimerEvent_2 */
+ 242:LoRaWAN/App/lora_app.c **** 
+ 243:LoRaWAN/App/lora_app.c ****   /* USER CODE END OnTxTimerEvent_2 */
+ 244:LoRaWAN/App/lora_app.c **** }
+ 245:LoRaWAN/App/lora_app.c **** 
+ 246:LoRaWAN/App/lora_app.c **** /* USER CODE BEGIN PrFD_LedEvents */
+ 247:LoRaWAN/App/lora_app.c **** 
+ 248:LoRaWAN/App/lora_app.c **** /* USER CODE END PrFD_LedEvents */
+ 249:LoRaWAN/App/lora_app.c **** 
+ 250:LoRaWAN/App/lora_app.c **** static void OnTxData(LmHandlerTxParams_t *params)
+ 251:LoRaWAN/App/lora_app.c **** {
+  64              		.loc 1 251 1 view -0
+  65              		.cfi_startproc
+  66              		@ args = 0, pretend = 0, frame = 0
+  67              		@ frame_needed = 0, uses_anonymous_args = 0
+  68              		@ link register save eliminated.
+ 252:LoRaWAN/App/lora_app.c ****   /* USER CODE BEGIN OnTxData_1 */
+ 253:LoRaWAN/App/lora_app.c ****   /* USER CODE END OnTxData_1 */
+ 254:LoRaWAN/App/lora_app.c **** }
+  69              		.loc 1 254 1 view .LVU5
+  70 0000 7047     		bx	lr
+  71              		.cfi_endproc
+  72              	.LFE995:
+  74              		.section	.text.OnJoinRequest,"ax",%progbits
+  75              		.align	1
+  76              		.syntax unified
+  77              		.thumb
+  78              		.thumb_func
+  80              	OnJoinRequest:
+  81              	.LVL2:
+  82              	.LFB996:
+ 255:LoRaWAN/App/lora_app.c **** 
+ 256:LoRaWAN/App/lora_app.c **** static void OnJoinRequest(LmHandlerJoinParams_t *joinParams)
+ 257:LoRaWAN/App/lora_app.c **** {
+  83              		.loc 1 257 1 view -0
+  84              		.cfi_startproc
+  85              		@ args = 0, pretend = 0, frame = 0
+  86              		@ frame_needed = 0, uses_anonymous_args = 0
+  87              		@ link register save eliminated.
+ 258:LoRaWAN/App/lora_app.c ****   /* USER CODE BEGIN OnJoinRequest_1 */
+ 259:LoRaWAN/App/lora_app.c ****   /* USER CODE END OnJoinRequest_1 */
+ 260:LoRaWAN/App/lora_app.c **** }
+  88              		.loc 1 260 1 view .LVU7
+  89 0000 7047     		bx	lr
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\cct4LqSM.s 			page 7
+
+
+  90              		.cfi_endproc
+  91              	.LFE996:
+  93              		.section	.text.OnTxTimerEvent,"ax",%progbits
+  94              		.align	1
+  95              		.syntax unified
+  96              		.thumb
+  97              		.thumb_func
+  99              	OnTxTimerEvent:
+ 100              	.LVL3:
+ 101              	.LFB994:
+ 233:LoRaWAN/App/lora_app.c ****   /* USER CODE BEGIN OnTxTimerEvent_1 */
+ 102              		.loc 1 233 1 view -0
+ 103              		.cfi_startproc
+ 104              		@ args = 0, pretend = 0, frame = 0
+ 105              		@ frame_needed = 0, uses_anonymous_args = 0
+ 233:LoRaWAN/App/lora_app.c ****   /* USER CODE BEGIN OnTxTimerEvent_1 */
+ 106              		.loc 1 233 1 is_stmt 0 view .LVU9
+ 107 0000 08B5     		push	{r3, lr}
+ 108              	.LCFI0:
+ 109              		.cfi_def_cfa_offset 8
+ 110              		.cfi_offset 3, -8
+ 111              		.cfi_offset 14, -4
+ 237:LoRaWAN/App/lora_app.c **** 
+ 112              		.loc 1 237 3 is_stmt 1 view .LVU10
+ 113 0002 0021     		movs	r1, #0
+ 114 0004 0220     		movs	r0, #2
+ 115              	.LVL4:
+ 237:LoRaWAN/App/lora_app.c **** 
+ 116              		.loc 1 237 3 is_stmt 0 view .LVU11
+ 117 0006 FFF7FEFF 		bl	UTIL_SEQ_SetTask
+ 118              	.LVL5:
+ 240:LoRaWAN/App/lora_app.c ****   /* USER CODE BEGIN OnTxTimerEvent_2 */
+ 119              		.loc 1 240 3 is_stmt 1 view .LVU12
+ 120 000a 0248     		ldr	r0, .L7
+ 121 000c FFF7FEFF 		bl	UTIL_TIMER_Start
+ 122              	.LVL6:
+ 244:LoRaWAN/App/lora_app.c **** 
+ 123              		.loc 1 244 1 is_stmt 0 view .LVU13
+ 124 0010 08BD     		pop	{r3, pc}
+ 125              	.L8:
+ 126 0012 00BF     		.align	2
+ 127              	.L7:
+ 128 0014 00000000 		.word	.LANCHOR0
+ 129              		.cfi_endproc
+ 130              	.LFE994:
+ 132              		.section	.text.OnMacProcessNotify,"ax",%progbits
+ 133              		.align	1
+ 134              		.syntax unified
+ 135              		.thumb
+ 136              		.thumb_func
+ 138              	OnMacProcessNotify:
+ 139              	.LFB997:
+ 261:LoRaWAN/App/lora_app.c **** 
+ 262:LoRaWAN/App/lora_app.c **** static void OnMacProcessNotify(void)
+ 263:LoRaWAN/App/lora_app.c **** {
+ 140              		.loc 1 263 1 is_stmt 1 view -0
+ 141              		.cfi_startproc
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\cct4LqSM.s 			page 8
+
+
+ 142              		@ args = 0, pretend = 0, frame = 0
+ 143              		@ frame_needed = 0, uses_anonymous_args = 0
+ 144 0000 08B5     		push	{r3, lr}
+ 145              	.LCFI1:
+ 146              		.cfi_def_cfa_offset 8
+ 147              		.cfi_offset 3, -8
+ 148              		.cfi_offset 14, -4
+ 264:LoRaWAN/App/lora_app.c ****   /* USER CODE BEGIN OnMacProcessNotify_1 */
+ 265:LoRaWAN/App/lora_app.c **** 
+ 266:LoRaWAN/App/lora_app.c ****   /* USER CODE END OnMacProcessNotify_1 */
+ 267:LoRaWAN/App/lora_app.c ****   UTIL_SEQ_SetTask((1 << CFG_SEQ_Task_LmHandlerProcess), CFG_SEQ_Prio_0);
+ 149              		.loc 1 267 3 view .LVU15
+ 150 0002 0021     		movs	r1, #0
+ 151 0004 0120     		movs	r0, #1
+ 152 0006 FFF7FEFF 		bl	UTIL_SEQ_SetTask
+ 153              	.LVL7:
+ 268:LoRaWAN/App/lora_app.c **** 
+ 269:LoRaWAN/App/lora_app.c ****   /* USER CODE BEGIN OnMacProcessNotify_2 */
+ 270:LoRaWAN/App/lora_app.c **** 
+ 271:LoRaWAN/App/lora_app.c ****   /* USER CODE END OnMacProcessNotify_2 */
+ 272:LoRaWAN/App/lora_app.c **** }
+ 154              		.loc 1 272 1 is_stmt 0 view .LVU16
+ 155 000a 08BD     		pop	{r3, pc}
+ 156              		.cfi_endproc
+ 157              	.LFE997:
+ 159              		.section	.text.LoRaWAN_Init,"ax",%progbits
+ 160              		.align	1
+ 161              		.global	LoRaWAN_Init
+ 162              		.syntax unified
+ 163              		.thumb
+ 164              		.thumb_func
+ 166              	LoRaWAN_Init:
+ 167              	.LFB991:
+ 172:LoRaWAN/App/lora_app.c ****   /* USER CODE BEGIN LoRaWAN_Init_1 */
+ 168              		.loc 1 172 1 is_stmt 1 view -0
+ 169              		.cfi_startproc
+ 170              		@ args = 0, pretend = 0, frame = 0
+ 171              		@ frame_needed = 0, uses_anonymous_args = 0
+ 172 0000 10B5     		push	{r4, lr}
+ 173              	.LCFI2:
+ 174              		.cfi_def_cfa_offset 8
+ 175              		.cfi_offset 4, -8
+ 176              		.cfi_offset 14, -4
+ 177 0002 82B0     		sub	sp, sp, #8
+ 178              	.LCFI3:
+ 179              		.cfi_def_cfa_offset 16
+ 177:LoRaWAN/App/lora_app.c ****   UTIL_SEQ_RegTask((1 << CFG_SEQ_Task_LoRaSendOnTxTimerOrButtonEvent), UTIL_SEQ_RFU, SendTxData);
+ 180              		.loc 1 177 3 view .LVU18
+ 181 0004 134A     		ldr	r2, .L13
+ 182 0006 0021     		movs	r1, #0
+ 183 0008 0120     		movs	r0, #1
+ 184 000a FFF7FEFF 		bl	UTIL_SEQ_RegTask
+ 185              	.LVL8:
+ 178:LoRaWAN/App/lora_app.c ****   /* Init Info table used by LmHandler*/
+ 186              		.loc 1 178 3 view .LVU19
+ 187 000e 124A     		ldr	r2, .L13+4
+ 188 0010 0021     		movs	r1, #0
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\cct4LqSM.s 			page 9
+
+
+ 189 0012 0220     		movs	r0, #2
+ 190 0014 FFF7FEFF 		bl	UTIL_SEQ_RegTask
+ 191              	.LVL9:
+ 180:LoRaWAN/App/lora_app.c **** 
+ 192              		.loc 1 180 3 view .LVU20
+ 193 0018 FFF7FEFF 		bl	LoraInfo_Init
+ 194              	.LVL10:
+ 183:LoRaWAN/App/lora_app.c **** 
+ 195              		.loc 1 183 3 view .LVU21
+ 196 001c 0F48     		ldr	r0, .L13+8
+ 197 001e FFF7FEFF 		bl	LmHandlerInit
+ 198              	.LVL11:
+ 185:LoRaWAN/App/lora_app.c **** 
+ 199              		.loc 1 185 3 view .LVU22
+ 200 0022 0F48     		ldr	r0, .L13+12
+ 201 0024 FFF7FEFF 		bl	LmHandlerConfigure
+ 202              	.LVL12:
+ 190:LoRaWAN/App/lora_app.c **** 
+ 203              		.loc 1 190 3 view .LVU23
+ 204 0028 0220     		movs	r0, #2
+ 205 002a FFF7FEFF 		bl	LmHandlerJoin
+ 206              	.LVL13:
+ 192:LoRaWAN/App/lora_app.c ****   {
+ 207              		.loc 1 192 3 view .LVU24
+ 195:LoRaWAN/App/lora_app.c ****     UTIL_TIMER_SetPeriod(&TxTimer,  APP_TX_DUTYCYCLE);
+ 208              		.loc 1 195 5 view .LVU25
+ 209 002e 0D4C     		ldr	r4, .L13+16
+ 210 0030 0022     		movs	r2, #0
+ 211 0032 0092     		str	r2, [sp]
+ 212 0034 0C4B     		ldr	r3, .L13+20
+ 213 0036 4FF0FF31 		mov	r1, #-1
+ 214 003a 2046     		mov	r0, r4
+ 215 003c FFF7FEFF 		bl	UTIL_TIMER_Create
+ 216              	.LVL14:
+ 196:LoRaWAN/App/lora_app.c ****     UTIL_TIMER_Start(&TxTimer);
+ 217              		.loc 1 196 5 view .LVU26
+ 218 0040 42F21071 		movw	r1, #10000
+ 219 0044 2046     		mov	r0, r4
+ 220 0046 FFF7FEFF 		bl	UTIL_TIMER_SetPeriod
+ 221              	.LVL15:
+ 197:LoRaWAN/App/lora_app.c ****   }
+ 222              		.loc 1 197 5 view .LVU27
+ 223 004a 2046     		mov	r0, r4
+ 224 004c FFF7FEFF 		bl	UTIL_TIMER_Start
+ 225              	.LVL16:
+ 203:LoRaWAN/App/lora_app.c **** 
+ 226              		.loc 1 203 3 view .LVU28
+ 208:LoRaWAN/App/lora_app.c **** 
+ 227              		.loc 1 208 1 is_stmt 0 view .LVU29
+ 228 0050 02B0     		add	sp, sp, #8
+ 229              	.LCFI4:
+ 230              		.cfi_def_cfa_offset 8
+ 231              		@ sp needed
+ 232 0052 10BD     		pop	{r4, pc}
+ 233              	.L14:
+ 234              		.align	2
+ 235              	.L13:
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\cct4LqSM.s 			page 10
+
+
+ 236 0054 00000000 		.word	LmHandlerProcess
+ 237 0058 00000000 		.word	SendTxData
+ 238 005c 00000000 		.word	.LANCHOR1
+ 239 0060 00000000 		.word	.LANCHOR2
+ 240 0064 00000000 		.word	.LANCHOR0
+ 241 0068 00000000 		.word	OnTxTimerEvent
+ 242              		.cfi_endproc
+ 243              	.LFE991:
+ 245              		.section	.bss.TxTimer,"aw",%nobits
+ 246              		.align	2
+ 247              		.set	.LANCHOR0,. + 0
+ 250              	TxTimer:
+ 251 0000 00000000 		.space	24
+ 251      00000000 
+ 251      00000000 
+ 251      00000000 
+ 251      00000000 
+ 252              		.section	.data.LmHandlerCallbacks,"aw"
+ 253              		.align	2
+ 254              		.set	.LANCHOR1,. + 0
+ 257              	LmHandlerCallbacks:
+ 258 0000 00000000 		.word	GetBatteryLevel
+ 259 0004 00000000 		.word	GetTemperatureLevel
+ 260 0008 00000000 		.word	GetUniqueId
+ 261 000c 00000000 		.word	GetDevAddr
+ 262 0010 00000000 		.word	OnMacProcessNotify
+ 263 0014 00000000 		.space	8
+ 263      00000000 
+ 264 001c 00000000 		.word	OnJoinRequest
+ 265 0020 00000000 		.word	OnTxData
+ 266 0024 00000000 		.word	OnRxData
+ 267 0028 00000000 		.space	12
+ 267      00000000 
+ 267      00000000 
+ 268              		.section	.data.LmHandlerParams,"aw"
+ 269              		.align	2
+ 270              		.set	.LANCHOR2,. + 0
+ 273              	LmHandlerParams:
+ 274 0000 08       		.byte	8
+ 275 0001 00       		.byte	0
+ 276 0002 01       		.byte	1
+ 277 0003 00       		.byte	0
+ 278 0004 00000000 		.space	8
+ 278      00000000 
+ 279 000c 04       		.byte	4
+ 280 000d 000000   		.space	3
+ 281              		.text
+ 282              	.Letext0:
+ 283              		.file 2 "c:\\program files (x86)\\gnu arm embedded toolchain\\10 2021.10\\arm-none-eabi\\include\\
+ 284              		.file 3 "c:\\program files (x86)\\gnu arm embedded toolchain\\10 2021.10\\arm-none-eabi\\include\\
+ 285              		.file 4 "Utilities/timer/stm32_timer.h"
+ 286              		.file 5 "Utilities/misc/stm32_systime.h"
+ 287              		.file 6 "Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacTypes.h"
+ 288              		.file 7 "Middlewares/Third_Party/LoRaWAN/Mac/LoRaMac.h"
+ 289              		.file 8 "Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_dma.h"
+ 290              		.file 9 "Core/Inc/utilities_def.h"
+ 291              		.file 10 "Middlewares/Third_Party/LoRaWAN/LmHandler/LmHandlerTypes.h"
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\cct4LqSM.s 			page 11
+
+
+ 292              		.file 11 "Middlewares/Third_Party/LoRaWAN/LmHandler/LmHandler.h"
+ 293              		.file 12 "Utilities/sequencer/stm32_seq.h"
+ 294              		.file 13 "LoRaWAN/App/lora_info.h"
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\cct4LqSM.s 			page 12
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 lora_app.c
+C:\Users\NATHAN~1\AppData\Local\Temp\cct4LqSM.s:18     .text.OnRxData:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\cct4LqSM.s:23     .text.OnRxData:00000000 OnRxData
+C:\Users\NATHAN~1\AppData\Local\Temp\cct4LqSM.s:38     .text.SendTxData:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\cct4LqSM.s:43     .text.SendTxData:00000000 SendTxData
+C:\Users\NATHAN~1\AppData\Local\Temp\cct4LqSM.s:56     .text.OnTxData:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\cct4LqSM.s:61     .text.OnTxData:00000000 OnTxData
+C:\Users\NATHAN~1\AppData\Local\Temp\cct4LqSM.s:75     .text.OnJoinRequest:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\cct4LqSM.s:80     .text.OnJoinRequest:00000000 OnJoinRequest
+C:\Users\NATHAN~1\AppData\Local\Temp\cct4LqSM.s:94     .text.OnTxTimerEvent:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\cct4LqSM.s:99     .text.OnTxTimerEvent:00000000 OnTxTimerEvent
+C:\Users\NATHAN~1\AppData\Local\Temp\cct4LqSM.s:128    .text.OnTxTimerEvent:00000014 $d
+C:\Users\NATHAN~1\AppData\Local\Temp\cct4LqSM.s:133    .text.OnMacProcessNotify:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\cct4LqSM.s:138    .text.OnMacProcessNotify:00000000 OnMacProcessNotify
+C:\Users\NATHAN~1\AppData\Local\Temp\cct4LqSM.s:160    .text.LoRaWAN_Init:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\cct4LqSM.s:166    .text.LoRaWAN_Init:00000000 LoRaWAN_Init
+C:\Users\NATHAN~1\AppData\Local\Temp\cct4LqSM.s:236    .text.LoRaWAN_Init:00000054 $d
+C:\Users\NATHAN~1\AppData\Local\Temp\cct4LqSM.s:246    .bss.TxTimer:00000000 $d
+C:\Users\NATHAN~1\AppData\Local\Temp\cct4LqSM.s:250    .bss.TxTimer:00000000 TxTimer
+C:\Users\NATHAN~1\AppData\Local\Temp\cct4LqSM.s:253    .data.LmHandlerCallbacks:00000000 $d
+C:\Users\NATHAN~1\AppData\Local\Temp\cct4LqSM.s:257    .data.LmHandlerCallbacks:00000000 LmHandlerCallbacks
+C:\Users\NATHAN~1\AppData\Local\Temp\cct4LqSM.s:269    .data.LmHandlerParams:00000000 $d
+C:\Users\NATHAN~1\AppData\Local\Temp\cct4LqSM.s:273    .data.LmHandlerParams:00000000 LmHandlerParams
+
+UNDEFINED SYMBOLS
+UTIL_SEQ_SetTask
+UTIL_TIMER_Start
+UTIL_SEQ_RegTask
+LoraInfo_Init
+LmHandlerInit
+LmHandlerConfigure
+LmHandlerJoin
+UTIL_TIMER_Create
+UTIL_TIMER_SetPeriod
+LmHandlerProcess
+GetBatteryLevel
+GetTemperatureLevel
+GetUniqueId
+GetDevAddr

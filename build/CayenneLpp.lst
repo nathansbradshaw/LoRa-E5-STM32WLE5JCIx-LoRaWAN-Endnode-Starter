@@ -1,0 +1,1932 @@
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\cczDShPG.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"CayenneLpp.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.section	.text.CayenneLppInit,"ax",%progbits
+  18              		.align	1
+  19              		.global	CayenneLppInit
+  20              		.syntax unified
+  21              		.thumb
+  22              		.thumb_func
+  24              	CayenneLppInit:
+  25              	.LFB104:
+  26              		.file 1 "LoRaWAN/App/CayenneLpp.c"
+   1:LoRaWAN/App/CayenneLpp.c **** /*!
+   2:LoRaWAN/App/CayenneLpp.c ****   * @file      CayenneLpp.c
+   3:LoRaWAN/App/CayenneLpp.c ****   *
+   4:LoRaWAN/App/CayenneLpp.c ****   * @brief     Implements the Cayenne Low Power Protocol
+   5:LoRaWAN/App/CayenneLpp.c ****   *
+   6:LoRaWAN/App/CayenneLpp.c ****   * \copyright Revised BSD License, see section \ref LICENSE.
+   7:LoRaWAN/App/CayenneLpp.c ****   *
+   8:LoRaWAN/App/CayenneLpp.c ****   * \code
+   9:LoRaWAN/App/CayenneLpp.c ****   *                ______                              _
+  10:LoRaWAN/App/CayenneLpp.c ****   *               / _____)             _              | |
+  11:LoRaWAN/App/CayenneLpp.c ****   *              ( (____  _____ ____ _| |_ _____  ____| |__
+  12:LoRaWAN/App/CayenneLpp.c ****   *               \____ \| ___ |    (_   _) ___ |/ ___)  _ \
+  13:LoRaWAN/App/CayenneLpp.c ****   *               _____) ) ____| | | || |_| ____( (___| | | |
+  14:LoRaWAN/App/CayenneLpp.c ****   *              (______/|_____)_|_|_| \__)_____)\____)_| |_|
+  15:LoRaWAN/App/CayenneLpp.c ****   *              (C)2013-2018 Semtech
+  16:LoRaWAN/App/CayenneLpp.c ****   *
+  17:LoRaWAN/App/CayenneLpp.c ****   * \endcode
+  18:LoRaWAN/App/CayenneLpp.c ****   *
+  19:LoRaWAN/App/CayenneLpp.c ****   * \author    Miguel Luis ( Semtech )
+  20:LoRaWAN/App/CayenneLpp.c ****   */
+  21:LoRaWAN/App/CayenneLpp.c **** /* Includes ------------------------------------------------------------------*/
+  22:LoRaWAN/App/CayenneLpp.c **** #include "stm32_mem.h"
+  23:LoRaWAN/App/CayenneLpp.c **** #include "CayenneLpp.h"
+  24:LoRaWAN/App/CayenneLpp.c **** /* USER CODE BEGIN Includes */
+  25:LoRaWAN/App/CayenneLpp.c **** 
+  26:LoRaWAN/App/CayenneLpp.c **** /* USER CODE END Includes */
+  27:LoRaWAN/App/CayenneLpp.c **** 
+  28:LoRaWAN/App/CayenneLpp.c **** /* External variables ---------------------------------------------------------*/
+  29:LoRaWAN/App/CayenneLpp.c **** /* USER CODE BEGIN EV */
+  30:LoRaWAN/App/CayenneLpp.c **** 
+  31:LoRaWAN/App/CayenneLpp.c **** /* USER CODE END EV */
+  32:LoRaWAN/App/CayenneLpp.c **** 
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\cczDShPG.s 			page 2
+
+
+  33:LoRaWAN/App/CayenneLpp.c **** /* Private typedef -----------------------------------------------------------*/
+  34:LoRaWAN/App/CayenneLpp.c **** /* USER CODE BEGIN PTD */
+  35:LoRaWAN/App/CayenneLpp.c **** 
+  36:LoRaWAN/App/CayenneLpp.c **** /* USER CODE END PTD */
+  37:LoRaWAN/App/CayenneLpp.c **** 
+  38:LoRaWAN/App/CayenneLpp.c **** /* Private define ------------------------------------------------------------*/
+  39:LoRaWAN/App/CayenneLpp.c **** #define CAYENNE_LPP_MAXBUFFER_SIZE                  242
+  40:LoRaWAN/App/CayenneLpp.c **** #define LPP_DIGITAL_INPUT       0       /* 1 byte */
+  41:LoRaWAN/App/CayenneLpp.c **** #define LPP_DIGITAL_OUTPUT      1       /* 1 byte */
+  42:LoRaWAN/App/CayenneLpp.c **** #define LPP_ANALOG_INPUT        2       /* 2 bytes, 0.01 signed */
+  43:LoRaWAN/App/CayenneLpp.c **** #define LPP_ANALOG_OUTPUT       3       /* 2 bytes, 0.01 signed */
+  44:LoRaWAN/App/CayenneLpp.c **** #define LPP_LUMINOSITY          101     /* 2 bytes, 1 lux unsigned */
+  45:LoRaWAN/App/CayenneLpp.c **** #define LPP_PRESENCE            102     /* 1 byte, 1 */
+  46:LoRaWAN/App/CayenneLpp.c **** #define LPP_TEMPERATURE         103     /* 2 bytes, 0.1 Celsius degrees signed */
+  47:LoRaWAN/App/CayenneLpp.c **** #define LPP_RELATIVE_HUMIDITY   104     /* 1 byte, 0.5% unsigned */
+  48:LoRaWAN/App/CayenneLpp.c **** #define LPP_ACCELEROMETER       113     /* 2 bytes per axis, 0.001G */
+  49:LoRaWAN/App/CayenneLpp.c **** #define LPP_BAROMETRIC_PRESSURE 115     /* 2 bytes 0.1 hPa Unsigned */
+  50:LoRaWAN/App/CayenneLpp.c **** #define LPP_GYROMETER           134     /* 2 bytes per axis, 0.01 degrees/s */
+  51:LoRaWAN/App/CayenneLpp.c **** #define LPP_GPS                 136     /* 3 byte lon/lat 0.0001 degrees, 3 bytes alt 0.01m */
+  52:LoRaWAN/App/CayenneLpp.c **** 
+  53:LoRaWAN/App/CayenneLpp.c **** /* Data ID + Data Type + Data Size */
+  54:LoRaWAN/App/CayenneLpp.c **** #define LPP_DIGITAL_INPUT_SIZE       3
+  55:LoRaWAN/App/CayenneLpp.c **** #define LPP_DIGITAL_OUTPUT_SIZE      3
+  56:LoRaWAN/App/CayenneLpp.c **** #define LPP_ANALOG_INPUT_SIZE        4
+  57:LoRaWAN/App/CayenneLpp.c **** #define LPP_ANALOG_OUTPUT_SIZE       4
+  58:LoRaWAN/App/CayenneLpp.c **** #define LPP_LUMINOSITY_SIZE          4
+  59:LoRaWAN/App/CayenneLpp.c **** #define LPP_PRESENCE_SIZE            3
+  60:LoRaWAN/App/CayenneLpp.c **** #define LPP_TEMPERATURE_SIZE         4
+  61:LoRaWAN/App/CayenneLpp.c **** #define LPP_RELATIVE_HUMIDITY_SIZE   3
+  62:LoRaWAN/App/CayenneLpp.c **** #define LPP_ACCELEROMETER_SIZE       8
+  63:LoRaWAN/App/CayenneLpp.c **** #define LPP_BAROMETRIC_PRESSURE_SIZE 4
+  64:LoRaWAN/App/CayenneLpp.c **** #define LPP_GYROMETER_SIZE           8
+  65:LoRaWAN/App/CayenneLpp.c **** #define LPP_GPS_SIZE                 11
+  66:LoRaWAN/App/CayenneLpp.c **** 
+  67:LoRaWAN/App/CayenneLpp.c **** /* USER CODE BEGIN PD */
+  68:LoRaWAN/App/CayenneLpp.c **** 
+  69:LoRaWAN/App/CayenneLpp.c **** /* USER CODE END PD */
+  70:LoRaWAN/App/CayenneLpp.c **** 
+  71:LoRaWAN/App/CayenneLpp.c **** /* Private macro -------------------------------------------------------------*/
+  72:LoRaWAN/App/CayenneLpp.c **** /* USER CODE BEGIN PM */
+  73:LoRaWAN/App/CayenneLpp.c **** 
+  74:LoRaWAN/App/CayenneLpp.c **** /* USER CODE END PM */
+  75:LoRaWAN/App/CayenneLpp.c **** 
+  76:LoRaWAN/App/CayenneLpp.c **** /* Private variables ---------------------------------------------------------*/
+  77:LoRaWAN/App/CayenneLpp.c **** static uint8_t CayenneLppBuffer[CAYENNE_LPP_MAXBUFFER_SIZE];
+  78:LoRaWAN/App/CayenneLpp.c **** static uint8_t CayenneLppCursor = 0;
+  79:LoRaWAN/App/CayenneLpp.c **** /* USER CODE BEGIN PV */
+  80:LoRaWAN/App/CayenneLpp.c **** 
+  81:LoRaWAN/App/CayenneLpp.c **** /* USER CODE END PV */
+  82:LoRaWAN/App/CayenneLpp.c **** 
+  83:LoRaWAN/App/CayenneLpp.c **** /* Private function prototypes -----------------------------------------------*/
+  84:LoRaWAN/App/CayenneLpp.c **** 
+  85:LoRaWAN/App/CayenneLpp.c **** /* USER CODE BEGIN PFP */
+  86:LoRaWAN/App/CayenneLpp.c **** 
+  87:LoRaWAN/App/CayenneLpp.c **** /* USER CODE END PFP */
+  88:LoRaWAN/App/CayenneLpp.c **** 
+  89:LoRaWAN/App/CayenneLpp.c **** /* Exported functions --------------------------------------------------------*/
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\cczDShPG.s 			page 3
+
+
+  90:LoRaWAN/App/CayenneLpp.c **** void CayenneLppInit(void)
+  91:LoRaWAN/App/CayenneLpp.c **** {
+  27              		.loc 1 91 1 view -0
+  28              		.cfi_startproc
+  29              		@ args = 0, pretend = 0, frame = 0
+  30              		@ frame_needed = 0, uses_anonymous_args = 0
+  31              		@ link register save eliminated.
+  92:LoRaWAN/App/CayenneLpp.c ****   CayenneLppCursor = 0;
+  32              		.loc 1 92 3 view .LVU1
+  33              		.loc 1 92 20 is_stmt 0 view .LVU2
+  34 0000 014B     		ldr	r3, .L2
+  35 0002 0022     		movs	r2, #0
+  36 0004 1A70     		strb	r2, [r3]
+  93:LoRaWAN/App/CayenneLpp.c ****   /* USER CODE BEGIN CayenneLppCursor */
+  94:LoRaWAN/App/CayenneLpp.c **** 
+  95:LoRaWAN/App/CayenneLpp.c ****   /* USER CODE END CayenneLppCursor */
+  96:LoRaWAN/App/CayenneLpp.c **** }
+  37              		.loc 1 96 1 view .LVU3
+  38 0006 7047     		bx	lr
+  39              	.L3:
+  40              		.align	2
+  41              	.L2:
+  42 0008 00000000 		.word	.LANCHOR0
+  43              		.cfi_endproc
+  44              	.LFE104:
+  46              		.section	.text.CayenneLppReset,"ax",%progbits
+  47              		.align	1
+  48              		.global	CayenneLppReset
+  49              		.syntax unified
+  50              		.thumb
+  51              		.thumb_func
+  53              	CayenneLppReset:
+  54              	.LFB105:
+  97:LoRaWAN/App/CayenneLpp.c **** 
+  98:LoRaWAN/App/CayenneLpp.c **** void CayenneLppReset(void)
+  99:LoRaWAN/App/CayenneLpp.c **** {
+  55              		.loc 1 99 1 is_stmt 1 view -0
+  56              		.cfi_startproc
+  57              		@ args = 0, pretend = 0, frame = 0
+  58              		@ frame_needed = 0, uses_anonymous_args = 0
+  59              		@ link register save eliminated.
+ 100:LoRaWAN/App/CayenneLpp.c ****   CayenneLppCursor = 0;
+  60              		.loc 1 100 3 view .LVU5
+  61              		.loc 1 100 20 is_stmt 0 view .LVU6
+  62 0000 014B     		ldr	r3, .L5
+  63 0002 0022     		movs	r2, #0
+  64 0004 1A70     		strb	r2, [r3]
+ 101:LoRaWAN/App/CayenneLpp.c ****   /* USER CODE BEGIN CayenneLppReset */
+ 102:LoRaWAN/App/CayenneLpp.c **** 
+ 103:LoRaWAN/App/CayenneLpp.c ****   /* USER CODE END CayenneLppReset */
+ 104:LoRaWAN/App/CayenneLpp.c **** }
+  65              		.loc 1 104 1 view .LVU7
+  66 0006 7047     		bx	lr
+  67              	.L6:
+  68              		.align	2
+  69              	.L5:
+  70 0008 00000000 		.word	.LANCHOR0
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\cczDShPG.s 			page 4
+
+
+  71              		.cfi_endproc
+  72              	.LFE105:
+  74              		.section	.text.CayenneLppGetSize,"ax",%progbits
+  75              		.align	1
+  76              		.global	CayenneLppGetSize
+  77              		.syntax unified
+  78              		.thumb
+  79              		.thumb_func
+  81              	CayenneLppGetSize:
+  82              	.LFB106:
+ 105:LoRaWAN/App/CayenneLpp.c **** 
+ 106:LoRaWAN/App/CayenneLpp.c **** uint8_t CayenneLppGetSize(void)
+ 107:LoRaWAN/App/CayenneLpp.c **** {
+  83              		.loc 1 107 1 is_stmt 1 view -0
+  84              		.cfi_startproc
+  85              		@ args = 0, pretend = 0, frame = 0
+  86              		@ frame_needed = 0, uses_anonymous_args = 0
+  87              		@ link register save eliminated.
+ 108:LoRaWAN/App/CayenneLpp.c ****   /* USER CODE BEGIN CayenneLppGetSize */
+ 109:LoRaWAN/App/CayenneLpp.c **** 
+ 110:LoRaWAN/App/CayenneLpp.c ****   /* USER CODE END CayenneLppGetSize */
+ 111:LoRaWAN/App/CayenneLpp.c ****   return CayenneLppCursor;
+  88              		.loc 1 111 3 view .LVU9
+ 112:LoRaWAN/App/CayenneLpp.c **** }
+  89              		.loc 1 112 1 is_stmt 0 view .LVU10
+  90 0000 014B     		ldr	r3, .L8
+  91 0002 1878     		ldrb	r0, [r3]	@ zero_extendqisi2
+  92 0004 7047     		bx	lr
+  93              	.L9:
+  94 0006 00BF     		.align	2
+  95              	.L8:
+  96 0008 00000000 		.word	.LANCHOR0
+  97              		.cfi_endproc
+  98              	.LFE106:
+ 100              		.section	.text.CayenneLppGetBuffer,"ax",%progbits
+ 101              		.align	1
+ 102              		.global	CayenneLppGetBuffer
+ 103              		.syntax unified
+ 104              		.thumb
+ 105              		.thumb_func
+ 107              	CayenneLppGetBuffer:
+ 108              	.LFB107:
+ 113:LoRaWAN/App/CayenneLpp.c **** 
+ 114:LoRaWAN/App/CayenneLpp.c **** uint8_t *CayenneLppGetBuffer(void)
+ 115:LoRaWAN/App/CayenneLpp.c **** {
+ 109              		.loc 1 115 1 is_stmt 1 view -0
+ 110              		.cfi_startproc
+ 111              		@ args = 0, pretend = 0, frame = 0
+ 112              		@ frame_needed = 0, uses_anonymous_args = 0
+ 113              		@ link register save eliminated.
+ 116:LoRaWAN/App/CayenneLpp.c ****   /* USER CODE BEGIN CayenneLppGetBuffer */
+ 117:LoRaWAN/App/CayenneLpp.c **** 
+ 118:LoRaWAN/App/CayenneLpp.c ****   /* USER CODE END CayenneLppGetBuffer */
+ 119:LoRaWAN/App/CayenneLpp.c ****   return CayenneLppBuffer;
+ 114              		.loc 1 119 3 view .LVU12
+ 120:LoRaWAN/App/CayenneLpp.c **** }
+ 115              		.loc 1 120 1 is_stmt 0 view .LVU13
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\cczDShPG.s 			page 5
+
+
+ 116 0000 0048     		ldr	r0, .L11
+ 117 0002 7047     		bx	lr
+ 118              	.L12:
+ 119              		.align	2
+ 120              	.L11:
+ 121 0004 00000000 		.word	.LANCHOR1
+ 122              		.cfi_endproc
+ 123              	.LFE107:
+ 125              		.section	.text.CayenneLppCopy,"ax",%progbits
+ 126              		.align	1
+ 127              		.global	CayenneLppCopy
+ 128              		.syntax unified
+ 129              		.thumb
+ 130              		.thumb_func
+ 132              	CayenneLppCopy:
+ 133              	.LVL0:
+ 134              	.LFB108:
+ 121:LoRaWAN/App/CayenneLpp.c **** 
+ 122:LoRaWAN/App/CayenneLpp.c **** uint8_t CayenneLppCopy(uint8_t *dst)
+ 123:LoRaWAN/App/CayenneLpp.c **** {
+ 135              		.loc 1 123 1 is_stmt 1 view -0
+ 136              		.cfi_startproc
+ 137              		@ args = 0, pretend = 0, frame = 0
+ 138              		@ frame_needed = 0, uses_anonymous_args = 0
+ 139              		.loc 1 123 1 is_stmt 0 view .LVU15
+ 140 0000 10B5     		push	{r4, lr}
+ 141              	.LCFI0:
+ 142              		.cfi_def_cfa_offset 8
+ 143              		.cfi_offset 4, -8
+ 144              		.cfi_offset 14, -4
+ 124:LoRaWAN/App/CayenneLpp.c ****   /* USER CODE BEGIN CayenneLppCopy_1 */
+ 125:LoRaWAN/App/CayenneLpp.c **** 
+ 126:LoRaWAN/App/CayenneLpp.c ****   /* USER CODE END CayenneLppCopy_1 */
+ 127:LoRaWAN/App/CayenneLpp.c ****   UTIL_MEM_cpy_8(dst, CayenneLppBuffer, CayenneLppCursor);
+ 145              		.loc 1 127 3 is_stmt 1 view .LVU16
+ 146 0002 034C     		ldr	r4, .L15
+ 147 0004 2278     		ldrb	r2, [r4]	@ zero_extendqisi2
+ 148 0006 0349     		ldr	r1, .L15+4
+ 149 0008 FFF7FEFF 		bl	UTIL_MEM_cpy_8
+ 150              	.LVL1:
+ 128:LoRaWAN/App/CayenneLpp.c ****   /* USER CODE BEGIN CayenneLppCopy_2 */
+ 129:LoRaWAN/App/CayenneLpp.c **** 
+ 130:LoRaWAN/App/CayenneLpp.c ****   /* USER CODE END CayenneLppCopy_2 */
+ 131:LoRaWAN/App/CayenneLpp.c ****   return CayenneLppCursor;
+ 151              		.loc 1 131 3 view .LVU17
+ 132:LoRaWAN/App/CayenneLpp.c **** }
+ 152              		.loc 1 132 1 is_stmt 0 view .LVU18
+ 153 000c 2078     		ldrb	r0, [r4]	@ zero_extendqisi2
+ 154 000e 10BD     		pop	{r4, pc}
+ 155              	.L16:
+ 156              		.align	2
+ 157              	.L15:
+ 158 0010 00000000 		.word	.LANCHOR0
+ 159 0014 00000000 		.word	.LANCHOR1
+ 160              		.cfi_endproc
+ 161              	.LFE108:
+ 163              		.section	.text.CayenneLppAddDigitalInput,"ax",%progbits
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\cczDShPG.s 			page 6
+
+
+ 164              		.align	1
+ 165              		.global	CayenneLppAddDigitalInput
+ 166              		.syntax unified
+ 167              		.thumb
+ 168              		.thumb_func
+ 170              	CayenneLppAddDigitalInput:
+ 171              	.LVL2:
+ 172              	.LFB109:
+ 133:LoRaWAN/App/CayenneLpp.c **** 
+ 134:LoRaWAN/App/CayenneLpp.c **** uint8_t CayenneLppAddDigitalInput(uint8_t channel, uint8_t value)
+ 135:LoRaWAN/App/CayenneLpp.c **** {
+ 173              		.loc 1 135 1 is_stmt 1 view -0
+ 174              		.cfi_startproc
+ 175              		@ args = 0, pretend = 0, frame = 0
+ 176              		@ frame_needed = 0, uses_anonymous_args = 0
+ 177              		@ link register save eliminated.
+ 136:LoRaWAN/App/CayenneLpp.c ****   /* USER CODE BEGIN CayenneLppAddDigitalInput_1 */
+ 137:LoRaWAN/App/CayenneLpp.c **** 
+ 138:LoRaWAN/App/CayenneLpp.c ****   /* USER CODE END CayenneLppAddDigitalInput_1 */
+ 139:LoRaWAN/App/CayenneLpp.c ****   if ((CayenneLppCursor + LPP_DIGITAL_INPUT_SIZE) > CAYENNE_LPP_MAXBUFFER_SIZE)
+ 178              		.loc 1 139 3 view .LVU20
+ 179              		.loc 1 139 51 is_stmt 0 view .LVU21
+ 180 0000 0B4B     		ldr	r3, .L24
+ 181 0002 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 182              		.loc 1 139 6 view .LVU22
+ 183 0004 EF2B     		cmp	r3, #239
+ 184 0006 11D8     		bhi	.L19
+ 135:LoRaWAN/App/CayenneLpp.c ****   /* USER CODE BEGIN CayenneLppAddDigitalInput_1 */
+ 185              		.loc 1 135 1 view .LVU23
+ 186 0008 30B4     		push	{r4, r5}
+ 187              	.LCFI1:
+ 188              		.cfi_def_cfa_offset 8
+ 189              		.cfi_offset 4, -8
+ 190              		.cfi_offset 5, -4
+ 140:LoRaWAN/App/CayenneLpp.c ****   {
+ 141:LoRaWAN/App/CayenneLpp.c ****     return 0;
+ 142:LoRaWAN/App/CayenneLpp.c ****   }
+ 143:LoRaWAN/App/CayenneLpp.c ****   CayenneLppBuffer[CayenneLppCursor++] = channel;
+ 191              		.loc 1 143 3 is_stmt 1 view .LVU24
+ 192              		.loc 1 143 36 is_stmt 0 view .LVU25
+ 193 000a 5A1C     		adds	r2, r3, #1
+ 194 000c D2B2     		uxtb	r2, r2
+ 195 000e 084D     		ldr	r5, .L24
+ 196 0010 2A70     		strb	r2, [r5]
+ 197              		.loc 1 143 40 view .LVU26
+ 198 0012 084C     		ldr	r4, .L24+4
+ 199 0014 E054     		strb	r0, [r4, r3]
+ 144:LoRaWAN/App/CayenneLpp.c ****   CayenneLppBuffer[CayenneLppCursor++] = LPP_DIGITAL_INPUT;
+ 200              		.loc 1 144 3 is_stmt 1 view .LVU27
+ 201              		.loc 1 144 36 is_stmt 0 view .LVU28
+ 202 0016 531C     		adds	r3, r2, #1
+ 203 0018 DBB2     		uxtb	r3, r3
+ 204 001a 2B70     		strb	r3, [r5]
+ 205              		.loc 1 144 40 view .LVU29
+ 206 001c 0020     		movs	r0, #0
+ 207              	.LVL3:
+ 208              		.loc 1 144 40 view .LVU30
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\cczDShPG.s 			page 7
+
+
+ 209 001e A054     		strb	r0, [r4, r2]
+ 145:LoRaWAN/App/CayenneLpp.c ****   CayenneLppBuffer[CayenneLppCursor++] = value;
+ 210              		.loc 1 145 3 is_stmt 1 view .LVU31
+ 211              		.loc 1 145 36 is_stmt 0 view .LVU32
+ 212 0020 581C     		adds	r0, r3, #1
+ 213 0022 C0B2     		uxtb	r0, r0
+ 214 0024 2870     		strb	r0, [r5]
+ 215              		.loc 1 145 40 view .LVU33
+ 216 0026 E154     		strb	r1, [r4, r3]
+ 146:LoRaWAN/App/CayenneLpp.c ****   /* USER CODE BEGIN CayenneLppAddDigitalInput_2 */
+ 147:LoRaWAN/App/CayenneLpp.c **** 
+ 148:LoRaWAN/App/CayenneLpp.c ****   /* USER CODE END CayenneLppAddDigitalInput_2 */
+ 149:LoRaWAN/App/CayenneLpp.c ****   return CayenneLppCursor;
+ 217              		.loc 1 149 3 is_stmt 1 view .LVU34
+ 150:LoRaWAN/App/CayenneLpp.c **** }
+ 218              		.loc 1 150 1 is_stmt 0 view .LVU35
+ 219 0028 30BC     		pop	{r4, r5}
+ 220              	.LCFI2:
+ 221              		.cfi_restore 5
+ 222              		.cfi_restore 4
+ 223              		.cfi_def_cfa_offset 0
+ 224 002a 7047     		bx	lr
+ 225              	.LVL4:
+ 226              	.L19:
+ 141:LoRaWAN/App/CayenneLpp.c ****   }
+ 227              		.loc 1 141 12 view .LVU36
+ 228 002c 0020     		movs	r0, #0
+ 229              	.LVL5:
+ 230              		.loc 1 150 1 view .LVU37
+ 231 002e 7047     		bx	lr
+ 232              	.L25:
+ 233              		.align	2
+ 234              	.L24:
+ 235 0030 00000000 		.word	.LANCHOR0
+ 236 0034 00000000 		.word	.LANCHOR1
+ 237              		.cfi_endproc
+ 238              	.LFE109:
+ 240              		.section	.text.CayenneLppAddDigitalOutput,"ax",%progbits
+ 241              		.align	1
+ 242              		.global	CayenneLppAddDigitalOutput
+ 243              		.syntax unified
+ 244              		.thumb
+ 245              		.thumb_func
+ 247              	CayenneLppAddDigitalOutput:
+ 248              	.LVL6:
+ 249              	.LFB110:
+ 151:LoRaWAN/App/CayenneLpp.c **** 
+ 152:LoRaWAN/App/CayenneLpp.c **** uint8_t CayenneLppAddDigitalOutput(uint8_t channel, uint8_t value)
+ 153:LoRaWAN/App/CayenneLpp.c **** {
+ 250              		.loc 1 153 1 is_stmt 1 view -0
+ 251              		.cfi_startproc
+ 252              		@ args = 0, pretend = 0, frame = 0
+ 253              		@ frame_needed = 0, uses_anonymous_args = 0
+ 254              		@ link register save eliminated.
+ 154:LoRaWAN/App/CayenneLpp.c ****   /* USER CODE BEGIN CayenneLppAddDigitalOutput_1 */
+ 155:LoRaWAN/App/CayenneLpp.c **** 
+ 156:LoRaWAN/App/CayenneLpp.c ****   /* USER CODE END CayenneLppAddDigitalOutput_1 */
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\cczDShPG.s 			page 8
+
+
+ 157:LoRaWAN/App/CayenneLpp.c ****   if ((CayenneLppCursor + LPP_DIGITAL_OUTPUT_SIZE) > CAYENNE_LPP_MAXBUFFER_SIZE)
+ 255              		.loc 1 157 3 view .LVU39
+ 256              		.loc 1 157 52 is_stmt 0 view .LVU40
+ 257 0000 0B4B     		ldr	r3, .L33
+ 258 0002 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 259              		.loc 1 157 6 view .LVU41
+ 260 0004 EF2B     		cmp	r3, #239
+ 261 0006 11D8     		bhi	.L28
+ 153:LoRaWAN/App/CayenneLpp.c ****   /* USER CODE BEGIN CayenneLppAddDigitalOutput_1 */
+ 262              		.loc 1 153 1 view .LVU42
+ 263 0008 30B4     		push	{r4, r5}
+ 264              	.LCFI3:
+ 265              		.cfi_def_cfa_offset 8
+ 266              		.cfi_offset 4, -8
+ 267              		.cfi_offset 5, -4
+ 158:LoRaWAN/App/CayenneLpp.c ****   {
+ 159:LoRaWAN/App/CayenneLpp.c ****     return 0;
+ 160:LoRaWAN/App/CayenneLpp.c ****   }
+ 161:LoRaWAN/App/CayenneLpp.c ****   CayenneLppBuffer[CayenneLppCursor++] = channel;
+ 268              		.loc 1 161 3 is_stmt 1 view .LVU43
+ 269              		.loc 1 161 36 is_stmt 0 view .LVU44
+ 270 000a 5A1C     		adds	r2, r3, #1
+ 271 000c D2B2     		uxtb	r2, r2
+ 272 000e 084D     		ldr	r5, .L33
+ 273 0010 2A70     		strb	r2, [r5]
+ 274              		.loc 1 161 40 view .LVU45
+ 275 0012 084C     		ldr	r4, .L33+4
+ 276 0014 E054     		strb	r0, [r4, r3]
+ 162:LoRaWAN/App/CayenneLpp.c ****   CayenneLppBuffer[CayenneLppCursor++] = LPP_DIGITAL_OUTPUT;
+ 277              		.loc 1 162 3 is_stmt 1 view .LVU46
+ 278              		.loc 1 162 36 is_stmt 0 view .LVU47
+ 279 0016 531C     		adds	r3, r2, #1
+ 280 0018 DBB2     		uxtb	r3, r3
+ 281 001a 2B70     		strb	r3, [r5]
+ 282              		.loc 1 162 40 view .LVU48
+ 283 001c 0120     		movs	r0, #1
+ 284              	.LVL7:
+ 285              		.loc 1 162 40 view .LVU49
+ 286 001e A054     		strb	r0, [r4, r2]
+ 163:LoRaWAN/App/CayenneLpp.c ****   CayenneLppBuffer[CayenneLppCursor++] = value;
+ 287              		.loc 1 163 3 is_stmt 1 view .LVU50
+ 288              		.loc 1 163 36 is_stmt 0 view .LVU51
+ 289 0020 1818     		adds	r0, r3, r0
+ 290 0022 C0B2     		uxtb	r0, r0
+ 291 0024 2870     		strb	r0, [r5]
+ 292              		.loc 1 163 40 view .LVU52
+ 293 0026 E154     		strb	r1, [r4, r3]
+ 164:LoRaWAN/App/CayenneLpp.c ****   /* USER CODE BEGIN CayenneLppAddDigitalOutput_2 */
+ 165:LoRaWAN/App/CayenneLpp.c **** 
+ 166:LoRaWAN/App/CayenneLpp.c ****   /* USER CODE END CayenneLppAddDigitalOutput_2 */
+ 167:LoRaWAN/App/CayenneLpp.c ****   return CayenneLppCursor;
+ 294              		.loc 1 167 3 is_stmt 1 view .LVU53
+ 168:LoRaWAN/App/CayenneLpp.c **** }
+ 295              		.loc 1 168 1 is_stmt 0 view .LVU54
+ 296 0028 30BC     		pop	{r4, r5}
+ 297              	.LCFI4:
+ 298              		.cfi_restore 5
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\cczDShPG.s 			page 9
+
+
+ 299              		.cfi_restore 4
+ 300              		.cfi_def_cfa_offset 0
+ 301 002a 7047     		bx	lr
+ 302              	.LVL8:
+ 303              	.L28:
+ 159:LoRaWAN/App/CayenneLpp.c ****   }
+ 304              		.loc 1 159 12 view .LVU55
+ 305 002c 0020     		movs	r0, #0
+ 306              	.LVL9:
+ 307              		.loc 1 168 1 view .LVU56
+ 308 002e 7047     		bx	lr
+ 309              	.L34:
+ 310              		.align	2
+ 311              	.L33:
+ 312 0030 00000000 		.word	.LANCHOR0
+ 313 0034 00000000 		.word	.LANCHOR1
+ 314              		.cfi_endproc
+ 315              	.LFE110:
+ 317              		.section	.text.CayenneLppAddAnalogInput,"ax",%progbits
+ 318              		.align	1
+ 319              		.global	CayenneLppAddAnalogInput
+ 320              		.syntax unified
+ 321              		.thumb
+ 322              		.thumb_func
+ 324              	CayenneLppAddAnalogInput:
+ 325              	.LVL10:
+ 326              	.LFB111:
+ 169:LoRaWAN/App/CayenneLpp.c **** 
+ 170:LoRaWAN/App/CayenneLpp.c **** uint8_t CayenneLppAddAnalogInput(uint8_t channel, uint16_t value)
+ 171:LoRaWAN/App/CayenneLpp.c **** {
+ 327              		.loc 1 171 1 is_stmt 1 view -0
+ 328              		.cfi_startproc
+ 329              		@ args = 0, pretend = 0, frame = 0
+ 330              		@ frame_needed = 0, uses_anonymous_args = 0
+ 331              		@ link register save eliminated.
+ 172:LoRaWAN/App/CayenneLpp.c ****   /* USER CODE BEGIN CayenneLppAddAnalogInput_1 */
+ 173:LoRaWAN/App/CayenneLpp.c **** 
+ 174:LoRaWAN/App/CayenneLpp.c ****   /* USER CODE END CayenneLppAddAnalogInput_1 */
+ 175:LoRaWAN/App/CayenneLpp.c ****   if ((CayenneLppCursor + LPP_ANALOG_INPUT_SIZE) > CAYENNE_LPP_MAXBUFFER_SIZE)
+ 332              		.loc 1 175 3 view .LVU58
+ 333              		.loc 1 175 50 is_stmt 0 view .LVU59
+ 334 0000 124B     		ldr	r3, .L42
+ 335 0002 1A78     		ldrb	r2, [r3]	@ zero_extendqisi2
+ 336              		.loc 1 175 6 view .LVU60
+ 337 0004 EE2A     		cmp	r2, #238
+ 338 0006 1ED8     		bhi	.L37
+ 171:LoRaWAN/App/CayenneLpp.c ****   /* USER CODE BEGIN CayenneLppAddAnalogInput_1 */
+ 339              		.loc 1 171 1 view .LVU61
+ 340 0008 30B4     		push	{r4, r5}
+ 341              	.LCFI5:
+ 342              		.cfi_def_cfa_offset 8
+ 343              		.cfi_offset 4, -8
+ 344              		.cfi_offset 5, -4
+ 176:LoRaWAN/App/CayenneLpp.c ****   {
+ 177:LoRaWAN/App/CayenneLpp.c ****     return 0;
+ 178:LoRaWAN/App/CayenneLpp.c ****   }
+ 179:LoRaWAN/App/CayenneLpp.c **** 
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\cczDShPG.s 			page 10
+
+
+ 180:LoRaWAN/App/CayenneLpp.c ****   value *= 100;
+ 345              		.loc 1 180 3 is_stmt 1 view .LVU62
+ 346              		.loc 1 180 9 is_stmt 0 view .LVU63
+ 347 000a 01EB8101 		add	r1, r1, r1, lsl #2
+ 348              	.LVL11:
+ 349              		.loc 1 180 9 view .LVU64
+ 350 000e 01EB8101 		add	r1, r1, r1, lsl #2
+ 351 0012 4FEA810C 		lsl	ip, r1, #2
+ 352              	.LVL12:
+ 181:LoRaWAN/App/CayenneLpp.c ****   CayenneLppBuffer[CayenneLppCursor++] = channel;
+ 353              		.loc 1 181 3 is_stmt 1 view .LVU65
+ 354              		.loc 1 181 36 is_stmt 0 view .LVU66
+ 355 0016 531C     		adds	r3, r2, #1
+ 356 0018 DBB2     		uxtb	r3, r3
+ 357 001a 0C4D     		ldr	r5, .L42
+ 358 001c 2B70     		strb	r3, [r5]
+ 359              		.loc 1 181 40 view .LVU67
+ 360 001e 0C4C     		ldr	r4, .L42+4
+ 361 0020 A054     		strb	r0, [r4, r2]
+ 182:LoRaWAN/App/CayenneLpp.c ****   CayenneLppBuffer[CayenneLppCursor++] = LPP_ANALOG_INPUT;
+ 362              		.loc 1 182 3 is_stmt 1 view .LVU68
+ 363              		.loc 1 182 36 is_stmt 0 view .LVU69
+ 364 0022 5A1C     		adds	r2, r3, #1
+ 365 0024 D2B2     		uxtb	r2, r2
+ 366 0026 2A70     		strb	r2, [r5]
+ 367              		.loc 1 182 40 view .LVU70
+ 368 0028 0220     		movs	r0, #2
+ 369              	.LVL13:
+ 370              		.loc 1 182 40 view .LVU71
+ 371 002a E054     		strb	r0, [r4, r3]
+ 183:LoRaWAN/App/CayenneLpp.c ****   CayenneLppBuffer[CayenneLppCursor++] = value >> 8;
+ 372              		.loc 1 183 3 is_stmt 1 view .LVU72
+ 373              		.loc 1 183 36 is_stmt 0 view .LVU73
+ 374 002c 531C     		adds	r3, r2, #1
+ 375 002e DBB2     		uxtb	r3, r3
+ 376 0030 2B70     		strb	r3, [r5]
+ 377              		.loc 1 183 40 view .LVU74
+ 378 0032 C1F38711 		ubfx	r1, r1, #6, #8
+ 379 0036 A154     		strb	r1, [r4, r2]
+ 184:LoRaWAN/App/CayenneLpp.c ****   CayenneLppBuffer[CayenneLppCursor++] = value;
+ 380              		.loc 1 184 3 is_stmt 1 view .LVU75
+ 381              		.loc 1 184 36 is_stmt 0 view .LVU76
+ 382 0038 581C     		adds	r0, r3, #1
+ 383 003a C0B2     		uxtb	r0, r0
+ 384 003c 2870     		strb	r0, [r5]
+ 385              		.loc 1 184 40 view .LVU77
+ 386 003e 04F803C0 		strb	ip, [r4, r3]
+ 185:LoRaWAN/App/CayenneLpp.c ****   /* USER CODE BEGIN CayenneLppAddAnalogInput_2 */
+ 186:LoRaWAN/App/CayenneLpp.c **** 
+ 187:LoRaWAN/App/CayenneLpp.c ****   /* USER CODE END CayenneLppAddAnalogInput_2 */
+ 188:LoRaWAN/App/CayenneLpp.c ****   return CayenneLppCursor;
+ 387              		.loc 1 188 3 is_stmt 1 view .LVU78
+ 189:LoRaWAN/App/CayenneLpp.c **** }
+ 388              		.loc 1 189 1 is_stmt 0 view .LVU79
+ 389 0042 30BC     		pop	{r4, r5}
+ 390              	.LCFI6:
+ 391              		.cfi_restore 5
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\cczDShPG.s 			page 11
+
+
+ 392              		.cfi_restore 4
+ 393              		.cfi_def_cfa_offset 0
+ 394 0044 7047     		bx	lr
+ 395              	.LVL14:
+ 396              	.L37:
+ 177:LoRaWAN/App/CayenneLpp.c ****   }
+ 397              		.loc 1 177 12 view .LVU80
+ 398 0046 0020     		movs	r0, #0
+ 399              	.LVL15:
+ 400              		.loc 1 189 1 view .LVU81
+ 401 0048 7047     		bx	lr
+ 402              	.L43:
+ 403 004a 00BF     		.align	2
+ 404              	.L42:
+ 405 004c 00000000 		.word	.LANCHOR0
+ 406 0050 00000000 		.word	.LANCHOR1
+ 407              		.cfi_endproc
+ 408              	.LFE111:
+ 410              		.section	.text.CayenneLppAddAnalogOutput,"ax",%progbits
+ 411              		.align	1
+ 412              		.global	CayenneLppAddAnalogOutput
+ 413              		.syntax unified
+ 414              		.thumb
+ 415              		.thumb_func
+ 417              	CayenneLppAddAnalogOutput:
+ 418              	.LVL16:
+ 419              	.LFB112:
+ 190:LoRaWAN/App/CayenneLpp.c **** 
+ 191:LoRaWAN/App/CayenneLpp.c **** uint8_t CayenneLppAddAnalogOutput(uint8_t channel, uint16_t value)
+ 192:LoRaWAN/App/CayenneLpp.c **** {
+ 420              		.loc 1 192 1 is_stmt 1 view -0
+ 421              		.cfi_startproc
+ 422              		@ args = 0, pretend = 0, frame = 0
+ 423              		@ frame_needed = 0, uses_anonymous_args = 0
+ 424              		@ link register save eliminated.
+ 193:LoRaWAN/App/CayenneLpp.c ****   /* USER CODE BEGIN CayenneLppAddAnalogOutput_1 */
+ 194:LoRaWAN/App/CayenneLpp.c **** 
+ 195:LoRaWAN/App/CayenneLpp.c ****   /* USER CODE END CayenneLppAddAnalogOutput_1 */
+ 196:LoRaWAN/App/CayenneLpp.c ****   if ((CayenneLppCursor + LPP_ANALOG_OUTPUT_SIZE) > CAYENNE_LPP_MAXBUFFER_SIZE)
+ 425              		.loc 1 196 3 view .LVU83
+ 426              		.loc 1 196 51 is_stmt 0 view .LVU84
+ 427 0000 124B     		ldr	r3, .L51
+ 428 0002 1A78     		ldrb	r2, [r3]	@ zero_extendqisi2
+ 429              		.loc 1 196 6 view .LVU85
+ 430 0004 EE2A     		cmp	r2, #238
+ 431 0006 1ED8     		bhi	.L46
+ 192:LoRaWAN/App/CayenneLpp.c ****   /* USER CODE BEGIN CayenneLppAddAnalogOutput_1 */
+ 432              		.loc 1 192 1 view .LVU86
+ 433 0008 30B4     		push	{r4, r5}
+ 434              	.LCFI7:
+ 435              		.cfi_def_cfa_offset 8
+ 436              		.cfi_offset 4, -8
+ 437              		.cfi_offset 5, -4
+ 197:LoRaWAN/App/CayenneLpp.c ****   {
+ 198:LoRaWAN/App/CayenneLpp.c ****     return 0;
+ 199:LoRaWAN/App/CayenneLpp.c ****   }
+ 200:LoRaWAN/App/CayenneLpp.c ****   value *= 100;
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\cczDShPG.s 			page 12
+
+
+ 438              		.loc 1 200 3 is_stmt 1 view .LVU87
+ 439              		.loc 1 200 9 is_stmt 0 view .LVU88
+ 440 000a 01EB8101 		add	r1, r1, r1, lsl #2
+ 441              	.LVL17:
+ 442              		.loc 1 200 9 view .LVU89
+ 443 000e 01EB8101 		add	r1, r1, r1, lsl #2
+ 444 0012 4FEA810C 		lsl	ip, r1, #2
+ 445              	.LVL18:
+ 201:LoRaWAN/App/CayenneLpp.c ****   CayenneLppBuffer[CayenneLppCursor++] = channel;
+ 446              		.loc 1 201 3 is_stmt 1 view .LVU90
+ 447              		.loc 1 201 36 is_stmt 0 view .LVU91
+ 448 0016 531C     		adds	r3, r2, #1
+ 449 0018 DBB2     		uxtb	r3, r3
+ 450 001a 0C4D     		ldr	r5, .L51
+ 451 001c 2B70     		strb	r3, [r5]
+ 452              		.loc 1 201 40 view .LVU92
+ 453 001e 0C4C     		ldr	r4, .L51+4
+ 454 0020 A054     		strb	r0, [r4, r2]
+ 202:LoRaWAN/App/CayenneLpp.c ****   CayenneLppBuffer[CayenneLppCursor++] = LPP_ANALOG_OUTPUT;
+ 455              		.loc 1 202 3 is_stmt 1 view .LVU93
+ 456              		.loc 1 202 36 is_stmt 0 view .LVU94
+ 457 0022 5A1C     		adds	r2, r3, #1
+ 458 0024 D2B2     		uxtb	r2, r2
+ 459 0026 2A70     		strb	r2, [r5]
+ 460              		.loc 1 202 40 view .LVU95
+ 461 0028 0320     		movs	r0, #3
+ 462              	.LVL19:
+ 463              		.loc 1 202 40 view .LVU96
+ 464 002a E054     		strb	r0, [r4, r3]
+ 203:LoRaWAN/App/CayenneLpp.c ****   CayenneLppBuffer[CayenneLppCursor++] = value >> 8;
+ 465              		.loc 1 203 3 is_stmt 1 view .LVU97
+ 466              		.loc 1 203 36 is_stmt 0 view .LVU98
+ 467 002c 531C     		adds	r3, r2, #1
+ 468 002e DBB2     		uxtb	r3, r3
+ 469 0030 2B70     		strb	r3, [r5]
+ 470              		.loc 1 203 40 view .LVU99
+ 471 0032 C1F38711 		ubfx	r1, r1, #6, #8
+ 472 0036 A154     		strb	r1, [r4, r2]
+ 204:LoRaWAN/App/CayenneLpp.c ****   CayenneLppBuffer[CayenneLppCursor++] = value;
+ 473              		.loc 1 204 3 is_stmt 1 view .LVU100
+ 474              		.loc 1 204 36 is_stmt 0 view .LVU101
+ 475 0038 581C     		adds	r0, r3, #1
+ 476 003a C0B2     		uxtb	r0, r0
+ 477 003c 2870     		strb	r0, [r5]
+ 478              		.loc 1 204 40 view .LVU102
+ 479 003e 04F803C0 		strb	ip, [r4, r3]
+ 205:LoRaWAN/App/CayenneLpp.c ****   /* USER CODE BEGIN CayenneLppAddAnalogOutput_2 */
+ 206:LoRaWAN/App/CayenneLpp.c **** 
+ 207:LoRaWAN/App/CayenneLpp.c ****   /* USER CODE END CayenneLppAddAnalogOutput_2 */
+ 208:LoRaWAN/App/CayenneLpp.c ****   return CayenneLppCursor;
+ 480              		.loc 1 208 3 is_stmt 1 view .LVU103
+ 209:LoRaWAN/App/CayenneLpp.c **** }
+ 481              		.loc 1 209 1 is_stmt 0 view .LVU104
+ 482 0042 30BC     		pop	{r4, r5}
+ 483              	.LCFI8:
+ 484              		.cfi_restore 5
+ 485              		.cfi_restore 4
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\cczDShPG.s 			page 13
+
+
+ 486              		.cfi_def_cfa_offset 0
+ 487 0044 7047     		bx	lr
+ 488              	.LVL20:
+ 489              	.L46:
+ 198:LoRaWAN/App/CayenneLpp.c ****   }
+ 490              		.loc 1 198 12 view .LVU105
+ 491 0046 0020     		movs	r0, #0
+ 492              	.LVL21:
+ 493              		.loc 1 209 1 view .LVU106
+ 494 0048 7047     		bx	lr
+ 495              	.L52:
+ 496 004a 00BF     		.align	2
+ 497              	.L51:
+ 498 004c 00000000 		.word	.LANCHOR0
+ 499 0050 00000000 		.word	.LANCHOR1
+ 500              		.cfi_endproc
+ 501              	.LFE112:
+ 503              		.section	.text.CayenneLppAddLuminosity,"ax",%progbits
+ 504              		.align	1
+ 505              		.global	CayenneLppAddLuminosity
+ 506              		.syntax unified
+ 507              		.thumb
+ 508              		.thumb_func
+ 510              	CayenneLppAddLuminosity:
+ 511              	.LVL22:
+ 512              	.LFB113:
+ 210:LoRaWAN/App/CayenneLpp.c **** 
+ 211:LoRaWAN/App/CayenneLpp.c **** uint8_t CayenneLppAddLuminosity(uint8_t channel, uint16_t lux)
+ 212:LoRaWAN/App/CayenneLpp.c **** {
+ 513              		.loc 1 212 1 is_stmt 1 view -0
+ 514              		.cfi_startproc
+ 515              		@ args = 0, pretend = 0, frame = 0
+ 516              		@ frame_needed = 0, uses_anonymous_args = 0
+ 517              		@ link register save eliminated.
+ 213:LoRaWAN/App/CayenneLpp.c ****   /* USER CODE BEGIN CayenneLppAddLuminosity_1 */
+ 214:LoRaWAN/App/CayenneLpp.c **** 
+ 215:LoRaWAN/App/CayenneLpp.c ****   /* USER CODE END CayenneLppAddLuminosity_1 */
+ 216:LoRaWAN/App/CayenneLpp.c ****   if ((CayenneLppCursor + LPP_LUMINOSITY_SIZE) > CAYENNE_LPP_MAXBUFFER_SIZE)
+ 518              		.loc 1 216 3 view .LVU108
+ 519              		.loc 1 216 48 is_stmt 0 view .LVU109
+ 520 0000 0E4B     		ldr	r3, .L60
+ 521 0002 1A78     		ldrb	r2, [r3]	@ zero_extendqisi2
+ 522              		.loc 1 216 6 view .LVU110
+ 523 0004 EE2A     		cmp	r2, #238
+ 524 0006 16D8     		bhi	.L55
+ 212:LoRaWAN/App/CayenneLpp.c ****   /* USER CODE BEGIN CayenneLppAddLuminosity_1 */
+ 525              		.loc 1 212 1 view .LVU111
+ 526 0008 30B4     		push	{r4, r5}
+ 527              	.LCFI9:
+ 528              		.cfi_def_cfa_offset 8
+ 529              		.cfi_offset 4, -8
+ 530              		.cfi_offset 5, -4
+ 217:LoRaWAN/App/CayenneLpp.c ****   {
+ 218:LoRaWAN/App/CayenneLpp.c ****     return 0;
+ 219:LoRaWAN/App/CayenneLpp.c ****   }
+ 220:LoRaWAN/App/CayenneLpp.c ****   CayenneLppBuffer[CayenneLppCursor++] = channel;
+ 531              		.loc 1 220 3 is_stmt 1 view .LVU112
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\cczDShPG.s 			page 14
+
+
+ 532              		.loc 1 220 36 is_stmt 0 view .LVU113
+ 533 000a 531C     		adds	r3, r2, #1
+ 534 000c DBB2     		uxtb	r3, r3
+ 535 000e 0B4D     		ldr	r5, .L60
+ 536 0010 2B70     		strb	r3, [r5]
+ 537              		.loc 1 220 40 view .LVU114
+ 538 0012 0B4C     		ldr	r4, .L60+4
+ 539 0014 A054     		strb	r0, [r4, r2]
+ 221:LoRaWAN/App/CayenneLpp.c ****   CayenneLppBuffer[CayenneLppCursor++] = LPP_LUMINOSITY;
+ 540              		.loc 1 221 3 is_stmt 1 view .LVU115
+ 541              		.loc 1 221 36 is_stmt 0 view .LVU116
+ 542 0016 5A1C     		adds	r2, r3, #1
+ 543 0018 D2B2     		uxtb	r2, r2
+ 544 001a 2A70     		strb	r2, [r5]
+ 545              		.loc 1 221 40 view .LVU117
+ 546 001c 6520     		movs	r0, #101
+ 547              	.LVL23:
+ 548              		.loc 1 221 40 view .LVU118
+ 549 001e E054     		strb	r0, [r4, r3]
+ 222:LoRaWAN/App/CayenneLpp.c ****   CayenneLppBuffer[CayenneLppCursor++] = lux >> 8;
+ 550              		.loc 1 222 3 is_stmt 1 view .LVU119
+ 551              		.loc 1 222 36 is_stmt 0 view .LVU120
+ 552 0020 531C     		adds	r3, r2, #1
+ 553 0022 DBB2     		uxtb	r3, r3
+ 554 0024 2B70     		strb	r3, [r5]
+ 555              		.loc 1 222 40 view .LVU121
+ 556 0026 080A     		lsrs	r0, r1, #8
+ 557 0028 A054     		strb	r0, [r4, r2]
+ 223:LoRaWAN/App/CayenneLpp.c ****   CayenneLppBuffer[CayenneLppCursor++] = lux;
+ 558              		.loc 1 223 3 is_stmt 1 view .LVU122
+ 559              		.loc 1 223 36 is_stmt 0 view .LVU123
+ 560 002a 581C     		adds	r0, r3, #1
+ 561 002c C0B2     		uxtb	r0, r0
+ 562 002e 2870     		strb	r0, [r5]
+ 563              		.loc 1 223 40 view .LVU124
+ 564 0030 E154     		strb	r1, [r4, r3]
+ 224:LoRaWAN/App/CayenneLpp.c ****   /* USER CODE BEGIN CayenneLppAddLuminosity_2 */
+ 225:LoRaWAN/App/CayenneLpp.c **** 
+ 226:LoRaWAN/App/CayenneLpp.c ****   /* USER CODE END CayenneLppAddLuminosity_2 */
+ 227:LoRaWAN/App/CayenneLpp.c ****   return CayenneLppCursor;
+ 565              		.loc 1 227 3 is_stmt 1 view .LVU125
+ 228:LoRaWAN/App/CayenneLpp.c **** }
+ 566              		.loc 1 228 1 is_stmt 0 view .LVU126
+ 567 0032 30BC     		pop	{r4, r5}
+ 568              	.LCFI10:
+ 569              		.cfi_restore 5
+ 570              		.cfi_restore 4
+ 571              		.cfi_def_cfa_offset 0
+ 572 0034 7047     		bx	lr
+ 573              	.LVL24:
+ 574              	.L55:
+ 218:LoRaWAN/App/CayenneLpp.c ****   }
+ 575              		.loc 1 218 12 view .LVU127
+ 576 0036 0020     		movs	r0, #0
+ 577              	.LVL25:
+ 578              		.loc 1 228 1 view .LVU128
+ 579 0038 7047     		bx	lr
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\cczDShPG.s 			page 15
+
+
+ 580              	.L61:
+ 581 003a 00BF     		.align	2
+ 582              	.L60:
+ 583 003c 00000000 		.word	.LANCHOR0
+ 584 0040 00000000 		.word	.LANCHOR1
+ 585              		.cfi_endproc
+ 586              	.LFE113:
+ 588              		.section	.text.CayenneLppAddPresence,"ax",%progbits
+ 589              		.align	1
+ 590              		.global	CayenneLppAddPresence
+ 591              		.syntax unified
+ 592              		.thumb
+ 593              		.thumb_func
+ 595              	CayenneLppAddPresence:
+ 596              	.LVL26:
+ 597              	.LFB114:
+ 229:LoRaWAN/App/CayenneLpp.c **** 
+ 230:LoRaWAN/App/CayenneLpp.c **** uint8_t CayenneLppAddPresence(uint8_t channel, uint8_t value)
+ 231:LoRaWAN/App/CayenneLpp.c **** {
+ 598              		.loc 1 231 1 is_stmt 1 view -0
+ 599              		.cfi_startproc
+ 600              		@ args = 0, pretend = 0, frame = 0
+ 601              		@ frame_needed = 0, uses_anonymous_args = 0
+ 602              		@ link register save eliminated.
+ 232:LoRaWAN/App/CayenneLpp.c ****   /* USER CODE BEGIN CayenneLppAddPresence_1 */
+ 233:LoRaWAN/App/CayenneLpp.c **** 
+ 234:LoRaWAN/App/CayenneLpp.c ****   /* USER CODE END CayenneLppAddPresence_1 */
+ 235:LoRaWAN/App/CayenneLpp.c ****   if ((CayenneLppCursor + LPP_PRESENCE_SIZE) > CAYENNE_LPP_MAXBUFFER_SIZE)
+ 603              		.loc 1 235 3 view .LVU130
+ 604              		.loc 1 235 46 is_stmt 0 view .LVU131
+ 605 0000 0B4B     		ldr	r3, .L69
+ 606 0002 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 607              		.loc 1 235 6 view .LVU132
+ 608 0004 EF2B     		cmp	r3, #239
+ 609 0006 11D8     		bhi	.L64
+ 231:LoRaWAN/App/CayenneLpp.c ****   /* USER CODE BEGIN CayenneLppAddPresence_1 */
+ 610              		.loc 1 231 1 view .LVU133
+ 611 0008 30B4     		push	{r4, r5}
+ 612              	.LCFI11:
+ 613              		.cfi_def_cfa_offset 8
+ 614              		.cfi_offset 4, -8
+ 615              		.cfi_offset 5, -4
+ 236:LoRaWAN/App/CayenneLpp.c ****   {
+ 237:LoRaWAN/App/CayenneLpp.c ****     return 0;
+ 238:LoRaWAN/App/CayenneLpp.c ****   }
+ 239:LoRaWAN/App/CayenneLpp.c ****   CayenneLppBuffer[CayenneLppCursor++] = channel;
+ 616              		.loc 1 239 3 is_stmt 1 view .LVU134
+ 617              		.loc 1 239 36 is_stmt 0 view .LVU135
+ 618 000a 5A1C     		adds	r2, r3, #1
+ 619 000c D2B2     		uxtb	r2, r2
+ 620 000e 084D     		ldr	r5, .L69
+ 621 0010 2A70     		strb	r2, [r5]
+ 622              		.loc 1 239 40 view .LVU136
+ 623 0012 084C     		ldr	r4, .L69+4
+ 624 0014 E054     		strb	r0, [r4, r3]
+ 240:LoRaWAN/App/CayenneLpp.c ****   CayenneLppBuffer[CayenneLppCursor++] = LPP_PRESENCE;
+ 625              		.loc 1 240 3 is_stmt 1 view .LVU137
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\cczDShPG.s 			page 16
+
+
+ 626              		.loc 1 240 36 is_stmt 0 view .LVU138
+ 627 0016 531C     		adds	r3, r2, #1
+ 628 0018 DBB2     		uxtb	r3, r3
+ 629 001a 2B70     		strb	r3, [r5]
+ 630              		.loc 1 240 40 view .LVU139
+ 631 001c 6620     		movs	r0, #102
+ 632              	.LVL27:
+ 633              		.loc 1 240 40 view .LVU140
+ 634 001e A054     		strb	r0, [r4, r2]
+ 241:LoRaWAN/App/CayenneLpp.c ****   CayenneLppBuffer[CayenneLppCursor++] = value;
+ 635              		.loc 1 241 3 is_stmt 1 view .LVU141
+ 636              		.loc 1 241 36 is_stmt 0 view .LVU142
+ 637 0020 581C     		adds	r0, r3, #1
+ 638 0022 C0B2     		uxtb	r0, r0
+ 639 0024 2870     		strb	r0, [r5]
+ 640              		.loc 1 241 40 view .LVU143
+ 641 0026 E154     		strb	r1, [r4, r3]
+ 242:LoRaWAN/App/CayenneLpp.c ****   /* USER CODE BEGIN CayenneLppAddPresence_2 */
+ 243:LoRaWAN/App/CayenneLpp.c **** 
+ 244:LoRaWAN/App/CayenneLpp.c ****   /* USER CODE END CayenneLppAddPresence_2 */
+ 245:LoRaWAN/App/CayenneLpp.c ****   return CayenneLppCursor;
+ 642              		.loc 1 245 3 is_stmt 1 view .LVU144
+ 246:LoRaWAN/App/CayenneLpp.c **** }
+ 643              		.loc 1 246 1 is_stmt 0 view .LVU145
+ 644 0028 30BC     		pop	{r4, r5}
+ 645              	.LCFI12:
+ 646              		.cfi_restore 5
+ 647              		.cfi_restore 4
+ 648              		.cfi_def_cfa_offset 0
+ 649 002a 7047     		bx	lr
+ 650              	.LVL28:
+ 651              	.L64:
+ 237:LoRaWAN/App/CayenneLpp.c ****   }
+ 652              		.loc 1 237 12 view .LVU146
+ 653 002c 0020     		movs	r0, #0
+ 654              	.LVL29:
+ 655              		.loc 1 246 1 view .LVU147
+ 656 002e 7047     		bx	lr
+ 657              	.L70:
+ 658              		.align	2
+ 659              	.L69:
+ 660 0030 00000000 		.word	.LANCHOR0
+ 661 0034 00000000 		.word	.LANCHOR1
+ 662              		.cfi_endproc
+ 663              	.LFE114:
+ 665              		.section	.text.CayenneLppAddTemperature,"ax",%progbits
+ 666              		.align	1
+ 667              		.global	CayenneLppAddTemperature
+ 668              		.syntax unified
+ 669              		.thumb
+ 670              		.thumb_func
+ 672              	CayenneLppAddTemperature:
+ 673              	.LVL30:
+ 674              	.LFB115:
+ 247:LoRaWAN/App/CayenneLpp.c **** 
+ 248:LoRaWAN/App/CayenneLpp.c **** uint8_t CayenneLppAddTemperature(uint8_t channel, int16_t celsius)
+ 249:LoRaWAN/App/CayenneLpp.c **** {
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\cczDShPG.s 			page 17
+
+
+ 675              		.loc 1 249 1 is_stmt 1 view -0
+ 676              		.cfi_startproc
+ 677              		@ args = 0, pretend = 0, frame = 0
+ 678              		@ frame_needed = 0, uses_anonymous_args = 0
+ 679              		@ link register save eliminated.
+ 250:LoRaWAN/App/CayenneLpp.c ****   /* USER CODE BEGIN CayenneLppAddTemperature_1 */
+ 251:LoRaWAN/App/CayenneLpp.c **** 
+ 252:LoRaWAN/App/CayenneLpp.c ****   /* USER CODE END CayenneLppAddTemperature_1 */
+ 253:LoRaWAN/App/CayenneLpp.c ****   if ((CayenneLppCursor + LPP_TEMPERATURE_SIZE) > CAYENNE_LPP_MAXBUFFER_SIZE)
+ 680              		.loc 1 253 3 view .LVU149
+ 681              		.loc 1 253 49 is_stmt 0 view .LVU150
+ 682 0000 114B     		ldr	r3, .L78
+ 683 0002 1A78     		ldrb	r2, [r3]	@ zero_extendqisi2
+ 684              		.loc 1 253 6 view .LVU151
+ 685 0004 EE2A     		cmp	r2, #238
+ 686 0006 1CD8     		bhi	.L73
+ 249:LoRaWAN/App/CayenneLpp.c ****   /* USER CODE BEGIN CayenneLppAddTemperature_1 */
+ 687              		.loc 1 249 1 view .LVU152
+ 688 0008 30B4     		push	{r4, r5}
+ 689              	.LCFI13:
+ 690              		.cfi_def_cfa_offset 8
+ 691              		.cfi_offset 4, -8
+ 692              		.cfi_offset 5, -4
+ 254:LoRaWAN/App/CayenneLpp.c ****   {
+ 255:LoRaWAN/App/CayenneLpp.c ****     return 0;
+ 256:LoRaWAN/App/CayenneLpp.c ****   }
+ 257:LoRaWAN/App/CayenneLpp.c ****   int16_t val = celsius * 10;
+ 693              		.loc 1 257 3 is_stmt 1 view .LVU153
+ 694              		.loc 1 257 25 is_stmt 0 view .LVU154
+ 695 000a 01EB8101 		add	r1, r1, r1, lsl #2
+ 696              	.LVL31:
+ 697              		.loc 1 257 25 view .LVU155
+ 698 000e 4FEA410C 		lsl	ip, r1, #1
+ 699              	.LVL32:
+ 258:LoRaWAN/App/CayenneLpp.c ****   CayenneLppBuffer[CayenneLppCursor++] = channel;
+ 700              		.loc 1 258 3 is_stmt 1 view .LVU156
+ 701              		.loc 1 258 36 is_stmt 0 view .LVU157
+ 702 0012 531C     		adds	r3, r2, #1
+ 703 0014 DBB2     		uxtb	r3, r3
+ 704 0016 0C4D     		ldr	r5, .L78
+ 705 0018 2B70     		strb	r3, [r5]
+ 706              		.loc 1 258 40 view .LVU158
+ 707 001a 0C4C     		ldr	r4, .L78+4
+ 708 001c A054     		strb	r0, [r4, r2]
+ 259:LoRaWAN/App/CayenneLpp.c ****   CayenneLppBuffer[CayenneLppCursor++] = LPP_TEMPERATURE;
+ 709              		.loc 1 259 3 is_stmt 1 view .LVU159
+ 710              		.loc 1 259 36 is_stmt 0 view .LVU160
+ 711 001e 5A1C     		adds	r2, r3, #1
+ 712 0020 D2B2     		uxtb	r2, r2
+ 713 0022 2A70     		strb	r2, [r5]
+ 714              		.loc 1 259 40 view .LVU161
+ 715 0024 6720     		movs	r0, #103
+ 716              	.LVL33:
+ 717              		.loc 1 259 40 view .LVU162
+ 718 0026 E054     		strb	r0, [r4, r3]
+ 260:LoRaWAN/App/CayenneLpp.c ****   CayenneLppBuffer[CayenneLppCursor++] = val >> 8;
+ 719              		.loc 1 260 3 is_stmt 1 view .LVU163
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\cczDShPG.s 			page 18
+
+
+ 720              		.loc 1 260 36 is_stmt 0 view .LVU164
+ 721 0028 531C     		adds	r3, r2, #1
+ 722 002a DBB2     		uxtb	r3, r3
+ 723 002c 2B70     		strb	r3, [r5]
+ 724              		.loc 1 260 40 view .LVU165
+ 725 002e 41F3C711 		sbfx	r1, r1, #7, #8
+ 726 0032 A154     		strb	r1, [r4, r2]
+ 261:LoRaWAN/App/CayenneLpp.c ****   CayenneLppBuffer[CayenneLppCursor++] = val;
+ 727              		.loc 1 261 3 is_stmt 1 view .LVU166
+ 728              		.loc 1 261 36 is_stmt 0 view .LVU167
+ 729 0034 581C     		adds	r0, r3, #1
+ 730 0036 C0B2     		uxtb	r0, r0
+ 731 0038 2870     		strb	r0, [r5]
+ 732              		.loc 1 261 40 view .LVU168
+ 733 003a 04F803C0 		strb	ip, [r4, r3]
+ 262:LoRaWAN/App/CayenneLpp.c ****   /* USER CODE BEGIN CayenneLppAddTemperature_2 */
+ 263:LoRaWAN/App/CayenneLpp.c **** 
+ 264:LoRaWAN/App/CayenneLpp.c ****   /* USER CODE END CayenneLppAddTemperature_2 */
+ 265:LoRaWAN/App/CayenneLpp.c ****   return CayenneLppCursor;
+ 734              		.loc 1 265 3 is_stmt 1 view .LVU169
+ 266:LoRaWAN/App/CayenneLpp.c **** }
+ 735              		.loc 1 266 1 is_stmt 0 view .LVU170
+ 736 003e 30BC     		pop	{r4, r5}
+ 737              	.LCFI14:
+ 738              		.cfi_restore 5
+ 739              		.cfi_restore 4
+ 740              		.cfi_def_cfa_offset 0
+ 741 0040 7047     		bx	lr
+ 742              	.LVL34:
+ 743              	.L73:
+ 255:LoRaWAN/App/CayenneLpp.c ****   }
+ 744              		.loc 1 255 12 view .LVU171
+ 745 0042 0020     		movs	r0, #0
+ 746              	.LVL35:
+ 747              		.loc 1 266 1 view .LVU172
+ 748 0044 7047     		bx	lr
+ 749              	.L79:
+ 750 0046 00BF     		.align	2
+ 751              	.L78:
+ 752 0048 00000000 		.word	.LANCHOR0
+ 753 004c 00000000 		.word	.LANCHOR1
+ 754              		.cfi_endproc
+ 755              	.LFE115:
+ 757              		.section	.text.CayenneLppAddRelativeHumidity,"ax",%progbits
+ 758              		.align	1
+ 759              		.global	CayenneLppAddRelativeHumidity
+ 760              		.syntax unified
+ 761              		.thumb
+ 762              		.thumb_func
+ 764              	CayenneLppAddRelativeHumidity:
+ 765              	.LVL36:
+ 766              	.LFB116:
+ 267:LoRaWAN/App/CayenneLpp.c **** 
+ 268:LoRaWAN/App/CayenneLpp.c **** uint8_t CayenneLppAddRelativeHumidity(uint8_t channel, uint16_t rh)
+ 269:LoRaWAN/App/CayenneLpp.c **** {
+ 767              		.loc 1 269 1 is_stmt 1 view -0
+ 768              		.cfi_startproc
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\cczDShPG.s 			page 19
+
+
+ 769              		@ args = 0, pretend = 0, frame = 0
+ 770              		@ frame_needed = 0, uses_anonymous_args = 0
+ 771              		@ link register save eliminated.
+ 270:LoRaWAN/App/CayenneLpp.c ****   /* USER CODE BEGIN CayenneLppAddRelativeHumidity_1 */
+ 271:LoRaWAN/App/CayenneLpp.c **** 
+ 272:LoRaWAN/App/CayenneLpp.c ****   /* USER CODE END CayenneLppAddRelativeHumidity_1 */
+ 273:LoRaWAN/App/CayenneLpp.c ****   if ((CayenneLppCursor + LPP_RELATIVE_HUMIDITY_SIZE) > CAYENNE_LPP_MAXBUFFER_SIZE)
+ 772              		.loc 1 273 3 view .LVU174
+ 773              		.loc 1 273 55 is_stmt 0 view .LVU175
+ 774 0000 0C4B     		ldr	r3, .L87
+ 775 0002 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 776              		.loc 1 273 6 view .LVU176
+ 777 0004 EF2B     		cmp	r3, #239
+ 778 0006 12D8     		bhi	.L82
+ 269:LoRaWAN/App/CayenneLpp.c ****   /* USER CODE BEGIN CayenneLppAddRelativeHumidity_1 */
+ 779              		.loc 1 269 1 view .LVU177
+ 780 0008 30B4     		push	{r4, r5}
+ 781              	.LCFI15:
+ 782              		.cfi_def_cfa_offset 8
+ 783              		.cfi_offset 4, -8
+ 784              		.cfi_offset 5, -4
+ 274:LoRaWAN/App/CayenneLpp.c ****   {
+ 275:LoRaWAN/App/CayenneLpp.c ****     return 0;
+ 276:LoRaWAN/App/CayenneLpp.c ****   }
+ 277:LoRaWAN/App/CayenneLpp.c ****   CayenneLppBuffer[CayenneLppCursor++] = channel;
+ 785              		.loc 1 277 3 is_stmt 1 view .LVU178
+ 786              		.loc 1 277 36 is_stmt 0 view .LVU179
+ 787 000a 5A1C     		adds	r2, r3, #1
+ 788 000c D2B2     		uxtb	r2, r2
+ 789 000e 094D     		ldr	r5, .L87
+ 790 0010 2A70     		strb	r2, [r5]
+ 791              		.loc 1 277 40 view .LVU180
+ 792 0012 094C     		ldr	r4, .L87+4
+ 793 0014 E054     		strb	r0, [r4, r3]
+ 278:LoRaWAN/App/CayenneLpp.c ****   CayenneLppBuffer[CayenneLppCursor++] = LPP_RELATIVE_HUMIDITY;
+ 794              		.loc 1 278 3 is_stmt 1 view .LVU181
+ 795              		.loc 1 278 36 is_stmt 0 view .LVU182
+ 796 0016 531C     		adds	r3, r2, #1
+ 797 0018 DBB2     		uxtb	r3, r3
+ 798 001a 2B70     		strb	r3, [r5]
+ 799              		.loc 1 278 40 view .LVU183
+ 800 001c 6820     		movs	r0, #104
+ 801              	.LVL37:
+ 802              		.loc 1 278 40 view .LVU184
+ 803 001e A054     		strb	r0, [r4, r2]
+ 279:LoRaWAN/App/CayenneLpp.c ****   CayenneLppBuffer[CayenneLppCursor++] = rh * 2;
+ 804              		.loc 1 279 3 is_stmt 1 view .LVU185
+ 805              		.loc 1 279 36 is_stmt 0 view .LVU186
+ 806 0020 581C     		adds	r0, r3, #1
+ 807 0022 C0B2     		uxtb	r0, r0
+ 808 0024 2870     		strb	r0, [r5]
+ 809              		.loc 1 279 40 view .LVU187
+ 810 0026 4900     		lsls	r1, r1, #1
+ 811              	.LVL38:
+ 812              		.loc 1 279 40 view .LVU188
+ 813 0028 E154     		strb	r1, [r4, r3]
+ 280:LoRaWAN/App/CayenneLpp.c ****   /* USER CODE BEGIN CayenneLppAddRelativeHumidity_2 */
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\cczDShPG.s 			page 20
+
+
+ 281:LoRaWAN/App/CayenneLpp.c **** 
+ 282:LoRaWAN/App/CayenneLpp.c ****   /* USER CODE END CayenneLppAddRelativeHumidity_2 */
+ 283:LoRaWAN/App/CayenneLpp.c ****   return CayenneLppCursor;
+ 814              		.loc 1 283 3 is_stmt 1 view .LVU189
+ 284:LoRaWAN/App/CayenneLpp.c **** }
+ 815              		.loc 1 284 1 is_stmt 0 view .LVU190
+ 816 002a 30BC     		pop	{r4, r5}
+ 817              	.LCFI16:
+ 818              		.cfi_restore 5
+ 819              		.cfi_restore 4
+ 820              		.cfi_def_cfa_offset 0
+ 821 002c 7047     		bx	lr
+ 822              	.LVL39:
+ 823              	.L82:
+ 275:LoRaWAN/App/CayenneLpp.c ****   }
+ 824              		.loc 1 275 12 view .LVU191
+ 825 002e 0020     		movs	r0, #0
+ 826              	.LVL40:
+ 827              		.loc 1 284 1 view .LVU192
+ 828 0030 7047     		bx	lr
+ 829              	.L88:
+ 830 0032 00BF     		.align	2
+ 831              	.L87:
+ 832 0034 00000000 		.word	.LANCHOR0
+ 833 0038 00000000 		.word	.LANCHOR1
+ 834              		.cfi_endproc
+ 835              	.LFE116:
+ 837              		.section	.text.CayenneLppAddAccelerometer,"ax",%progbits
+ 838              		.align	1
+ 839              		.global	CayenneLppAddAccelerometer
+ 840              		.syntax unified
+ 841              		.thumb
+ 842              		.thumb_func
+ 844              	CayenneLppAddAccelerometer:
+ 845              	.LVL41:
+ 846              	.LFB117:
+ 285:LoRaWAN/App/CayenneLpp.c **** 
+ 286:LoRaWAN/App/CayenneLpp.c **** uint8_t CayenneLppAddAccelerometer(uint8_t channel, int16_t x, int16_t y, int16_t z)
+ 287:LoRaWAN/App/CayenneLpp.c **** {
+ 847              		.loc 1 287 1 is_stmt 1 view -0
+ 848              		.cfi_startproc
+ 849              		@ args = 0, pretend = 0, frame = 0
+ 850              		@ frame_needed = 0, uses_anonymous_args = 0
+ 851              		.loc 1 287 1 is_stmt 0 view .LVU194
+ 852 0000 2DE9F041 		push	{r4, r5, r6, r7, r8, lr}
+ 853              	.LCFI17:
+ 854              		.cfi_def_cfa_offset 24
+ 855              		.cfi_offset 4, -24
+ 856              		.cfi_offset 5, -20
+ 857              		.cfi_offset 6, -16
+ 858              		.cfi_offset 7, -12
+ 859              		.cfi_offset 8, -8
+ 860              		.cfi_offset 14, -4
+ 288:LoRaWAN/App/CayenneLpp.c ****   /* USER CODE BEGIN CayenneLppAddAccelerometer_1 */
+ 289:LoRaWAN/App/CayenneLpp.c **** 
+ 290:LoRaWAN/App/CayenneLpp.c ****   /* USER CODE END CayenneLppAddAccelerometer_1 */
+ 291:LoRaWAN/App/CayenneLpp.c ****   if ((CayenneLppCursor + LPP_ACCELEROMETER_SIZE) > CAYENNE_LPP_MAXBUFFER_SIZE)
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\cczDShPG.s 			page 21
+
+
+ 861              		.loc 1 291 3 is_stmt 1 view .LVU195
+ 862              		.loc 1 291 51 is_stmt 0 view .LVU196
+ 863 0004 244C     		ldr	r4, .L93
+ 864 0006 2778     		ldrb	r7, [r4]	@ zero_extendqisi2
+ 865              		.loc 1 291 6 view .LVU197
+ 866 0008 EA2F     		cmp	r7, #234
+ 867 000a 42D8     		bhi	.L91
+ 292:LoRaWAN/App/CayenneLpp.c ****   {
+ 293:LoRaWAN/App/CayenneLpp.c ****     return 0;
+ 294:LoRaWAN/App/CayenneLpp.c ****   }
+ 295:LoRaWAN/App/CayenneLpp.c ****   int16_t vx = x * 1000;
+ 868              		.loc 1 295 3 is_stmt 1 view .LVU198
+ 869              		.loc 1 295 18 is_stmt 0 view .LVU199
+ 870 000c C1EB4114 		rsb	r4, r1, r1, lsl #5
+ 871 0010 01EB8401 		add	r1, r1, r4, lsl #2
+ 872              	.LVL42:
+ 873              		.loc 1 295 18 view .LVU200
+ 874 0014 CE00     		lsls	r6, r1, #3
+ 875              	.LVL43:
+ 296:LoRaWAN/App/CayenneLpp.c ****   int16_t vy = y * 1000;
+ 876              		.loc 1 296 3 is_stmt 1 view .LVU201
+ 877              		.loc 1 296 18 is_stmt 0 view .LVU202
+ 878 0016 C2EB4214 		rsb	r4, r2, r2, lsl #5
+ 879 001a 02EB8402 		add	r2, r2, r4, lsl #2
+ 880              	.LVL44:
+ 881              		.loc 1 296 18 view .LVU203
+ 882 001e 4FEAC20E 		lsl	lr, r2, #3
+ 883              	.LVL45:
+ 297:LoRaWAN/App/CayenneLpp.c ****   int16_t vz = z * 1000;
+ 884              		.loc 1 297 3 is_stmt 1 view .LVU204
+ 885              		.loc 1 297 18 is_stmt 0 view .LVU205
+ 886 0022 C3EB4314 		rsb	r4, r3, r3, lsl #5
+ 887 0026 03EB8403 		add	r3, r3, r4, lsl #2
+ 888              	.LVL46:
+ 889              		.loc 1 297 18 view .LVU206
+ 890 002a 4FEAC30C 		lsl	ip, r3, #3
+ 891              	.LVL47:
+ 298:LoRaWAN/App/CayenneLpp.c **** 
+ 299:LoRaWAN/App/CayenneLpp.c ****   CayenneLppBuffer[CayenneLppCursor++] = channel;
+ 892              		.loc 1 299 3 is_stmt 1 view .LVU207
+ 893              		.loc 1 299 36 is_stmt 0 view .LVU208
+ 894 002e 07F10108 		add	r8, r7, #1
+ 895 0032 5FFA88F8 		uxtb	r8, r8
+ 896 0036 184D     		ldr	r5, .L93
+ 897 0038 85F80080 		strb	r8, [r5]
+ 898              		.loc 1 299 40 view .LVU209
+ 899 003c 174C     		ldr	r4, .L93+4
+ 900 003e E055     		strb	r0, [r4, r7]
+ 300:LoRaWAN/App/CayenneLpp.c ****   CayenneLppBuffer[CayenneLppCursor++] = LPP_ACCELEROMETER;
+ 901              		.loc 1 300 3 is_stmt 1 view .LVU210
+ 902              		.loc 1 300 36 is_stmt 0 view .LVU211
+ 903 0040 08F10107 		add	r7, r8, #1
+ 904 0044 FFB2     		uxtb	r7, r7
+ 905 0046 2F70     		strb	r7, [r5]
+ 906              		.loc 1 300 40 view .LVU212
+ 907 0048 7120     		movs	r0, #113
+ 908              	.LVL48:
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\cczDShPG.s 			page 22
+
+
+ 909              		.loc 1 300 40 view .LVU213
+ 910 004a 04F80800 		strb	r0, [r4, r8]
+ 301:LoRaWAN/App/CayenneLpp.c ****   CayenneLppBuffer[CayenneLppCursor++] = vx >> 8;
+ 911              		.loc 1 301 3 is_stmt 1 view .LVU214
+ 912              		.loc 1 301 36 is_stmt 0 view .LVU215
+ 913 004e 781C     		adds	r0, r7, #1
+ 914 0050 C0B2     		uxtb	r0, r0
+ 915 0052 2870     		strb	r0, [r5]
+ 916              		.loc 1 301 40 view .LVU216
+ 917 0054 41F34711 		sbfx	r1, r1, #5, #8
+ 918 0058 E155     		strb	r1, [r4, r7]
+ 302:LoRaWAN/App/CayenneLpp.c ****   CayenneLppBuffer[CayenneLppCursor++] = vx;
+ 919              		.loc 1 302 3 is_stmt 1 view .LVU217
+ 920              		.loc 1 302 36 is_stmt 0 view .LVU218
+ 921 005a 411C     		adds	r1, r0, #1
+ 922 005c C9B2     		uxtb	r1, r1
+ 923 005e 2970     		strb	r1, [r5]
+ 924              		.loc 1 302 40 view .LVU219
+ 925 0060 2654     		strb	r6, [r4, r0]
+ 303:LoRaWAN/App/CayenneLpp.c ****   CayenneLppBuffer[CayenneLppCursor++] = vy >> 8;
+ 926              		.loc 1 303 3 is_stmt 1 view .LVU220
+ 927              		.loc 1 303 36 is_stmt 0 view .LVU221
+ 928 0062 481C     		adds	r0, r1, #1
+ 929 0064 C0B2     		uxtb	r0, r0
+ 930 0066 2870     		strb	r0, [r5]
+ 931              		.loc 1 303 40 view .LVU222
+ 932 0068 42F34712 		sbfx	r2, r2, #5, #8
+ 933 006c 6254     		strb	r2, [r4, r1]
+ 304:LoRaWAN/App/CayenneLpp.c ****   CayenneLppBuffer[CayenneLppCursor++] = vy;
+ 934              		.loc 1 304 3 is_stmt 1 view .LVU223
+ 935              		.loc 1 304 36 is_stmt 0 view .LVU224
+ 936 006e 411C     		adds	r1, r0, #1
+ 937 0070 C9B2     		uxtb	r1, r1
+ 938 0072 2970     		strb	r1, [r5]
+ 939              		.loc 1 304 40 view .LVU225
+ 940 0074 04F800E0 		strb	lr, [r4, r0]
+ 305:LoRaWAN/App/CayenneLpp.c ****   CayenneLppBuffer[CayenneLppCursor++] = vz >> 8;
+ 941              		.loc 1 305 3 is_stmt 1 view .LVU226
+ 942              		.loc 1 305 36 is_stmt 0 view .LVU227
+ 943 0078 4A1C     		adds	r2, r1, #1
+ 944 007a D2B2     		uxtb	r2, r2
+ 945 007c 2A70     		strb	r2, [r5]
+ 946              		.loc 1 305 40 view .LVU228
+ 947 007e 43F34713 		sbfx	r3, r3, #5, #8
+ 948 0082 6354     		strb	r3, [r4, r1]
+ 306:LoRaWAN/App/CayenneLpp.c ****   CayenneLppBuffer[CayenneLppCursor++] = vz;
+ 949              		.loc 1 306 3 is_stmt 1 view .LVU229
+ 950              		.loc 1 306 36 is_stmt 0 view .LVU230
+ 951 0084 501C     		adds	r0, r2, #1
+ 952 0086 C0B2     		uxtb	r0, r0
+ 953 0088 2870     		strb	r0, [r5]
+ 954              		.loc 1 306 40 view .LVU231
+ 955 008a 04F802C0 		strb	ip, [r4, r2]
+ 307:LoRaWAN/App/CayenneLpp.c ****   /* USER CODE BEGIN CayenneLppAddAccelerometer_2 */
+ 308:LoRaWAN/App/CayenneLpp.c **** 
+ 309:LoRaWAN/App/CayenneLpp.c ****   /* USER CODE END CayenneLppAddAccelerometer_2 */
+ 310:LoRaWAN/App/CayenneLpp.c ****   return CayenneLppCursor;
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\cczDShPG.s 			page 23
+
+
+ 956              		.loc 1 310 3 is_stmt 1 view .LVU232
+ 957              	.LVL49:
+ 958              	.L90:
+ 311:LoRaWAN/App/CayenneLpp.c **** }
+ 959              		.loc 1 311 1 is_stmt 0 view .LVU233
+ 960 008e BDE8F081 		pop	{r4, r5, r6, r7, r8, pc}
+ 961              	.LVL50:
+ 962              	.L91:
+ 293:LoRaWAN/App/CayenneLpp.c ****   }
+ 963              		.loc 1 293 12 view .LVU234
+ 964 0092 0020     		movs	r0, #0
+ 965              	.LVL51:
+ 293:LoRaWAN/App/CayenneLpp.c ****   }
+ 966              		.loc 1 293 12 view .LVU235
+ 967 0094 FBE7     		b	.L90
+ 968              	.L94:
+ 969 0096 00BF     		.align	2
+ 970              	.L93:
+ 971 0098 00000000 		.word	.LANCHOR0
+ 972 009c 00000000 		.word	.LANCHOR1
+ 973              		.cfi_endproc
+ 974              	.LFE117:
+ 976              		.section	.text.CayenneLppAddBarometricPressure,"ax",%progbits
+ 977              		.align	1
+ 978              		.global	CayenneLppAddBarometricPressure
+ 979              		.syntax unified
+ 980              		.thumb
+ 981              		.thumb_func
+ 983              	CayenneLppAddBarometricPressure:
+ 984              	.LVL52:
+ 985              	.LFB118:
+ 312:LoRaWAN/App/CayenneLpp.c **** 
+ 313:LoRaWAN/App/CayenneLpp.c **** uint8_t CayenneLppAddBarometricPressure(uint8_t channel, uint16_t hpa)
+ 314:LoRaWAN/App/CayenneLpp.c **** {
+ 986              		.loc 1 314 1 is_stmt 1 view -0
+ 987              		.cfi_startproc
+ 988              		@ args = 0, pretend = 0, frame = 0
+ 989              		@ frame_needed = 0, uses_anonymous_args = 0
+ 990              		@ link register save eliminated.
+ 315:LoRaWAN/App/CayenneLpp.c ****   /* USER CODE BEGIN CayenneLppAddBarometricPressure_1 */
+ 316:LoRaWAN/App/CayenneLpp.c **** 
+ 317:LoRaWAN/App/CayenneLpp.c ****   /* USER CODE END CayenneLppAddBarometricPressure_1 */
+ 318:LoRaWAN/App/CayenneLpp.c ****   if ((CayenneLppCursor + LPP_BAROMETRIC_PRESSURE_SIZE) > CAYENNE_LPP_MAXBUFFER_SIZE)
+ 991              		.loc 1 318 3 view .LVU237
+ 992              		.loc 1 318 57 is_stmt 0 view .LVU238
+ 993 0000 114B     		ldr	r3, .L102
+ 994 0002 1A78     		ldrb	r2, [r3]	@ zero_extendqisi2
+ 995              		.loc 1 318 6 view .LVU239
+ 996 0004 EE2A     		cmp	r2, #238
+ 997 0006 1CD8     		bhi	.L97
+ 314:LoRaWAN/App/CayenneLpp.c ****   /* USER CODE BEGIN CayenneLppAddBarometricPressure_1 */
+ 998              		.loc 1 314 1 view .LVU240
+ 999 0008 30B4     		push	{r4, r5}
+ 1000              	.LCFI18:
+ 1001              		.cfi_def_cfa_offset 8
+ 1002              		.cfi_offset 4, -8
+ 1003              		.cfi_offset 5, -4
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\cczDShPG.s 			page 24
+
+
+ 319:LoRaWAN/App/CayenneLpp.c ****   {
+ 320:LoRaWAN/App/CayenneLpp.c ****     return 0;
+ 321:LoRaWAN/App/CayenneLpp.c ****   }
+ 322:LoRaWAN/App/CayenneLpp.c ****   hpa *= 10;
+ 1004              		.loc 1 322 3 is_stmt 1 view .LVU241
+ 1005              		.loc 1 322 7 is_stmt 0 view .LVU242
+ 1006 000a 01EB8101 		add	r1, r1, r1, lsl #2
+ 1007              	.LVL53:
+ 1008              		.loc 1 322 7 view .LVU243
+ 1009 000e 4FEA410C 		lsl	ip, r1, #1
+ 1010              	.LVL54:
+ 323:LoRaWAN/App/CayenneLpp.c **** 
+ 324:LoRaWAN/App/CayenneLpp.c ****   CayenneLppBuffer[CayenneLppCursor++] = channel;
+ 1011              		.loc 1 324 3 is_stmt 1 view .LVU244
+ 1012              		.loc 1 324 36 is_stmt 0 view .LVU245
+ 1013 0012 531C     		adds	r3, r2, #1
+ 1014 0014 DBB2     		uxtb	r3, r3
+ 1015 0016 0C4D     		ldr	r5, .L102
+ 1016 0018 2B70     		strb	r3, [r5]
+ 1017              		.loc 1 324 40 view .LVU246
+ 1018 001a 0C4C     		ldr	r4, .L102+4
+ 1019 001c A054     		strb	r0, [r4, r2]
+ 325:LoRaWAN/App/CayenneLpp.c ****   CayenneLppBuffer[CayenneLppCursor++] = LPP_BAROMETRIC_PRESSURE;
+ 1020              		.loc 1 325 3 is_stmt 1 view .LVU247
+ 1021              		.loc 1 325 36 is_stmt 0 view .LVU248
+ 1022 001e 5A1C     		adds	r2, r3, #1
+ 1023 0020 D2B2     		uxtb	r2, r2
+ 1024 0022 2A70     		strb	r2, [r5]
+ 1025              		.loc 1 325 40 view .LVU249
+ 1026 0024 7320     		movs	r0, #115
+ 1027              	.LVL55:
+ 1028              		.loc 1 325 40 view .LVU250
+ 1029 0026 E054     		strb	r0, [r4, r3]
+ 326:LoRaWAN/App/CayenneLpp.c ****   CayenneLppBuffer[CayenneLppCursor++] = hpa >> 8;
+ 1030              		.loc 1 326 3 is_stmt 1 view .LVU251
+ 1031              		.loc 1 326 36 is_stmt 0 view .LVU252
+ 1032 0028 531C     		adds	r3, r2, #1
+ 1033 002a DBB2     		uxtb	r3, r3
+ 1034 002c 2B70     		strb	r3, [r5]
+ 1035              		.loc 1 326 40 view .LVU253
+ 1036 002e C1F3C711 		ubfx	r1, r1, #7, #8
+ 1037 0032 A154     		strb	r1, [r4, r2]
+ 327:LoRaWAN/App/CayenneLpp.c ****   CayenneLppBuffer[CayenneLppCursor++] = hpa;
+ 1038              		.loc 1 327 3 is_stmt 1 view .LVU254
+ 1039              		.loc 1 327 36 is_stmt 0 view .LVU255
+ 1040 0034 581C     		adds	r0, r3, #1
+ 1041 0036 C0B2     		uxtb	r0, r0
+ 1042 0038 2870     		strb	r0, [r5]
+ 1043              		.loc 1 327 40 view .LVU256
+ 1044 003a 04F803C0 		strb	ip, [r4, r3]
+ 328:LoRaWAN/App/CayenneLpp.c ****   /* USER CODE BEGIN CayenneLppAddBarometricPressure_2 */
+ 329:LoRaWAN/App/CayenneLpp.c **** 
+ 330:LoRaWAN/App/CayenneLpp.c ****   /* USER CODE END CayenneLppAddBarometricPressure_2 */
+ 331:LoRaWAN/App/CayenneLpp.c ****   return CayenneLppCursor;
+ 1045              		.loc 1 331 3 is_stmt 1 view .LVU257
+ 332:LoRaWAN/App/CayenneLpp.c **** }
+ 1046              		.loc 1 332 1 is_stmt 0 view .LVU258
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\cczDShPG.s 			page 25
+
+
+ 1047 003e 30BC     		pop	{r4, r5}
+ 1048              	.LCFI19:
+ 1049              		.cfi_restore 5
+ 1050              		.cfi_restore 4
+ 1051              		.cfi_def_cfa_offset 0
+ 1052 0040 7047     		bx	lr
+ 1053              	.LVL56:
+ 1054              	.L97:
+ 320:LoRaWAN/App/CayenneLpp.c ****   }
+ 1055              		.loc 1 320 12 view .LVU259
+ 1056 0042 0020     		movs	r0, #0
+ 1057              	.LVL57:
+ 1058              		.loc 1 332 1 view .LVU260
+ 1059 0044 7047     		bx	lr
+ 1060              	.L103:
+ 1061 0046 00BF     		.align	2
+ 1062              	.L102:
+ 1063 0048 00000000 		.word	.LANCHOR0
+ 1064 004c 00000000 		.word	.LANCHOR1
+ 1065              		.cfi_endproc
+ 1066              	.LFE118:
+ 1068              		.section	.text.CayenneLppAddGyrometer,"ax",%progbits
+ 1069              		.align	1
+ 1070              		.global	CayenneLppAddGyrometer
+ 1071              		.syntax unified
+ 1072              		.thumb
+ 1073              		.thumb_func
+ 1075              	CayenneLppAddGyrometer:
+ 1076              	.LVL58:
+ 1077              	.LFB119:
+ 333:LoRaWAN/App/CayenneLpp.c **** 
+ 334:LoRaWAN/App/CayenneLpp.c **** uint8_t CayenneLppAddGyrometer(uint8_t channel, int16_t x, int16_t y, int16_t z)
+ 335:LoRaWAN/App/CayenneLpp.c **** {
+ 1078              		.loc 1 335 1 is_stmt 1 view -0
+ 1079              		.cfi_startproc
+ 1080              		@ args = 0, pretend = 0, frame = 0
+ 1081              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1082              		.loc 1 335 1 is_stmt 0 view .LVU262
+ 1083 0000 2DE9F041 		push	{r4, r5, r6, r7, r8, lr}
+ 1084              	.LCFI20:
+ 1085              		.cfi_def_cfa_offset 24
+ 1086              		.cfi_offset 4, -24
+ 1087              		.cfi_offset 5, -20
+ 1088              		.cfi_offset 6, -16
+ 1089              		.cfi_offset 7, -12
+ 1090              		.cfi_offset 8, -8
+ 1091              		.cfi_offset 14, -4
+ 336:LoRaWAN/App/CayenneLpp.c ****   /* USER CODE BEGIN CayenneLppAddGyrometer_1 */
+ 337:LoRaWAN/App/CayenneLpp.c **** 
+ 338:LoRaWAN/App/CayenneLpp.c ****   /* USER CODE END CayenneLppAddGyrometer_1 */
+ 339:LoRaWAN/App/CayenneLpp.c ****   if ((CayenneLppCursor + LPP_GYROMETER_SIZE) > CAYENNE_LPP_MAXBUFFER_SIZE)
+ 1092              		.loc 1 339 3 is_stmt 1 view .LVU263
+ 1093              		.loc 1 339 47 is_stmt 0 view .LVU264
+ 1094 0004 264C     		ldr	r4, .L108
+ 1095 0006 94F800E0 		ldrb	lr, [r4]	@ zero_extendqisi2
+ 1096              		.loc 1 339 6 view .LVU265
+ 1097 000a BEF1EA0F 		cmp	lr, #234
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\cczDShPG.s 			page 26
+
+
+ 1098 000e 45D8     		bhi	.L106
+ 340:LoRaWAN/App/CayenneLpp.c ****   {
+ 341:LoRaWAN/App/CayenneLpp.c ****     return 0;
+ 342:LoRaWAN/App/CayenneLpp.c ****   }
+ 343:LoRaWAN/App/CayenneLpp.c ****   int16_t vx = x * 100;
+ 1099              		.loc 1 343 3 is_stmt 1 view .LVU266
+ 1100              		.loc 1 343 18 is_stmt 0 view .LVU267
+ 1101 0010 01EB8101 		add	r1, r1, r1, lsl #2
+ 1102              	.LVL59:
+ 1103              		.loc 1 343 18 view .LVU268
+ 1104 0014 01EB8101 		add	r1, r1, r1, lsl #2
+ 1105 0018 8F00     		lsls	r7, r1, #2
+ 1106              	.LVL60:
+ 344:LoRaWAN/App/CayenneLpp.c ****   int16_t vy = y * 100;
+ 1107              		.loc 1 344 3 is_stmt 1 view .LVU269
+ 1108              		.loc 1 344 18 is_stmt 0 view .LVU270
+ 1109 001a 02EB8202 		add	r2, r2, r2, lsl #2
+ 1110              	.LVL61:
+ 1111              		.loc 1 344 18 view .LVU271
+ 1112 001e 02EB8202 		add	r2, r2, r2, lsl #2
+ 1113 0022 9600     		lsls	r6, r2, #2
+ 1114              	.LVL62:
+ 345:LoRaWAN/App/CayenneLpp.c ****   int16_t vz = z * 100;
+ 1115              		.loc 1 345 3 is_stmt 1 view .LVU272
+ 1116              		.loc 1 345 18 is_stmt 0 view .LVU273
+ 1117 0024 03EB8303 		add	r3, r3, r3, lsl #2
+ 1118              	.LVL63:
+ 1119              		.loc 1 345 18 view .LVU274
+ 1120 0028 03EB8303 		add	r3, r3, r3, lsl #2
+ 1121 002c 4FEA830C 		lsl	ip, r3, #2
+ 1122              	.LVL64:
+ 346:LoRaWAN/App/CayenneLpp.c **** 
+ 347:LoRaWAN/App/CayenneLpp.c ****   CayenneLppBuffer[CayenneLppCursor++] = channel;
+ 1123              		.loc 1 347 3 is_stmt 1 view .LVU275
+ 1124              		.loc 1 347 36 is_stmt 0 view .LVU276
+ 1125 0030 0EF10108 		add	r8, lr, #1
+ 1126 0034 5FFA88F8 		uxtb	r8, r8
+ 1127 0038 2546     		mov	r5, r4
+ 1128 003a 84F80080 		strb	r8, [r4]
+ 1129              		.loc 1 347 40 view .LVU277
+ 1130 003e 194C     		ldr	r4, .L108+4
+ 1131 0040 04F80E00 		strb	r0, [r4, lr]
+ 348:LoRaWAN/App/CayenneLpp.c ****   CayenneLppBuffer[CayenneLppCursor++] = LPP_GYROMETER;
+ 1132              		.loc 1 348 3 is_stmt 1 view .LVU278
+ 1133              		.loc 1 348 36 is_stmt 0 view .LVU279
+ 1134 0044 08F1010E 		add	lr, r8, #1
+ 1135 0048 5FFA8EFE 		uxtb	lr, lr
+ 1136 004c 85F800E0 		strb	lr, [r5]
+ 1137              		.loc 1 348 40 view .LVU280
+ 1138 0050 8620     		movs	r0, #134
+ 1139              	.LVL65:
+ 1140              		.loc 1 348 40 view .LVU281
+ 1141 0052 04F80800 		strb	r0, [r4, r8]
+ 349:LoRaWAN/App/CayenneLpp.c ****   CayenneLppBuffer[CayenneLppCursor++] = vx >> 8;
+ 1142              		.loc 1 349 3 is_stmt 1 view .LVU282
+ 1143              		.loc 1 349 36 is_stmt 0 view .LVU283
+ 1144 0056 0EF10100 		add	r0, lr, #1
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\cczDShPG.s 			page 27
+
+
+ 1145 005a C0B2     		uxtb	r0, r0
+ 1146 005c 2870     		strb	r0, [r5]
+ 1147              		.loc 1 349 40 view .LVU284
+ 1148 005e 41F38711 		sbfx	r1, r1, #6, #8
+ 1149 0062 04F80E10 		strb	r1, [r4, lr]
+ 350:LoRaWAN/App/CayenneLpp.c ****   CayenneLppBuffer[CayenneLppCursor++] = vx;
+ 1150              		.loc 1 350 3 is_stmt 1 view .LVU285
+ 1151              		.loc 1 350 36 is_stmt 0 view .LVU286
+ 1152 0066 411C     		adds	r1, r0, #1
+ 1153 0068 C9B2     		uxtb	r1, r1
+ 1154 006a 2970     		strb	r1, [r5]
+ 1155              		.loc 1 350 40 view .LVU287
+ 1156 006c 2754     		strb	r7, [r4, r0]
+ 351:LoRaWAN/App/CayenneLpp.c ****   CayenneLppBuffer[CayenneLppCursor++] = vy >> 8;
+ 1157              		.loc 1 351 3 is_stmt 1 view .LVU288
+ 1158              		.loc 1 351 36 is_stmt 0 view .LVU289
+ 1159 006e 481C     		adds	r0, r1, #1
+ 1160 0070 C0B2     		uxtb	r0, r0
+ 1161 0072 2870     		strb	r0, [r5]
+ 1162              		.loc 1 351 40 view .LVU290
+ 1163 0074 42F38712 		sbfx	r2, r2, #6, #8
+ 1164 0078 6254     		strb	r2, [r4, r1]
+ 352:LoRaWAN/App/CayenneLpp.c ****   CayenneLppBuffer[CayenneLppCursor++] = vy;
+ 1165              		.loc 1 352 3 is_stmt 1 view .LVU291
+ 1166              		.loc 1 352 36 is_stmt 0 view .LVU292
+ 1167 007a 411C     		adds	r1, r0, #1
+ 1168 007c C9B2     		uxtb	r1, r1
+ 1169 007e 2970     		strb	r1, [r5]
+ 1170              		.loc 1 352 40 view .LVU293
+ 1171 0080 2654     		strb	r6, [r4, r0]
+ 353:LoRaWAN/App/CayenneLpp.c ****   CayenneLppBuffer[CayenneLppCursor++] = vz >> 8;
+ 1172              		.loc 1 353 3 is_stmt 1 view .LVU294
+ 1173              		.loc 1 353 36 is_stmt 0 view .LVU295
+ 1174 0082 4A1C     		adds	r2, r1, #1
+ 1175 0084 D2B2     		uxtb	r2, r2
+ 1176 0086 2A70     		strb	r2, [r5]
+ 1177              		.loc 1 353 40 view .LVU296
+ 1178 0088 43F38713 		sbfx	r3, r3, #6, #8
+ 1179 008c 6354     		strb	r3, [r4, r1]
+ 354:LoRaWAN/App/CayenneLpp.c ****   CayenneLppBuffer[CayenneLppCursor++] = vz;
+ 1180              		.loc 1 354 3 is_stmt 1 view .LVU297
+ 1181              		.loc 1 354 36 is_stmt 0 view .LVU298
+ 1182 008e 501C     		adds	r0, r2, #1
+ 1183 0090 C0B2     		uxtb	r0, r0
+ 1184 0092 2870     		strb	r0, [r5]
+ 1185              		.loc 1 354 40 view .LVU299
+ 1186 0094 04F802C0 		strb	ip, [r4, r2]
+ 355:LoRaWAN/App/CayenneLpp.c ****   /* USER CODE BEGIN CayenneLppAddGyrometer_2 */
+ 356:LoRaWAN/App/CayenneLpp.c **** 
+ 357:LoRaWAN/App/CayenneLpp.c ****   /* USER CODE END CayenneLppAddGyrometer_2 */
+ 358:LoRaWAN/App/CayenneLpp.c ****   return CayenneLppCursor;
+ 1187              		.loc 1 358 3 is_stmt 1 view .LVU300
+ 1188              	.LVL66:
+ 1189              	.L105:
+ 359:LoRaWAN/App/CayenneLpp.c **** }
+ 1190              		.loc 1 359 1 is_stmt 0 view .LVU301
+ 1191 0098 BDE8F081 		pop	{r4, r5, r6, r7, r8, pc}
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\cczDShPG.s 			page 28
+
+
+ 1192              	.LVL67:
+ 1193              	.L106:
+ 341:LoRaWAN/App/CayenneLpp.c ****   }
+ 1194              		.loc 1 341 12 view .LVU302
+ 1195 009c 0020     		movs	r0, #0
+ 1196              	.LVL68:
+ 341:LoRaWAN/App/CayenneLpp.c ****   }
+ 1197              		.loc 1 341 12 view .LVU303
+ 1198 009e FBE7     		b	.L105
+ 1199              	.L109:
+ 1200              		.align	2
+ 1201              	.L108:
+ 1202 00a0 00000000 		.word	.LANCHOR0
+ 1203 00a4 00000000 		.word	.LANCHOR1
+ 1204              		.cfi_endproc
+ 1205              	.LFE119:
+ 1207              		.section	.text.CayenneLppAddGps,"ax",%progbits
+ 1208              		.align	1
+ 1209              		.global	CayenneLppAddGps
+ 1210              		.syntax unified
+ 1211              		.thumb
+ 1212              		.thumb_func
+ 1214              	CayenneLppAddGps:
+ 1215              	.LVL69:
+ 1216              	.LFB120:
+ 360:LoRaWAN/App/CayenneLpp.c **** 
+ 361:LoRaWAN/App/CayenneLpp.c **** uint8_t CayenneLppAddGps(uint8_t channel, int32_t latitude, int32_t longitude, int32_t meters)
+ 362:LoRaWAN/App/CayenneLpp.c **** {
+ 1217              		.loc 1 362 1 is_stmt 1 view -0
+ 1218              		.cfi_startproc
+ 1219              		@ args = 0, pretend = 0, frame = 0
+ 1220              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1221              		.loc 1 362 1 is_stmt 0 view .LVU305
+ 1222 0000 30B5     		push	{r4, r5, lr}
+ 1223              	.LCFI21:
+ 1224              		.cfi_def_cfa_offset 12
+ 1225              		.cfi_offset 4, -12
+ 1226              		.cfi_offset 5, -8
+ 1227              		.cfi_offset 14, -4
+ 363:LoRaWAN/App/CayenneLpp.c ****   /* USER CODE BEGIN CayenneLppAddGps_1 */
+ 364:LoRaWAN/App/CayenneLpp.c **** 
+ 365:LoRaWAN/App/CayenneLpp.c ****   /* USER CODE END CayenneLppAddGps_1 */
+ 366:LoRaWAN/App/CayenneLpp.c ****   if ((CayenneLppCursor + LPP_GPS_SIZE) > CAYENNE_LPP_MAXBUFFER_SIZE)
+ 1228              		.loc 1 366 3 is_stmt 1 view .LVU306
+ 1229              		.loc 1 366 41 is_stmt 0 view .LVU307
+ 1230 0002 2D4C     		ldr	r4, .L114
+ 1231 0004 2478     		ldrb	r4, [r4]	@ zero_extendqisi2
+ 1232              		.loc 1 366 6 view .LVU308
+ 1233 0006 E72C     		cmp	r4, #231
+ 1234 0008 53D8     		bhi	.L112
+ 367:LoRaWAN/App/CayenneLpp.c ****   {
+ 368:LoRaWAN/App/CayenneLpp.c ****     return 0;
+ 369:LoRaWAN/App/CayenneLpp.c ****   }
+ 370:LoRaWAN/App/CayenneLpp.c ****   int32_t lat = latitude * 10000;
+ 1235              		.loc 1 370 3 is_stmt 1 view .LVU309
+ 1236              		.loc 1 370 11 is_stmt 0 view .LVU310
+ 1237 000a 42F2107C 		movw	ip, #10000
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\cczDShPG.s 			page 29
+
+
+ 1238 000e 0CFB01FE 		mul	lr, ip, r1
+ 1239              	.LVL70:
+ 371:LoRaWAN/App/CayenneLpp.c ****   int32_t lon = longitude * 10000;
+ 1240              		.loc 1 371 3 is_stmt 1 view .LVU311
+ 1241              		.loc 1 371 11 is_stmt 0 view .LVU312
+ 1242 0012 0CFB02FC 		mul	ip, ip, r2
+ 1243              	.LVL71:
+ 372:LoRaWAN/App/CayenneLpp.c ****   int32_t alt = meters * 100;
+ 1244              		.loc 1 372 3 is_stmt 1 view .LVU313
+ 1245              		.loc 1 372 11 is_stmt 0 view .LVU314
+ 1246 0016 6421     		movs	r1, #100
+ 1247              	.LVL72:
+ 1248              		.loc 1 372 11 view .LVU315
+ 1249 0018 03FB01F1 		mul	r1, r3, r1
+ 1250              	.LVL73:
+ 373:LoRaWAN/App/CayenneLpp.c **** 
+ 374:LoRaWAN/App/CayenneLpp.c ****   CayenneLppBuffer[CayenneLppCursor++] = channel;
+ 1251              		.loc 1 374 3 is_stmt 1 view .LVU316
+ 1252              		.loc 1 374 36 is_stmt 0 view .LVU317
+ 1253 001c 651C     		adds	r5, r4, #1
+ 1254 001e EDB2     		uxtb	r5, r5
+ 1255 0020 254A     		ldr	r2, .L114
+ 1256              	.LVL74:
+ 1257              		.loc 1 374 36 view .LVU318
+ 1258 0022 1570     		strb	r5, [r2]
+ 1259              		.loc 1 374 40 view .LVU319
+ 1260 0024 254B     		ldr	r3, .L114+4
+ 1261              	.LVL75:
+ 1262              		.loc 1 374 40 view .LVU320
+ 1263 0026 1855     		strb	r0, [r3, r4]
+ 375:LoRaWAN/App/CayenneLpp.c ****   CayenneLppBuffer[CayenneLppCursor++] = LPP_GPS;
+ 1264              		.loc 1 375 3 is_stmt 1 view .LVU321
+ 1265              		.loc 1 375 36 is_stmt 0 view .LVU322
+ 1266 0028 6C1C     		adds	r4, r5, #1
+ 1267 002a E4B2     		uxtb	r4, r4
+ 1268 002c 1470     		strb	r4, [r2]
+ 1269              		.loc 1 375 40 view .LVU323
+ 1270 002e 8820     		movs	r0, #136
+ 1271              	.LVL76:
+ 1272              		.loc 1 375 40 view .LVU324
+ 1273 0030 5855     		strb	r0, [r3, r5]
+ 376:LoRaWAN/App/CayenneLpp.c **** 
+ 377:LoRaWAN/App/CayenneLpp.c ****   CayenneLppBuffer[CayenneLppCursor++] = lat >> 16;
+ 1274              		.loc 1 377 3 is_stmt 1 view .LVU325
+ 1275              		.loc 1 377 46 is_stmt 0 view .LVU326
+ 1276 0032 4FEA2E45 		asr	r5, lr, #16
+ 1277              		.loc 1 377 36 view .LVU327
+ 1278 0036 601C     		adds	r0, r4, #1
+ 1279 0038 C0B2     		uxtb	r0, r0
+ 1280 003a 1070     		strb	r0, [r2]
+ 1281              		.loc 1 377 40 view .LVU328
+ 1282 003c 1D55     		strb	r5, [r3, r4]
+ 378:LoRaWAN/App/CayenneLpp.c ****   CayenneLppBuffer[CayenneLppCursor++] = lat >> 8;
+ 1283              		.loc 1 378 3 is_stmt 1 view .LVU329
+ 1284              		.loc 1 378 46 is_stmt 0 view .LVU330
+ 1285 003e 4FEA2E25 		asr	r5, lr, #8
+ 1286              		.loc 1 378 36 view .LVU331
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\cczDShPG.s 			page 30
+
+
+ 1287 0042 441C     		adds	r4, r0, #1
+ 1288 0044 E4B2     		uxtb	r4, r4
+ 1289 0046 1470     		strb	r4, [r2]
+ 1290              		.loc 1 378 40 view .LVU332
+ 1291 0048 1D54     		strb	r5, [r3, r0]
+ 379:LoRaWAN/App/CayenneLpp.c ****   CayenneLppBuffer[CayenneLppCursor++] = lat;
+ 1292              		.loc 1 379 3 is_stmt 1 view .LVU333
+ 1293              		.loc 1 379 36 is_stmt 0 view .LVU334
+ 1294 004a 601C     		adds	r0, r4, #1
+ 1295 004c C0B2     		uxtb	r0, r0
+ 1296 004e 1070     		strb	r0, [r2]
+ 1297              		.loc 1 379 40 view .LVU335
+ 1298 0050 03F804E0 		strb	lr, [r3, r4]
+ 380:LoRaWAN/App/CayenneLpp.c ****   CayenneLppBuffer[CayenneLppCursor++] = lon >> 16;
+ 1299              		.loc 1 380 3 is_stmt 1 view .LVU336
+ 1300              		.loc 1 380 46 is_stmt 0 view .LVU337
+ 1301 0054 4FEA2C44 		asr	r4, ip, #16
+ 1302              		.loc 1 380 36 view .LVU338
+ 1303 0058 00F1010E 		add	lr, r0, #1
+ 1304              	.LVL77:
+ 1305              		.loc 1 380 36 view .LVU339
+ 1306 005c 5FFA8EFE 		uxtb	lr, lr
+ 1307 0060 82F800E0 		strb	lr, [r2]
+ 1308              		.loc 1 380 40 view .LVU340
+ 1309 0064 1C54     		strb	r4, [r3, r0]
+ 381:LoRaWAN/App/CayenneLpp.c ****   CayenneLppBuffer[CayenneLppCursor++] = lon >> 8;
+ 1310              		.loc 1 381 3 is_stmt 1 view .LVU341
+ 1311              		.loc 1 381 46 is_stmt 0 view .LVU342
+ 1312 0066 4FEA2C24 		asr	r4, ip, #8
+ 1313              		.loc 1 381 36 view .LVU343
+ 1314 006a 0EF10100 		add	r0, lr, #1
+ 1315 006e C0B2     		uxtb	r0, r0
+ 1316 0070 1070     		strb	r0, [r2]
+ 1317              		.loc 1 381 40 view .LVU344
+ 1318 0072 03F80E40 		strb	r4, [r3, lr]
+ 382:LoRaWAN/App/CayenneLpp.c ****   CayenneLppBuffer[CayenneLppCursor++] = lon;
+ 1319              		.loc 1 382 3 is_stmt 1 view .LVU345
+ 1320              		.loc 1 382 36 is_stmt 0 view .LVU346
+ 1321 0076 00F1010E 		add	lr, r0, #1
+ 1322 007a 5FFA8EFE 		uxtb	lr, lr
+ 1323 007e 82F800E0 		strb	lr, [r2]
+ 1324              		.loc 1 382 40 view .LVU347
+ 1325 0082 03F800C0 		strb	ip, [r3, r0]
+ 383:LoRaWAN/App/CayenneLpp.c ****   CayenneLppBuffer[CayenneLppCursor++] = alt >> 16;
+ 1326              		.loc 1 383 3 is_stmt 1 view .LVU348
+ 1327              		.loc 1 383 46 is_stmt 0 view .LVU349
+ 1328 0086 0C14     		asrs	r4, r1, #16
+ 1329              		.loc 1 383 36 view .LVU350
+ 1330 0088 0EF10100 		add	r0, lr, #1
+ 1331 008c C0B2     		uxtb	r0, r0
+ 1332 008e 1070     		strb	r0, [r2]
+ 1333              		.loc 1 383 40 view .LVU351
+ 1334 0090 03F80E40 		strb	r4, [r3, lr]
+ 384:LoRaWAN/App/CayenneLpp.c ****   CayenneLppBuffer[CayenneLppCursor++] = alt >> 8;
+ 1335              		.loc 1 384 3 is_stmt 1 view .LVU352
+ 1336              		.loc 1 384 46 is_stmt 0 view .LVU353
+ 1337 0094 0C12     		asrs	r4, r1, #8
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\cczDShPG.s 			page 31
+
+
+ 1338              		.loc 1 384 36 view .LVU354
+ 1339 0096 00F1010C 		add	ip, r0, #1
+ 1340              	.LVL78:
+ 1341              		.loc 1 384 36 view .LVU355
+ 1342 009a 5FFA8CFC 		uxtb	ip, ip
+ 1343 009e 82F800C0 		strb	ip, [r2]
+ 1344              		.loc 1 384 40 view .LVU356
+ 1345 00a2 1C54     		strb	r4, [r3, r0]
+ 385:LoRaWAN/App/CayenneLpp.c ****   CayenneLppBuffer[CayenneLppCursor++] = alt;
+ 1346              		.loc 1 385 3 is_stmt 1 view .LVU357
+ 1347              		.loc 1 385 36 is_stmt 0 view .LVU358
+ 1348 00a4 0CF10100 		add	r0, ip, #1
+ 1349 00a8 C0B2     		uxtb	r0, r0
+ 1350 00aa 1070     		strb	r0, [r2]
+ 1351              		.loc 1 385 40 view .LVU359
+ 1352 00ac 03F80C10 		strb	r1, [r3, ip]
+ 386:LoRaWAN/App/CayenneLpp.c ****   /* USER CODE BEGIN CayenneLppAddGps_2 */
+ 387:LoRaWAN/App/CayenneLpp.c **** 
+ 388:LoRaWAN/App/CayenneLpp.c ****   /* USER CODE END CayenneLppAddGps_2 */
+ 389:LoRaWAN/App/CayenneLpp.c ****   return CayenneLppCursor;
+ 1353              		.loc 1 389 3 is_stmt 1 view .LVU360
+ 1354              	.LVL79:
+ 1355              	.L111:
+ 390:LoRaWAN/App/CayenneLpp.c **** }
+ 1356              		.loc 1 390 1 is_stmt 0 view .LVU361
+ 1357 00b0 30BD     		pop	{r4, r5, pc}
+ 1358              	.LVL80:
+ 1359              	.L112:
+ 368:LoRaWAN/App/CayenneLpp.c ****   }
+ 1360              		.loc 1 368 12 view .LVU362
+ 1361 00b2 0020     		movs	r0, #0
+ 1362              	.LVL81:
+ 368:LoRaWAN/App/CayenneLpp.c ****   }
+ 1363              		.loc 1 368 12 view .LVU363
+ 1364 00b4 FCE7     		b	.L111
+ 1365              	.L115:
+ 1366 00b6 00BF     		.align	2
+ 1367              	.L114:
+ 1368 00b8 00000000 		.word	.LANCHOR0
+ 1369 00bc 00000000 		.word	.LANCHOR1
+ 1370              		.cfi_endproc
+ 1371              	.LFE120:
+ 1373              		.section	.bss.CayenneLppBuffer,"aw",%nobits
+ 1374              		.align	2
+ 1375              		.set	.LANCHOR1,. + 0
+ 1378              	CayenneLppBuffer:
+ 1379 0000 00000000 		.space	242
+ 1379      00000000 
+ 1379      00000000 
+ 1379      00000000 
+ 1379      00000000 
+ 1380              		.section	.bss.CayenneLppCursor,"aw",%nobits
+ 1381              		.set	.LANCHOR0,. + 0
+ 1384              	CayenneLppCursor:
+ 1385 0000 00       		.space	1
+ 1386              		.text
+ 1387              	.Letext0:
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\cczDShPG.s 			page 32
+
+
+ 1388              		.file 2 "c:\\program files (x86)\\gnu arm embedded toolchain\\10 2021.10\\arm-none-eabi\\include\\
+ 1389              		.file 3 "c:\\program files (x86)\\gnu arm embedded toolchain\\10 2021.10\\arm-none-eabi\\include\\
+ 1390              		.file 4 "Utilities/misc/stm32_mem.h"
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\cczDShPG.s 			page 33
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 CayenneLpp.c
+C:\Users\NATHAN~1\AppData\Local\Temp\cczDShPG.s:18     .text.CayenneLppInit:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\cczDShPG.s:24     .text.CayenneLppInit:00000000 CayenneLppInit
+C:\Users\NATHAN~1\AppData\Local\Temp\cczDShPG.s:42     .text.CayenneLppInit:00000008 $d
+C:\Users\NATHAN~1\AppData\Local\Temp\cczDShPG.s:47     .text.CayenneLppReset:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\cczDShPG.s:53     .text.CayenneLppReset:00000000 CayenneLppReset
+C:\Users\NATHAN~1\AppData\Local\Temp\cczDShPG.s:70     .text.CayenneLppReset:00000008 $d
+C:\Users\NATHAN~1\AppData\Local\Temp\cczDShPG.s:75     .text.CayenneLppGetSize:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\cczDShPG.s:81     .text.CayenneLppGetSize:00000000 CayenneLppGetSize
+C:\Users\NATHAN~1\AppData\Local\Temp\cczDShPG.s:96     .text.CayenneLppGetSize:00000008 $d
+C:\Users\NATHAN~1\AppData\Local\Temp\cczDShPG.s:101    .text.CayenneLppGetBuffer:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\cczDShPG.s:107    .text.CayenneLppGetBuffer:00000000 CayenneLppGetBuffer
+C:\Users\NATHAN~1\AppData\Local\Temp\cczDShPG.s:121    .text.CayenneLppGetBuffer:00000004 $d
+C:\Users\NATHAN~1\AppData\Local\Temp\cczDShPG.s:126    .text.CayenneLppCopy:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\cczDShPG.s:132    .text.CayenneLppCopy:00000000 CayenneLppCopy
+C:\Users\NATHAN~1\AppData\Local\Temp\cczDShPG.s:158    .text.CayenneLppCopy:00000010 $d
+C:\Users\NATHAN~1\AppData\Local\Temp\cczDShPG.s:164    .text.CayenneLppAddDigitalInput:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\cczDShPG.s:170    .text.CayenneLppAddDigitalInput:00000000 CayenneLppAddDigitalInput
+C:\Users\NATHAN~1\AppData\Local\Temp\cczDShPG.s:235    .text.CayenneLppAddDigitalInput:00000030 $d
+C:\Users\NATHAN~1\AppData\Local\Temp\cczDShPG.s:241    .text.CayenneLppAddDigitalOutput:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\cczDShPG.s:247    .text.CayenneLppAddDigitalOutput:00000000 CayenneLppAddDigitalOutput
+C:\Users\NATHAN~1\AppData\Local\Temp\cczDShPG.s:312    .text.CayenneLppAddDigitalOutput:00000030 $d
+C:\Users\NATHAN~1\AppData\Local\Temp\cczDShPG.s:318    .text.CayenneLppAddAnalogInput:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\cczDShPG.s:324    .text.CayenneLppAddAnalogInput:00000000 CayenneLppAddAnalogInput
+C:\Users\NATHAN~1\AppData\Local\Temp\cczDShPG.s:405    .text.CayenneLppAddAnalogInput:0000004c $d
+C:\Users\NATHAN~1\AppData\Local\Temp\cczDShPG.s:411    .text.CayenneLppAddAnalogOutput:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\cczDShPG.s:417    .text.CayenneLppAddAnalogOutput:00000000 CayenneLppAddAnalogOutput
+C:\Users\NATHAN~1\AppData\Local\Temp\cczDShPG.s:498    .text.CayenneLppAddAnalogOutput:0000004c $d
+C:\Users\NATHAN~1\AppData\Local\Temp\cczDShPG.s:504    .text.CayenneLppAddLuminosity:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\cczDShPG.s:510    .text.CayenneLppAddLuminosity:00000000 CayenneLppAddLuminosity
+C:\Users\NATHAN~1\AppData\Local\Temp\cczDShPG.s:583    .text.CayenneLppAddLuminosity:0000003c $d
+C:\Users\NATHAN~1\AppData\Local\Temp\cczDShPG.s:589    .text.CayenneLppAddPresence:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\cczDShPG.s:595    .text.CayenneLppAddPresence:00000000 CayenneLppAddPresence
+C:\Users\NATHAN~1\AppData\Local\Temp\cczDShPG.s:660    .text.CayenneLppAddPresence:00000030 $d
+C:\Users\NATHAN~1\AppData\Local\Temp\cczDShPG.s:666    .text.CayenneLppAddTemperature:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\cczDShPG.s:672    .text.CayenneLppAddTemperature:00000000 CayenneLppAddTemperature
+C:\Users\NATHAN~1\AppData\Local\Temp\cczDShPG.s:752    .text.CayenneLppAddTemperature:00000048 $d
+C:\Users\NATHAN~1\AppData\Local\Temp\cczDShPG.s:758    .text.CayenneLppAddRelativeHumidity:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\cczDShPG.s:764    .text.CayenneLppAddRelativeHumidity:00000000 CayenneLppAddRelativeHumidity
+C:\Users\NATHAN~1\AppData\Local\Temp\cczDShPG.s:832    .text.CayenneLppAddRelativeHumidity:00000034 $d
+C:\Users\NATHAN~1\AppData\Local\Temp\cczDShPG.s:838    .text.CayenneLppAddAccelerometer:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\cczDShPG.s:844    .text.CayenneLppAddAccelerometer:00000000 CayenneLppAddAccelerometer
+C:\Users\NATHAN~1\AppData\Local\Temp\cczDShPG.s:971    .text.CayenneLppAddAccelerometer:00000098 $d
+C:\Users\NATHAN~1\AppData\Local\Temp\cczDShPG.s:977    .text.CayenneLppAddBarometricPressure:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\cczDShPG.s:983    .text.CayenneLppAddBarometricPressure:00000000 CayenneLppAddBarometricPressure
+C:\Users\NATHAN~1\AppData\Local\Temp\cczDShPG.s:1063   .text.CayenneLppAddBarometricPressure:00000048 $d
+C:\Users\NATHAN~1\AppData\Local\Temp\cczDShPG.s:1069   .text.CayenneLppAddGyrometer:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\cczDShPG.s:1075   .text.CayenneLppAddGyrometer:00000000 CayenneLppAddGyrometer
+C:\Users\NATHAN~1\AppData\Local\Temp\cczDShPG.s:1202   .text.CayenneLppAddGyrometer:000000a0 $d
+C:\Users\NATHAN~1\AppData\Local\Temp\cczDShPG.s:1208   .text.CayenneLppAddGps:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\cczDShPG.s:1214   .text.CayenneLppAddGps:00000000 CayenneLppAddGps
+C:\Users\NATHAN~1\AppData\Local\Temp\cczDShPG.s:1368   .text.CayenneLppAddGps:000000b8 $d
+C:\Users\NATHAN~1\AppData\Local\Temp\cczDShPG.s:1374   .bss.CayenneLppBuffer:00000000 $d
+C:\Users\NATHAN~1\AppData\Local\Temp\cczDShPG.s:1378   .bss.CayenneLppBuffer:00000000 CayenneLppBuffer
+C:\Users\NATHAN~1\AppData\Local\Temp\cczDShPG.s:1384   .bss.CayenneLppCursor:00000000 CayenneLppCursor
+C:\Users\NATHAN~1\AppData\Local\Temp\cczDShPG.s:1385   .bss.CayenneLppCursor:00000000 $d
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\cczDShPG.s 			page 34
+
+
+
+UNDEFINED SYMBOLS
+UTIL_MEM_cpy_8

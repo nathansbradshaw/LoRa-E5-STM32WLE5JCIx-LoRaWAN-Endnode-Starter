@@ -1,0 +1,2535 @@
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccalLql4.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"Region.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.section	.text.RegionIsActive,"ax",%progbits
+  18              		.align	1
+  19              		.global	RegionIsActive
+  20              		.syntax unified
+  21              		.thumb
+  22              		.thumb_func
+  24              	RegionIsActive:
+  25              	.LVL0:
+  26              	.LFB104:
+  27              		.file 1 "Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c"
+   1:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** /*!
+   2:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****  * \file      Region.c
+   3:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****  *
+   4:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****  * \brief     Region implementation.
+   5:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****  *
+   6:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****  * \copyright Revised BSD License, see section \ref LICENSE.
+   7:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****  *
+   8:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****  * \code
+   9:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****  *                ______                              _
+  10:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****  *               / _____)             _              | |
+  11:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****  *              ( (____  _____ ____ _| |_ _____  ____| |__
+  12:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****  *               \____ \| ___ |    (_   _) ___ |/ ___)  _ \
+  13:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****  *               _____) ) ____| | | || |_| ____( (___| | | |
+  14:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****  *              (______/|_____)_|_|_| \__)_____)\____)_| |_|
+  15:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****  *              (C)2013-2017 Semtech
+  16:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****  *
+  17:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****  *               ___ _____ _   ___ _  _____ ___  ___  ___ ___
+  18:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****  *              / __|_   _/_\ / __| |/ / __/ _ \| _ \/ __| __|
+  19:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****  *              \__ \ | |/ _ \ (__| ' <| _| (_) |   / (__| _|
+  20:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****  *              |___/ |_/_/ \_\___|_|\_\_| \___/|_|_\\___|___|
+  21:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****  *              embedded.connectivity.solutions===============
+  22:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****  *
+  23:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****  * \endcode
+  24:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****  *
+  25:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****  * \author    Miguel Luis ( Semtech )
+  26:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****  *
+  27:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****  * \author    Gregory Cristian ( Semtech )
+  28:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****  *
+  29:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****  * \author    Daniel Jaeckle ( STACKFORCE )
+  30:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****  */
+  31:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #include "LoRaMac.h"
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccalLql4.s 			page 2
+
+
+  32:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** 
+  33:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** // Setup regions
+  34:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #ifdef REGION_AS923
+  35:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #include "RegionAS923.h"
+  36:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define AS923_CASE                                 case LORAMAC_REGION_AS923:
+  37:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define AS923_IS_ACTIVE( )                         AS923_CASE { return true; }
+  38:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define AS923_GET_PHY_PARAM( )                     AS923_CASE { return RegionAS923GetPhyParam( getP
+  39:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define AS923_SET_BAND_TX_DONE( )                  AS923_CASE { RegionAS923SetBandTxDone( txDone );
+  40:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define AS923_INIT_DEFAULTS( )                     AS923_CASE { RegionAS923InitDefaults( params ); 
+  41:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define AS923_VERIFY( )                            AS923_CASE { return RegionAS923Verify( verify, p
+  42:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define AS923_APPLY_CF_LIST( )                     AS923_CASE { RegionAS923ApplyCFList( applyCFList
+  43:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define AS923_CHAN_MASK_SET( )                     AS923_CASE { return RegionAS923ChanMaskSet( chan
+  44:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define AS923_COMPUTE_RX_WINDOW_PARAMETERS( )      AS923_CASE { RegionAS923ComputeRxWindowParameter
+  45:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define AS923_RX_CONFIG( )                         AS923_CASE { return RegionAS923RxConfig( rxConfi
+  46:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define AS923_TX_CONFIG( )                         AS923_CASE { return RegionAS923TxConfig( txConfi
+  47:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define AS923_LINK_ADR_REQ( )                      AS923_CASE { return RegionAS923LinkAdrReq( linkA
+  48:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define AS923_RX_PARAM_SETUP_REQ( )                AS923_CASE { return RegionAS923RxParamSetupReq( 
+  49:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define AS923_NEW_CHANNEL_REQ( )                   AS923_CASE { return RegionAS923NewChannelReq( ne
+  50:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define AS923_TX_PARAM_SETUP_REQ( )                AS923_CASE { return RegionAS923TxParamSetupReq( 
+  51:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define AS923_DL_CHANNEL_REQ( )                    AS923_CASE { return RegionAS923DlChannelReq( dlC
+  52:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define AS923_ALTERNATE_DR( )                      AS923_CASE { return RegionAS923AlternateDr( curr
+  53:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define AS923_NEXT_CHANNEL( )                      AS923_CASE { return RegionAS923NextChannel( next
+  54:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define AS923_CHANNEL_ADD( )                       AS923_CASE { return RegionAS923ChannelAdd( chann
+  55:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define AS923_CHANNEL_REMOVE( )                    AS923_CASE { return RegionAS923ChannelsRemove( c
+  56:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define AS923_SET_CONTINUOUS_WAVE( )               AS923_CASE { RegionAS923SetContinuousWave( conti
+  57:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define AS923_APPLY_DR_OFFSET( )                   AS923_CASE { return RegionAS923ApplyDrOffset( do
+  58:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define AS923_RX_BEACON_SETUP( )                   AS923_CASE { RegionAS923RxBeaconSetup( rxBeaconS
+  59:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #else
+  60:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define AS923_IS_ACTIVE( )
+  61:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define AS923_GET_PHY_PARAM( )
+  62:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define AS923_SET_BAND_TX_DONE( )
+  63:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define AS923_INIT_DEFAULTS( )
+  64:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define AS923_GET_NVM_CTX( )
+  65:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define AS923_VERIFY( )
+  66:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define AS923_APPLY_CF_LIST( )
+  67:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define AS923_CHAN_MASK_SET( )
+  68:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define AS923_COMPUTE_RX_WINDOW_PARAMETERS( )
+  69:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define AS923_RX_CONFIG( )
+  70:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define AS923_TX_CONFIG( )
+  71:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define AS923_LINK_ADR_REQ( )
+  72:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define AS923_RX_PARAM_SETUP_REQ( )
+  73:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define AS923_NEW_CHANNEL_REQ( )
+  74:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define AS923_TX_PARAM_SETUP_REQ( )
+  75:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define AS923_DL_CHANNEL_REQ( )
+  76:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define AS923_ALTERNATE_DR( )
+  77:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define AS923_NEXT_CHANNEL( )
+  78:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define AS923_CHANNEL_ADD( )
+  79:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define AS923_CHANNEL_REMOVE( )
+  80:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define AS923_SET_CONTINUOUS_WAVE( )
+  81:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define AS923_APPLY_DR_OFFSET( )
+  82:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define AS923_RX_BEACON_SETUP( )
+  83:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #endif
+  84:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** 
+  85:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #ifdef REGION_AU915
+  86:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #include "RegionAU915.h"
+  87:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define AU915_CASE                                 case LORAMAC_REGION_AU915:
+  88:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define AU915_IS_ACTIVE( )                         AU915_CASE { return true; }
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccalLql4.s 			page 3
+
+
+  89:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define AU915_GET_PHY_PARAM( )                     AU915_CASE { return RegionAU915GetPhyParam( getP
+  90:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define AU915_SET_BAND_TX_DONE( )                  AU915_CASE { RegionAU915SetBandTxDone( txDone );
+  91:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define AU915_INIT_DEFAULTS( )                     AU915_CASE { RegionAU915InitDefaults( params ); 
+  92:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define AU915_VERIFY( )                            AU915_CASE { return RegionAU915Verify( verify, p
+  93:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define AU915_APPLY_CF_LIST( )                     AU915_CASE { RegionAU915ApplyCFList( applyCFList
+  94:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define AU915_CHAN_MASK_SET( )                     AU915_CASE { return RegionAU915ChanMaskSet( chan
+  95:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define AU915_COMPUTE_RX_WINDOW_PARAMETERS( )      AU915_CASE { RegionAU915ComputeRxWindowParameter
+  96:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define AU915_RX_CONFIG( )                         AU915_CASE { return RegionAU915RxConfig( rxConfi
+  97:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define AU915_TX_CONFIG( )                         AU915_CASE { return RegionAU915TxConfig( txConfi
+  98:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define AU915_LINK_ADR_REQ( )                      AU915_CASE { return RegionAU915LinkAdrReq( linkA
+  99:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define AU915_RX_PARAM_SETUP_REQ( )                AU915_CASE { return RegionAU915RxParamSetupReq( 
+ 100:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define AU915_NEW_CHANNEL_REQ( )                   AU915_CASE { return RegionAU915NewChannelReq( ne
+ 101:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define AU915_TX_PARAM_SETUP_REQ( )                AU915_CASE { return RegionAU915TxParamSetupReq( 
+ 102:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define AU915_DL_CHANNEL_REQ( )                    AU915_CASE { return RegionAU915DlChannelReq( dlC
+ 103:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define AU915_ALTERNATE_DR( )                      AU915_CASE { return RegionAU915AlternateDr( curr
+ 104:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define AU915_NEXT_CHANNEL( )                      AU915_CASE { return RegionAU915NextChannel( next
+ 105:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define AU915_CHANNEL_ADD( )                       AU915_CASE { return RegionAU915ChannelAdd( chann
+ 106:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define AU915_CHANNEL_REMOVE( )                    AU915_CASE { return RegionAU915ChannelsRemove( c
+ 107:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define AU915_SET_CONTINUOUS_WAVE( )               AU915_CASE { RegionAU915SetContinuousWave( conti
+ 108:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define AU915_APPLY_DR_OFFSET( )                   AU915_CASE { return RegionAU915ApplyDrOffset( do
+ 109:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define AU915_RX_BEACON_SETUP( )                   AU915_CASE { RegionAU915RxBeaconSetup( rxBeaconS
+ 110:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #else
+ 111:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define AU915_IS_ACTIVE( )
+ 112:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define AU915_GET_PHY_PARAM( )
+ 113:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define AU915_SET_BAND_TX_DONE( )
+ 114:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define AU915_INIT_DEFAULTS( )
+ 115:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define AU915_GET_NVM_CTX( )
+ 116:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define AU915_VERIFY( )
+ 117:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define AU915_APPLY_CF_LIST( )
+ 118:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define AU915_CHAN_MASK_SET( )
+ 119:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define AU915_COMPUTE_RX_WINDOW_PARAMETERS( )
+ 120:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define AU915_RX_CONFIG( )
+ 121:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define AU915_TX_CONFIG( )
+ 122:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define AU915_LINK_ADR_REQ( )
+ 123:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define AU915_RX_PARAM_SETUP_REQ( )
+ 124:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define AU915_NEW_CHANNEL_REQ( )
+ 125:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define AU915_TX_PARAM_SETUP_REQ( )
+ 126:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define AU915_DL_CHANNEL_REQ( )
+ 127:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define AU915_ALTERNATE_DR( )
+ 128:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define AU915_NEXT_CHANNEL( )
+ 129:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define AU915_CHANNEL_ADD( )
+ 130:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define AU915_CHANNEL_REMOVE( )
+ 131:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define AU915_SET_CONTINUOUS_WAVE( )
+ 132:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define AU915_APPLY_DR_OFFSET( )
+ 133:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define AU915_RX_BEACON_SETUP( )
+ 134:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #endif
+ 135:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** 
+ 136:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #ifdef REGION_CN470
+ 137:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #include "RegionCN470.h"
+ 138:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define CN470_CASE                                 case LORAMAC_REGION_CN470:
+ 139:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define CN470_IS_ACTIVE( )                         CN470_CASE { return true; }
+ 140:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define CN470_GET_PHY_PARAM( )                     CN470_CASE { return RegionCN470GetPhyParam( getP
+ 141:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define CN470_SET_BAND_TX_DONE( )                  CN470_CASE { RegionCN470SetBandTxDone( txDone );
+ 142:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define CN470_INIT_DEFAULTS( )                     CN470_CASE { RegionCN470InitDefaults( params ); 
+ 143:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define CN470_VERIFY( )                            CN470_CASE { return RegionCN470Verify( verify, p
+ 144:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define CN470_APPLY_CF_LIST( )                     CN470_CASE { RegionCN470ApplyCFList( applyCFList
+ 145:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define CN470_CHAN_MASK_SET( )                     CN470_CASE { return RegionCN470ChanMaskSet( chan
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccalLql4.s 			page 4
+
+
+ 146:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define CN470_COMPUTE_RX_WINDOW_PARAMETERS( )      CN470_CASE { RegionCN470ComputeRxWindowParameter
+ 147:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define CN470_RX_CONFIG( )                         CN470_CASE { return RegionCN470RxConfig( rxConfi
+ 148:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define CN470_TX_CONFIG( )                         CN470_CASE { return RegionCN470TxConfig( txConfi
+ 149:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define CN470_LINK_ADR_REQ( )                      CN470_CASE { return RegionCN470LinkAdrReq( linkA
+ 150:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define CN470_RX_PARAM_SETUP_REQ( )                CN470_CASE { return RegionCN470RxParamSetupReq( 
+ 151:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define CN470_NEW_CHANNEL_REQ( )                   CN470_CASE { return RegionCN470NewChannelReq( ne
+ 152:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define CN470_TX_PARAM_SETUP_REQ( )                CN470_CASE { return RegionCN470TxParamSetupReq( 
+ 153:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define CN470_DL_CHANNEL_REQ( )                    CN470_CASE { return RegionCN470DlChannelReq( dlC
+ 154:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define CN470_ALTERNATE_DR( )                      CN470_CASE { return RegionCN470AlternateDr( curr
+ 155:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define CN470_NEXT_CHANNEL( )                      CN470_CASE { return RegionCN470NextChannel( next
+ 156:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define CN470_CHANNEL_ADD( )                       CN470_CASE { return RegionCN470ChannelAdd( chann
+ 157:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define CN470_CHANNEL_REMOVE( )                    CN470_CASE { return RegionCN470ChannelsRemove( c
+ 158:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define CN470_SET_CONTINUOUS_WAVE( )               CN470_CASE { RegionCN470SetContinuousWave( conti
+ 159:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define CN470_APPLY_DR_OFFSET( )                   CN470_CASE { return RegionCN470ApplyDrOffset( do
+ 160:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define CN470_RX_BEACON_SETUP( )                   CN470_CASE { RegionCN470RxBeaconSetup( rxBeaconS
+ 161:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #else
+ 162:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define CN470_IS_ACTIVE( )
+ 163:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define CN470_GET_PHY_PARAM( )
+ 164:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define CN470_SET_BAND_TX_DONE( )
+ 165:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define CN470_INIT_DEFAULTS( )
+ 166:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define CN470_GET_NVM_CTX( )
+ 167:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define CN470_VERIFY( )
+ 168:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define CN470_APPLY_CF_LIST( )
+ 169:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define CN470_CHAN_MASK_SET( )
+ 170:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define CN470_COMPUTE_RX_WINDOW_PARAMETERS( )
+ 171:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define CN470_RX_CONFIG( )
+ 172:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define CN470_TX_CONFIG( )
+ 173:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define CN470_LINK_ADR_REQ( )
+ 174:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define CN470_RX_PARAM_SETUP_REQ( )
+ 175:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define CN470_NEW_CHANNEL_REQ( )
+ 176:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define CN470_TX_PARAM_SETUP_REQ( )
+ 177:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define CN470_DL_CHANNEL_REQ( )
+ 178:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define CN470_ALTERNATE_DR( )
+ 179:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define CN470_NEXT_CHANNEL( )
+ 180:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define CN470_CHANNEL_ADD( )
+ 181:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define CN470_CHANNEL_REMOVE( )
+ 182:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define CN470_SET_CONTINUOUS_WAVE( )
+ 183:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define CN470_APPLY_DR_OFFSET( )
+ 184:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define CN470_RX_BEACON_SETUP( )
+ 185:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #endif
+ 186:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** 
+ 187:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #ifdef REGION_CN779
+ 188:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #include "RegionCN779.h"
+ 189:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define CN779_CASE                                 case LORAMAC_REGION_CN779:
+ 190:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define CN779_IS_ACTIVE( )                         CN779_CASE { return true; }
+ 191:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define CN779_GET_PHY_PARAM( )                     CN779_CASE { return RegionCN779GetPhyParam( getP
+ 192:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define CN779_SET_BAND_TX_DONE( )                  CN779_CASE { RegionCN779SetBandTxDone( txDone );
+ 193:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define CN779_INIT_DEFAULTS( )                     CN779_CASE { RegionCN779InitDefaults( params ); 
+ 194:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define CN779_VERIFY( )                            CN779_CASE { return RegionCN779Verify( verify, p
+ 195:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define CN779_APPLY_CF_LIST( )                     CN779_CASE { RegionCN779ApplyCFList( applyCFList
+ 196:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define CN779_CHAN_MASK_SET( )                     CN779_CASE { return RegionCN779ChanMaskSet( chan
+ 197:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define CN779_COMPUTE_RX_WINDOW_PARAMETERS( )      CN779_CASE { RegionCN779ComputeRxWindowParameter
+ 198:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define CN779_RX_CONFIG( )                         CN779_CASE { return RegionCN779RxConfig( rxConfi
+ 199:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define CN779_TX_CONFIG( )                         CN779_CASE { return RegionCN779TxConfig( txConfi
+ 200:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define CN779_LINK_ADR_REQ( )                      CN779_CASE { return RegionCN779LinkAdrReq( linkA
+ 201:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define CN779_RX_PARAM_SETUP_REQ( )                CN779_CASE { return RegionCN779RxParamSetupReq( 
+ 202:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define CN779_NEW_CHANNEL_REQ( )                   CN779_CASE { return RegionCN779NewChannelReq( ne
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccalLql4.s 			page 5
+
+
+ 203:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define CN779_TX_PARAM_SETUP_REQ( )                CN779_CASE { return RegionCN779TxParamSetupReq( 
+ 204:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define CN779_DL_CHANNEL_REQ( )                    CN779_CASE { return RegionCN779DlChannelReq( dlC
+ 205:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define CN779_ALTERNATE_DR( )                      CN779_CASE { return RegionCN779AlternateDr( curr
+ 206:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define CN779_NEXT_CHANNEL( )                      CN779_CASE { return RegionCN779NextChannel( next
+ 207:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define CN779_CHANNEL_ADD( )                       CN779_CASE { return RegionCN779ChannelAdd( chann
+ 208:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define CN779_CHANNEL_REMOVE( )                    CN779_CASE { return RegionCN779ChannelsRemove( c
+ 209:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define CN779_SET_CONTINUOUS_WAVE( )               CN779_CASE { RegionCN779SetContinuousWave( conti
+ 210:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define CN779_APPLY_DR_OFFSET( )                   CN779_CASE { return RegionCN779ApplyDrOffset( do
+ 211:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define CN779_RX_BEACON_SETUP( )                   CN779_CASE { RegionCN779RxBeaconSetup( rxBeaconS
+ 212:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #else
+ 213:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define CN779_IS_ACTIVE( )
+ 214:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define CN779_GET_PHY_PARAM( )
+ 215:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define CN779_SET_BAND_TX_DONE( )
+ 216:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define CN779_INIT_DEFAULTS( )
+ 217:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define CN779_GET_NVM_CTX( )
+ 218:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define CN779_VERIFY( )
+ 219:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define CN779_APPLY_CF_LIST( )
+ 220:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define CN779_CHAN_MASK_SET( )
+ 221:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define CN779_COMPUTE_RX_WINDOW_PARAMETERS( )
+ 222:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define CN779_RX_CONFIG( )
+ 223:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define CN779_TX_CONFIG( )
+ 224:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define CN779_LINK_ADR_REQ( )
+ 225:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define CN779_RX_PARAM_SETUP_REQ( )
+ 226:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define CN779_NEW_CHANNEL_REQ( )
+ 227:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define CN779_TX_PARAM_SETUP_REQ( )
+ 228:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define CN779_DL_CHANNEL_REQ( )
+ 229:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define CN779_ALTERNATE_DR( )
+ 230:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define CN779_NEXT_CHANNEL( )
+ 231:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define CN779_CHANNEL_ADD( )
+ 232:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define CN779_CHANNEL_REMOVE( )
+ 233:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define CN779_SET_CONTINUOUS_WAVE( )
+ 234:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define CN779_APPLY_DR_OFFSET( )
+ 235:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define CN779_RX_BEACON_SETUP( )
+ 236:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #endif
+ 237:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** 
+ 238:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #ifdef REGION_EU433
+ 239:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #include "RegionEU433.h"
+ 240:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define EU433_CASE                                 case LORAMAC_REGION_EU433:
+ 241:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define EU433_IS_ACTIVE( )                         EU433_CASE { return true; }
+ 242:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define EU433_GET_PHY_PARAM( )                     EU433_CASE { return RegionEU433GetPhyParam( getP
+ 243:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define EU433_SET_BAND_TX_DONE( )                  EU433_CASE { RegionEU433SetBandTxDone( txDone );
+ 244:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define EU433_INIT_DEFAULTS( )                     EU433_CASE { RegionEU433InitDefaults( params ); 
+ 245:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define EU433_VERIFY( )                            EU433_CASE { return RegionEU433Verify( verify, p
+ 246:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define EU433_APPLY_CF_LIST( )                     EU433_CASE { RegionEU433ApplyCFList( applyCFList
+ 247:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define EU433_CHAN_MASK_SET( )                     EU433_CASE { return RegionEU433ChanMaskSet( chan
+ 248:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define EU433_COMPUTE_RX_WINDOW_PARAMETERS( )      EU433_CASE { RegionEU433ComputeRxWindowParameter
+ 249:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define EU433_RX_CONFIG( )                         EU433_CASE { return RegionEU433RxConfig( rxConfi
+ 250:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define EU433_TX_CONFIG( )                         EU433_CASE { return RegionEU433TxConfig( txConfi
+ 251:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define EU433_LINK_ADR_REQ( )                      EU433_CASE { return RegionEU433LinkAdrReq( linkA
+ 252:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define EU433_RX_PARAM_SETUP_REQ( )                EU433_CASE { return RegionEU433RxParamSetupReq( 
+ 253:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define EU433_NEW_CHANNEL_REQ( )                   EU433_CASE { return RegionEU433NewChannelReq( ne
+ 254:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define EU433_TX_PARAM_SETUP_REQ( )                EU433_CASE { return RegionEU433TxParamSetupReq( 
+ 255:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define EU433_DL_CHANNEL_REQ( )                    EU433_CASE { return RegionEU433DlChannelReq( dlC
+ 256:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define EU433_ALTERNATE_DR( )                      EU433_CASE { return RegionEU433AlternateDr( curr
+ 257:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define EU433_NEXT_CHANNEL( )                      EU433_CASE { return RegionEU433NextChannel( next
+ 258:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define EU433_CHANNEL_ADD( )                       EU433_CASE { return RegionEU433ChannelAdd( chann
+ 259:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define EU433_CHANNEL_REMOVE( )                    EU433_CASE { return RegionEU433ChannelsRemove( c
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccalLql4.s 			page 6
+
+
+ 260:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define EU433_SET_CONTINUOUS_WAVE( )               EU433_CASE { RegionEU433SetContinuousWave( conti
+ 261:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define EU433_APPLY_DR_OFFSET( )                   EU433_CASE { return RegionEU433ApplyDrOffset( do
+ 262:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define EU433_RX_BEACON_SETUP( )                   EU433_CASE { RegionEU433RxBeaconSetup( rxBeaconS
+ 263:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #else
+ 264:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define EU433_IS_ACTIVE( )
+ 265:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define EU433_GET_PHY_PARAM( )
+ 266:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define EU433_SET_BAND_TX_DONE( )
+ 267:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define EU433_INIT_DEFAULTS( )
+ 268:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define EU433_GET_NVM_CTX( )
+ 269:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define EU433_VERIFY( )
+ 270:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define EU433_APPLY_CF_LIST( )
+ 271:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define EU433_CHAN_MASK_SET( )
+ 272:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define EU433_COMPUTE_RX_WINDOW_PARAMETERS( )
+ 273:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define EU433_RX_CONFIG( )
+ 274:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define EU433_TX_CONFIG( )
+ 275:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define EU433_LINK_ADR_REQ( )
+ 276:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define EU433_RX_PARAM_SETUP_REQ( )
+ 277:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define EU433_NEW_CHANNEL_REQ( )
+ 278:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define EU433_TX_PARAM_SETUP_REQ( )
+ 279:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define EU433_DL_CHANNEL_REQ( )
+ 280:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define EU433_ALTERNATE_DR( )
+ 281:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define EU433_NEXT_CHANNEL( )
+ 282:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define EU433_CHANNEL_ADD( )
+ 283:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define EU433_CHANNEL_REMOVE( )
+ 284:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define EU433_SET_CONTINUOUS_WAVE( )
+ 285:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define EU433_APPLY_DR_OFFSET( )
+ 286:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define EU433_RX_BEACON_SETUP( )
+ 287:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #endif
+ 288:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** 
+ 289:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #ifdef REGION_EU868
+ 290:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #include "RegionEU868.h"
+ 291:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define EU868_CASE                                 case LORAMAC_REGION_EU868:
+ 292:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define EU868_IS_ACTIVE( )                         EU868_CASE { return true; }
+ 293:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define EU868_GET_PHY_PARAM( )                     EU868_CASE { return RegionEU868GetPhyParam( getP
+ 294:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define EU868_SET_BAND_TX_DONE( )                  EU868_CASE { RegionEU868SetBandTxDone( txDone );
+ 295:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define EU868_INIT_DEFAULTS( )                     EU868_CASE { RegionEU868InitDefaults( params ); 
+ 296:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define EU868_VERIFY( )                            EU868_CASE { return RegionEU868Verify( verify, p
+ 297:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define EU868_APPLY_CF_LIST( )                     EU868_CASE { RegionEU868ApplyCFList( applyCFList
+ 298:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define EU868_CHAN_MASK_SET( )                     EU868_CASE { return RegionEU868ChanMaskSet( chan
+ 299:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define EU868_COMPUTE_RX_WINDOW_PARAMETERS( )      EU868_CASE { RegionEU868ComputeRxWindowParameter
+ 300:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define EU868_RX_CONFIG( )                         EU868_CASE { return RegionEU868RxConfig( rxConfi
+ 301:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define EU868_TX_CONFIG( )                         EU868_CASE { return RegionEU868TxConfig( txConfi
+ 302:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define EU868_LINK_ADR_REQ( )                      EU868_CASE { return RegionEU868LinkAdrReq( linkA
+ 303:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define EU868_RX_PARAM_SETUP_REQ( )                EU868_CASE { return RegionEU868RxParamSetupReq( 
+ 304:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define EU868_NEW_CHANNEL_REQ( )                   EU868_CASE { return RegionEU868NewChannelReq( ne
+ 305:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define EU868_TX_PARAM_SETUP_REQ( )                EU868_CASE { return RegionEU868TxParamSetupReq( 
+ 306:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define EU868_DL_CHANNEL_REQ( )                    EU868_CASE { return RegionEU868DlChannelReq( dlC
+ 307:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define EU868_ALTERNATE_DR( )                      EU868_CASE { return RegionEU868AlternateDr( curr
+ 308:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define EU868_NEXT_CHANNEL( )                      EU868_CASE { return RegionEU868NextChannel( next
+ 309:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define EU868_CHANNEL_ADD( )                       EU868_CASE { return RegionEU868ChannelAdd( chann
+ 310:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define EU868_CHANNEL_REMOVE( )                    EU868_CASE { return RegionEU868ChannelsRemove( c
+ 311:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define EU868_SET_CONTINUOUS_WAVE( )               EU868_CASE { RegionEU868SetContinuousWave( conti
+ 312:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define EU868_APPLY_DR_OFFSET( )                   EU868_CASE { return RegionEU868ApplyDrOffset( do
+ 313:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define EU868_RX_BEACON_SETUP( )                   EU868_CASE { RegionEU868RxBeaconSetup( rxBeaconS
+ 314:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #else
+ 315:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define EU868_IS_ACTIVE( )
+ 316:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define EU868_GET_PHY_PARAM( )
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccalLql4.s 			page 7
+
+
+ 317:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define EU868_SET_BAND_TX_DONE( )
+ 318:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define EU868_INIT_DEFAULTS( )
+ 319:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define EU868_GET_NVM_CTX( )
+ 320:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define EU868_VERIFY( )
+ 321:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define EU868_APPLY_CF_LIST( )
+ 322:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define EU868_CHAN_MASK_SET( )
+ 323:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define EU868_COMPUTE_RX_WINDOW_PARAMETERS( )
+ 324:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define EU868_RX_CONFIG( )
+ 325:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define EU868_TX_CONFIG( )
+ 326:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define EU868_LINK_ADR_REQ( )
+ 327:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define EU868_RX_PARAM_SETUP_REQ( )
+ 328:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define EU868_NEW_CHANNEL_REQ( )
+ 329:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define EU868_TX_PARAM_SETUP_REQ( )
+ 330:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define EU868_DL_CHANNEL_REQ( )
+ 331:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define EU868_ALTERNATE_DR( )
+ 332:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define EU868_NEXT_CHANNEL( )
+ 333:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define EU868_CHANNEL_ADD( )
+ 334:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define EU868_CHANNEL_REMOVE( )
+ 335:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define EU868_SET_CONTINUOUS_WAVE( )
+ 336:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define EU868_APPLY_DR_OFFSET( )
+ 337:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define EU868_RX_BEACON_SETUP( )
+ 338:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #endif
+ 339:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** 
+ 340:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #ifdef REGION_KR920
+ 341:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #include "RegionKR920.h"
+ 342:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define KR920_CASE                                 case LORAMAC_REGION_KR920:
+ 343:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define KR920_IS_ACTIVE( )                         KR920_CASE { return true; }
+ 344:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define KR920_GET_PHY_PARAM( )                     KR920_CASE { return RegionKR920GetPhyParam( getP
+ 345:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define KR920_SET_BAND_TX_DONE( )                  KR920_CASE { RegionKR920SetBandTxDone( txDone );
+ 346:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define KR920_INIT_DEFAULTS( )                     KR920_CASE { RegionKR920InitDefaults( params ); 
+ 347:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define KR920_VERIFY( )                            KR920_CASE { return RegionKR920Verify( verify, p
+ 348:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define KR920_APPLY_CF_LIST( )                     KR920_CASE { RegionKR920ApplyCFList( applyCFList
+ 349:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define KR920_CHAN_MASK_SET( )                     KR920_CASE { return RegionKR920ChanMaskSet( chan
+ 350:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define KR920_COMPUTE_RX_WINDOW_PARAMETERS( )      KR920_CASE { RegionKR920ComputeRxWindowParameter
+ 351:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define KR920_RX_CONFIG( )                         KR920_CASE { return RegionKR920RxConfig( rxConfi
+ 352:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define KR920_TX_CONFIG( )                         KR920_CASE { return RegionKR920TxConfig( txConfi
+ 353:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define KR920_LINK_ADR_REQ( )                      KR920_CASE { return RegionKR920LinkAdrReq( linkA
+ 354:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define KR920_RX_PARAM_SETUP_REQ( )                KR920_CASE { return RegionKR920RxParamSetupReq( 
+ 355:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define KR920_NEW_CHANNEL_REQ( )                   KR920_CASE { return RegionKR920NewChannelReq( ne
+ 356:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define KR920_TX_PARAM_SETUP_REQ( )                KR920_CASE { return RegionKR920TxParamSetupReq( 
+ 357:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define KR920_DL_CHANNEL_REQ( )                    KR920_CASE { return RegionKR920DlChannelReq( dlC
+ 358:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define KR920_ALTERNATE_DR( )                      KR920_CASE { return RegionKR920AlternateDr( curr
+ 359:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define KR920_NEXT_CHANNEL( )                      KR920_CASE { return RegionKR920NextChannel( next
+ 360:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define KR920_CHANNEL_ADD( )                       KR920_CASE { return RegionKR920ChannelAdd( chann
+ 361:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define KR920_CHANNEL_REMOVE( )                    KR920_CASE { return RegionKR920ChannelsRemove( c
+ 362:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define KR920_SET_CONTINUOUS_WAVE( )               KR920_CASE { RegionKR920SetContinuousWave( conti
+ 363:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define KR920_APPLY_DR_OFFSET( )                   KR920_CASE { return RegionKR920ApplyDrOffset( do
+ 364:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define KR920_RX_BEACON_SETUP( )                   KR920_CASE { RegionKR920RxBeaconSetup( rxBeaconS
+ 365:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #else
+ 366:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define KR920_IS_ACTIVE( )
+ 367:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define KR920_GET_PHY_PARAM( )
+ 368:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define KR920_SET_BAND_TX_DONE( )
+ 369:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define KR920_INIT_DEFAULTS( )
+ 370:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define KR920_GET_NVM_CTX( )
+ 371:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define KR920_VERIFY( )
+ 372:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define KR920_APPLY_CF_LIST( )
+ 373:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define KR920_CHAN_MASK_SET( )
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccalLql4.s 			page 8
+
+
+ 374:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define KR920_COMPUTE_RX_WINDOW_PARAMETERS( )
+ 375:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define KR920_RX_CONFIG( )
+ 376:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define KR920_TX_CONFIG( )
+ 377:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define KR920_LINK_ADR_REQ( )
+ 378:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define KR920_RX_PARAM_SETUP_REQ( )
+ 379:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define KR920_NEW_CHANNEL_REQ( )
+ 380:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define KR920_TX_PARAM_SETUP_REQ( )
+ 381:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define KR920_DL_CHANNEL_REQ( )
+ 382:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define KR920_ALTERNATE_DR( )
+ 383:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define KR920_NEXT_CHANNEL( )
+ 384:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define KR920_CHANNEL_ADD( )
+ 385:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define KR920_CHANNEL_REMOVE( )
+ 386:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define KR920_SET_CONTINUOUS_WAVE( )
+ 387:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define KR920_APPLY_DR_OFFSET( )
+ 388:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define KR920_RX_BEACON_SETUP( )
+ 389:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #endif
+ 390:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** 
+ 391:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #ifdef REGION_IN865
+ 392:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #include "RegionIN865.h"
+ 393:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define IN865_CASE                                 case LORAMAC_REGION_IN865:
+ 394:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define IN865_IS_ACTIVE( )                         IN865_CASE { return true; }
+ 395:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define IN865_GET_PHY_PARAM( )                     IN865_CASE { return RegionIN865GetPhyParam( getP
+ 396:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define IN865_SET_BAND_TX_DONE( )                  IN865_CASE { RegionIN865SetBandTxDone( txDone );
+ 397:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define IN865_INIT_DEFAULTS( )                     IN865_CASE { RegionIN865InitDefaults( params ); 
+ 398:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define IN865_VERIFY( )                            IN865_CASE { return RegionIN865Verify( verify, p
+ 399:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define IN865_APPLY_CF_LIST( )                     IN865_CASE { RegionIN865ApplyCFList( applyCFList
+ 400:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define IN865_CHAN_MASK_SET( )                     IN865_CASE { return RegionIN865ChanMaskSet( chan
+ 401:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define IN865_COMPUTE_RX_WINDOW_PARAMETERS( )      IN865_CASE { RegionIN865ComputeRxWindowParameter
+ 402:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define IN865_RX_CONFIG( )                         IN865_CASE { return RegionIN865RxConfig( rxConfi
+ 403:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define IN865_TX_CONFIG( )                         IN865_CASE { return RegionIN865TxConfig( txConfi
+ 404:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define IN865_LINK_ADR_REQ( )                      IN865_CASE { return RegionIN865LinkAdrReq( linkA
+ 405:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define IN865_RX_PARAM_SETUP_REQ( )                IN865_CASE { return RegionIN865RxParamSetupReq( 
+ 406:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define IN865_NEW_CHANNEL_REQ( )                   IN865_CASE { return RegionIN865NewChannelReq( ne
+ 407:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define IN865_TX_PARAM_SETUP_REQ( )                IN865_CASE { return RegionIN865TxParamSetupReq( 
+ 408:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define IN865_DL_CHANNEL_REQ( )                    IN865_CASE { return RegionIN865DlChannelReq( dlC
+ 409:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define IN865_ALTERNATE_DR( )                      IN865_CASE { return RegionIN865AlternateDr( curr
+ 410:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define IN865_NEXT_CHANNEL( )                      IN865_CASE { return RegionIN865NextChannel( next
+ 411:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define IN865_CHANNEL_ADD( )                       IN865_CASE { return RegionIN865ChannelAdd( chann
+ 412:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define IN865_CHANNEL_REMOVE( )                    IN865_CASE { return RegionIN865ChannelsRemove( c
+ 413:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define IN865_SET_CONTINUOUS_WAVE( )               IN865_CASE { RegionIN865SetContinuousWave( conti
+ 414:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define IN865_APPLY_DR_OFFSET( )                   IN865_CASE { return RegionIN865ApplyDrOffset( do
+ 415:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define IN865_RX_BEACON_SETUP( )                   IN865_CASE { RegionIN865RxBeaconSetup( rxBeaconS
+ 416:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #else
+ 417:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define IN865_IS_ACTIVE( )
+ 418:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define IN865_GET_PHY_PARAM( )
+ 419:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define IN865_SET_BAND_TX_DONE( )
+ 420:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define IN865_INIT_DEFAULTS( )
+ 421:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define IN865_GET_NVM_CTX( )
+ 422:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define IN865_VERIFY( )
+ 423:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define IN865_APPLY_CF_LIST( )
+ 424:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define IN865_CHAN_MASK_SET( )
+ 425:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define IN865_COMPUTE_RX_WINDOW_PARAMETERS( )
+ 426:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define IN865_RX_CONFIG( )
+ 427:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define IN865_TX_CONFIG( )
+ 428:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define IN865_LINK_ADR_REQ( )
+ 429:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define IN865_RX_PARAM_SETUP_REQ( )
+ 430:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define IN865_NEW_CHANNEL_REQ( )
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccalLql4.s 			page 9
+
+
+ 431:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define IN865_TX_PARAM_SETUP_REQ( )
+ 432:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define IN865_DL_CHANNEL_REQ( )
+ 433:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define IN865_ALTERNATE_DR( )
+ 434:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define IN865_NEXT_CHANNEL( )
+ 435:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define IN865_CHANNEL_ADD( )
+ 436:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define IN865_CHANNEL_REMOVE( )
+ 437:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define IN865_SET_CONTINUOUS_WAVE( )
+ 438:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define IN865_APPLY_DR_OFFSET( )
+ 439:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define IN865_RX_BEACON_SETUP( )
+ 440:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #endif
+ 441:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** 
+ 442:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #ifdef REGION_US915
+ 443:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #include "RegionUS915.h"
+ 444:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define US915_CASE                                 case LORAMAC_REGION_US915:
+ 445:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define US915_IS_ACTIVE( )                         US915_CASE { return true; }
+ 446:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define US915_GET_PHY_PARAM( )                     US915_CASE { return RegionUS915GetPhyParam( getP
+ 447:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define US915_SET_BAND_TX_DONE( )                  US915_CASE { RegionUS915SetBandTxDone( txDone );
+ 448:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define US915_INIT_DEFAULTS( )                     US915_CASE { RegionUS915InitDefaults( params ); 
+ 449:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define US915_VERIFY( )                            US915_CASE { return RegionUS915Verify( verify, p
+ 450:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define US915_APPLY_CF_LIST( )                     US915_CASE { RegionUS915ApplyCFList( applyCFList
+ 451:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define US915_CHAN_MASK_SET( )                     US915_CASE { return RegionUS915ChanMaskSet( chan
+ 452:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define US915_COMPUTE_RX_WINDOW_PARAMETERS( )      US915_CASE { RegionUS915ComputeRxWindowParameter
+ 453:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define US915_RX_CONFIG( )                         US915_CASE { return RegionUS915RxConfig( rxConfi
+ 454:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define US915_TX_CONFIG( )                         US915_CASE { return RegionUS915TxConfig( txConfi
+ 455:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define US915_LINK_ADR_REQ( )                      US915_CASE { return RegionUS915LinkAdrReq( linkA
+ 456:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define US915_RX_PARAM_SETUP_REQ( )                US915_CASE { return RegionUS915RxParamSetupReq( 
+ 457:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define US915_NEW_CHANNEL_REQ( )                   US915_CASE { return RegionUS915NewChannelReq( ne
+ 458:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define US915_TX_PARAM_SETUP_REQ( )                US915_CASE { return RegionUS915TxParamSetupReq( 
+ 459:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define US915_DL_CHANNEL_REQ( )                    US915_CASE { return RegionUS915DlChannelReq( dlC
+ 460:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define US915_ALTERNATE_DR( )                      US915_CASE { return RegionUS915AlternateDr( curr
+ 461:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define US915_NEXT_CHANNEL( )                      US915_CASE { return RegionUS915NextChannel( next
+ 462:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define US915_CHANNEL_ADD( )                       US915_CASE { return RegionUS915ChannelAdd( chann
+ 463:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define US915_CHANNEL_REMOVE( )                    US915_CASE { return RegionUS915ChannelsRemove( c
+ 464:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define US915_SET_CONTINUOUS_WAVE( )               US915_CASE { RegionUS915SetContinuousWave( conti
+ 465:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define US915_APPLY_DR_OFFSET( )                   US915_CASE { return RegionUS915ApplyDrOffset( do
+ 466:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define US915_RX_BEACON_SETUP( )                   US915_CASE { RegionUS915RxBeaconSetup( rxBeaconS
+ 467:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #else
+ 468:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define US915_IS_ACTIVE( )
+ 469:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define US915_GET_PHY_PARAM( )
+ 470:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define US915_SET_BAND_TX_DONE( )
+ 471:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define US915_INIT_DEFAULTS( )
+ 472:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define US915_GET_NVM_CTX( )
+ 473:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define US915_VERIFY( )
+ 474:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define US915_APPLY_CF_LIST( )
+ 475:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define US915_CHAN_MASK_SET( )
+ 476:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define US915_COMPUTE_RX_WINDOW_PARAMETERS( )
+ 477:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define US915_RX_CONFIG( )
+ 478:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define US915_TX_CONFIG( )
+ 479:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define US915_LINK_ADR_REQ( )
+ 480:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define US915_RX_PARAM_SETUP_REQ( )
+ 481:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define US915_NEW_CHANNEL_REQ( )
+ 482:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define US915_TX_PARAM_SETUP_REQ( )
+ 483:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define US915_DL_CHANNEL_REQ( )
+ 484:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define US915_ALTERNATE_DR( )
+ 485:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define US915_NEXT_CHANNEL( )
+ 486:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define US915_CHANNEL_ADD( )
+ 487:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define US915_CHANNEL_REMOVE( )
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccalLql4.s 			page 10
+
+
+ 488:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define US915_SET_CONTINUOUS_WAVE( )
+ 489:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define US915_APPLY_DR_OFFSET( )
+ 490:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define US915_RX_BEACON_SETUP( )
+ 491:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #endif
+ 492:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** 
+ 493:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #ifdef REGION_RU864
+ 494:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #include "RegionRU864.h"
+ 495:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define RU864_CASE                                 case LORAMAC_REGION_RU864:
+ 496:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define RU864_IS_ACTIVE( )                         RU864_CASE { return true; }
+ 497:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define RU864_GET_PHY_PARAM( )                     RU864_CASE { return RegionRU864GetPhyParam( getP
+ 498:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define RU864_SET_BAND_TX_DONE( )                  RU864_CASE { RegionRU864SetBandTxDone( txDone );
+ 499:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define RU864_INIT_DEFAULTS( )                     RU864_CASE { RegionRU864InitDefaults( params ); 
+ 500:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define RU864_VERIFY( )                            RU864_CASE { return RegionRU864Verify( verify, p
+ 501:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define RU864_APPLY_CF_LIST( )                     RU864_CASE { RegionRU864ApplyCFList( applyCFList
+ 502:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define RU864_CHAN_MASK_SET( )                     RU864_CASE { return RegionRU864ChanMaskSet( chan
+ 503:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define RU864_COMPUTE_RX_WINDOW_PARAMETERS( )      RU864_CASE { RegionRU864ComputeRxWindowParameter
+ 504:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define RU864_RX_CONFIG( )                         RU864_CASE { return RegionRU864RxConfig( rxConfi
+ 505:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define RU864_TX_CONFIG( )                         RU864_CASE { return RegionRU864TxConfig( txConfi
+ 506:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define RU864_LINK_ADR_REQ( )                      RU864_CASE { return RegionRU864LinkAdrReq( linkA
+ 507:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define RU864_RX_PARAM_SETUP_REQ( )                RU864_CASE { return RegionRU864RxParamSetupReq( 
+ 508:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define RU864_NEW_CHANNEL_REQ( )                   RU864_CASE { return RegionRU864NewChannelReq( ne
+ 509:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define RU864_TX_PARAM_SETUP_REQ( )                RU864_CASE { return RegionRU864TxParamSetupReq( 
+ 510:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define RU864_DL_CHANNEL_REQ( )                    RU864_CASE { return RegionRU864DlChannelReq( dlC
+ 511:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define RU864_ALTERNATE_DR( )                      RU864_CASE { return RegionRU864AlternateDr( curr
+ 512:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define RU864_NEXT_CHANNEL( )                      RU864_CASE { return RegionRU864NextChannel( next
+ 513:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define RU864_CHANNEL_ADD( )                       RU864_CASE { return RegionRU864ChannelAdd( chann
+ 514:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define RU864_CHANNEL_REMOVE( )                    RU864_CASE { return RegionRU864ChannelsRemove( c
+ 515:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define RU864_SET_CONTINUOUS_WAVE( )               RU864_CASE { RegionRU864SetContinuousWave( conti
+ 516:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define RU864_APPLY_DR_OFFSET( )                   RU864_CASE { return RegionRU864ApplyDrOffset( do
+ 517:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define RU864_RX_BEACON_SETUP( )                   RU864_CASE { RegionRU864RxBeaconSetup( rxBeaconS
+ 518:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #else
+ 519:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define RU864_IS_ACTIVE( )
+ 520:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define RU864_GET_PHY_PARAM( )
+ 521:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define RU864_SET_BAND_TX_DONE( )
+ 522:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define RU864_INIT_DEFAULTS( )
+ 523:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define RU864_GET_NVM_CTX( )
+ 524:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define RU864_VERIFY( )
+ 525:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define RU864_APPLY_CF_LIST( )
+ 526:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define RU864_CHAN_MASK_SET( )
+ 527:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define RU864_COMPUTE_RX_WINDOW_PARAMETERS( )
+ 528:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define RU864_RX_CONFIG( )
+ 529:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define RU864_TX_CONFIG( )
+ 530:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define RU864_LINK_ADR_REQ( )
+ 531:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define RU864_RX_PARAM_SETUP_REQ( )
+ 532:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define RU864_NEW_CHANNEL_REQ( )
+ 533:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define RU864_TX_PARAM_SETUP_REQ( )
+ 534:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define RU864_DL_CHANNEL_REQ( )
+ 535:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define RU864_ALTERNATE_DR( )
+ 536:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define RU864_NEXT_CHANNEL( )
+ 537:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define RU864_CHANNEL_ADD( )
+ 538:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define RU864_CHANNEL_REMOVE( )
+ 539:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define RU864_SET_CONTINUOUS_WAVE( )
+ 540:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define RU864_APPLY_DR_OFFSET( )
+ 541:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #define RU864_RX_BEACON_SETUP( )
+ 542:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** #endif
+ 543:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** 
+ 544:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** bool RegionIsActive( LoRaMacRegion_t region )
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccalLql4.s 			page 11
+
+
+ 545:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** {
+  28              		.loc 1 545 1 view -0
+  29              		.cfi_startproc
+  30              		@ args = 0, pretend = 0, frame = 0
+  31              		@ frame_needed = 0, uses_anonymous_args = 0
+  32              		@ link register save eliminated.
+ 546:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****     switch( region )
+  33              		.loc 1 546 5 view .LVU1
+  34 0000 0828     		cmp	r0, #8
+  35 0002 01D0     		beq	.L4
+ 547:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****     {
+ 548:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         AS923_IS_ACTIVE( );
+ 549:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         AU915_IS_ACTIVE( );
+ 550:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         CN470_IS_ACTIVE( );
+ 551:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         CN779_IS_ACTIVE( );
+ 552:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         EU433_IS_ACTIVE( );
+ 553:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         EU868_IS_ACTIVE( );
+ 554:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         KR920_IS_ACTIVE( );
+ 555:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         IN865_IS_ACTIVE( );
+ 556:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         US915_IS_ACTIVE( );
+ 557:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         RU864_IS_ACTIVE( );
+ 558:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         default:
+ 559:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         {
+ 560:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****             return false;
+  36              		.loc 1 560 20 is_stmt 0 view .LVU2
+  37 0004 0020     		movs	r0, #0
+  38              	.LVL1:
+ 561:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         }
+ 562:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****     }
+ 563:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** }
+  39              		.loc 1 563 1 view .LVU3
+  40 0006 7047     		bx	lr
+  41              	.LVL2:
+  42              	.L4:
+ 556:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         RU864_IS_ACTIVE( );
+  43              		.loc 1 556 9 view .LVU4
+  44 0008 0120     		movs	r0, #1
+  45              	.LVL3:
+ 556:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         RU864_IS_ACTIVE( );
+  46              		.loc 1 556 9 view .LVU5
+  47 000a 7047     		bx	lr
+  48              		.cfi_endproc
+  49              	.LFE104:
+  51              		.section	.text.RegionGetPhyParam,"ax",%progbits
+  52              		.align	1
+  53              		.global	RegionGetPhyParam
+  54              		.syntax unified
+  55              		.thumb
+  56              		.thumb_func
+  58              	RegionGetPhyParam:
+  59              	.LVL4:
+  60              	.LFB105:
+ 564:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** 
+ 565:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** PhyParam_t RegionGetPhyParam( LoRaMacRegion_t region, GetPhyParams_t* getPhy )
+ 566:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** {
+  61              		.loc 1 566 1 is_stmt 1 view -0
+  62              		.cfi_startproc
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccalLql4.s 			page 12
+
+
+  63              		@ args = 0, pretend = 0, frame = 8
+  64              		@ frame_needed = 0, uses_anonymous_args = 0
+  65              		.loc 1 566 1 is_stmt 0 view .LVU7
+  66 0000 00B5     		push	{lr}
+  67              	.LCFI0:
+  68              		.cfi_def_cfa_offset 4
+  69              		.cfi_offset 14, -4
+  70 0002 83B0     		sub	sp, sp, #12
+  71              	.LCFI1:
+  72              		.cfi_def_cfa_offset 16
+ 567:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****     PhyParam_t phyParam = { 0 };
+  73              		.loc 1 567 5 is_stmt 1 view .LVU8
+  74              		.loc 1 567 16 is_stmt 0 view .LVU9
+  75 0004 0023     		movs	r3, #0
+  76 0006 0093     		str	r3, [sp]
+ 568:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****     switch( region )
+  77              		.loc 1 568 5 is_stmt 1 view .LVU10
+  78 0008 0828     		cmp	r0, #8
+  79 000a 05D0     		beq	.L9
+ 569:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****     {
+ 570:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         AS923_GET_PHY_PARAM( );
+ 571:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         AU915_GET_PHY_PARAM( );
+ 572:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         CN470_GET_PHY_PARAM( );
+ 573:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         CN779_GET_PHY_PARAM( );
+ 574:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         EU433_GET_PHY_PARAM( );
+ 575:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         EU868_GET_PHY_PARAM( );
+ 576:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         KR920_GET_PHY_PARAM( );
+ 577:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         IN865_GET_PHY_PARAM( );
+ 578:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         US915_GET_PHY_PARAM( );
+  80              		.loc 1 578 31 view .LVU11
+ 579:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         RU864_GET_PHY_PARAM( );
+  81              		.loc 1 579 31 view .LVU12
+ 580:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         default:
+ 581:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         {
+ 582:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****             return phyParam;
+  82              		.loc 1 582 13 view .LVU13
+  83              		.loc 1 582 20 is_stmt 0 view .LVU14
+  84 000c 009B     		ldr	r3, [sp]
+  85 000e 0193     		str	r3, [sp, #4]
+  86              	.LVL5:
+  87              	.L7:
+ 583:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         }
+ 584:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****     }
+ 585:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** }
+  88              		.loc 1 585 1 view .LVU15
+  89 0010 0198     		ldr	r0, [sp, #4]
+  90 0012 03B0     		add	sp, sp, #12
+  91              	.LCFI2:
+  92              		.cfi_remember_state
+  93              		.cfi_def_cfa_offset 4
+  94              		@ sp needed
+  95 0014 5DF804FB 		ldr	pc, [sp], #4
+  96              	.LVL6:
+  97              	.L9:
+  98              	.LCFI3:
+  99              		.cfi_restore_state
+ 570:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         AU915_GET_PHY_PARAM( );
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccalLql4.s 			page 13
+
+
+ 100              		.loc 1 570 31 is_stmt 1 view .LVU16
+ 571:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         CN470_GET_PHY_PARAM( );
+ 101              		.loc 1 571 31 view .LVU17
+ 572:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         CN779_GET_PHY_PARAM( );
+ 102              		.loc 1 572 31 view .LVU18
+ 573:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         EU433_GET_PHY_PARAM( );
+ 103              		.loc 1 573 31 view .LVU19
+ 574:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         EU868_GET_PHY_PARAM( );
+ 104              		.loc 1 574 31 view .LVU20
+ 575:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         KR920_GET_PHY_PARAM( );
+ 105              		.loc 1 575 31 view .LVU21
+ 576:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         IN865_GET_PHY_PARAM( );
+ 106              		.loc 1 576 31 view .LVU22
+ 577:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         US915_GET_PHY_PARAM( );
+ 107              		.loc 1 577 31 view .LVU23
+ 578:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         RU864_GET_PHY_PARAM( );
+ 108              		.loc 1 578 9 view .LVU24
+ 109 0018 0846     		mov	r0, r1
+ 110              	.LVL7:
+ 578:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         RU864_GET_PHY_PARAM( );
+ 111              		.loc 1 578 9 is_stmt 0 view .LVU25
+ 112 001a FFF7FEFF 		bl	RegionUS915GetPhyParam
+ 113              	.LVL8:
+ 578:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         RU864_GET_PHY_PARAM( );
+ 114              		.loc 1 578 9 view .LVU26
+ 115 001e 0190     		str	r0, [sp, #4]
+ 116 0020 F6E7     		b	.L7
+ 117              		.cfi_endproc
+ 118              	.LFE105:
+ 120              		.section	.text.RegionSetBandTxDone,"ax",%progbits
+ 121              		.align	1
+ 122              		.global	RegionSetBandTxDone
+ 123              		.syntax unified
+ 124              		.thumb
+ 125              		.thumb_func
+ 127              	RegionSetBandTxDone:
+ 128              	.LVL9:
+ 129              	.LFB106:
+ 586:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** 
+ 587:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** void RegionSetBandTxDone( LoRaMacRegion_t region, SetBandTxDoneParams_t* txDone )
+ 588:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** {
+ 130              		.loc 1 588 1 is_stmt 1 view -0
+ 131              		.cfi_startproc
+ 132              		@ args = 0, pretend = 0, frame = 0
+ 133              		@ frame_needed = 0, uses_anonymous_args = 0
+ 589:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****     switch( region )
+ 134              		.loc 1 589 5 view .LVU28
+ 135 0000 0828     		cmp	r0, #8
+ 136 0002 00D0     		beq	.L16
+ 137 0004 7047     		bx	lr
+ 138              	.L16:
+ 588:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****     switch( region )
+ 139              		.loc 1 588 1 is_stmt 0 view .LVU29
+ 140 0006 08B5     		push	{r3, lr}
+ 141              	.LCFI4:
+ 142              		.cfi_def_cfa_offset 8
+ 143              		.cfi_offset 3, -8
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccalLql4.s 			page 14
+
+
+ 144              		.cfi_offset 14, -4
+ 590:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****     {
+ 591:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         AS923_SET_BAND_TX_DONE( );
+ 145              		.loc 1 591 34 is_stmt 1 view .LVU30
+ 592:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         AU915_SET_BAND_TX_DONE( );
+ 146              		.loc 1 592 34 view .LVU31
+ 593:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         CN470_SET_BAND_TX_DONE( );
+ 147              		.loc 1 593 34 view .LVU32
+ 594:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         CN779_SET_BAND_TX_DONE( );
+ 148              		.loc 1 594 34 view .LVU33
+ 595:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         EU433_SET_BAND_TX_DONE( );
+ 149              		.loc 1 595 34 view .LVU34
+ 596:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         EU868_SET_BAND_TX_DONE( );
+ 150              		.loc 1 596 34 view .LVU35
+ 597:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         KR920_SET_BAND_TX_DONE( );
+ 151              		.loc 1 597 34 view .LVU36
+ 598:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         IN865_SET_BAND_TX_DONE( );
+ 152              		.loc 1 598 34 view .LVU37
+ 599:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         US915_SET_BAND_TX_DONE( );
+ 153              		.loc 1 599 9 view .LVU38
+ 154 0008 0846     		mov	r0, r1
+ 155              	.LVL10:
+ 156              		.loc 1 599 9 is_stmt 0 view .LVU39
+ 157 000a FFF7FEFF 		bl	RegionUS915SetBandTxDone
+ 158              	.LVL11:
+ 159              		.loc 1 599 9 is_stmt 1 view .LVU40
+ 600:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         RU864_SET_BAND_TX_DONE( );
+ 601:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         default:
+ 602:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         {
+ 603:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****             return;
+ 604:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         }
+ 605:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****     }
+ 606:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** }
+ 160              		.loc 1 606 1 is_stmt 0 view .LVU41
+ 161 000e 08BD     		pop	{r3, pc}
+ 162              		.cfi_endproc
+ 163              	.LFE106:
+ 165              		.section	.text.RegionInitDefaults,"ax",%progbits
+ 166              		.align	1
+ 167              		.global	RegionInitDefaults
+ 168              		.syntax unified
+ 169              		.thumb
+ 170              		.thumb_func
+ 172              	RegionInitDefaults:
+ 173              	.LVL12:
+ 174              	.LFB107:
+ 607:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** 
+ 608:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** void RegionInitDefaults( LoRaMacRegion_t region, InitDefaultsParams_t* params )
+ 609:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** {
+ 175              		.loc 1 609 1 is_stmt 1 view -0
+ 176              		.cfi_startproc
+ 177              		@ args = 0, pretend = 0, frame = 0
+ 178              		@ frame_needed = 0, uses_anonymous_args = 0
+ 610:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****     switch( region )
+ 179              		.loc 1 610 5 view .LVU43
+ 180 0000 0828     		cmp	r0, #8
+ 181 0002 00D0     		beq	.L23
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccalLql4.s 			page 15
+
+
+ 182 0004 7047     		bx	lr
+ 183              	.L23:
+ 609:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****     switch( region )
+ 184              		.loc 1 609 1 is_stmt 0 view .LVU44
+ 185 0006 08B5     		push	{r3, lr}
+ 186              	.LCFI5:
+ 187              		.cfi_def_cfa_offset 8
+ 188              		.cfi_offset 3, -8
+ 189              		.cfi_offset 14, -4
+ 611:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****     {
+ 612:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         AS923_INIT_DEFAULTS( );
+ 190              		.loc 1 612 31 is_stmt 1 view .LVU45
+ 613:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         AU915_INIT_DEFAULTS( );
+ 191              		.loc 1 613 31 view .LVU46
+ 614:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         CN470_INIT_DEFAULTS( );
+ 192              		.loc 1 614 31 view .LVU47
+ 615:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         CN779_INIT_DEFAULTS( );
+ 193              		.loc 1 615 31 view .LVU48
+ 616:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         EU433_INIT_DEFAULTS( );
+ 194              		.loc 1 616 31 view .LVU49
+ 617:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         EU868_INIT_DEFAULTS( );
+ 195              		.loc 1 617 31 view .LVU50
+ 618:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         KR920_INIT_DEFAULTS( );
+ 196              		.loc 1 618 31 view .LVU51
+ 619:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         IN865_INIT_DEFAULTS( );
+ 197              		.loc 1 619 31 view .LVU52
+ 620:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         US915_INIT_DEFAULTS( );
+ 198              		.loc 1 620 9 view .LVU53
+ 199 0008 0846     		mov	r0, r1
+ 200              	.LVL13:
+ 201              		.loc 1 620 9 is_stmt 0 view .LVU54
+ 202 000a FFF7FEFF 		bl	RegionUS915InitDefaults
+ 203              	.LVL14:
+ 204              		.loc 1 620 9 is_stmt 1 view .LVU55
+ 621:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         RU864_INIT_DEFAULTS( );
+ 622:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         default:
+ 623:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         {
+ 624:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****             break;
+ 625:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         }
+ 626:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****     }
+ 627:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** }
+ 205              		.loc 1 627 1 is_stmt 0 view .LVU56
+ 206 000e 08BD     		pop	{r3, pc}
+ 207              		.cfi_endproc
+ 208              	.LFE107:
+ 210              		.section	.text.RegionVerify,"ax",%progbits
+ 211              		.align	1
+ 212              		.global	RegionVerify
+ 213              		.syntax unified
+ 214              		.thumb
+ 215              		.thumb_func
+ 217              	RegionVerify:
+ 218              	.LVL15:
+ 219              	.LFB108:
+ 628:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** 
+ 629:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** bool RegionVerify( LoRaMacRegion_t region, VerifyParams_t* verify, PhyAttribute_t phyAttribute )
+ 630:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** {
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccalLql4.s 			page 16
+
+
+ 220              		.loc 1 630 1 is_stmt 1 view -0
+ 221              		.cfi_startproc
+ 222              		@ args = 0, pretend = 0, frame = 0
+ 223              		@ frame_needed = 0, uses_anonymous_args = 0
+ 631:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****     switch( region )
+ 224              		.loc 1 631 5 view .LVU58
+ 225 0000 0828     		cmp	r0, #8
+ 226 0002 01D0     		beq	.L31
+ 632:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****     {
+ 633:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         AS923_VERIFY( );
+ 634:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         AU915_VERIFY( );
+ 635:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         CN470_VERIFY( );
+ 636:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         CN779_VERIFY( );
+ 637:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         EU433_VERIFY( );
+ 638:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         EU868_VERIFY( );
+ 639:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         KR920_VERIFY( );
+ 640:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         IN865_VERIFY( );
+ 641:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         US915_VERIFY( );
+ 642:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         RU864_VERIFY( );
+ 643:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         default:
+ 644:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         {
+ 645:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****             return false;
+ 227              		.loc 1 645 20 is_stmt 0 view .LVU59
+ 228 0004 0020     		movs	r0, #0
+ 229              	.LVL16:
+ 646:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         }
+ 647:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****     }
+ 648:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** }
+ 230              		.loc 1 648 1 view .LVU60
+ 231 0006 7047     		bx	lr
+ 232              	.LVL17:
+ 233              	.L31:
+ 630:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****     switch( region )
+ 234              		.loc 1 630 1 view .LVU61
+ 235 0008 08B5     		push	{r3, lr}
+ 236              	.LCFI6:
+ 237              		.cfi_def_cfa_offset 8
+ 238              		.cfi_offset 3, -8
+ 239              		.cfi_offset 14, -4
+ 240 000a 0B46     		mov	r3, r1
+ 633:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         AU915_VERIFY( );
+ 241              		.loc 1 633 24 is_stmt 1 view .LVU62
+ 634:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         CN470_VERIFY( );
+ 242              		.loc 1 634 24 view .LVU63
+ 635:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         CN779_VERIFY( );
+ 243              		.loc 1 635 24 view .LVU64
+ 636:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         EU433_VERIFY( );
+ 244              		.loc 1 636 24 view .LVU65
+ 637:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         EU868_VERIFY( );
+ 245              		.loc 1 637 24 view .LVU66
+ 638:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         KR920_VERIFY( );
+ 246              		.loc 1 638 24 view .LVU67
+ 639:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         IN865_VERIFY( );
+ 247              		.loc 1 639 24 view .LVU68
+ 640:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         US915_VERIFY( );
+ 248              		.loc 1 640 24 view .LVU69
+ 641:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         RU864_VERIFY( );
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccalLql4.s 			page 17
+
+
+ 249              		.loc 1 641 9 view .LVU70
+ 250 000c 1146     		mov	r1, r2
+ 251              	.LVL18:
+ 641:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         RU864_VERIFY( );
+ 252              		.loc 1 641 9 is_stmt 0 view .LVU71
+ 253 000e 1846     		mov	r0, r3
+ 254              	.LVL19:
+ 641:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         RU864_VERIFY( );
+ 255              		.loc 1 641 9 view .LVU72
+ 256 0010 FFF7FEFF 		bl	RegionUS915Verify
+ 257              	.LVL20:
+ 258              		.loc 1 648 1 view .LVU73
+ 259 0014 08BD     		pop	{r3, pc}
+ 260              		.cfi_endproc
+ 261              	.LFE108:
+ 263              		.section	.text.RegionApplyCFList,"ax",%progbits
+ 264              		.align	1
+ 265              		.global	RegionApplyCFList
+ 266              		.syntax unified
+ 267              		.thumb
+ 268              		.thumb_func
+ 270              	RegionApplyCFList:
+ 271              	.LVL21:
+ 272              	.LFB109:
+ 649:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** 
+ 650:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** void RegionApplyCFList( LoRaMacRegion_t region, ApplyCFListParams_t* applyCFList )
+ 651:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** {
+ 273              		.loc 1 651 1 is_stmt 1 view -0
+ 274              		.cfi_startproc
+ 275              		@ args = 0, pretend = 0, frame = 0
+ 276              		@ frame_needed = 0, uses_anonymous_args = 0
+ 652:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****     switch( region )
+ 277              		.loc 1 652 5 view .LVU75
+ 278 0000 0828     		cmp	r0, #8
+ 279 0002 00D0     		beq	.L38
+ 280 0004 7047     		bx	lr
+ 281              	.L38:
+ 651:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****     switch( region )
+ 282              		.loc 1 651 1 is_stmt 0 view .LVU76
+ 283 0006 08B5     		push	{r3, lr}
+ 284              	.LCFI7:
+ 285              		.cfi_def_cfa_offset 8
+ 286              		.cfi_offset 3, -8
+ 287              		.cfi_offset 14, -4
+ 653:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****     {
+ 654:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         AS923_APPLY_CF_LIST( );
+ 288              		.loc 1 654 31 is_stmt 1 view .LVU77
+ 655:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         AU915_APPLY_CF_LIST( );
+ 289              		.loc 1 655 31 view .LVU78
+ 656:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         CN470_APPLY_CF_LIST( );
+ 290              		.loc 1 656 31 view .LVU79
+ 657:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         CN779_APPLY_CF_LIST( );
+ 291              		.loc 1 657 31 view .LVU80
+ 658:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         EU433_APPLY_CF_LIST( );
+ 292              		.loc 1 658 31 view .LVU81
+ 659:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         EU868_APPLY_CF_LIST( );
+ 293              		.loc 1 659 31 view .LVU82
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccalLql4.s 			page 18
+
+
+ 660:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         KR920_APPLY_CF_LIST( );
+ 294              		.loc 1 660 31 view .LVU83
+ 661:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         IN865_APPLY_CF_LIST( );
+ 295              		.loc 1 661 31 view .LVU84
+ 662:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         US915_APPLY_CF_LIST( );
+ 296              		.loc 1 662 9 view .LVU85
+ 297 0008 0846     		mov	r0, r1
+ 298              	.LVL22:
+ 299              		.loc 1 662 9 is_stmt 0 view .LVU86
+ 300 000a FFF7FEFF 		bl	RegionUS915ApplyCFList
+ 301              	.LVL23:
+ 302              		.loc 1 662 9 is_stmt 1 view .LVU87
+ 663:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         RU864_APPLY_CF_LIST( );
+ 664:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         default:
+ 665:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         {
+ 666:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****             break;
+ 667:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         }
+ 668:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****     }
+ 669:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** }
+ 303              		.loc 1 669 1 is_stmt 0 view .LVU88
+ 304 000e 08BD     		pop	{r3, pc}
+ 305              		.cfi_endproc
+ 306              	.LFE109:
+ 308              		.section	.text.RegionChanMaskSet,"ax",%progbits
+ 309              		.align	1
+ 310              		.global	RegionChanMaskSet
+ 311              		.syntax unified
+ 312              		.thumb
+ 313              		.thumb_func
+ 315              	RegionChanMaskSet:
+ 316              	.LVL24:
+ 317              	.LFB110:
+ 670:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** 
+ 671:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** bool RegionChanMaskSet( LoRaMacRegion_t region, ChanMaskSetParams_t* chanMaskSet )
+ 672:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** {
+ 318              		.loc 1 672 1 is_stmt 1 view -0
+ 319              		.cfi_startproc
+ 320              		@ args = 0, pretend = 0, frame = 0
+ 321              		@ frame_needed = 0, uses_anonymous_args = 0
+ 673:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****     switch( region )
+ 322              		.loc 1 673 5 view .LVU90
+ 323 0000 0828     		cmp	r0, #8
+ 324 0002 01D0     		beq	.L46
+ 674:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****     {
+ 675:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         AS923_CHAN_MASK_SET( );
+ 676:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         AU915_CHAN_MASK_SET( );
+ 677:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         CN470_CHAN_MASK_SET( );
+ 678:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         CN779_CHAN_MASK_SET( );
+ 679:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         EU433_CHAN_MASK_SET( );
+ 680:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         EU868_CHAN_MASK_SET( );
+ 681:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         KR920_CHAN_MASK_SET( );
+ 682:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         IN865_CHAN_MASK_SET( );
+ 683:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         US915_CHAN_MASK_SET( );
+ 684:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         RU864_CHAN_MASK_SET( );
+ 685:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         default:
+ 686:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         {
+ 687:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****             return false;
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccalLql4.s 			page 19
+
+
+ 325              		.loc 1 687 20 is_stmt 0 view .LVU91
+ 326 0004 0020     		movs	r0, #0
+ 327              	.LVL25:
+ 688:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         }
+ 689:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****     }
+ 690:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** }
+ 328              		.loc 1 690 1 view .LVU92
+ 329 0006 7047     		bx	lr
+ 330              	.LVL26:
+ 331              	.L46:
+ 672:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****     switch( region )
+ 332              		.loc 1 672 1 view .LVU93
+ 333 0008 08B5     		push	{r3, lr}
+ 334              	.LCFI8:
+ 335              		.cfi_def_cfa_offset 8
+ 336              		.cfi_offset 3, -8
+ 337              		.cfi_offset 14, -4
+ 675:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         AU915_CHAN_MASK_SET( );
+ 338              		.loc 1 675 31 is_stmt 1 view .LVU94
+ 676:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         CN470_CHAN_MASK_SET( );
+ 339              		.loc 1 676 31 view .LVU95
+ 677:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         CN779_CHAN_MASK_SET( );
+ 340              		.loc 1 677 31 view .LVU96
+ 678:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         EU433_CHAN_MASK_SET( );
+ 341              		.loc 1 678 31 view .LVU97
+ 679:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         EU868_CHAN_MASK_SET( );
+ 342              		.loc 1 679 31 view .LVU98
+ 680:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         KR920_CHAN_MASK_SET( );
+ 343              		.loc 1 680 31 view .LVU99
+ 681:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         IN865_CHAN_MASK_SET( );
+ 344              		.loc 1 681 31 view .LVU100
+ 682:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         US915_CHAN_MASK_SET( );
+ 345              		.loc 1 682 31 view .LVU101
+ 683:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         RU864_CHAN_MASK_SET( );
+ 346              		.loc 1 683 9 view .LVU102
+ 347 000a 0846     		mov	r0, r1
+ 348              	.LVL27:
+ 683:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         RU864_CHAN_MASK_SET( );
+ 349              		.loc 1 683 9 is_stmt 0 view .LVU103
+ 350 000c FFF7FEFF 		bl	RegionUS915ChanMaskSet
+ 351              	.LVL28:
+ 352              		.loc 1 690 1 view .LVU104
+ 353 0010 08BD     		pop	{r3, pc}
+ 354              		.cfi_endproc
+ 355              	.LFE110:
+ 357              		.section	.text.RegionComputeRxWindowParameters,"ax",%progbits
+ 358              		.align	1
+ 359              		.global	RegionComputeRxWindowParameters
+ 360              		.syntax unified
+ 361              		.thumb
+ 362              		.thumb_func
+ 364              	RegionComputeRxWindowParameters:
+ 365              	.LVL29:
+ 366              	.LFB111:
+ 691:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** 
+ 692:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** void RegionComputeRxWindowParameters( LoRaMacRegion_t region, int8_t datarate, uint8_t minRxSymbols
+ 693:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** {
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccalLql4.s 			page 20
+
+
+ 367              		.loc 1 693 1 is_stmt 1 view -0
+ 368              		.cfi_startproc
+ 369              		@ args = 4, pretend = 0, frame = 0
+ 370              		@ frame_needed = 0, uses_anonymous_args = 0
+ 694:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****     switch( region )
+ 371              		.loc 1 694 5 view .LVU106
+ 372 0000 0828     		cmp	r0, #8
+ 373 0002 00D0     		beq	.L53
+ 374 0004 7047     		bx	lr
+ 375              	.L53:
+ 693:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****     switch( region )
+ 376              		.loc 1 693 1 is_stmt 0 view .LVU107
+ 377 0006 08B5     		push	{r3, lr}
+ 378              	.LCFI9:
+ 379              		.cfi_def_cfa_offset 8
+ 380              		.cfi_offset 3, -8
+ 381              		.cfi_offset 14, -4
+ 382 0008 8C46     		mov	ip, r1
+ 383 000a 1146     		mov	r1, r2
+ 384              	.LVL30:
+ 693:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****     switch( region )
+ 385              		.loc 1 693 1 view .LVU108
+ 386 000c 1A46     		mov	r2, r3
+ 387              	.LVL31:
+ 695:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****     {
+ 696:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         AS923_COMPUTE_RX_WINDOW_PARAMETERS( );
+ 388              		.loc 1 696 46 is_stmt 1 view .LVU109
+ 697:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         AU915_COMPUTE_RX_WINDOW_PARAMETERS( );
+ 389              		.loc 1 697 46 view .LVU110
+ 698:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         CN470_COMPUTE_RX_WINDOW_PARAMETERS( );
+ 390              		.loc 1 698 46 view .LVU111
+ 699:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         CN779_COMPUTE_RX_WINDOW_PARAMETERS( );
+ 391              		.loc 1 699 46 view .LVU112
+ 700:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         EU433_COMPUTE_RX_WINDOW_PARAMETERS( );
+ 392              		.loc 1 700 46 view .LVU113
+ 701:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         EU868_COMPUTE_RX_WINDOW_PARAMETERS( );
+ 393              		.loc 1 701 46 view .LVU114
+ 702:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         KR920_COMPUTE_RX_WINDOW_PARAMETERS( );
+ 394              		.loc 1 702 46 view .LVU115
+ 703:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         IN865_COMPUTE_RX_WINDOW_PARAMETERS( );
+ 395              		.loc 1 703 46 view .LVU116
+ 704:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         US915_COMPUTE_RX_WINDOW_PARAMETERS( );
+ 396              		.loc 1 704 9 view .LVU117
+ 397 000e 029B     		ldr	r3, [sp, #8]
+ 398              	.LVL32:
+ 399              		.loc 1 704 9 is_stmt 0 view .LVU118
+ 400 0010 6046     		mov	r0, ip
+ 401              	.LVL33:
+ 402              		.loc 1 704 9 view .LVU119
+ 403 0012 FFF7FEFF 		bl	RegionUS915ComputeRxWindowParameters
+ 404              	.LVL34:
+ 405              		.loc 1 704 9 is_stmt 1 view .LVU120
+ 705:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         RU864_COMPUTE_RX_WINDOW_PARAMETERS( );
+ 706:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         default:
+ 707:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         {
+ 708:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****             break;
+ 709:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         }
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccalLql4.s 			page 21
+
+
+ 710:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****     }
+ 711:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** }
+ 406              		.loc 1 711 1 is_stmt 0 view .LVU121
+ 407 0016 08BD     		pop	{r3, pc}
+ 408              		.loc 1 711 1 view .LVU122
+ 409              		.cfi_endproc
+ 410              	.LFE111:
+ 412              		.section	.text.RegionRxConfig,"ax",%progbits
+ 413              		.align	1
+ 414              		.global	RegionRxConfig
+ 415              		.syntax unified
+ 416              		.thumb
+ 417              		.thumb_func
+ 419              	RegionRxConfig:
+ 420              	.LVL35:
+ 421              	.LFB112:
+ 712:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** 
+ 713:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** bool RegionRxConfig( LoRaMacRegion_t region, RxConfigParams_t* rxConfig, int8_t* datarate )
+ 714:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** {
+ 422              		.loc 1 714 1 is_stmt 1 view -0
+ 423              		.cfi_startproc
+ 424              		@ args = 0, pretend = 0, frame = 0
+ 425              		@ frame_needed = 0, uses_anonymous_args = 0
+ 715:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****     switch( region )
+ 426              		.loc 1 715 5 view .LVU124
+ 427 0000 0828     		cmp	r0, #8
+ 428 0002 01D0     		beq	.L61
+ 716:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****     {
+ 717:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         AS923_RX_CONFIG( );
+ 718:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         AU915_RX_CONFIG( );
+ 719:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         CN470_RX_CONFIG( );
+ 720:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         CN779_RX_CONFIG( );
+ 721:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         EU433_RX_CONFIG( );
+ 722:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         EU868_RX_CONFIG( );
+ 723:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         KR920_RX_CONFIG( );
+ 724:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         IN865_RX_CONFIG( );
+ 725:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         US915_RX_CONFIG( );
+ 726:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         RU864_RX_CONFIG( );
+ 727:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         default:
+ 728:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         {
+ 729:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****             return false;
+ 429              		.loc 1 729 20 is_stmt 0 view .LVU125
+ 430 0004 0020     		movs	r0, #0
+ 431              	.LVL36:
+ 730:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         }
+ 731:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****     }
+ 732:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** }
+ 432              		.loc 1 732 1 view .LVU126
+ 433 0006 7047     		bx	lr
+ 434              	.LVL37:
+ 435              	.L61:
+ 714:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****     switch( region )
+ 436              		.loc 1 714 1 view .LVU127
+ 437 0008 08B5     		push	{r3, lr}
+ 438              	.LCFI10:
+ 439              		.cfi_def_cfa_offset 8
+ 440              		.cfi_offset 3, -8
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccalLql4.s 			page 22
+
+
+ 441              		.cfi_offset 14, -4
+ 442 000a 0B46     		mov	r3, r1
+ 717:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         AU915_RX_CONFIG( );
+ 443              		.loc 1 717 27 is_stmt 1 view .LVU128
+ 718:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         CN470_RX_CONFIG( );
+ 444              		.loc 1 718 27 view .LVU129
+ 719:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         CN779_RX_CONFIG( );
+ 445              		.loc 1 719 27 view .LVU130
+ 720:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         EU433_RX_CONFIG( );
+ 446              		.loc 1 720 27 view .LVU131
+ 721:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         EU868_RX_CONFIG( );
+ 447              		.loc 1 721 27 view .LVU132
+ 722:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         KR920_RX_CONFIG( );
+ 448              		.loc 1 722 27 view .LVU133
+ 723:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         IN865_RX_CONFIG( );
+ 449              		.loc 1 723 27 view .LVU134
+ 724:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         US915_RX_CONFIG( );
+ 450              		.loc 1 724 27 view .LVU135
+ 725:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         RU864_RX_CONFIG( );
+ 451              		.loc 1 725 9 view .LVU136
+ 452 000c 1146     		mov	r1, r2
+ 453              	.LVL38:
+ 725:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         RU864_RX_CONFIG( );
+ 454              		.loc 1 725 9 is_stmt 0 view .LVU137
+ 455 000e 1846     		mov	r0, r3
+ 456              	.LVL39:
+ 725:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         RU864_RX_CONFIG( );
+ 457              		.loc 1 725 9 view .LVU138
+ 458 0010 FFF7FEFF 		bl	RegionUS915RxConfig
+ 459              	.LVL40:
+ 460              		.loc 1 732 1 view .LVU139
+ 461 0014 08BD     		pop	{r3, pc}
+ 462              		.cfi_endproc
+ 463              	.LFE112:
+ 465              		.section	.text.RegionTxConfig,"ax",%progbits
+ 466              		.align	1
+ 467              		.global	RegionTxConfig
+ 468              		.syntax unified
+ 469              		.thumb
+ 470              		.thumb_func
+ 472              	RegionTxConfig:
+ 473              	.LVL41:
+ 474              	.LFB113:
+ 733:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** 
+ 734:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** bool RegionTxConfig( LoRaMacRegion_t region, TxConfigParams_t* txConfig, int8_t* txPower, TimerTime
+ 735:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** {
+ 475              		.loc 1 735 1 is_stmt 1 view -0
+ 476              		.cfi_startproc
+ 477              		@ args = 0, pretend = 0, frame = 0
+ 478              		@ frame_needed = 0, uses_anonymous_args = 0
+ 736:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****     switch( region )
+ 479              		.loc 1 736 5 view .LVU141
+ 480 0000 0828     		cmp	r0, #8
+ 481 0002 01D0     		beq	.L69
+ 737:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****     {
+ 738:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         AS923_TX_CONFIG( );
+ 739:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         AU915_TX_CONFIG( );
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccalLql4.s 			page 23
+
+
+ 740:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         CN470_TX_CONFIG( );
+ 741:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         CN779_TX_CONFIG( );
+ 742:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         EU433_TX_CONFIG( );
+ 743:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         EU868_TX_CONFIG( );
+ 744:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         KR920_TX_CONFIG( );
+ 745:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         IN865_TX_CONFIG( );
+ 746:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         US915_TX_CONFIG( );
+ 747:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         RU864_TX_CONFIG( );
+ 748:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         default:
+ 749:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         {
+ 750:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****             return false;
+ 482              		.loc 1 750 20 is_stmt 0 view .LVU142
+ 483 0004 0020     		movs	r0, #0
+ 484              	.LVL42:
+ 751:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         }
+ 752:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****     }
+ 753:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** }
+ 485              		.loc 1 753 1 view .LVU143
+ 486 0006 7047     		bx	lr
+ 487              	.LVL43:
+ 488              	.L69:
+ 735:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****     switch( region )
+ 489              		.loc 1 735 1 view .LVU144
+ 490 0008 08B5     		push	{r3, lr}
+ 491              	.LCFI11:
+ 492              		.cfi_def_cfa_offset 8
+ 493              		.cfi_offset 3, -8
+ 494              		.cfi_offset 14, -4
+ 495 000a 8C46     		mov	ip, r1
+ 496 000c 1146     		mov	r1, r2
+ 497              	.LVL44:
+ 738:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         AU915_TX_CONFIG( );
+ 498              		.loc 1 738 27 is_stmt 1 view .LVU145
+ 739:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         CN470_TX_CONFIG( );
+ 499              		.loc 1 739 27 view .LVU146
+ 740:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         CN779_TX_CONFIG( );
+ 500              		.loc 1 740 27 view .LVU147
+ 741:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         EU433_TX_CONFIG( );
+ 501              		.loc 1 741 27 view .LVU148
+ 742:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         EU868_TX_CONFIG( );
+ 502              		.loc 1 742 27 view .LVU149
+ 743:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         KR920_TX_CONFIG( );
+ 503              		.loc 1 743 27 view .LVU150
+ 744:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         IN865_TX_CONFIG( );
+ 504              		.loc 1 744 27 view .LVU151
+ 745:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         US915_TX_CONFIG( );
+ 505              		.loc 1 745 27 view .LVU152
+ 746:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         RU864_TX_CONFIG( );
+ 506              		.loc 1 746 9 view .LVU153
+ 507 000e 1A46     		mov	r2, r3
+ 508              	.LVL45:
+ 746:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         RU864_TX_CONFIG( );
+ 509              		.loc 1 746 9 is_stmt 0 view .LVU154
+ 510 0010 6046     		mov	r0, ip
+ 511              	.LVL46:
+ 746:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         RU864_TX_CONFIG( );
+ 512              		.loc 1 746 9 view .LVU155
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccalLql4.s 			page 24
+
+
+ 513 0012 FFF7FEFF 		bl	RegionUS915TxConfig
+ 514              	.LVL47:
+ 515              		.loc 1 753 1 view .LVU156
+ 516 0016 08BD     		pop	{r3, pc}
+ 517              		.cfi_endproc
+ 518              	.LFE113:
+ 520              		.section	.text.RegionLinkAdrReq,"ax",%progbits
+ 521              		.align	1
+ 522              		.global	RegionLinkAdrReq
+ 523              		.syntax unified
+ 524              		.thumb
+ 525              		.thumb_func
+ 527              	RegionLinkAdrReq:
+ 528              	.LVL48:
+ 529              	.LFB114:
+ 754:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** 
+ 755:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** uint8_t RegionLinkAdrReq( LoRaMacRegion_t region, LinkAdrReqParams_t* linkAdrReq, int8_t* drOut, in
+ 756:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** {
+ 530              		.loc 1 756 1 is_stmt 1 view -0
+ 531              		.cfi_startproc
+ 532              		@ args = 8, pretend = 0, frame = 0
+ 533              		@ frame_needed = 0, uses_anonymous_args = 0
+ 757:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****     switch( region )
+ 534              		.loc 1 757 5 view .LVU158
+ 535 0000 0828     		cmp	r0, #8
+ 536 0002 01D0     		beq	.L77
+ 758:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****     {
+ 759:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         AS923_LINK_ADR_REQ( );
+ 760:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         AU915_LINK_ADR_REQ( );
+ 761:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         CN470_LINK_ADR_REQ( );
+ 762:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         CN779_LINK_ADR_REQ( );
+ 763:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         EU433_LINK_ADR_REQ( );
+ 764:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         EU868_LINK_ADR_REQ( );
+ 765:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         KR920_LINK_ADR_REQ( );
+ 766:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         IN865_LINK_ADR_REQ( );
+ 767:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         US915_LINK_ADR_REQ( );
+ 768:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         RU864_LINK_ADR_REQ( );
+ 769:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         default:
+ 770:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         {
+ 771:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****             return 0;
+ 537              		.loc 1 771 20 is_stmt 0 view .LVU159
+ 538 0004 0020     		movs	r0, #0
+ 539              	.LVL49:
+ 772:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         }
+ 773:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****     }
+ 774:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** }
+ 540              		.loc 1 774 1 view .LVU160
+ 541 0006 7047     		bx	lr
+ 542              	.LVL50:
+ 543              	.L77:
+ 756:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****     switch( region )
+ 544              		.loc 1 756 1 view .LVU161
+ 545 0008 00B5     		push	{lr}
+ 546              	.LCFI12:
+ 547              		.cfi_def_cfa_offset 4
+ 548              		.cfi_offset 14, -4
+ 549 000a 83B0     		sub	sp, sp, #12
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccalLql4.s 			page 25
+
+
+ 550              	.LCFI13:
+ 551              		.cfi_def_cfa_offset 16
+ 552 000c 8C46     		mov	ip, r1
+ 553 000e 1146     		mov	r1, r2
+ 554              	.LVL51:
+ 756:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****     switch( region )
+ 555              		.loc 1 756 1 view .LVU162
+ 556 0010 1A46     		mov	r2, r3
+ 557              	.LVL52:
+ 759:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         AU915_LINK_ADR_REQ( );
+ 558              		.loc 1 759 30 is_stmt 1 view .LVU163
+ 760:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         CN470_LINK_ADR_REQ( );
+ 559              		.loc 1 760 30 view .LVU164
+ 761:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         CN779_LINK_ADR_REQ( );
+ 560              		.loc 1 761 30 view .LVU165
+ 762:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         EU433_LINK_ADR_REQ( );
+ 561              		.loc 1 762 30 view .LVU166
+ 763:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         EU868_LINK_ADR_REQ( );
+ 562              		.loc 1 763 30 view .LVU167
+ 764:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         KR920_LINK_ADR_REQ( );
+ 563              		.loc 1 764 30 view .LVU168
+ 765:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         IN865_LINK_ADR_REQ( );
+ 564              		.loc 1 765 30 view .LVU169
+ 766:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         US915_LINK_ADR_REQ( );
+ 565              		.loc 1 766 30 view .LVU170
+ 767:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         RU864_LINK_ADR_REQ( );
+ 566              		.loc 1 767 9 view .LVU171
+ 567 0012 059B     		ldr	r3, [sp, #20]
+ 568              	.LVL53:
+ 767:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         RU864_LINK_ADR_REQ( );
+ 569              		.loc 1 767 9 is_stmt 0 view .LVU172
+ 570 0014 0093     		str	r3, [sp]
+ 571 0016 049B     		ldr	r3, [sp, #16]
+ 572 0018 6046     		mov	r0, ip
+ 573              	.LVL54:
+ 767:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         RU864_LINK_ADR_REQ( );
+ 574              		.loc 1 767 9 view .LVU173
+ 575 001a FFF7FEFF 		bl	RegionUS915LinkAdrReq
+ 576              	.LVL55:
+ 577              		.loc 1 774 1 view .LVU174
+ 578 001e 03B0     		add	sp, sp, #12
+ 579              	.LCFI14:
+ 580              		.cfi_def_cfa_offset 4
+ 581              		@ sp needed
+ 582 0020 5DF804FB 		ldr	pc, [sp], #4
+ 583              		.loc 1 774 1 view .LVU175
+ 584              		.cfi_endproc
+ 585              	.LFE114:
+ 587              		.section	.text.RegionRxParamSetupReq,"ax",%progbits
+ 588              		.align	1
+ 589              		.global	RegionRxParamSetupReq
+ 590              		.syntax unified
+ 591              		.thumb
+ 592              		.thumb_func
+ 594              	RegionRxParamSetupReq:
+ 595              	.LVL56:
+ 596              	.LFB115:
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccalLql4.s 			page 26
+
+
+ 775:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** 
+ 776:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** uint8_t RegionRxParamSetupReq( LoRaMacRegion_t region, RxParamSetupReqParams_t* rxParamSetupReq )
+ 777:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** {
+ 597              		.loc 1 777 1 is_stmt 1 view -0
+ 598              		.cfi_startproc
+ 599              		@ args = 0, pretend = 0, frame = 0
+ 600              		@ frame_needed = 0, uses_anonymous_args = 0
+ 778:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****     switch( region )
+ 601              		.loc 1 778 5 view .LVU177
+ 602 0000 0828     		cmp	r0, #8
+ 603 0002 01D0     		beq	.L85
+ 779:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****     {
+ 780:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         AS923_RX_PARAM_SETUP_REQ( );
+ 781:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         AU915_RX_PARAM_SETUP_REQ( );
+ 782:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         CN470_RX_PARAM_SETUP_REQ( );
+ 783:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         CN779_RX_PARAM_SETUP_REQ( );
+ 784:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         EU433_RX_PARAM_SETUP_REQ( );
+ 785:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         EU868_RX_PARAM_SETUP_REQ( );
+ 786:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         KR920_RX_PARAM_SETUP_REQ( );
+ 787:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         IN865_RX_PARAM_SETUP_REQ( );
+ 788:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         US915_RX_PARAM_SETUP_REQ( );
+ 789:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         RU864_RX_PARAM_SETUP_REQ( );
+ 790:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         default:
+ 791:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         {
+ 792:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****             return 0;
+ 604              		.loc 1 792 20 is_stmt 0 view .LVU178
+ 605 0004 0020     		movs	r0, #0
+ 606              	.LVL57:
+ 793:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         }
+ 794:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****     }
+ 795:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** }
+ 607              		.loc 1 795 1 view .LVU179
+ 608 0006 7047     		bx	lr
+ 609              	.LVL58:
+ 610              	.L85:
+ 777:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****     switch( region )
+ 611              		.loc 1 777 1 view .LVU180
+ 612 0008 08B5     		push	{r3, lr}
+ 613              	.LCFI15:
+ 614              		.cfi_def_cfa_offset 8
+ 615              		.cfi_offset 3, -8
+ 616              		.cfi_offset 14, -4
+ 780:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         AU915_RX_PARAM_SETUP_REQ( );
+ 617              		.loc 1 780 36 is_stmt 1 view .LVU181
+ 781:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         CN470_RX_PARAM_SETUP_REQ( );
+ 618              		.loc 1 781 36 view .LVU182
+ 782:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         CN779_RX_PARAM_SETUP_REQ( );
+ 619              		.loc 1 782 36 view .LVU183
+ 783:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         EU433_RX_PARAM_SETUP_REQ( );
+ 620              		.loc 1 783 36 view .LVU184
+ 784:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         EU868_RX_PARAM_SETUP_REQ( );
+ 621              		.loc 1 784 36 view .LVU185
+ 785:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         KR920_RX_PARAM_SETUP_REQ( );
+ 622              		.loc 1 785 36 view .LVU186
+ 786:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         IN865_RX_PARAM_SETUP_REQ( );
+ 623              		.loc 1 786 36 view .LVU187
+ 787:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         US915_RX_PARAM_SETUP_REQ( );
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccalLql4.s 			page 27
+
+
+ 624              		.loc 1 787 36 view .LVU188
+ 788:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         RU864_RX_PARAM_SETUP_REQ( );
+ 625              		.loc 1 788 9 view .LVU189
+ 626 000a 0846     		mov	r0, r1
+ 627              	.LVL59:
+ 788:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         RU864_RX_PARAM_SETUP_REQ( );
+ 628              		.loc 1 788 9 is_stmt 0 view .LVU190
+ 629 000c FFF7FEFF 		bl	RegionUS915RxParamSetupReq
+ 630              	.LVL60:
+ 631              		.loc 1 795 1 view .LVU191
+ 632 0010 08BD     		pop	{r3, pc}
+ 633              		.cfi_endproc
+ 634              	.LFE115:
+ 636              		.section	.text.RegionNewChannelReq,"ax",%progbits
+ 637              		.align	1
+ 638              		.global	RegionNewChannelReq
+ 639              		.syntax unified
+ 640              		.thumb
+ 641              		.thumb_func
+ 643              	RegionNewChannelReq:
+ 644              	.LVL61:
+ 645              	.LFB116:
+ 796:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** 
+ 797:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** int8_t RegionNewChannelReq( LoRaMacRegion_t region, NewChannelReqParams_t* newChannelReq )
+ 798:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** {
+ 646              		.loc 1 798 1 is_stmt 1 view -0
+ 647              		.cfi_startproc
+ 648              		@ args = 0, pretend = 0, frame = 0
+ 649              		@ frame_needed = 0, uses_anonymous_args = 0
+ 799:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****     switch( region )
+ 650              		.loc 1 799 5 view .LVU193
+ 651 0000 0828     		cmp	r0, #8
+ 652 0002 01D0     		beq	.L93
+ 800:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****     {
+ 801:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         AS923_NEW_CHANNEL_REQ( );
+ 802:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         AU915_NEW_CHANNEL_REQ( );
+ 803:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         CN470_NEW_CHANNEL_REQ( );
+ 804:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         CN779_NEW_CHANNEL_REQ( );
+ 805:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         EU433_NEW_CHANNEL_REQ( );
+ 806:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         EU868_NEW_CHANNEL_REQ( );
+ 807:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         KR920_NEW_CHANNEL_REQ( );
+ 808:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         IN865_NEW_CHANNEL_REQ( );
+ 809:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         US915_NEW_CHANNEL_REQ( );
+ 810:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         RU864_NEW_CHANNEL_REQ( );
+ 811:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         default:
+ 812:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         {
+ 813:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****             return 0;
+ 653              		.loc 1 813 20 is_stmt 0 view .LVU194
+ 654 0004 0020     		movs	r0, #0
+ 655              	.LVL62:
+ 814:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         }
+ 815:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****     }
+ 816:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** }
+ 656              		.loc 1 816 1 view .LVU195
+ 657 0006 7047     		bx	lr
+ 658              	.LVL63:
+ 659              	.L93:
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccalLql4.s 			page 28
+
+
+ 798:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****     switch( region )
+ 660              		.loc 1 798 1 view .LVU196
+ 661 0008 08B5     		push	{r3, lr}
+ 662              	.LCFI16:
+ 663              		.cfi_def_cfa_offset 8
+ 664              		.cfi_offset 3, -8
+ 665              		.cfi_offset 14, -4
+ 801:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         AU915_NEW_CHANNEL_REQ( );
+ 666              		.loc 1 801 33 is_stmt 1 view .LVU197
+ 802:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         CN470_NEW_CHANNEL_REQ( );
+ 667              		.loc 1 802 33 view .LVU198
+ 803:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         CN779_NEW_CHANNEL_REQ( );
+ 668              		.loc 1 803 33 view .LVU199
+ 804:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         EU433_NEW_CHANNEL_REQ( );
+ 669              		.loc 1 804 33 view .LVU200
+ 805:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         EU868_NEW_CHANNEL_REQ( );
+ 670              		.loc 1 805 33 view .LVU201
+ 806:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         KR920_NEW_CHANNEL_REQ( );
+ 671              		.loc 1 806 33 view .LVU202
+ 807:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         IN865_NEW_CHANNEL_REQ( );
+ 672              		.loc 1 807 33 view .LVU203
+ 808:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         US915_NEW_CHANNEL_REQ( );
+ 673              		.loc 1 808 33 view .LVU204
+ 809:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         RU864_NEW_CHANNEL_REQ( );
+ 674              		.loc 1 809 9 view .LVU205
+ 675 000a 0846     		mov	r0, r1
+ 676              	.LVL64:
+ 809:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         RU864_NEW_CHANNEL_REQ( );
+ 677              		.loc 1 809 9 is_stmt 0 view .LVU206
+ 678 000c FFF7FEFF 		bl	RegionUS915NewChannelReq
+ 679              	.LVL65:
+ 680              		.loc 1 816 1 view .LVU207
+ 681 0010 08BD     		pop	{r3, pc}
+ 682              		.cfi_endproc
+ 683              	.LFE116:
+ 685              		.section	.text.RegionTxParamSetupReq,"ax",%progbits
+ 686              		.align	1
+ 687              		.global	RegionTxParamSetupReq
+ 688              		.syntax unified
+ 689              		.thumb
+ 690              		.thumb_func
+ 692              	RegionTxParamSetupReq:
+ 693              	.LVL66:
+ 694              	.LFB117:
+ 817:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** 
+ 818:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** int8_t RegionTxParamSetupReq( LoRaMacRegion_t region, TxParamSetupReqParams_t* txParamSetupReq )
+ 819:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** {
+ 695              		.loc 1 819 1 is_stmt 1 view -0
+ 696              		.cfi_startproc
+ 697              		@ args = 0, pretend = 0, frame = 0
+ 698              		@ frame_needed = 0, uses_anonymous_args = 0
+ 820:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****     switch( region )
+ 699              		.loc 1 820 5 view .LVU209
+ 700 0000 0828     		cmp	r0, #8
+ 701 0002 01D0     		beq	.L101
+ 821:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****     {
+ 822:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         AS923_TX_PARAM_SETUP_REQ( );
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccalLql4.s 			page 29
+
+
+ 823:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         AU915_TX_PARAM_SETUP_REQ( );
+ 824:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         CN470_TX_PARAM_SETUP_REQ( );
+ 825:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         CN779_TX_PARAM_SETUP_REQ( );
+ 826:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         EU433_TX_PARAM_SETUP_REQ( );
+ 827:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         EU868_TX_PARAM_SETUP_REQ( );
+ 828:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         KR920_TX_PARAM_SETUP_REQ( );
+ 829:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         IN865_TX_PARAM_SETUP_REQ( );
+ 830:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         US915_TX_PARAM_SETUP_REQ( );
+ 831:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         RU864_TX_PARAM_SETUP_REQ( );
+ 832:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         default:
+ 833:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         {
+ 834:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****             return 0;
+ 702              		.loc 1 834 20 is_stmt 0 view .LVU210
+ 703 0004 0020     		movs	r0, #0
+ 704              	.LVL67:
+ 835:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         }
+ 836:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****     }
+ 837:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** }
+ 705              		.loc 1 837 1 view .LVU211
+ 706 0006 7047     		bx	lr
+ 707              	.LVL68:
+ 708              	.L101:
+ 819:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****     switch( region )
+ 709              		.loc 1 819 1 view .LVU212
+ 710 0008 08B5     		push	{r3, lr}
+ 711              	.LCFI17:
+ 712              		.cfi_def_cfa_offset 8
+ 713              		.cfi_offset 3, -8
+ 714              		.cfi_offset 14, -4
+ 822:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         AU915_TX_PARAM_SETUP_REQ( );
+ 715              		.loc 1 822 36 is_stmt 1 view .LVU213
+ 823:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         CN470_TX_PARAM_SETUP_REQ( );
+ 716              		.loc 1 823 36 view .LVU214
+ 824:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         CN779_TX_PARAM_SETUP_REQ( );
+ 717              		.loc 1 824 36 view .LVU215
+ 825:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         EU433_TX_PARAM_SETUP_REQ( );
+ 718              		.loc 1 825 36 view .LVU216
+ 826:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         EU868_TX_PARAM_SETUP_REQ( );
+ 719              		.loc 1 826 36 view .LVU217
+ 827:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         KR920_TX_PARAM_SETUP_REQ( );
+ 720              		.loc 1 827 36 view .LVU218
+ 828:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         IN865_TX_PARAM_SETUP_REQ( );
+ 721              		.loc 1 828 36 view .LVU219
+ 829:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         US915_TX_PARAM_SETUP_REQ( );
+ 722              		.loc 1 829 36 view .LVU220
+ 830:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         RU864_TX_PARAM_SETUP_REQ( );
+ 723              		.loc 1 830 9 view .LVU221
+ 724 000a 0846     		mov	r0, r1
+ 725              	.LVL69:
+ 830:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         RU864_TX_PARAM_SETUP_REQ( );
+ 726              		.loc 1 830 9 is_stmt 0 view .LVU222
+ 727 000c FFF7FEFF 		bl	RegionUS915TxParamSetupReq
+ 728              	.LVL70:
+ 729              		.loc 1 837 1 view .LVU223
+ 730 0010 08BD     		pop	{r3, pc}
+ 731              		.cfi_endproc
+ 732              	.LFE117:
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccalLql4.s 			page 30
+
+
+ 734              		.section	.text.RegionDlChannelReq,"ax",%progbits
+ 735              		.align	1
+ 736              		.global	RegionDlChannelReq
+ 737              		.syntax unified
+ 738              		.thumb
+ 739              		.thumb_func
+ 741              	RegionDlChannelReq:
+ 742              	.LVL71:
+ 743              	.LFB118:
+ 838:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** 
+ 839:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** int8_t RegionDlChannelReq( LoRaMacRegion_t region, DlChannelReqParams_t* dlChannelReq )
+ 840:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** {
+ 744              		.loc 1 840 1 is_stmt 1 view -0
+ 745              		.cfi_startproc
+ 746              		@ args = 0, pretend = 0, frame = 0
+ 747              		@ frame_needed = 0, uses_anonymous_args = 0
+ 841:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****     switch( region )
+ 748              		.loc 1 841 5 view .LVU225
+ 749 0000 0828     		cmp	r0, #8
+ 750 0002 01D0     		beq	.L109
+ 842:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****     {
+ 843:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         AS923_DL_CHANNEL_REQ( );
+ 844:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         AU915_DL_CHANNEL_REQ( );
+ 845:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         CN470_DL_CHANNEL_REQ( );
+ 846:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         CN779_DL_CHANNEL_REQ( );
+ 847:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         EU433_DL_CHANNEL_REQ( );
+ 848:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         EU868_DL_CHANNEL_REQ( );
+ 849:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         KR920_DL_CHANNEL_REQ( );
+ 850:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         IN865_DL_CHANNEL_REQ( );
+ 851:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         US915_DL_CHANNEL_REQ( );
+ 852:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         RU864_DL_CHANNEL_REQ( );
+ 853:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         default:
+ 854:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         {
+ 855:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****             return 0;
+ 751              		.loc 1 855 20 is_stmt 0 view .LVU226
+ 752 0004 0020     		movs	r0, #0
+ 753              	.LVL72:
+ 856:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         }
+ 857:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****     }
+ 858:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** }
+ 754              		.loc 1 858 1 view .LVU227
+ 755 0006 7047     		bx	lr
+ 756              	.LVL73:
+ 757              	.L109:
+ 840:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****     switch( region )
+ 758              		.loc 1 840 1 view .LVU228
+ 759 0008 08B5     		push	{r3, lr}
+ 760              	.LCFI18:
+ 761              		.cfi_def_cfa_offset 8
+ 762              		.cfi_offset 3, -8
+ 763              		.cfi_offset 14, -4
+ 843:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         AU915_DL_CHANNEL_REQ( );
+ 764              		.loc 1 843 32 is_stmt 1 view .LVU229
+ 844:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         CN470_DL_CHANNEL_REQ( );
+ 765              		.loc 1 844 32 view .LVU230
+ 845:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         CN779_DL_CHANNEL_REQ( );
+ 766              		.loc 1 845 32 view .LVU231
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccalLql4.s 			page 31
+
+
+ 846:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         EU433_DL_CHANNEL_REQ( );
+ 767              		.loc 1 846 32 view .LVU232
+ 847:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         EU868_DL_CHANNEL_REQ( );
+ 768              		.loc 1 847 32 view .LVU233
+ 848:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         KR920_DL_CHANNEL_REQ( );
+ 769              		.loc 1 848 32 view .LVU234
+ 849:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         IN865_DL_CHANNEL_REQ( );
+ 770              		.loc 1 849 32 view .LVU235
+ 850:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         US915_DL_CHANNEL_REQ( );
+ 771              		.loc 1 850 32 view .LVU236
+ 851:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         RU864_DL_CHANNEL_REQ( );
+ 772              		.loc 1 851 9 view .LVU237
+ 773 000a 0846     		mov	r0, r1
+ 774              	.LVL74:
+ 851:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         RU864_DL_CHANNEL_REQ( );
+ 775              		.loc 1 851 9 is_stmt 0 view .LVU238
+ 776 000c FFF7FEFF 		bl	RegionUS915DlChannelReq
+ 777              	.LVL75:
+ 778              		.loc 1 858 1 view .LVU239
+ 779 0010 08BD     		pop	{r3, pc}
+ 780              		.cfi_endproc
+ 781              	.LFE118:
+ 783              		.section	.text.RegionAlternateDr,"ax",%progbits
+ 784              		.align	1
+ 785              		.global	RegionAlternateDr
+ 786              		.syntax unified
+ 787              		.thumb
+ 788              		.thumb_func
+ 790              	RegionAlternateDr:
+ 791              	.LVL76:
+ 792              	.LFB119:
+ 859:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** 
+ 860:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** int8_t RegionAlternateDr( LoRaMacRegion_t region, int8_t currentDr, AlternateDrType_t type )
+ 861:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** {
+ 793              		.loc 1 861 1 is_stmt 1 view -0
+ 794              		.cfi_startproc
+ 795              		@ args = 0, pretend = 0, frame = 0
+ 796              		@ frame_needed = 0, uses_anonymous_args = 0
+ 862:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****     switch( region )
+ 797              		.loc 1 862 5 view .LVU241
+ 798 0000 0828     		cmp	r0, #8
+ 799 0002 01D0     		beq	.L117
+ 863:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****     {
+ 864:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         AS923_ALTERNATE_DR( );
+ 865:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         AU915_ALTERNATE_DR( );
+ 866:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         CN470_ALTERNATE_DR( );
+ 867:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         CN779_ALTERNATE_DR( );
+ 868:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         EU433_ALTERNATE_DR( );
+ 869:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         EU868_ALTERNATE_DR( );
+ 870:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         KR920_ALTERNATE_DR( );
+ 871:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         IN865_ALTERNATE_DR( );
+ 872:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         US915_ALTERNATE_DR( );
+ 873:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         RU864_ALTERNATE_DR( );
+ 874:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         default:
+ 875:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         {
+ 876:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****             return 0;
+ 800              		.loc 1 876 20 is_stmt 0 view .LVU242
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccalLql4.s 			page 32
+
+
+ 801 0004 0020     		movs	r0, #0
+ 802              	.LVL77:
+ 877:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         }
+ 878:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****     }
+ 879:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** }
+ 803              		.loc 1 879 1 view .LVU243
+ 804 0006 7047     		bx	lr
+ 805              	.LVL78:
+ 806              	.L117:
+ 861:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****     switch( region )
+ 807              		.loc 1 861 1 view .LVU244
+ 808 0008 08B5     		push	{r3, lr}
+ 809              	.LCFI19:
+ 810              		.cfi_def_cfa_offset 8
+ 811              		.cfi_offset 3, -8
+ 812              		.cfi_offset 14, -4
+ 813 000a 0B46     		mov	r3, r1
+ 864:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         AU915_ALTERNATE_DR( );
+ 814              		.loc 1 864 30 is_stmt 1 view .LVU245
+ 865:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         CN470_ALTERNATE_DR( );
+ 815              		.loc 1 865 30 view .LVU246
+ 866:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         CN779_ALTERNATE_DR( );
+ 816              		.loc 1 866 30 view .LVU247
+ 867:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         EU433_ALTERNATE_DR( );
+ 817              		.loc 1 867 30 view .LVU248
+ 868:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         EU868_ALTERNATE_DR( );
+ 818              		.loc 1 868 30 view .LVU249
+ 869:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         KR920_ALTERNATE_DR( );
+ 819              		.loc 1 869 30 view .LVU250
+ 870:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         IN865_ALTERNATE_DR( );
+ 820              		.loc 1 870 30 view .LVU251
+ 871:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         US915_ALTERNATE_DR( );
+ 821              		.loc 1 871 30 view .LVU252
+ 872:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         RU864_ALTERNATE_DR( );
+ 822              		.loc 1 872 9 view .LVU253
+ 823 000c 1146     		mov	r1, r2
+ 824              	.LVL79:
+ 872:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         RU864_ALTERNATE_DR( );
+ 825              		.loc 1 872 9 is_stmt 0 view .LVU254
+ 826 000e 1846     		mov	r0, r3
+ 827              	.LVL80:
+ 872:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         RU864_ALTERNATE_DR( );
+ 828              		.loc 1 872 9 view .LVU255
+ 829 0010 FFF7FEFF 		bl	RegionUS915AlternateDr
+ 830              	.LVL81:
+ 831              		.loc 1 879 1 view .LVU256
+ 832 0014 08BD     		pop	{r3, pc}
+ 833              		.cfi_endproc
+ 834              	.LFE119:
+ 836              		.section	.text.RegionNextChannel,"ax",%progbits
+ 837              		.align	1
+ 838              		.global	RegionNextChannel
+ 839              		.syntax unified
+ 840              		.thumb
+ 841              		.thumb_func
+ 843              	RegionNextChannel:
+ 844              	.LVL82:
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccalLql4.s 			page 33
+
+
+ 845              	.LFB120:
+ 880:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** 
+ 881:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** LoRaMacStatus_t RegionNextChannel( LoRaMacRegion_t region, NextChanParams_t* nextChanParams, uint8_
+ 882:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** {
+ 846              		.loc 1 882 1 is_stmt 1 view -0
+ 847              		.cfi_startproc
+ 848              		@ args = 4, pretend = 0, frame = 0
+ 849              		@ frame_needed = 0, uses_anonymous_args = 0
+ 883:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****     switch( region )
+ 850              		.loc 1 883 5 view .LVU258
+ 851 0000 0828     		cmp	r0, #8
+ 852 0002 01D0     		beq	.L125
+ 884:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****     {
+ 885:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         AS923_NEXT_CHANNEL( );
+ 886:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         AU915_NEXT_CHANNEL( );
+ 887:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         CN470_NEXT_CHANNEL( );
+ 888:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         CN779_NEXT_CHANNEL( );
+ 889:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         EU433_NEXT_CHANNEL( );
+ 890:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         EU868_NEXT_CHANNEL( );
+ 891:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         KR920_NEXT_CHANNEL( );
+ 892:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         IN865_NEXT_CHANNEL( );
+ 893:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         US915_NEXT_CHANNEL( );
+ 894:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         RU864_NEXT_CHANNEL( );
+ 895:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         default:
+ 896:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         {
+ 897:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****             return LORAMAC_STATUS_REGION_NOT_SUPPORTED;
+ 853              		.loc 1 897 20 is_stmt 0 view .LVU259
+ 854 0004 0920     		movs	r0, #9
+ 855              	.LVL83:
+ 898:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         }
+ 899:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****     }
+ 900:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** }
+ 856              		.loc 1 900 1 view .LVU260
+ 857 0006 7047     		bx	lr
+ 858              	.LVL84:
+ 859              	.L125:
+ 882:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****     switch( region )
+ 860              		.loc 1 882 1 view .LVU261
+ 861 0008 08B5     		push	{r3, lr}
+ 862              	.LCFI20:
+ 863              		.cfi_def_cfa_offset 8
+ 864              		.cfi_offset 3, -8
+ 865              		.cfi_offset 14, -4
+ 866 000a 8C46     		mov	ip, r1
+ 867 000c 1146     		mov	r1, r2
+ 868              	.LVL85:
+ 882:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****     switch( region )
+ 869              		.loc 1 882 1 view .LVU262
+ 870 000e 1A46     		mov	r2, r3
+ 871              	.LVL86:
+ 885:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         AU915_NEXT_CHANNEL( );
+ 872              		.loc 1 885 30 is_stmt 1 view .LVU263
+ 886:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         CN470_NEXT_CHANNEL( );
+ 873              		.loc 1 886 30 view .LVU264
+ 887:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         CN779_NEXT_CHANNEL( );
+ 874              		.loc 1 887 30 view .LVU265
+ 888:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         EU433_NEXT_CHANNEL( );
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccalLql4.s 			page 34
+
+
+ 875              		.loc 1 888 30 view .LVU266
+ 889:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         EU868_NEXT_CHANNEL( );
+ 876              		.loc 1 889 30 view .LVU267
+ 890:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         KR920_NEXT_CHANNEL( );
+ 877              		.loc 1 890 30 view .LVU268
+ 891:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         IN865_NEXT_CHANNEL( );
+ 878              		.loc 1 891 30 view .LVU269
+ 892:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         US915_NEXT_CHANNEL( );
+ 879              		.loc 1 892 30 view .LVU270
+ 893:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         RU864_NEXT_CHANNEL( );
+ 880              		.loc 1 893 9 view .LVU271
+ 881 0010 029B     		ldr	r3, [sp, #8]
+ 882              	.LVL87:
+ 893:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         RU864_NEXT_CHANNEL( );
+ 883              		.loc 1 893 9 is_stmt 0 view .LVU272
+ 884 0012 6046     		mov	r0, ip
+ 885              	.LVL88:
+ 893:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         RU864_NEXT_CHANNEL( );
+ 886              		.loc 1 893 9 view .LVU273
+ 887 0014 FFF7FEFF 		bl	RegionUS915NextChannel
+ 888              	.LVL89:
+ 889              		.loc 1 900 1 view .LVU274
+ 890 0018 08BD     		pop	{r3, pc}
+ 891              		.loc 1 900 1 view .LVU275
+ 892              		.cfi_endproc
+ 893              	.LFE120:
+ 895              		.section	.text.RegionChannelAdd,"ax",%progbits
+ 896              		.align	1
+ 897              		.global	RegionChannelAdd
+ 898              		.syntax unified
+ 899              		.thumb
+ 900              		.thumb_func
+ 902              	RegionChannelAdd:
+ 903              	.LVL90:
+ 904              	.LFB121:
+ 901:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** 
+ 902:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** LoRaMacStatus_t RegionChannelAdd( LoRaMacRegion_t region, ChannelAddParams_t* channelAdd )
+ 903:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** {
+ 905              		.loc 1 903 1 is_stmt 1 view -0
+ 906              		.cfi_startproc
+ 907              		@ args = 0, pretend = 0, frame = 0
+ 908              		@ frame_needed = 0, uses_anonymous_args = 0
+ 904:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****     switch( region )
+ 909              		.loc 1 904 5 view .LVU277
+ 910 0000 0828     		cmp	r0, #8
+ 911 0002 01D0     		beq	.L133
+ 905:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****     {
+ 906:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         AS923_CHANNEL_ADD( );
+ 907:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         AU915_CHANNEL_ADD( );
+ 908:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         CN470_CHANNEL_ADD( );
+ 909:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         CN779_CHANNEL_ADD( );
+ 910:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         EU433_CHANNEL_ADD( );
+ 911:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         EU868_CHANNEL_ADD( );
+ 912:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         KR920_CHANNEL_ADD( );
+ 913:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         IN865_CHANNEL_ADD( );
+ 914:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         US915_CHANNEL_ADD( );
+ 915:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         RU864_CHANNEL_ADD( );
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccalLql4.s 			page 35
+
+
+ 916:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         default:
+ 917:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         {
+ 918:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****             return LORAMAC_STATUS_PARAMETER_INVALID;
+ 912              		.loc 1 918 20 is_stmt 0 view .LVU278
+ 913 0004 0320     		movs	r0, #3
+ 914              	.LVL91:
+ 919:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         }
+ 920:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****     }
+ 921:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** }
+ 915              		.loc 1 921 1 view .LVU279
+ 916 0006 7047     		bx	lr
+ 917              	.LVL92:
+ 918              	.L133:
+ 903:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****     switch( region )
+ 919              		.loc 1 903 1 view .LVU280
+ 920 0008 08B5     		push	{r3, lr}
+ 921              	.LCFI21:
+ 922              		.cfi_def_cfa_offset 8
+ 923              		.cfi_offset 3, -8
+ 924              		.cfi_offset 14, -4
+ 906:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         AU915_CHANNEL_ADD( );
+ 925              		.loc 1 906 29 is_stmt 1 view .LVU281
+ 907:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         CN470_CHANNEL_ADD( );
+ 926              		.loc 1 907 29 view .LVU282
+ 908:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         CN779_CHANNEL_ADD( );
+ 927              		.loc 1 908 29 view .LVU283
+ 909:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         EU433_CHANNEL_ADD( );
+ 928              		.loc 1 909 29 view .LVU284
+ 910:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         EU868_CHANNEL_ADD( );
+ 929              		.loc 1 910 29 view .LVU285
+ 911:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         KR920_CHANNEL_ADD( );
+ 930              		.loc 1 911 29 view .LVU286
+ 912:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         IN865_CHANNEL_ADD( );
+ 931              		.loc 1 912 29 view .LVU287
+ 913:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         US915_CHANNEL_ADD( );
+ 932              		.loc 1 913 29 view .LVU288
+ 914:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         RU864_CHANNEL_ADD( );
+ 933              		.loc 1 914 9 view .LVU289
+ 934 000a 0846     		mov	r0, r1
+ 935              	.LVL93:
+ 914:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         RU864_CHANNEL_ADD( );
+ 936              		.loc 1 914 9 is_stmt 0 view .LVU290
+ 937 000c FFF7FEFF 		bl	RegionUS915ChannelAdd
+ 938              	.LVL94:
+ 939              		.loc 1 921 1 view .LVU291
+ 940 0010 08BD     		pop	{r3, pc}
+ 941              		.cfi_endproc
+ 942              	.LFE121:
+ 944              		.section	.text.RegionChannelsRemove,"ax",%progbits
+ 945              		.align	1
+ 946              		.global	RegionChannelsRemove
+ 947              		.syntax unified
+ 948              		.thumb
+ 949              		.thumb_func
+ 951              	RegionChannelsRemove:
+ 952              	.LVL95:
+ 953              	.LFB122:
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccalLql4.s 			page 36
+
+
+ 922:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** 
+ 923:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** bool RegionChannelsRemove( LoRaMacRegion_t region, ChannelRemoveParams_t* channelRemove )
+ 924:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** {
+ 954              		.loc 1 924 1 is_stmt 1 view -0
+ 955              		.cfi_startproc
+ 956              		@ args = 0, pretend = 0, frame = 0
+ 957              		@ frame_needed = 0, uses_anonymous_args = 0
+ 925:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****     switch( region )
+ 958              		.loc 1 925 5 view .LVU293
+ 959 0000 0828     		cmp	r0, #8
+ 960 0002 01D0     		beq	.L141
+ 926:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****     {
+ 927:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         AS923_CHANNEL_REMOVE( );
+ 928:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         AU915_CHANNEL_REMOVE( );
+ 929:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         CN470_CHANNEL_REMOVE( );
+ 930:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         CN779_CHANNEL_REMOVE( );
+ 931:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         EU433_CHANNEL_REMOVE( );
+ 932:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         EU868_CHANNEL_REMOVE( );
+ 933:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         KR920_CHANNEL_REMOVE( );
+ 934:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         IN865_CHANNEL_REMOVE( );
+ 935:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         US915_CHANNEL_REMOVE( );
+ 936:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         RU864_CHANNEL_REMOVE( );
+ 937:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         default:
+ 938:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         {
+ 939:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****             return false;
+ 961              		.loc 1 939 20 is_stmt 0 view .LVU294
+ 962 0004 0020     		movs	r0, #0
+ 963              	.LVL96:
+ 940:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         }
+ 941:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****     }
+ 942:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** }
+ 964              		.loc 1 942 1 view .LVU295
+ 965 0006 7047     		bx	lr
+ 966              	.LVL97:
+ 967              	.L141:
+ 924:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****     switch( region )
+ 968              		.loc 1 924 1 view .LVU296
+ 969 0008 08B5     		push	{r3, lr}
+ 970              	.LCFI22:
+ 971              		.cfi_def_cfa_offset 8
+ 972              		.cfi_offset 3, -8
+ 973              		.cfi_offset 14, -4
+ 927:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         AU915_CHANNEL_REMOVE( );
+ 974              		.loc 1 927 32 is_stmt 1 view .LVU297
+ 928:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         CN470_CHANNEL_REMOVE( );
+ 975              		.loc 1 928 32 view .LVU298
+ 929:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         CN779_CHANNEL_REMOVE( );
+ 976              		.loc 1 929 32 view .LVU299
+ 930:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         EU433_CHANNEL_REMOVE( );
+ 977              		.loc 1 930 32 view .LVU300
+ 931:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         EU868_CHANNEL_REMOVE( );
+ 978              		.loc 1 931 32 view .LVU301
+ 932:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         KR920_CHANNEL_REMOVE( );
+ 979              		.loc 1 932 32 view .LVU302
+ 933:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         IN865_CHANNEL_REMOVE( );
+ 980              		.loc 1 933 32 view .LVU303
+ 934:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         US915_CHANNEL_REMOVE( );
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccalLql4.s 			page 37
+
+
+ 981              		.loc 1 934 32 view .LVU304
+ 935:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         RU864_CHANNEL_REMOVE( );
+ 982              		.loc 1 935 9 view .LVU305
+ 983 000a 0846     		mov	r0, r1
+ 984              	.LVL98:
+ 935:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         RU864_CHANNEL_REMOVE( );
+ 985              		.loc 1 935 9 is_stmt 0 view .LVU306
+ 986 000c FFF7FEFF 		bl	RegionUS915ChannelsRemove
+ 987              	.LVL99:
+ 988              		.loc 1 942 1 view .LVU307
+ 989 0010 08BD     		pop	{r3, pc}
+ 990              		.cfi_endproc
+ 991              	.LFE122:
+ 993              		.section	.text.RegionSetContinuousWave,"ax",%progbits
+ 994              		.align	1
+ 995              		.global	RegionSetContinuousWave
+ 996              		.syntax unified
+ 997              		.thumb
+ 998              		.thumb_func
+ 1000              	RegionSetContinuousWave:
+ 1001              	.LVL100:
+ 1002              	.LFB123:
+ 943:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** 
+ 944:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** void RegionSetContinuousWave( LoRaMacRegion_t region, ContinuousWaveParams_t* continuousWave )
+ 945:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** {
+ 1003              		.loc 1 945 1 is_stmt 1 view -0
+ 1004              		.cfi_startproc
+ 1005              		@ args = 0, pretend = 0, frame = 0
+ 1006              		@ frame_needed = 0, uses_anonymous_args = 0
+ 946:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****     switch( region )
+ 1007              		.loc 1 946 5 view .LVU309
+ 1008 0000 0828     		cmp	r0, #8
+ 1009 0002 00D0     		beq	.L148
+ 1010 0004 7047     		bx	lr
+ 1011              	.L148:
+ 945:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****     switch( region )
+ 1012              		.loc 1 945 1 is_stmt 0 view .LVU310
+ 1013 0006 08B5     		push	{r3, lr}
+ 1014              	.LCFI23:
+ 1015              		.cfi_def_cfa_offset 8
+ 1016              		.cfi_offset 3, -8
+ 1017              		.cfi_offset 14, -4
+ 947:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****     {
+ 948:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         AS923_SET_CONTINUOUS_WAVE( );
+ 1018              		.loc 1 948 37 is_stmt 1 view .LVU311
+ 949:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         AU915_SET_CONTINUOUS_WAVE( );
+ 1019              		.loc 1 949 37 view .LVU312
+ 950:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         CN470_SET_CONTINUOUS_WAVE( );
+ 1020              		.loc 1 950 37 view .LVU313
+ 951:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         CN779_SET_CONTINUOUS_WAVE( );
+ 1021              		.loc 1 951 37 view .LVU314
+ 952:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         EU433_SET_CONTINUOUS_WAVE( );
+ 1022              		.loc 1 952 37 view .LVU315
+ 953:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         EU868_SET_CONTINUOUS_WAVE( );
+ 1023              		.loc 1 953 37 view .LVU316
+ 954:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         KR920_SET_CONTINUOUS_WAVE( );
+ 1024              		.loc 1 954 37 view .LVU317
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccalLql4.s 			page 38
+
+
+ 955:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         IN865_SET_CONTINUOUS_WAVE( );
+ 1025              		.loc 1 955 37 view .LVU318
+ 956:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         US915_SET_CONTINUOUS_WAVE( );
+ 1026              		.loc 1 956 9 view .LVU319
+ 1027 0008 0846     		mov	r0, r1
+ 1028              	.LVL101:
+ 1029              		.loc 1 956 9 is_stmt 0 view .LVU320
+ 1030 000a FFF7FEFF 		bl	RegionUS915SetContinuousWave
+ 1031              	.LVL102:
+ 1032              		.loc 1 956 9 is_stmt 1 view .LVU321
+ 957:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         RU864_SET_CONTINUOUS_WAVE( );
+ 958:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         default:
+ 959:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         {
+ 960:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****             break;
+ 961:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         }
+ 962:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****     }
+ 963:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** }
+ 1033              		.loc 1 963 1 is_stmt 0 view .LVU322
+ 1034 000e 08BD     		pop	{r3, pc}
+ 1035              		.cfi_endproc
+ 1036              	.LFE123:
+ 1038              		.section	.text.RegionApplyDrOffset,"ax",%progbits
+ 1039              		.align	1
+ 1040              		.global	RegionApplyDrOffset
+ 1041              		.syntax unified
+ 1042              		.thumb
+ 1043              		.thumb_func
+ 1045              	RegionApplyDrOffset:
+ 1046              	.LVL103:
+ 1047              	.LFB124:
+ 964:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** 
+ 965:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** uint8_t RegionApplyDrOffset( LoRaMacRegion_t region, uint8_t downlinkDwellTime, int8_t dr, int8_t d
+ 966:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** {
+ 1048              		.loc 1 966 1 is_stmt 1 view -0
+ 1049              		.cfi_startproc
+ 1050              		@ args = 0, pretend = 0, frame = 0
+ 1051              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1052              		.loc 1 966 1 is_stmt 0 view .LVU324
+ 1053 0000 8C46     		mov	ip, r1
+ 1054 0002 1146     		mov	r1, r2
+ 1055              	.LVL104:
+ 967:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****     switch( region )
+ 1056              		.loc 1 967 5 is_stmt 1 view .LVU325
+ 1057 0004 0828     		cmp	r0, #8
+ 1058 0006 01D0     		beq	.L156
+ 968:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****     {
+ 969:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         AS923_APPLY_DR_OFFSET( );
+ 970:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         AU915_APPLY_DR_OFFSET( );
+ 971:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         CN470_APPLY_DR_OFFSET( );
+ 972:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         CN779_APPLY_DR_OFFSET( );
+ 973:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         EU433_APPLY_DR_OFFSET( );
+ 974:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         EU868_APPLY_DR_OFFSET( );
+ 975:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         KR920_APPLY_DR_OFFSET( );
+ 976:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         IN865_APPLY_DR_OFFSET( );
+ 977:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         US915_APPLY_DR_OFFSET( );
+ 1059              		.loc 1 977 33 view .LVU326
+ 978:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         RU864_APPLY_DR_OFFSET( );
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccalLql4.s 			page 39
+
+
+ 1060              		.loc 1 978 33 view .LVU327
+ 979:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         default:
+ 980:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         {
+ 981:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****             return dr;
+ 1061              		.loc 1 981 13 view .LVU328
+ 1062              		.loc 1 981 20 is_stmt 0 view .LVU329
+ 1063 0008 D0B2     		uxtb	r0, r2
+ 1064              	.LVL105:
+ 982:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         }
+ 983:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****     }
+ 984:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** }
+ 1065              		.loc 1 984 1 view .LVU330
+ 1066 000a 7047     		bx	lr
+ 1067              	.LVL106:
+ 1068              	.L156:
+ 966:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****     switch( region )
+ 1069              		.loc 1 966 1 view .LVU331
+ 1070 000c 08B5     		push	{r3, lr}
+ 1071              	.LCFI24:
+ 1072              		.cfi_def_cfa_offset 8
+ 1073              		.cfi_offset 3, -8
+ 1074              		.cfi_offset 14, -4
+ 969:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         AU915_APPLY_DR_OFFSET( );
+ 1075              		.loc 1 969 33 is_stmt 1 view .LVU332
+ 970:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         CN470_APPLY_DR_OFFSET( );
+ 1076              		.loc 1 970 33 view .LVU333
+ 971:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         CN779_APPLY_DR_OFFSET( );
+ 1077              		.loc 1 971 33 view .LVU334
+ 972:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         EU433_APPLY_DR_OFFSET( );
+ 1078              		.loc 1 972 33 view .LVU335
+ 973:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         EU868_APPLY_DR_OFFSET( );
+ 1079              		.loc 1 973 33 view .LVU336
+ 974:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         KR920_APPLY_DR_OFFSET( );
+ 1080              		.loc 1 974 33 view .LVU337
+ 975:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         IN865_APPLY_DR_OFFSET( );
+ 1081              		.loc 1 975 33 view .LVU338
+ 976:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         US915_APPLY_DR_OFFSET( );
+ 1082              		.loc 1 976 33 view .LVU339
+ 977:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         RU864_APPLY_DR_OFFSET( );
+ 1083              		.loc 1 977 9 view .LVU340
+ 1084 000e 1A46     		mov	r2, r3
+ 1085              	.LVL107:
+ 977:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         RU864_APPLY_DR_OFFSET( );
+ 1086              		.loc 1 977 9 is_stmt 0 view .LVU341
+ 1087 0010 6046     		mov	r0, ip
+ 1088              	.LVL108:
+ 977:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         RU864_APPLY_DR_OFFSET( );
+ 1089              		.loc 1 977 9 view .LVU342
+ 1090 0012 FFF7FEFF 		bl	RegionUS915ApplyDrOffset
+ 1091              	.LVL109:
+ 1092              		.loc 1 984 1 view .LVU343
+ 1093 0016 08BD     		pop	{r3, pc}
+ 1094              		.cfi_endproc
+ 1095              	.LFE124:
+ 1097              		.section	.text.RegionRxBeaconSetup,"ax",%progbits
+ 1098              		.align	1
+ 1099              		.global	RegionRxBeaconSetup
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccalLql4.s 			page 40
+
+
+ 1100              		.syntax unified
+ 1101              		.thumb
+ 1102              		.thumb_func
+ 1104              	RegionRxBeaconSetup:
+ 1105              	.LVL110:
+ 1106              	.LFB125:
+ 985:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** 
+ 986:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** void RegionRxBeaconSetup( LoRaMacRegion_t region, RxBeaconSetup_t* rxBeaconSetup, uint8_t* outDr )
+ 987:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** {
+ 1107              		.loc 1 987 1 is_stmt 1 view -0
+ 1108              		.cfi_startproc
+ 1109              		@ args = 0, pretend = 0, frame = 0
+ 1110              		@ frame_needed = 0, uses_anonymous_args = 0
+ 988:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****     switch( region )
+ 1111              		.loc 1 988 5 view .LVU345
+ 1112 0000 0828     		cmp	r0, #8
+ 1113 0002 00D0     		beq	.L163
+ 1114 0004 7047     		bx	lr
+ 1115              	.L163:
+ 987:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****     switch( region )
+ 1116              		.loc 1 987 1 is_stmt 0 view .LVU346
+ 1117 0006 08B5     		push	{r3, lr}
+ 1118              	.LCFI25:
+ 1119              		.cfi_def_cfa_offset 8
+ 1120              		.cfi_offset 3, -8
+ 1121              		.cfi_offset 14, -4
+ 1122 0008 0B46     		mov	r3, r1
+ 989:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****     {
+ 990:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         AS923_RX_BEACON_SETUP( );
+ 1123              		.loc 1 990 33 is_stmt 1 view .LVU347
+ 991:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         AU915_RX_BEACON_SETUP( );
+ 1124              		.loc 1 991 33 view .LVU348
+ 992:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         CN470_RX_BEACON_SETUP( );
+ 1125              		.loc 1 992 33 view .LVU349
+ 993:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         CN779_RX_BEACON_SETUP( );
+ 1126              		.loc 1 993 33 view .LVU350
+ 994:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         EU433_RX_BEACON_SETUP( );
+ 1127              		.loc 1 994 33 view .LVU351
+ 995:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         EU868_RX_BEACON_SETUP( );
+ 1128              		.loc 1 995 33 view .LVU352
+ 996:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         KR920_RX_BEACON_SETUP( );
+ 1129              		.loc 1 996 33 view .LVU353
+ 997:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         IN865_RX_BEACON_SETUP( );
+ 1130              		.loc 1 997 33 view .LVU354
+ 998:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         US915_RX_BEACON_SETUP( );
+ 1131              		.loc 1 998 9 view .LVU355
+ 1132 000a 1146     		mov	r1, r2
+ 1133              	.LVL111:
+ 1134              		.loc 1 998 9 is_stmt 0 view .LVU356
+ 1135 000c 1846     		mov	r0, r3
+ 1136              	.LVL112:
+ 1137              		.loc 1 998 9 view .LVU357
+ 1138 000e FFF7FEFF 		bl	RegionUS915RxBeaconSetup
+ 1139              	.LVL113:
+ 1140              		.loc 1 998 9 is_stmt 1 view .LVU358
+ 999:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         RU864_RX_BEACON_SETUP( );
+1000:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         default:
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccalLql4.s 			page 41
+
+
+1001:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         {
+1002:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****             break;
+1003:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****         }
+1004:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****     }
+1005:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** }
+ 1141              		.loc 1 1005 1 is_stmt 0 view .LVU359
+ 1142 0012 08BD     		pop	{r3, pc}
+ 1143              		.cfi_endproc
+ 1144              	.LFE125:
+ 1146              		.section	.text.RegionGetVersion,"ax",%progbits
+ 1147              		.align	1
+ 1148              		.global	RegionGetVersion
+ 1149              		.syntax unified
+ 1150              		.thumb
+ 1151              		.thumb_func
+ 1153              	RegionGetVersion:
+ 1154              	.LFB126:
+1006:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** 
+1007:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** Version_t RegionGetVersion( void )
+1008:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** {
+ 1155              		.loc 1 1008 1 is_stmt 1 view -0
+ 1156              		.cfi_startproc
+ 1157              		@ args = 0, pretend = 0, frame = 0
+ 1158              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1159              		@ link register save eliminated.
+1009:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****     Version_t version;
+ 1160              		.loc 1 1009 5 view .LVU361
+1010:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** 
+1011:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****     version.Value = REGION_VERSION;
+ 1161              		.loc 1 1011 5 view .LVU362
+1012:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** 
+1013:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c ****     return version;
+ 1162              		.loc 1 1013 5 view .LVU363
+1014:Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.c **** }
+ 1163              		.loc 1 1014 1 is_stmt 0 view .LVU364
+ 1164 0000 0048     		ldr	r0, .L165
+ 1165 0002 7047     		bx	lr
+ 1166              	.L166:
+ 1167              		.align	2
+ 1168              	.L165:
+ 1169 0004 00030001 		.word	16777984
+ 1170              		.cfi_endproc
+ 1171              	.LFE126:
+ 1173              		.text
+ 1174              	.Letext0:
+ 1175              		.file 2 "c:\\program files (x86)\\gnu arm embedded toolchain\\10 2021.10\\arm-none-eabi\\include\\
+ 1176              		.file 3 "c:\\program files (x86)\\gnu arm embedded toolchain\\10 2021.10\\arm-none-eabi\\include\\
+ 1177              		.file 4 "Utilities/timer/stm32_timer.h"
+ 1178              		.file 5 "Utilities/misc/stm32_systime.h"
+ 1179              		.file 6 "Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacTypes.h"
+ 1180              		.file 7 "Middlewares/Third_Party/LoRaWAN/Utilities/utilities.h"
+ 1181              		.file 8 "Middlewares/Third_Party/LoRaWAN/Mac/LoRaMac.h"
+ 1182              		.file 9 "Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.h"
+ 1183              		.file 10 "Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionUS915.h"
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccalLql4.s 			page 42
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 Region.c
+C:\Users\NATHAN~1\AppData\Local\Temp\ccalLql4.s:18     .text.RegionIsActive:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\ccalLql4.s:24     .text.RegionIsActive:00000000 RegionIsActive
+C:\Users\NATHAN~1\AppData\Local\Temp\ccalLql4.s:52     .text.RegionGetPhyParam:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\ccalLql4.s:58     .text.RegionGetPhyParam:00000000 RegionGetPhyParam
+C:\Users\NATHAN~1\AppData\Local\Temp\ccalLql4.s:121    .text.RegionSetBandTxDone:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\ccalLql4.s:127    .text.RegionSetBandTxDone:00000000 RegionSetBandTxDone
+C:\Users\NATHAN~1\AppData\Local\Temp\ccalLql4.s:166    .text.RegionInitDefaults:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\ccalLql4.s:172    .text.RegionInitDefaults:00000000 RegionInitDefaults
+C:\Users\NATHAN~1\AppData\Local\Temp\ccalLql4.s:211    .text.RegionVerify:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\ccalLql4.s:217    .text.RegionVerify:00000000 RegionVerify
+C:\Users\NATHAN~1\AppData\Local\Temp\ccalLql4.s:264    .text.RegionApplyCFList:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\ccalLql4.s:270    .text.RegionApplyCFList:00000000 RegionApplyCFList
+C:\Users\NATHAN~1\AppData\Local\Temp\ccalLql4.s:309    .text.RegionChanMaskSet:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\ccalLql4.s:315    .text.RegionChanMaskSet:00000000 RegionChanMaskSet
+C:\Users\NATHAN~1\AppData\Local\Temp\ccalLql4.s:358    .text.RegionComputeRxWindowParameters:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\ccalLql4.s:364    .text.RegionComputeRxWindowParameters:00000000 RegionComputeRxWindowParameters
+C:\Users\NATHAN~1\AppData\Local\Temp\ccalLql4.s:413    .text.RegionRxConfig:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\ccalLql4.s:419    .text.RegionRxConfig:00000000 RegionRxConfig
+C:\Users\NATHAN~1\AppData\Local\Temp\ccalLql4.s:466    .text.RegionTxConfig:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\ccalLql4.s:472    .text.RegionTxConfig:00000000 RegionTxConfig
+C:\Users\NATHAN~1\AppData\Local\Temp\ccalLql4.s:521    .text.RegionLinkAdrReq:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\ccalLql4.s:527    .text.RegionLinkAdrReq:00000000 RegionLinkAdrReq
+C:\Users\NATHAN~1\AppData\Local\Temp\ccalLql4.s:588    .text.RegionRxParamSetupReq:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\ccalLql4.s:594    .text.RegionRxParamSetupReq:00000000 RegionRxParamSetupReq
+C:\Users\NATHAN~1\AppData\Local\Temp\ccalLql4.s:637    .text.RegionNewChannelReq:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\ccalLql4.s:643    .text.RegionNewChannelReq:00000000 RegionNewChannelReq
+C:\Users\NATHAN~1\AppData\Local\Temp\ccalLql4.s:686    .text.RegionTxParamSetupReq:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\ccalLql4.s:692    .text.RegionTxParamSetupReq:00000000 RegionTxParamSetupReq
+C:\Users\NATHAN~1\AppData\Local\Temp\ccalLql4.s:735    .text.RegionDlChannelReq:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\ccalLql4.s:741    .text.RegionDlChannelReq:00000000 RegionDlChannelReq
+C:\Users\NATHAN~1\AppData\Local\Temp\ccalLql4.s:784    .text.RegionAlternateDr:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\ccalLql4.s:790    .text.RegionAlternateDr:00000000 RegionAlternateDr
+C:\Users\NATHAN~1\AppData\Local\Temp\ccalLql4.s:837    .text.RegionNextChannel:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\ccalLql4.s:843    .text.RegionNextChannel:00000000 RegionNextChannel
+C:\Users\NATHAN~1\AppData\Local\Temp\ccalLql4.s:896    .text.RegionChannelAdd:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\ccalLql4.s:902    .text.RegionChannelAdd:00000000 RegionChannelAdd
+C:\Users\NATHAN~1\AppData\Local\Temp\ccalLql4.s:945    .text.RegionChannelsRemove:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\ccalLql4.s:951    .text.RegionChannelsRemove:00000000 RegionChannelsRemove
+C:\Users\NATHAN~1\AppData\Local\Temp\ccalLql4.s:994    .text.RegionSetContinuousWave:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\ccalLql4.s:1000   .text.RegionSetContinuousWave:00000000 RegionSetContinuousWave
+C:\Users\NATHAN~1\AppData\Local\Temp\ccalLql4.s:1039   .text.RegionApplyDrOffset:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\ccalLql4.s:1045   .text.RegionApplyDrOffset:00000000 RegionApplyDrOffset
+C:\Users\NATHAN~1\AppData\Local\Temp\ccalLql4.s:1098   .text.RegionRxBeaconSetup:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\ccalLql4.s:1104   .text.RegionRxBeaconSetup:00000000 RegionRxBeaconSetup
+C:\Users\NATHAN~1\AppData\Local\Temp\ccalLql4.s:1147   .text.RegionGetVersion:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\ccalLql4.s:1153   .text.RegionGetVersion:00000000 RegionGetVersion
+C:\Users\NATHAN~1\AppData\Local\Temp\ccalLql4.s:1169   .text.RegionGetVersion:00000004 $d
+
+UNDEFINED SYMBOLS
+RegionUS915GetPhyParam
+RegionUS915SetBandTxDone
+RegionUS915InitDefaults
+RegionUS915Verify
+RegionUS915ApplyCFList
+RegionUS915ChanMaskSet
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccalLql4.s 			page 43
+
+
+RegionUS915ComputeRxWindowParameters
+RegionUS915RxConfig
+RegionUS915TxConfig
+RegionUS915LinkAdrReq
+RegionUS915RxParamSetupReq
+RegionUS915NewChannelReq
+RegionUS915TxParamSetupReq
+RegionUS915DlChannelReq
+RegionUS915AlternateDr
+RegionUS915NextChannel
+RegionUS915ChannelAdd
+RegionUS915ChannelsRemove
+RegionUS915SetContinuousWave
+RegionUS915ApplyDrOffset
+RegionUS915RxBeaconSetup

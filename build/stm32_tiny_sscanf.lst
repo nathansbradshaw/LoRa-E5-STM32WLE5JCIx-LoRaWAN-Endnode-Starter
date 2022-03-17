@@ -1,0 +1,1996 @@
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccRU2Xxh.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"stm32_tiny_sscanf.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.section	.text.tiny_vfscanf,"ax",%progbits
+  18              		.align	1
+  19              		.syntax unified
+  20              		.thumb
+  21              		.thumb_func
+  23              	tiny_vfscanf:
+  24              	.LVL0:
+  25              	.LFB3:
+  26              		.file 1 "Utilities/misc/stm32_tiny_sscanf.c"
+   1:Utilities/misc/stm32_tiny_sscanf.c **** /**
+   2:Utilities/misc/stm32_tiny_sscanf.c ****  * Copyright (c) 1990 The Regents of the University of California. 
+   3:Utilities/misc/stm32_tiny_sscanf.c **** * All rights reserved. 
+   4:Utilities/misc/stm32_tiny_sscanf.c **** * 
+   5:Utilities/misc/stm32_tiny_sscanf.c **** * Redistribution and use in source and binary forms are permitted 
+   6:Utilities/misc/stm32_tiny_sscanf.c **** * provided that the above copyright notice and this paragraph are 
+   7:Utilities/misc/stm32_tiny_sscanf.c **** * duplicated in all such forms and that any documentation, 
+   8:Utilities/misc/stm32_tiny_sscanf.c **** * advertising materials, and other materials related to such 
+   9:Utilities/misc/stm32_tiny_sscanf.c **** * distribution and use acknowledge that the software was developed 
+  10:Utilities/misc/stm32_tiny_sscanf.c **** * by the University of California, Berkeley.  The name of the 
+  11:Utilities/misc/stm32_tiny_sscanf.c **** * University may not be used to endorse or promote products derived 
+  12:Utilities/misc/stm32_tiny_sscanf.c **** * from this software without specific prior written permission. 
+  13:Utilities/misc/stm32_tiny_sscanf.c **** * THIS SOFTWARE IS PROVIDED ``AS IS'' AND WITHOUT ANY EXPRESS OR 
+  14:Utilities/misc/stm32_tiny_sscanf.c **** * IMPLIED WARRANTIES, INCLUDING, WITHOUT LIMITATION, THE IMPLIED 
+  15:Utilities/misc/stm32_tiny_sscanf.c **** * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. 
+  16:Utilities/misc/stm32_tiny_sscanf.c **** */
+  17:Utilities/misc/stm32_tiny_sscanf.c **** /******************************************************************************
+  18:Utilities/misc/stm32_tiny_sscanf.c ****  * @file    stm32_tiny_sscanf.c
+  19:Utilities/misc/stm32_tiny_sscanf.c ****  * @author  MCD Application Team
+  20:Utilities/misc/stm32_tiny_sscanf.c ****  * @brief   Tiny implementation of sscanf
+  21:Utilities/misc/stm32_tiny_sscanf.c ****  ******************************************************************************
+  22:Utilities/misc/stm32_tiny_sscanf.c ****  * @attention
+  23:Utilities/misc/stm32_tiny_sscanf.c ****  *
+  24:Utilities/misc/stm32_tiny_sscanf.c ****  * <h2><center>&copy; Copyright (c) 2019 STMicroelectronics. 
+  25:Utilities/misc/stm32_tiny_sscanf.c ****  * All rights reserved.</center></h2>
+  26:Utilities/misc/stm32_tiny_sscanf.c ****  *
+  27:Utilities/misc/stm32_tiny_sscanf.c ****  * This software component is licensed by ST under BSD 3-Clause license,
+  28:Utilities/misc/stm32_tiny_sscanf.c ****  * the "License"; You may not use this file except in compliance with the 
+  29:Utilities/misc/stm32_tiny_sscanf.c ****  * License. You may obtain a copy of the License at:
+  30:Utilities/misc/stm32_tiny_sscanf.c ****  *                        opensource.org/licenses/BSD-3-Clause
+  31:Utilities/misc/stm32_tiny_sscanf.c ****  *
+  32:Utilities/misc/stm32_tiny_sscanf.c ****  ******************************************************************************
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccRU2Xxh.s 			page 2
+
+
+  33:Utilities/misc/stm32_tiny_sscanf.c ****  */
+  34:Utilities/misc/stm32_tiny_sscanf.c **** 
+  35:Utilities/misc/stm32_tiny_sscanf.c **** 
+  36:Utilities/misc/stm32_tiny_sscanf.c **** /*
+  37:Utilities/misc/stm32_tiny_sscanf.c ****  * This code is derived from
+  38:Utilities/misc/stm32_tiny_sscanf.c ****  *     https://github.com/rapid7/metasploit-payloads/, in c/meterpreter/source/bionic/libc/stdio/ss
+  39:Utilities/misc/stm32_tiny_sscanf.c ****  * It has been derived in order to optimize code size. In this context
+  40:Utilities/misc/stm32_tiny_sscanf.c ****  * all the formats are not supported. Current supported formats are
+  41:Utilities/misc/stm32_tiny_sscanf.c ****  *    %hx, %hhx, %ul, %d,...
+  42:Utilities/misc/stm32_tiny_sscanf.c ****  * when TINY_SSCANF is defined
+  43:Utilities/misc/stm32_tiny_sscanf.c ****  *
+  44:Utilities/misc/stm32_tiny_sscanf.c ****  * When TINY_NO_OX is defined, this is not possible to sscanf("%x") of "0xab",
+  45:Utilities/misc/stm32_tiny_sscanf.c ****  * only "ab" is possible
+  46:Utilities/misc/stm32_tiny_sscanf.c ****  *
+  47:Utilities/misc/stm32_tiny_sscanf.c ****  * When TINY_SPACE_NOT_SPECIALCASE is defined, "space" is not a special character.
+  48:Utilities/misc/stm32_tiny_sscanf.c ****  * That means that we expect a single space, and not any of ispace() character
+  49:Utilities/misc/stm32_tiny_sscanf.c ****  * (space, tabs,...)
+  50:Utilities/misc/stm32_tiny_sscanf.c ****  */
+  51:Utilities/misc/stm32_tiny_sscanf.c ****  
+  52:Utilities/misc/stm32_tiny_sscanf.c **** /* Includes ------------------------------------------------------------------*/
+  53:Utilities/misc/stm32_tiny_sscanf.c **** #include <stdio.h>
+  54:Utilities/misc/stm32_tiny_sscanf.c **** #include <string.h>
+  55:Utilities/misc/stm32_tiny_sscanf.c **** #include <stdarg.h>
+  56:Utilities/misc/stm32_tiny_sscanf.c **** #include <stdint.h>
+  57:Utilities/misc/stm32_tiny_sscanf.c **** #include <stdlib.h>
+  58:Utilities/misc/stm32_tiny_sscanf.c **** #include <inttypes.h>
+  59:Utilities/misc/stm32_tiny_sscanf.c **** #include "stm32_tiny_sscanf.h"
+  60:Utilities/misc/stm32_tiny_sscanf.c **** 
+  61:Utilities/misc/stm32_tiny_sscanf.c **** /* Private typedef -----------------------------------------------------------*/
+  62:Utilities/misc/stm32_tiny_sscanf.c **** /* Private define ------------------------------------------------------------*/
+  63:Utilities/misc/stm32_tiny_sscanf.c **** #define TINY_SSCANF
+  64:Utilities/misc/stm32_tiny_sscanf.c **** #define TINY_NO_OX
+  65:Utilities/misc/stm32_tiny_sscanf.c **** #define TINY_SPACE_NOT_SPECIALCASE
+  66:Utilities/misc/stm32_tiny_sscanf.c **** 
+  67:Utilities/misc/stm32_tiny_sscanf.c **** /* Private macro -------------------------------------------------------------*/
+  68:Utilities/misc/stm32_tiny_sscanf.c **** /* Private variables ---------------------------------------------------------*/
+  69:Utilities/misc/stm32_tiny_sscanf.c **** /* Functions Definition ------------------------------------------------------*/
+  70:Utilities/misc/stm32_tiny_sscanf.c **** 
+  71:Utilities/misc/stm32_tiny_sscanf.c **** #ifdef FLOATING_POINT
+  72:Utilities/misc/stm32_tiny_sscanf.c **** #include "floatio.h"
+  73:Utilities/misc/stm32_tiny_sscanf.c **** #endif
+  74:Utilities/misc/stm32_tiny_sscanf.c **** 
+  75:Utilities/misc/stm32_tiny_sscanf.c **** 
+  76:Utilities/misc/stm32_tiny_sscanf.c **** #define  BUF    513  /* Maximum length of numeric string. */
+  77:Utilities/misc/stm32_tiny_sscanf.c **** 
+  78:Utilities/misc/stm32_tiny_sscanf.c **** /*
+  79:Utilities/misc/stm32_tiny_sscanf.c ****  * Flags used during conversion.
+  80:Utilities/misc/stm32_tiny_sscanf.c ****  */
+  81:Utilities/misc/stm32_tiny_sscanf.c **** #define  LONG    0x00001  /* l: long or double */
+  82:Utilities/misc/stm32_tiny_sscanf.c **** #define  SHORT    0x00004  /* h: short */
+  83:Utilities/misc/stm32_tiny_sscanf.c **** #define  SHORTSHORT  0x00008  /* hh: 8 bit integer */
+  84:Utilities/misc/stm32_tiny_sscanf.c **** #define  UNSIGNED  0x00800  /* %[oupxX] conversions */
+  85:Utilities/misc/stm32_tiny_sscanf.c **** #ifdef TINY_SSCANF
+  86:Utilities/misc/stm32_tiny_sscanf.c **** #else
+  87:Utilities/misc/stm32_tiny_sscanf.c **** #define  LONGDBL    0x00002  /* L: long double; unimplemented */
+  88:Utilities/misc/stm32_tiny_sscanf.c **** #define LLONG      0x00010  /* ll: long long (+ deprecated q: quad) */
+  89:Utilities/misc/stm32_tiny_sscanf.c **** #define  POINTER    0x00020  /* p: void * (as hex) */
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccRU2Xxh.s 			page 3
+
+
+  90:Utilities/misc/stm32_tiny_sscanf.c **** #define  SIZEINT    0x00040  /* z: (signed) size_t */
+  91:Utilities/misc/stm32_tiny_sscanf.c **** #define  MAXINT    0x00080  /* j: intmax_t */
+  92:Utilities/misc/stm32_tiny_sscanf.c **** #define  PTRINT    0x00100  /* t: ptrdiff_t */
+  93:Utilities/misc/stm32_tiny_sscanf.c **** #define  NOSKIP    0x00200  /* [ or c: do not skip blanks */
+  94:Utilities/misc/stm32_tiny_sscanf.c **** #define  SUPPRESS  0x00400  /* *: suppress assignment */
+  95:Utilities/misc/stm32_tiny_sscanf.c **** #endif
+  96:Utilities/misc/stm32_tiny_sscanf.c **** 
+  97:Utilities/misc/stm32_tiny_sscanf.c **** /*
+  98:Utilities/misc/stm32_tiny_sscanf.c ****  * The following are used in numeric conversions only:
+  99:Utilities/misc/stm32_tiny_sscanf.c ****  * SIGNOK, HAVESIGN, NDIGITS, DPTOK, and EXPOK are for floating point;
+ 100:Utilities/misc/stm32_tiny_sscanf.c ****  * SIGNOK, HAVESIGN, NDIGITS, PFXOK, and NZDIGITS are for integral.
+ 101:Utilities/misc/stm32_tiny_sscanf.c ****  */
+ 102:Utilities/misc/stm32_tiny_sscanf.c **** #define  SIGNOK    0x01000  /* +/- is (still) legal */
+ 103:Utilities/misc/stm32_tiny_sscanf.c **** #define  HAVESIGN  0x02000  /* sign detected */
+ 104:Utilities/misc/stm32_tiny_sscanf.c **** #define  NDIGITS    0x04000  /* no digits detected */
+ 105:Utilities/misc/stm32_tiny_sscanf.c **** 
+ 106:Utilities/misc/stm32_tiny_sscanf.c **** #define  DPTOK    0x08000  /* (float) decimal point is still legal */
+ 107:Utilities/misc/stm32_tiny_sscanf.c **** #define  EXPOK    0x10000  /* (float) exponent (e+3, etc) still legal */
+ 108:Utilities/misc/stm32_tiny_sscanf.c **** 
+ 109:Utilities/misc/stm32_tiny_sscanf.c **** #ifdef TINY_NO_OX
+ 110:Utilities/misc/stm32_tiny_sscanf.c **** #else
+ 111:Utilities/misc/stm32_tiny_sscanf.c **** #define  PFXOK    0x08000  /* 0x prefix is (still) legal */
+ 112:Utilities/misc/stm32_tiny_sscanf.c **** #define  NZDIGITS  0x10000  /* no zero digits detected */
+ 113:Utilities/misc/stm32_tiny_sscanf.c **** #endif
+ 114:Utilities/misc/stm32_tiny_sscanf.c **** 
+ 115:Utilities/misc/stm32_tiny_sscanf.c **** /*
+ 116:Utilities/misc/stm32_tiny_sscanf.c ****  * Conversion types.
+ 117:Utilities/misc/stm32_tiny_sscanf.c ****  */
+ 118:Utilities/misc/stm32_tiny_sscanf.c **** #define  CT_INT    3  /* integer, i.e., strtoimax or strtoumax */
+ 119:Utilities/misc/stm32_tiny_sscanf.c **** #define  CT_FLOAT  4  /* floating, i.e., strtod */
+ 120:Utilities/misc/stm32_tiny_sscanf.c **** 
+ 121:Utilities/misc/stm32_tiny_sscanf.c **** #ifdef TINY_SSCANF
+ 122:Utilities/misc/stm32_tiny_sscanf.c **** #else
+ 123:Utilities/misc/stm32_tiny_sscanf.c **** #define  CT_CHAR    0  /* %c conversion */
+ 124:Utilities/misc/stm32_tiny_sscanf.c **** #define  CT_CCL    1  /* %[...] conversion */
+ 125:Utilities/misc/stm32_tiny_sscanf.c **** #define  CT_STRING  2  /* %s conversion */
+ 126:Utilities/misc/stm32_tiny_sscanf.c **** #endif
+ 127:Utilities/misc/stm32_tiny_sscanf.c **** 
+ 128:Utilities/misc/stm32_tiny_sscanf.c **** #define u_char unsigned char
+ 129:Utilities/misc/stm32_tiny_sscanf.c **** #define u_long unsigned long
+ 130:Utilities/misc/stm32_tiny_sscanf.c **** 
+ 131:Utilities/misc/stm32_tiny_sscanf.c **** #ifdef TINY_SSCANF
+ 132:Utilities/misc/stm32_tiny_sscanf.c **** #else
+ 133:Utilities/misc/stm32_tiny_sscanf.c **** static u_char *__sccl(char *, u_char *);
+ 134:Utilities/misc/stm32_tiny_sscanf.c **** #endif
+ 135:Utilities/misc/stm32_tiny_sscanf.c **** 
+ 136:Utilities/misc/stm32_tiny_sscanf.c **** #define VFSCANF tiny_vfscanf
+ 137:Utilities/misc/stm32_tiny_sscanf.c **** 
+ 138:Utilities/misc/stm32_tiny_sscanf.c **** #if !defined(VFSCANF)
+ 139:Utilities/misc/stm32_tiny_sscanf.c **** #define VFSCANF  vfscanf
+ 140:Utilities/misc/stm32_tiny_sscanf.c **** #endif
+ 141:Utilities/misc/stm32_tiny_sscanf.c **** 
+ 142:Utilities/misc/stm32_tiny_sscanf.c **** 
+ 143:Utilities/misc/stm32_tiny_sscanf.c **** #define __srefill(_x) 1
+ 144:Utilities/misc/stm32_tiny_sscanf.c **** #define ungetc(_c, _fp) do { (_c), fp_p--; fp_r++; } while (0)
+ 145:Utilities/misc/stm32_tiny_sscanf.c **** 
+ 146:Utilities/misc/stm32_tiny_sscanf.c **** 
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccRU2Xxh.s 			page 4
+
+
+ 147:Utilities/misc/stm32_tiny_sscanf.c **** /*
+ 148:Utilities/misc/stm32_tiny_sscanf.c ****  * vfscanf
+ 149:Utilities/misc/stm32_tiny_sscanf.c ****  */
+ 150:Utilities/misc/stm32_tiny_sscanf.c **** 
+ 151:Utilities/misc/stm32_tiny_sscanf.c **** static inline int
+ 152:Utilities/misc/stm32_tiny_sscanf.c **** VFSCANF(const char *str, const char *fmt0, va_list ap)
+ 153:Utilities/misc/stm32_tiny_sscanf.c **** {
+  27              		.loc 1 153 1 view -0
+  28              		.cfi_startproc
+  29              		@ args = 0, pretend = 0, frame = 528
+  30              		@ frame_needed = 0, uses_anonymous_args = 0
+  31              		.loc 1 153 1 is_stmt 0 view .LVU1
+  32 0000 2DE9F04F 		push	{r4, r5, r6, r7, r8, r9, r10, fp, lr}
+  33              	.LCFI0:
+  34              		.cfi_def_cfa_offset 36
+  35              		.cfi_offset 4, -36
+  36              		.cfi_offset 5, -32
+  37              		.cfi_offset 6, -28
+  38              		.cfi_offset 7, -24
+  39              		.cfi_offset 8, -20
+  40              		.cfi_offset 9, -16
+  41              		.cfi_offset 10, -12
+  42              		.cfi_offset 11, -8
+  43              		.cfi_offset 14, -4
+  44 0004 ADF5057D 		sub	sp, sp, #532
+  45              	.LCFI1:
+  46              		.cfi_def_cfa_offset 568
+  47 0008 0546     		mov	r5, r0
+  48 000a 0C46     		mov	r4, r1
+  49 000c 0192     		str	r2, [sp, #4]
+ 154:Utilities/misc/stm32_tiny_sscanf.c ****   u_char *fmt = (u_char *)fmt0;
+  50              		.loc 1 154 3 is_stmt 1 view .LVU2
+  51              	.LVL1:
+ 155:Utilities/misc/stm32_tiny_sscanf.c ****   int c;    /* character from format, or conversion */
+  52              		.loc 1 155 3 view .LVU3
+ 156:Utilities/misc/stm32_tiny_sscanf.c ****   size_t width;  /* field width, or 0 */
+  53              		.loc 1 156 3 view .LVU4
+ 157:Utilities/misc/stm32_tiny_sscanf.c ****   char *p;  /* points into all kinds of strings */
+  54              		.loc 1 157 3 view .LVU5
+ 158:Utilities/misc/stm32_tiny_sscanf.c ****   int flags;  /* flags as defined above */
+  55              		.loc 1 158 3 view .LVU6
+ 159:Utilities/misc/stm32_tiny_sscanf.c ****   int nassigned;    /* number of fields assigned */
+  56              		.loc 1 159 3 view .LVU7
+ 160:Utilities/misc/stm32_tiny_sscanf.c ****   int nread;    /* number of characters consumed from fp */
+  57              		.loc 1 160 3 view .LVU8
+ 161:Utilities/misc/stm32_tiny_sscanf.c ****   int base;    /* base argument to strtoimax/strtouimax */
+  58              		.loc 1 161 3 view .LVU9
+ 162:Utilities/misc/stm32_tiny_sscanf.c ****   char buf[BUF];    /* buffer for numeric conversions */
+  59              		.loc 1 162 3 view .LVU10
+ 163:Utilities/misc/stm32_tiny_sscanf.c ****   const char *fp_p;
+  60              		.loc 1 163 3 view .LVU11
+ 164:Utilities/misc/stm32_tiny_sscanf.c ****   int fp_r;
+  61              		.loc 1 164 3 view .LVU12
+ 165:Utilities/misc/stm32_tiny_sscanf.c ****   uintmax_t value;
+  62              		.loc 1 165 3 view .LVU13
+ 166:Utilities/misc/stm32_tiny_sscanf.c ****   int sign_minus;
+  63              		.loc 1 166 3 view .LVU14
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccRU2Xxh.s 			page 5
+
+
+ 167:Utilities/misc/stm32_tiny_sscanf.c **** 
+ 168:Utilities/misc/stm32_tiny_sscanf.c **** 
+ 169:Utilities/misc/stm32_tiny_sscanf.c **** #ifdef TINY_SSCANF
+ 170:Utilities/misc/stm32_tiny_sscanf.c **** #else
+ 171:Utilities/misc/stm32_tiny_sscanf.c ****   int n;    /* handy integer */
+ 172:Utilities/misc/stm32_tiny_sscanf.c ****   char *p0;  /* saves original value of p when necessary */
+ 173:Utilities/misc/stm32_tiny_sscanf.c ****   char ccltab[256];  /* character class table for %[...] */
+ 174:Utilities/misc/stm32_tiny_sscanf.c **** #endif
+ 175:Utilities/misc/stm32_tiny_sscanf.c ****   
+ 176:Utilities/misc/stm32_tiny_sscanf.c ****   /* `basefix' is used to avoid `if' tests in the integer scanner */
+ 177:Utilities/misc/stm32_tiny_sscanf.c **** #ifdef TINY_SSCANF
+ 178:Utilities/misc/stm32_tiny_sscanf.c ****   /* basefix[] can be removed as we do not support %i */
+ 179:Utilities/misc/stm32_tiny_sscanf.c **** #else  
+ 180:Utilities/misc/stm32_tiny_sscanf.c ****   static short basefix[17] =
+ 181:Utilities/misc/stm32_tiny_sscanf.c ****     { 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 };
+ 182:Utilities/misc/stm32_tiny_sscanf.c **** #endif
+ 183:Utilities/misc/stm32_tiny_sscanf.c ****     
+ 184:Utilities/misc/stm32_tiny_sscanf.c ****    fp_p = str;
+  64              		.loc 1 184 4 view .LVU15
+ 185:Utilities/misc/stm32_tiny_sscanf.c ****   fp_r = strlen(str);
+  65              		.loc 1 185 3 view .LVU16
+  66              		.loc 1 185 10 is_stmt 0 view .LVU17
+  67 000e FFF7FEFF 		bl	strlen
+  68              	.LVL2:
+  69              		.loc 1 185 8 view .LVU18
+  70 0012 8446     		mov	ip, r0
+  71              	.LVL3:
+ 186:Utilities/misc/stm32_tiny_sscanf.c **** 
+ 187:Utilities/misc/stm32_tiny_sscanf.c ****   nassigned = 0;
+  72              		.loc 1 187 3 is_stmt 1 view .LVU19
+ 188:Utilities/misc/stm32_tiny_sscanf.c ****   nread = 0;
+  73              		.loc 1 188 3 view .LVU20
+ 189:Utilities/misc/stm32_tiny_sscanf.c ****   base = 0;    /* XXX just to keep gcc happy */
+  74              		.loc 1 189 3 view .LVU21
+  75              		.loc 1 189 8 is_stmt 0 view .LVU22
+  76 0014 4FF0000E 		mov	lr, #0
+ 187:Utilities/misc/stm32_tiny_sscanf.c ****   nread = 0;
+  77              		.loc 1 187 13 view .LVU23
+  78 0018 7046     		mov	r0, lr
+  79              	.LVL4:
+  80              	.L2:
+ 190:Utilities/misc/stm32_tiny_sscanf.c ****   for (;;) {
+  81              		.loc 1 190 3 is_stmt 1 view .LVU24
+ 191:Utilities/misc/stm32_tiny_sscanf.c ****     c = *fmt++;
+  82              		.loc 1 191 5 view .LVU25
+  83              		.loc 1 191 13 is_stmt 0 view .LVU26
+  84 001a 2146     		mov	r1, r4
+  85              	.LVL5:
+  86              		.loc 1 191 9 view .LVU27
+  87 001c 11F8012B 		ldrb	r2, [r1], #1	@ zero_extendqisi2
+  88              	.LVL6:
+ 192:Utilities/misc/stm32_tiny_sscanf.c ****     if (c == 0)
+  89              		.loc 1 192 5 is_stmt 1 view .LVU28
+  90              		.loc 1 192 8 is_stmt 0 view .LVU29
+  91 0020 42B1     		cbz	r2, .L1
+ 193:Utilities/misc/stm32_tiny_sscanf.c ****       return (nassigned);
+ 194:Utilities/misc/stm32_tiny_sscanf.c **** #ifdef TINY_SPACE_NOT_SPECIALCASE
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccRU2Xxh.s 			page 6
+
+
+ 195:Utilities/misc/stm32_tiny_sscanf.c **** #else
+ 196:Utilities/misc/stm32_tiny_sscanf.c ****     if (isspace(c)) {
+ 197:Utilities/misc/stm32_tiny_sscanf.c ****       while ((fp_r > 0 || __srefill(fp) == 0) &&
+ 198:Utilities/misc/stm32_tiny_sscanf.c ****           isspace(*fp_p))
+ 199:Utilities/misc/stm32_tiny_sscanf.c ****         nread++, fp_r--, fp_p++;
+ 200:Utilities/misc/stm32_tiny_sscanf.c ****       continue;
+ 201:Utilities/misc/stm32_tiny_sscanf.c ****     }
+ 202:Utilities/misc/stm32_tiny_sscanf.c **** #endif
+ 203:Utilities/misc/stm32_tiny_sscanf.c ****     if (c != '%')
+  92              		.loc 1 203 5 is_stmt 1 view .LVU30
+  93              		.loc 1 203 8 is_stmt 0 view .LVU31
+  94 0022 252A     		cmp	r2, #37
+  95 0024 0AD0     		beq	.L46
+  96              	.L4:
+ 204:Utilities/misc/stm32_tiny_sscanf.c ****       goto literal;
+ 205:Utilities/misc/stm32_tiny_sscanf.c ****     width = 0;
+ 206:Utilities/misc/stm32_tiny_sscanf.c ****     flags = 0;
+ 207:Utilities/misc/stm32_tiny_sscanf.c ****     /*
+ 208:Utilities/misc/stm32_tiny_sscanf.c ****      * switch on the format.  continue if done;
+ 209:Utilities/misc/stm32_tiny_sscanf.c ****      * break once format type is derived.
+ 210:Utilities/misc/stm32_tiny_sscanf.c ****      */
+ 211:Utilities/misc/stm32_tiny_sscanf.c **** again:    c = *fmt++;
+ 212:Utilities/misc/stm32_tiny_sscanf.c ****     switch (c) {
+ 213:Utilities/misc/stm32_tiny_sscanf.c ****     case '%':
+ 214:Utilities/misc/stm32_tiny_sscanf.c **** literal:
+ 215:Utilities/misc/stm32_tiny_sscanf.c ****       if (fp_r <= 0 && __srefill(fp))
+  97              		.loc 1 215 7 is_stmt 1 view .LVU32
+  98              		.loc 1 215 10 is_stmt 0 view .LVU33
+  99 0026 BCF1000F 		cmp	ip, #0
+ 100 002a 40F37B81 		ble	.L18
+ 216:Utilities/misc/stm32_tiny_sscanf.c ****         goto input_failure;
+ 217:Utilities/misc/stm32_tiny_sscanf.c ****       if (*fp_p != c)
+ 101              		.loc 1 217 7 is_stmt 1 view .LVU34
+ 102              		.loc 1 217 11 is_stmt 0 view .LVU35
+ 103 002e 2B78     		ldrb	r3, [r5]	@ zero_extendqisi2
+ 104              		.loc 1 217 10 view .LVU36
+ 105 0030 9342     		cmp	r3, r2
+ 106 0032 43D0     		beq	.L47
+ 107              	.LVL7:
+ 108              	.L1:
+ 218:Utilities/misc/stm32_tiny_sscanf.c ****         goto match_failure;
+ 219:Utilities/misc/stm32_tiny_sscanf.c ****       fp_r--, fp_p++;
+ 220:Utilities/misc/stm32_tiny_sscanf.c ****       nread++;
+ 221:Utilities/misc/stm32_tiny_sscanf.c ****       continue;
+ 222:Utilities/misc/stm32_tiny_sscanf.c **** 
+ 223:Utilities/misc/stm32_tiny_sscanf.c **** #ifdef TINY_SSCANF
+ 224:Utilities/misc/stm32_tiny_sscanf.c **** #else
+ 225:Utilities/misc/stm32_tiny_sscanf.c ****     case '*':
+ 226:Utilities/misc/stm32_tiny_sscanf.c ****       flags |= SUPPRESS;
+ 227:Utilities/misc/stm32_tiny_sscanf.c ****       goto again;
+ 228:Utilities/misc/stm32_tiny_sscanf.c ****     case 'j':
+ 229:Utilities/misc/stm32_tiny_sscanf.c ****       flags |= MAXINT;
+ 230:Utilities/misc/stm32_tiny_sscanf.c ****       goto again;
+ 231:Utilities/misc/stm32_tiny_sscanf.c ****     case 'L':
+ 232:Utilities/misc/stm32_tiny_sscanf.c ****       flags |= LONGDBL;
+ 233:Utilities/misc/stm32_tiny_sscanf.c ****       goto again;
+ 234:Utilities/misc/stm32_tiny_sscanf.c **** #endif
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccRU2Xxh.s 			page 7
+
+
+ 235:Utilities/misc/stm32_tiny_sscanf.c ****     case 'h':
+ 236:Utilities/misc/stm32_tiny_sscanf.c ****       if (*fmt == 'h') {
+ 237:Utilities/misc/stm32_tiny_sscanf.c ****         fmt++;
+ 238:Utilities/misc/stm32_tiny_sscanf.c ****         flags |= SHORTSHORT;
+ 239:Utilities/misc/stm32_tiny_sscanf.c ****       } else {
+ 240:Utilities/misc/stm32_tiny_sscanf.c ****         flags |= SHORT;
+ 241:Utilities/misc/stm32_tiny_sscanf.c ****       }
+ 242:Utilities/misc/stm32_tiny_sscanf.c ****       goto again;
+ 243:Utilities/misc/stm32_tiny_sscanf.c ****     case 'l':
+ 244:Utilities/misc/stm32_tiny_sscanf.c **** #ifdef TINY_SSCANF
+ 245:Utilities/misc/stm32_tiny_sscanf.c ****       /* %ll not supported */
+ 246:Utilities/misc/stm32_tiny_sscanf.c ****       flags |= LONG;
+ 247:Utilities/misc/stm32_tiny_sscanf.c ****       goto again;
+ 248:Utilities/misc/stm32_tiny_sscanf.c **** #else
+ 249:Utilities/misc/stm32_tiny_sscanf.c ****       if (*fmt == 'l') {
+ 250:Utilities/misc/stm32_tiny_sscanf.c ****         fmt++;
+ 251:Utilities/misc/stm32_tiny_sscanf.c ****         flags |= LLONG;
+ 252:Utilities/misc/stm32_tiny_sscanf.c ****       } else {
+ 253:Utilities/misc/stm32_tiny_sscanf.c ****         flags |= LONG;
+ 254:Utilities/misc/stm32_tiny_sscanf.c ****       }
+ 255:Utilities/misc/stm32_tiny_sscanf.c ****       goto again;
+ 256:Utilities/misc/stm32_tiny_sscanf.c **** #endif
+ 257:Utilities/misc/stm32_tiny_sscanf.c **** 
+ 258:Utilities/misc/stm32_tiny_sscanf.c **** #ifdef TINY_SSCANF
+ 259:Utilities/misc/stm32_tiny_sscanf.c **** #else
+ 260:Utilities/misc/stm32_tiny_sscanf.c ****     case 'q':
+ 261:Utilities/misc/stm32_tiny_sscanf.c ****       flags |= LLONG;    /* deprecated */
+ 262:Utilities/misc/stm32_tiny_sscanf.c ****       goto again;
+ 263:Utilities/misc/stm32_tiny_sscanf.c ****     case 't':
+ 264:Utilities/misc/stm32_tiny_sscanf.c ****       flags |= PTRINT;
+ 265:Utilities/misc/stm32_tiny_sscanf.c ****       goto again;
+ 266:Utilities/misc/stm32_tiny_sscanf.c ****     case 'z':
+ 267:Utilities/misc/stm32_tiny_sscanf.c ****       flags |= SIZEINT;
+ 268:Utilities/misc/stm32_tiny_sscanf.c ****       goto again;
+ 269:Utilities/misc/stm32_tiny_sscanf.c **** #endif
+ 270:Utilities/misc/stm32_tiny_sscanf.c ****     case '0': case '1': case '2': case '3': case '4':
+ 271:Utilities/misc/stm32_tiny_sscanf.c ****     case '5': case '6': case '7': case '8': case '9':
+ 272:Utilities/misc/stm32_tiny_sscanf.c ****       width = width * 10 + c - '0';
+ 273:Utilities/misc/stm32_tiny_sscanf.c ****       goto again;
+ 274:Utilities/misc/stm32_tiny_sscanf.c **** 
+ 275:Utilities/misc/stm32_tiny_sscanf.c ****     /*
+ 276:Utilities/misc/stm32_tiny_sscanf.c ****      * Conversions.
+ 277:Utilities/misc/stm32_tiny_sscanf.c ****      * Those marked `compat' are for 4.[123]BSD compatibility.
+ 278:Utilities/misc/stm32_tiny_sscanf.c ****      *
+ 279:Utilities/misc/stm32_tiny_sscanf.c ****      * (According to ANSI, E and X formats are supposed
+ 280:Utilities/misc/stm32_tiny_sscanf.c ****      * to the same as e and x.  Sorry about that.)
+ 281:Utilities/misc/stm32_tiny_sscanf.c ****      */
+ 282:Utilities/misc/stm32_tiny_sscanf.c ****     case 'D':  /* compat */
+ 283:Utilities/misc/stm32_tiny_sscanf.c ****       flags |= LONG;
+ 284:Utilities/misc/stm32_tiny_sscanf.c ****       /* FALLTHROUGH */
+ 285:Utilities/misc/stm32_tiny_sscanf.c ****     case 'd':
+ 286:Utilities/misc/stm32_tiny_sscanf.c ****       c = CT_INT;
+ 287:Utilities/misc/stm32_tiny_sscanf.c ****       base = 10;
+ 288:Utilities/misc/stm32_tiny_sscanf.c ****       break;
+ 289:Utilities/misc/stm32_tiny_sscanf.c **** 
+ 290:Utilities/misc/stm32_tiny_sscanf.c **** #ifdef TINY_SSCANF
+ 291:Utilities/misc/stm32_tiny_sscanf.c ****     /*
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccRU2Xxh.s 			page 8
+
+
+ 292:Utilities/misc/stm32_tiny_sscanf.c ****      * We do not support %i to remove potential base=8 in the following
+ 293:Utilities/misc/stm32_tiny_sscanf.c ****      * Hence basefix can be removed
+ 294:Utilities/misc/stm32_tiny_sscanf.c ****      */
+ 295:Utilities/misc/stm32_tiny_sscanf.c **** #else
+ 296:Utilities/misc/stm32_tiny_sscanf.c ****     case 'i':
+ 297:Utilities/misc/stm32_tiny_sscanf.c ****       c = CT_INT;
+ 298:Utilities/misc/stm32_tiny_sscanf.c ****       base = 0;
+ 299:Utilities/misc/stm32_tiny_sscanf.c ****       break;
+ 300:Utilities/misc/stm32_tiny_sscanf.c **** #endif
+ 301:Utilities/misc/stm32_tiny_sscanf.c ****     
+ 302:Utilities/misc/stm32_tiny_sscanf.c **** #ifdef TINY_SSCANF
+ 303:Utilities/misc/stm32_tiny_sscanf.c **** #else
+ 304:Utilities/misc/stm32_tiny_sscanf.c ****     case 'O':  /* compat */
+ 305:Utilities/misc/stm32_tiny_sscanf.c ****       flags |= LONG;
+ 306:Utilities/misc/stm32_tiny_sscanf.c ****       /* FALLTHROUGH */
+ 307:Utilities/misc/stm32_tiny_sscanf.c ****     case 'o':
+ 308:Utilities/misc/stm32_tiny_sscanf.c ****       c = CT_INT;
+ 309:Utilities/misc/stm32_tiny_sscanf.c ****       flags |= UNSIGNED;
+ 310:Utilities/misc/stm32_tiny_sscanf.c ****       base = 8;
+ 311:Utilities/misc/stm32_tiny_sscanf.c ****       break;
+ 312:Utilities/misc/stm32_tiny_sscanf.c **** #endif
+ 313:Utilities/misc/stm32_tiny_sscanf.c ****     
+ 314:Utilities/misc/stm32_tiny_sscanf.c ****     case 'u':
+ 315:Utilities/misc/stm32_tiny_sscanf.c ****       c = CT_INT;
+ 316:Utilities/misc/stm32_tiny_sscanf.c ****       flags |= UNSIGNED;
+ 317:Utilities/misc/stm32_tiny_sscanf.c ****       base = 10;
+ 318:Utilities/misc/stm32_tiny_sscanf.c ****       break;
+ 319:Utilities/misc/stm32_tiny_sscanf.c **** 
+ 320:Utilities/misc/stm32_tiny_sscanf.c ****     case 'X':
+ 321:Utilities/misc/stm32_tiny_sscanf.c ****     case 'x':
+ 322:Utilities/misc/stm32_tiny_sscanf.c **** #ifdef TINY_NO_OX 
+ 323:Utilities/misc/stm32_tiny_sscanf.c **** #else
+ 324:Utilities/misc/stm32_tiny_sscanf.c ****       flags |= PFXOK;  /* enable 0x prefixing */
+ 325:Utilities/misc/stm32_tiny_sscanf.c **** #endif
+ 326:Utilities/misc/stm32_tiny_sscanf.c ****       c = CT_INT;
+ 327:Utilities/misc/stm32_tiny_sscanf.c ****       flags |= UNSIGNED;
+ 328:Utilities/misc/stm32_tiny_sscanf.c ****       base = 16;
+ 329:Utilities/misc/stm32_tiny_sscanf.c ****       break;
+ 330:Utilities/misc/stm32_tiny_sscanf.c **** 
+ 331:Utilities/misc/stm32_tiny_sscanf.c **** #ifdef FLOATING_POINT
+ 332:Utilities/misc/stm32_tiny_sscanf.c ****     case 'E':
+ 333:Utilities/misc/stm32_tiny_sscanf.c ****     case 'G':
+ 334:Utilities/misc/stm32_tiny_sscanf.c ****     case 'e': 
+ 335:Utilities/misc/stm32_tiny_sscanf.c ****     case 'f': 
+ 336:Utilities/misc/stm32_tiny_sscanf.c ****     case 'g':
+ 337:Utilities/misc/stm32_tiny_sscanf.c ****       c = CT_FLOAT;
+ 338:Utilities/misc/stm32_tiny_sscanf.c ****       break;
+ 339:Utilities/misc/stm32_tiny_sscanf.c **** #endif
+ 340:Utilities/misc/stm32_tiny_sscanf.c **** 
+ 341:Utilities/misc/stm32_tiny_sscanf.c **** #ifdef TINY_SSCANF
+ 342:Utilities/misc/stm32_tiny_sscanf.c **** #else
+ 343:Utilities/misc/stm32_tiny_sscanf.c ****     case 's':
+ 344:Utilities/misc/stm32_tiny_sscanf.c ****       c = CT_STRING;
+ 345:Utilities/misc/stm32_tiny_sscanf.c ****       break;
+ 346:Utilities/misc/stm32_tiny_sscanf.c **** 
+ 347:Utilities/misc/stm32_tiny_sscanf.c ****     case '[':
+ 348:Utilities/misc/stm32_tiny_sscanf.c ****       fmt = __sccl(ccltab, fmt);
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccRU2Xxh.s 			page 9
+
+
+ 349:Utilities/misc/stm32_tiny_sscanf.c ****       flags |= NOSKIP;
+ 350:Utilities/misc/stm32_tiny_sscanf.c ****       c = CT_CCL;
+ 351:Utilities/misc/stm32_tiny_sscanf.c ****       break;
+ 352:Utilities/misc/stm32_tiny_sscanf.c **** 
+ 353:Utilities/misc/stm32_tiny_sscanf.c ****     case 'c':
+ 354:Utilities/misc/stm32_tiny_sscanf.c ****       flags |= NOSKIP;
+ 355:Utilities/misc/stm32_tiny_sscanf.c ****       c = CT_CHAR;
+ 356:Utilities/misc/stm32_tiny_sscanf.c ****       break;
+ 357:Utilities/misc/stm32_tiny_sscanf.c **** 
+ 358:Utilities/misc/stm32_tiny_sscanf.c ****     case 'p':  /* pointer format is like hex */
+ 359:Utilities/misc/stm32_tiny_sscanf.c ****       flags |= POINTER | PFXOK;
+ 360:Utilities/misc/stm32_tiny_sscanf.c ****       c = CT_INT;
+ 361:Utilities/misc/stm32_tiny_sscanf.c ****       flags |= UNSIGNED;
+ 362:Utilities/misc/stm32_tiny_sscanf.c ****       base = 16;
+ 363:Utilities/misc/stm32_tiny_sscanf.c ****       break;
+ 364:Utilities/misc/stm32_tiny_sscanf.c **** 
+ 365:Utilities/misc/stm32_tiny_sscanf.c ****     case 'n':
+ 366:Utilities/misc/stm32_tiny_sscanf.c ****       if (flags & SUPPRESS)
+ 367:Utilities/misc/stm32_tiny_sscanf.c ****         continue;
+ 368:Utilities/misc/stm32_tiny_sscanf.c ****       if (flags & SHORTSHORT)
+ 369:Utilities/misc/stm32_tiny_sscanf.c ****         *va_arg(ap, char *) = nread;
+ 370:Utilities/misc/stm32_tiny_sscanf.c ****       else if (flags & SHORT)
+ 371:Utilities/misc/stm32_tiny_sscanf.c ****         *va_arg(ap, short *) = nread;
+ 372:Utilities/misc/stm32_tiny_sscanf.c ****       else if (flags & LONG)
+ 373:Utilities/misc/stm32_tiny_sscanf.c ****         *va_arg(ap, long *) = nread;
+ 374:Utilities/misc/stm32_tiny_sscanf.c ****       else if (flags & SIZEINT)
+ 375:Utilities/misc/stm32_tiny_sscanf.c ****         *va_arg(ap, size_t *) = nread;
+ 376:Utilities/misc/stm32_tiny_sscanf.c ****       else if (flags & PTRINT)
+ 377:Utilities/misc/stm32_tiny_sscanf.c ****         *va_arg(ap, ptrdiff_t *) = nread;
+ 378:Utilities/misc/stm32_tiny_sscanf.c ****       else if (flags & LLONG)
+ 379:Utilities/misc/stm32_tiny_sscanf.c ****         *va_arg(ap, long long *) = nread;
+ 380:Utilities/misc/stm32_tiny_sscanf.c ****       else if (flags & MAXINT)
+ 381:Utilities/misc/stm32_tiny_sscanf.c ****         *va_arg(ap, intmax_t *) = nread;
+ 382:Utilities/misc/stm32_tiny_sscanf.c ****       else
+ 383:Utilities/misc/stm32_tiny_sscanf.c ****         *va_arg(ap, int *) = nread;
+ 384:Utilities/misc/stm32_tiny_sscanf.c ****       continue;
+ 385:Utilities/misc/stm32_tiny_sscanf.c **** #endif
+ 386:Utilities/misc/stm32_tiny_sscanf.c **** 
+ 387:Utilities/misc/stm32_tiny_sscanf.c ****     /*
+ 388:Utilities/misc/stm32_tiny_sscanf.c ****      * Disgusting backwards compatibility hacks.  XXX
+ 389:Utilities/misc/stm32_tiny_sscanf.c ****      */
+ 390:Utilities/misc/stm32_tiny_sscanf.c ****     case '\0':  /* compat */
+ 391:Utilities/misc/stm32_tiny_sscanf.c ****       return (EOF);
+ 392:Utilities/misc/stm32_tiny_sscanf.c **** 
+ 393:Utilities/misc/stm32_tiny_sscanf.c ****     default:  /* compat */
+ 394:Utilities/misc/stm32_tiny_sscanf.c **** #ifdef TINY_SSCANF
+ 395:Utilities/misc/stm32_tiny_sscanf.c **** #else
+ 396:Utilities/misc/stm32_tiny_sscanf.c ****       if (isupper(c))
+ 397:Utilities/misc/stm32_tiny_sscanf.c ****         flags |= LONG;
+ 398:Utilities/misc/stm32_tiny_sscanf.c ****       c = CT_INT;
+ 399:Utilities/misc/stm32_tiny_sscanf.c ****       base = 10;
+ 400:Utilities/misc/stm32_tiny_sscanf.c **** #endif
+ 401:Utilities/misc/stm32_tiny_sscanf.c ****       break;
+ 402:Utilities/misc/stm32_tiny_sscanf.c ****     }
+ 403:Utilities/misc/stm32_tiny_sscanf.c **** 
+ 404:Utilities/misc/stm32_tiny_sscanf.c ****     /*
+ 405:Utilities/misc/stm32_tiny_sscanf.c ****      * We have a conversion that requires input.
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccRU2Xxh.s 			page 10
+
+
+ 406:Utilities/misc/stm32_tiny_sscanf.c ****      */
+ 407:Utilities/misc/stm32_tiny_sscanf.c ****     if (fp_r <= 0 && __srefill(fp))
+ 408:Utilities/misc/stm32_tiny_sscanf.c ****       goto input_failure;
+ 409:Utilities/misc/stm32_tiny_sscanf.c **** 
+ 410:Utilities/misc/stm32_tiny_sscanf.c ****     
+ 411:Utilities/misc/stm32_tiny_sscanf.c ****     /*
+ 412:Utilities/misc/stm32_tiny_sscanf.c ****      * Consume leading white space, except for formats
+ 413:Utilities/misc/stm32_tiny_sscanf.c ****      * that suppress this.
+ 414:Utilities/misc/stm32_tiny_sscanf.c ****      */
+ 415:Utilities/misc/stm32_tiny_sscanf.c **** #ifdef TINY_SSCANF
+ 416:Utilities/misc/stm32_tiny_sscanf.c **** #else
+ 417:Utilities/misc/stm32_tiny_sscanf.c ****     if ((flags & NOSKIP) == 0) {
+ 418:Utilities/misc/stm32_tiny_sscanf.c ****       while (isspace(*fp_p)) {
+ 419:Utilities/misc/stm32_tiny_sscanf.c ****         nread++;
+ 420:Utilities/misc/stm32_tiny_sscanf.c ****         if (--fp_r > 0)
+ 421:Utilities/misc/stm32_tiny_sscanf.c ****           fp_p++;
+ 422:Utilities/misc/stm32_tiny_sscanf.c ****         else if (__srefill(fp))
+ 423:Utilities/misc/stm32_tiny_sscanf.c ****           goto input_failure;
+ 424:Utilities/misc/stm32_tiny_sscanf.c ****       }
+ 425:Utilities/misc/stm32_tiny_sscanf.c ****       /*
+ 426:Utilities/misc/stm32_tiny_sscanf.c ****        * Note that there is at least one character in
+ 427:Utilities/misc/stm32_tiny_sscanf.c ****        * the buffer, so conversions that do not set NOSKIP
+ 428:Utilities/misc/stm32_tiny_sscanf.c ****        * ca no longer result in an input failure.
+ 429:Utilities/misc/stm32_tiny_sscanf.c ****        */
+ 430:Utilities/misc/stm32_tiny_sscanf.c ****     }
+ 431:Utilities/misc/stm32_tiny_sscanf.c **** #endif
+ 432:Utilities/misc/stm32_tiny_sscanf.c ****     
+ 433:Utilities/misc/stm32_tiny_sscanf.c ****     /*
+ 434:Utilities/misc/stm32_tiny_sscanf.c ****      * Do the conversion.
+ 435:Utilities/misc/stm32_tiny_sscanf.c ****      */
+ 436:Utilities/misc/stm32_tiny_sscanf.c ****     switch (c) {
+ 437:Utilities/misc/stm32_tiny_sscanf.c **** #ifdef TINY_SSCANF
+ 438:Utilities/misc/stm32_tiny_sscanf.c **** #else
+ 439:Utilities/misc/stm32_tiny_sscanf.c ****     case CT_CHAR:
+ 440:Utilities/misc/stm32_tiny_sscanf.c ****       /* scan arbitrary characters (sets NOSKIP) */
+ 441:Utilities/misc/stm32_tiny_sscanf.c ****       if (width == 0)
+ 442:Utilities/misc/stm32_tiny_sscanf.c ****         width = 1;
+ 443:Utilities/misc/stm32_tiny_sscanf.c ****       if (flags & SUPPRESS) {
+ 444:Utilities/misc/stm32_tiny_sscanf.c ****         size_t sum = 0;
+ 445:Utilities/misc/stm32_tiny_sscanf.c ****         for (;;) {
+ 446:Utilities/misc/stm32_tiny_sscanf.c ****           if ((n = fp_r) < (int)width) {
+ 447:Utilities/misc/stm32_tiny_sscanf.c ****             sum += n;
+ 448:Utilities/misc/stm32_tiny_sscanf.c ****             width -= n;
+ 449:Utilities/misc/stm32_tiny_sscanf.c ****             fp_p += n;
+ 450:Utilities/misc/stm32_tiny_sscanf.c ****             if (__srefill(fp)) {
+ 451:Utilities/misc/stm32_tiny_sscanf.c ****               if (sum == 0)
+ 452:Utilities/misc/stm32_tiny_sscanf.c ****                   goto input_failure;
+ 453:Utilities/misc/stm32_tiny_sscanf.c ****               break;
+ 454:Utilities/misc/stm32_tiny_sscanf.c ****             }
+ 455:Utilities/misc/stm32_tiny_sscanf.c ****           } else {
+ 456:Utilities/misc/stm32_tiny_sscanf.c ****             sum += width;
+ 457:Utilities/misc/stm32_tiny_sscanf.c ****             fp_r -= width;
+ 458:Utilities/misc/stm32_tiny_sscanf.c ****             fp_p += width;
+ 459:Utilities/misc/stm32_tiny_sscanf.c ****             break;
+ 460:Utilities/misc/stm32_tiny_sscanf.c ****           }
+ 461:Utilities/misc/stm32_tiny_sscanf.c ****         }
+ 462:Utilities/misc/stm32_tiny_sscanf.c ****         nread += sum;
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccRU2Xxh.s 			page 11
+
+
+ 463:Utilities/misc/stm32_tiny_sscanf.c ****       } else {
+ 464:Utilities/misc/stm32_tiny_sscanf.c ****         size_t r = fread((void *)va_arg(ap, char *), 1,
+ 465:Utilities/misc/stm32_tiny_sscanf.c ****             width, fp);
+ 466:Utilities/misc/stm32_tiny_sscanf.c **** 
+ 467:Utilities/misc/stm32_tiny_sscanf.c ****         if (r == 0)
+ 468:Utilities/misc/stm32_tiny_sscanf.c ****           goto input_failure;
+ 469:Utilities/misc/stm32_tiny_sscanf.c ****         nread += r;
+ 470:Utilities/misc/stm32_tiny_sscanf.c ****         nassigned++;
+ 471:Utilities/misc/stm32_tiny_sscanf.c ****       }
+ 472:Utilities/misc/stm32_tiny_sscanf.c ****       break;
+ 473:Utilities/misc/stm32_tiny_sscanf.c **** #endif
+ 474:Utilities/misc/stm32_tiny_sscanf.c ****       
+ 475:Utilities/misc/stm32_tiny_sscanf.c **** #ifdef TINY_SSCANF
+ 476:Utilities/misc/stm32_tiny_sscanf.c **** #else
+ 477:Utilities/misc/stm32_tiny_sscanf.c ****     case CT_CCL:
+ 478:Utilities/misc/stm32_tiny_sscanf.c ****       /* scan a (nonempty) character class (sets NOSKIP) */
+ 479:Utilities/misc/stm32_tiny_sscanf.c ****       if (width == 0)
+ 480:Utilities/misc/stm32_tiny_sscanf.c ****         width = (size_t)~0;  /* `infinity' */
+ 481:Utilities/misc/stm32_tiny_sscanf.c ****       /* take only those things in the class */
+ 482:Utilities/misc/stm32_tiny_sscanf.c ****       if (flags & SUPPRESS) {
+ 483:Utilities/misc/stm32_tiny_sscanf.c ****         n = 0;
+ 484:Utilities/misc/stm32_tiny_sscanf.c ****         while (ccltab[*fp_p]) {
+ 485:Utilities/misc/stm32_tiny_sscanf.c ****           n++, fp_r--, fp_p++;
+ 486:Utilities/misc/stm32_tiny_sscanf.c ****           if (--width == 0)
+ 487:Utilities/misc/stm32_tiny_sscanf.c ****             break;
+ 488:Utilities/misc/stm32_tiny_sscanf.c ****           if (fp_r <= 0 && __srefill(fp)) {
+ 489:Utilities/misc/stm32_tiny_sscanf.c ****             if (n == 0)
+ 490:Utilities/misc/stm32_tiny_sscanf.c ****               goto input_failure;
+ 491:Utilities/misc/stm32_tiny_sscanf.c ****             break;
+ 492:Utilities/misc/stm32_tiny_sscanf.c ****           }
+ 493:Utilities/misc/stm32_tiny_sscanf.c ****         }
+ 494:Utilities/misc/stm32_tiny_sscanf.c ****         if (n == 0)
+ 495:Utilities/misc/stm32_tiny_sscanf.c ****           goto match_failure;
+ 496:Utilities/misc/stm32_tiny_sscanf.c ****       } else {
+ 497:Utilities/misc/stm32_tiny_sscanf.c ****         p0 = p = va_arg(ap, char *);
+ 498:Utilities/misc/stm32_tiny_sscanf.c ****         while (ccltab[*fp_p]) {
+ 499:Utilities/misc/stm32_tiny_sscanf.c ****           fp_r--;
+ 500:Utilities/misc/stm32_tiny_sscanf.c ****           *p++ = *fp_p++;
+ 501:Utilities/misc/stm32_tiny_sscanf.c ****           if (--width == 0)
+ 502:Utilities/misc/stm32_tiny_sscanf.c ****             break;
+ 503:Utilities/misc/stm32_tiny_sscanf.c ****           if (fp_r <= 0 && __srefill(fp)) {
+ 504:Utilities/misc/stm32_tiny_sscanf.c ****             if (p == p0)
+ 505:Utilities/misc/stm32_tiny_sscanf.c ****               goto input_failure;
+ 506:Utilities/misc/stm32_tiny_sscanf.c ****             break;
+ 507:Utilities/misc/stm32_tiny_sscanf.c ****           }
+ 508:Utilities/misc/stm32_tiny_sscanf.c ****         }
+ 509:Utilities/misc/stm32_tiny_sscanf.c ****         n = p - p0;
+ 510:Utilities/misc/stm32_tiny_sscanf.c ****         if (n == 0)
+ 511:Utilities/misc/stm32_tiny_sscanf.c ****           goto match_failure;
+ 512:Utilities/misc/stm32_tiny_sscanf.c ****         *p = '\0';
+ 513:Utilities/misc/stm32_tiny_sscanf.c ****         nassigned++;
+ 514:Utilities/misc/stm32_tiny_sscanf.c ****       }
+ 515:Utilities/misc/stm32_tiny_sscanf.c ****       nread += n;
+ 516:Utilities/misc/stm32_tiny_sscanf.c ****       break;
+ 517:Utilities/misc/stm32_tiny_sscanf.c **** #endif
+ 518:Utilities/misc/stm32_tiny_sscanf.c ****       
+ 519:Utilities/misc/stm32_tiny_sscanf.c **** #ifdef TINY_SSCANF
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccRU2Xxh.s 			page 12
+
+
+ 520:Utilities/misc/stm32_tiny_sscanf.c **** #else
+ 521:Utilities/misc/stm32_tiny_sscanf.c ****     case CT_STRING:
+ 522:Utilities/misc/stm32_tiny_sscanf.c ****       /* like CCL, but zero-length string OK, & no NOSKIP */
+ 523:Utilities/misc/stm32_tiny_sscanf.c ****       if (width == 0)
+ 524:Utilities/misc/stm32_tiny_sscanf.c ****         width = (size_t)~0;
+ 525:Utilities/misc/stm32_tiny_sscanf.c ****       if (flags & SUPPRESS) {
+ 526:Utilities/misc/stm32_tiny_sscanf.c ****         n = 0;
+ 527:Utilities/misc/stm32_tiny_sscanf.c ****         while (!isspace(*fp_p)) {
+ 528:Utilities/misc/stm32_tiny_sscanf.c ****           n++, fp_r--, fp_p++;
+ 529:Utilities/misc/stm32_tiny_sscanf.c ****           if (--width == 0)
+ 530:Utilities/misc/stm32_tiny_sscanf.c ****             break;
+ 531:Utilities/misc/stm32_tiny_sscanf.c ****           if (fp_r <= 0 && __srefill(fp))
+ 532:Utilities/misc/stm32_tiny_sscanf.c ****             break;
+ 533:Utilities/misc/stm32_tiny_sscanf.c ****         }
+ 534:Utilities/misc/stm32_tiny_sscanf.c ****         nread += n;
+ 535:Utilities/misc/stm32_tiny_sscanf.c ****       } else {
+ 536:Utilities/misc/stm32_tiny_sscanf.c ****         p0 = p = va_arg(ap, char *);
+ 537:Utilities/misc/stm32_tiny_sscanf.c ****         while (!isspace(*fp_p)) {
+ 538:Utilities/misc/stm32_tiny_sscanf.c ****           fp_r--;
+ 539:Utilities/misc/stm32_tiny_sscanf.c ****           *p++ = *fp_p++;
+ 540:Utilities/misc/stm32_tiny_sscanf.c ****           if (--width == 0)
+ 541:Utilities/misc/stm32_tiny_sscanf.c ****             break;
+ 542:Utilities/misc/stm32_tiny_sscanf.c ****           if (fp_r <= 0 && __srefill(fp))
+ 543:Utilities/misc/stm32_tiny_sscanf.c ****             break;
+ 544:Utilities/misc/stm32_tiny_sscanf.c ****         }
+ 545:Utilities/misc/stm32_tiny_sscanf.c ****         *p = '\0';
+ 546:Utilities/misc/stm32_tiny_sscanf.c ****         nread += p - p0;
+ 547:Utilities/misc/stm32_tiny_sscanf.c ****         nassigned++;
+ 548:Utilities/misc/stm32_tiny_sscanf.c ****       }
+ 549:Utilities/misc/stm32_tiny_sscanf.c ****       continue;
+ 550:Utilities/misc/stm32_tiny_sscanf.c **** #endif
+ 551:Utilities/misc/stm32_tiny_sscanf.c ****       
+ 552:Utilities/misc/stm32_tiny_sscanf.c ****     case CT_INT:
+ 553:Utilities/misc/stm32_tiny_sscanf.c ****       /* scan an integer as if by strtoimax/strtoumax */
+ 554:Utilities/misc/stm32_tiny_sscanf.c **** #ifdef hardway
+ 555:Utilities/misc/stm32_tiny_sscanf.c ****       if (width == 0 || width > sizeof(buf) - 1)
+ 556:Utilities/misc/stm32_tiny_sscanf.c ****         width = sizeof(buf) - 1;
+ 557:Utilities/misc/stm32_tiny_sscanf.c **** #else
+ 558:Utilities/misc/stm32_tiny_sscanf.c ****       /* size_t is unsigned, hence this optimisation */
+ 559:Utilities/misc/stm32_tiny_sscanf.c ****       if (--width > sizeof(buf) - 2)
+ 560:Utilities/misc/stm32_tiny_sscanf.c ****         width = sizeof(buf) - 2;
+ 561:Utilities/misc/stm32_tiny_sscanf.c ****       width++;
+ 562:Utilities/misc/stm32_tiny_sscanf.c **** #endif
+ 563:Utilities/misc/stm32_tiny_sscanf.c **** 
+ 564:Utilities/misc/stm32_tiny_sscanf.c **** #ifdef TINY_NO_OX
+ 565:Utilities/misc/stm32_tiny_sscanf.c ****       flags |= SIGNOK | NDIGITS;
+ 566:Utilities/misc/stm32_tiny_sscanf.c **** #else
+ 567:Utilities/misc/stm32_tiny_sscanf.c ****       flags |= SIGNOK | NDIGITS | NZDIGITS;
+ 568:Utilities/misc/stm32_tiny_sscanf.c **** #endif
+ 569:Utilities/misc/stm32_tiny_sscanf.c ****       
+ 570:Utilities/misc/stm32_tiny_sscanf.c ****       sign_minus = 0;
+ 571:Utilities/misc/stm32_tiny_sscanf.c ****       value = 0;
+ 572:Utilities/misc/stm32_tiny_sscanf.c ****       for (p = buf; width; width--) {
+ 573:Utilities/misc/stm32_tiny_sscanf.c ****         c = *fp_p;
+ 574:Utilities/misc/stm32_tiny_sscanf.c ****         /*
+ 575:Utilities/misc/stm32_tiny_sscanf.c ****          * Switch on the character; `goto ok'
+ 576:Utilities/misc/stm32_tiny_sscanf.c ****          * if we accept it as a part of number.
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccRU2Xxh.s 			page 13
+
+
+ 577:Utilities/misc/stm32_tiny_sscanf.c ****          */
+ 578:Utilities/misc/stm32_tiny_sscanf.c ****         switch (c) {
+ 579:Utilities/misc/stm32_tiny_sscanf.c **** 
+ 580:Utilities/misc/stm32_tiny_sscanf.c ****         /*
+ 581:Utilities/misc/stm32_tiny_sscanf.c ****          * The digit 0 is always legal, but is
+ 582:Utilities/misc/stm32_tiny_sscanf.c ****          * special.  For %i conversions, if no
+ 583:Utilities/misc/stm32_tiny_sscanf.c ****          * digits (zero or nonzero) have been
+ 584:Utilities/misc/stm32_tiny_sscanf.c ****          * scanned (only signs), we will have
+ 585:Utilities/misc/stm32_tiny_sscanf.c ****          * base==0.  In that case, we should set
+ 586:Utilities/misc/stm32_tiny_sscanf.c ****          * it to 8 and enable 0x prefixing.
+ 587:Utilities/misc/stm32_tiny_sscanf.c ****          * Also, if we have not scanned zero digits
+ 588:Utilities/misc/stm32_tiny_sscanf.c ****          * before this, do not turn off prefixing
+ 589:Utilities/misc/stm32_tiny_sscanf.c ****          * (someone else will turn it off if we
+ 590:Utilities/misc/stm32_tiny_sscanf.c ****          * have scanned any nonzero digits).
+ 591:Utilities/misc/stm32_tiny_sscanf.c ****          */
+ 592:Utilities/misc/stm32_tiny_sscanf.c ****         case '0':
+ 593:Utilities/misc/stm32_tiny_sscanf.c **** #ifdef TINY_NO_OX 
+ 594:Utilities/misc/stm32_tiny_sscanf.c ****           /* FALLTHROUGH */
+ 595:Utilities/misc/stm32_tiny_sscanf.c **** #else        
+ 596:Utilities/misc/stm32_tiny_sscanf.c **** #ifdef TINY_SSCANF
+ 597:Utilities/misc/stm32_tiny_sscanf.c **** #else
+ 598:Utilities/misc/stm32_tiny_sscanf.c ****           if (base == 0) {
+ 599:Utilities/misc/stm32_tiny_sscanf.c ****             base = 8;
+ 600:Utilities/misc/stm32_tiny_sscanf.c ****             flags |= PFXOK;
+ 601:Utilities/misc/stm32_tiny_sscanf.c ****           }
+ 602:Utilities/misc/stm32_tiny_sscanf.c **** #endif 
+ 603:Utilities/misc/stm32_tiny_sscanf.c ****           if (!(flags & NDIGITS)) {
+ 604:Utilities/misc/stm32_tiny_sscanf.c ****             value = value * base;
+ 605:Utilities/misc/stm32_tiny_sscanf.c ****           }
+ 606:Utilities/misc/stm32_tiny_sscanf.c ****           
+ 607:Utilities/misc/stm32_tiny_sscanf.c ****           if (flags & NZDIGITS)
+ 608:Utilities/misc/stm32_tiny_sscanf.c ****               flags &= ~(SIGNOK|NZDIGITS|NDIGITS);
+ 609:Utilities/misc/stm32_tiny_sscanf.c ****           else
+ 610:Utilities/misc/stm32_tiny_sscanf.c ****               flags &= ~(SIGNOK|PFXOK|NDIGITS);
+ 611:Utilities/misc/stm32_tiny_sscanf.c ****           goto ok;
+ 612:Utilities/misc/stm32_tiny_sscanf.c **** #endif
+ 613:Utilities/misc/stm32_tiny_sscanf.c ****           
+ 614:Utilities/misc/stm32_tiny_sscanf.c **** #ifdef TINY_SSCANF
+ 615:Utilities/misc/stm32_tiny_sscanf.c ****         /* we only support base 10 and 16 */
+ 616:Utilities/misc/stm32_tiny_sscanf.c ****         case '1': case '2': case '3':
+ 617:Utilities/misc/stm32_tiny_sscanf.c ****         case '4': case '5': case '6': case '7':
+ 618:Utilities/misc/stm32_tiny_sscanf.c ****         case '8': case '9':
+ 619:Utilities/misc/stm32_tiny_sscanf.c **** #ifdef TINY_NO_OX 
+ 620:Utilities/misc/stm32_tiny_sscanf.c ****           flags &= ~(SIGNOK | NDIGITS);
+ 621:Utilities/misc/stm32_tiny_sscanf.c **** #else
+ 622:Utilities/misc/stm32_tiny_sscanf.c ****           flags &= ~(SIGNOK | PFXOK | NDIGITS);
+ 623:Utilities/misc/stm32_tiny_sscanf.c **** #endif
+ 624:Utilities/misc/stm32_tiny_sscanf.c ****           value = value * base + c - '0';
+ 625:Utilities/misc/stm32_tiny_sscanf.c ****           goto ok;
+ 626:Utilities/misc/stm32_tiny_sscanf.c **** #else
+ 627:Utilities/misc/stm32_tiny_sscanf.c ****         /* 1 through 7 always legal */
+ 628:Utilities/misc/stm32_tiny_sscanf.c ****         case '1': case '2': case '3':
+ 629:Utilities/misc/stm32_tiny_sscanf.c ****         case '4': case '5': case '6': case '7':
+ 630:Utilities/misc/stm32_tiny_sscanf.c ****           base = basefix[base];
+ 631:Utilities/misc/stm32_tiny_sscanf.c ****           flags &= ~(SIGNOK | PFXOK | NDIGITS);
+ 632:Utilities/misc/stm32_tiny_sscanf.c ****           value = value * base + c - '0';
+ 633:Utilities/misc/stm32_tiny_sscanf.c ****           goto ok;
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccRU2Xxh.s 			page 14
+
+
+ 634:Utilities/misc/stm32_tiny_sscanf.c **** 
+ 635:Utilities/misc/stm32_tiny_sscanf.c ****         /* digits 8 and 9 ok iff decimal or hex */
+ 636:Utilities/misc/stm32_tiny_sscanf.c ****         case '8': case '9':
+ 637:Utilities/misc/stm32_tiny_sscanf.c ****           base = basefix[base];
+ 638:Utilities/misc/stm32_tiny_sscanf.c ****           if (base <= 8)
+ 639:Utilities/misc/stm32_tiny_sscanf.c ****             break;  /* not legal here */
+ 640:Utilities/misc/stm32_tiny_sscanf.c ****           flags &= ~(SIGNOK | PFXOK | NDIGITS);
+ 641:Utilities/misc/stm32_tiny_sscanf.c ****           value = value * base + c - '0';
+ 642:Utilities/misc/stm32_tiny_sscanf.c ****           goto ok;
+ 643:Utilities/misc/stm32_tiny_sscanf.c **** #endif
+ 644:Utilities/misc/stm32_tiny_sscanf.c ****           
+ 645:Utilities/misc/stm32_tiny_sscanf.c ****         /* letters ok iff hex */
+ 646:Utilities/misc/stm32_tiny_sscanf.c ****         case 'A': case 'B': case 'C':
+ 647:Utilities/misc/stm32_tiny_sscanf.c ****         case 'D': case 'E': case 'F':
+ 648:Utilities/misc/stm32_tiny_sscanf.c ****           /* no need to fix base here */
+ 649:Utilities/misc/stm32_tiny_sscanf.c ****           if (base <= 10)
+ 650:Utilities/misc/stm32_tiny_sscanf.c ****             break;  /* not legal here */
+ 651:Utilities/misc/stm32_tiny_sscanf.c **** #ifdef TINY_NO_OX 
+ 652:Utilities/misc/stm32_tiny_sscanf.c ****           flags &= ~(SIGNOK | NDIGITS);
+ 653:Utilities/misc/stm32_tiny_sscanf.c **** #else
+ 654:Utilities/misc/stm32_tiny_sscanf.c ****           flags &= ~(SIGNOK | PFXOK | NDIGITS);
+ 655:Utilities/misc/stm32_tiny_sscanf.c **** #endif
+ 656:Utilities/misc/stm32_tiny_sscanf.c ****           value = value * base + c - 'A' + 10;
+ 657:Utilities/misc/stm32_tiny_sscanf.c ****           goto ok;          
+ 658:Utilities/misc/stm32_tiny_sscanf.c ****         
+ 659:Utilities/misc/stm32_tiny_sscanf.c ****         case 'a': case 'b': case 'c':
+ 660:Utilities/misc/stm32_tiny_sscanf.c ****         case 'd': case 'e': case 'f':
+ 661:Utilities/misc/stm32_tiny_sscanf.c ****           /* no need to fix base here */
+ 662:Utilities/misc/stm32_tiny_sscanf.c ****           if (base <= 10)
+ 663:Utilities/misc/stm32_tiny_sscanf.c ****             break;  /* not legal here */
+ 664:Utilities/misc/stm32_tiny_sscanf.c **** #ifdef TINY_NO_OX 
+ 665:Utilities/misc/stm32_tiny_sscanf.c ****           flags &= ~(SIGNOK | NDIGITS);
+ 666:Utilities/misc/stm32_tiny_sscanf.c **** #else
+ 667:Utilities/misc/stm32_tiny_sscanf.c ****           flags &= ~(SIGNOK | PFXOK | NDIGITS);
+ 668:Utilities/misc/stm32_tiny_sscanf.c **** #endif
+ 669:Utilities/misc/stm32_tiny_sscanf.c ****           value = value * base + c - 'a' + 10;
+ 670:Utilities/misc/stm32_tiny_sscanf.c ****           goto ok;
+ 671:Utilities/misc/stm32_tiny_sscanf.c **** 
+ 672:Utilities/misc/stm32_tiny_sscanf.c ****         /* sign ok only as first character */
+ 673:Utilities/misc/stm32_tiny_sscanf.c ****         case '-':
+ 674:Utilities/misc/stm32_tiny_sscanf.c ****           if (!(flags & HAVESIGN)) {
+ 675:Utilities/misc/stm32_tiny_sscanf.c ****             sign_minus = 1;
+ 676:Utilities/misc/stm32_tiny_sscanf.c ****           }
+ 677:Utilities/misc/stm32_tiny_sscanf.c ****           /* FALLTHROUGH */
+ 678:Utilities/misc/stm32_tiny_sscanf.c ****         case '+':
+ 679:Utilities/misc/stm32_tiny_sscanf.c ****           if (flags & SIGNOK) {
+ 680:Utilities/misc/stm32_tiny_sscanf.c ****             flags &= ~SIGNOK;
+ 681:Utilities/misc/stm32_tiny_sscanf.c ****             flags |= HAVESIGN;
+ 682:Utilities/misc/stm32_tiny_sscanf.c ****             goto ok;
+ 683:Utilities/misc/stm32_tiny_sscanf.c ****           }
+ 684:Utilities/misc/stm32_tiny_sscanf.c ****           break;
+ 685:Utilities/misc/stm32_tiny_sscanf.c **** 
+ 686:Utilities/misc/stm32_tiny_sscanf.c ****         /*
+ 687:Utilities/misc/stm32_tiny_sscanf.c ****          * x ok iff flag still set and 2nd char (or
+ 688:Utilities/misc/stm32_tiny_sscanf.c ****          * 3rd char if we have a sign).
+ 689:Utilities/misc/stm32_tiny_sscanf.c ****          */
+ 690:Utilities/misc/stm32_tiny_sscanf.c **** #ifdef TINY_NO_OX
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccRU2Xxh.s 			page 15
+
+
+ 691:Utilities/misc/stm32_tiny_sscanf.c **** #else
+ 692:Utilities/misc/stm32_tiny_sscanf.c ****         case 'x': case 'X':
+ 693:Utilities/misc/stm32_tiny_sscanf.c ****           if ((flags & PFXOK) && p ==
+ 694:Utilities/misc/stm32_tiny_sscanf.c ****               buf + 1 + !!(flags & HAVESIGN)) {
+ 695:Utilities/misc/stm32_tiny_sscanf.c ****             base = 16;  /* if %i */
+ 696:Utilities/misc/stm32_tiny_sscanf.c ****             flags &= ~PFXOK;
+ 697:Utilities/misc/stm32_tiny_sscanf.c ****             goto ok;
+ 698:Utilities/misc/stm32_tiny_sscanf.c ****           }
+ 699:Utilities/misc/stm32_tiny_sscanf.c ****           break;
+ 700:Utilities/misc/stm32_tiny_sscanf.c **** #endif
+ 701:Utilities/misc/stm32_tiny_sscanf.c ****         }
+ 702:Utilities/misc/stm32_tiny_sscanf.c **** 
+ 703:Utilities/misc/stm32_tiny_sscanf.c ****         /*
+ 704:Utilities/misc/stm32_tiny_sscanf.c ****          * If we got here, c is not a legal character
+ 705:Utilities/misc/stm32_tiny_sscanf.c ****          * for a number.  Stop accumulating digits.
+ 706:Utilities/misc/stm32_tiny_sscanf.c ****          */
+ 707:Utilities/misc/stm32_tiny_sscanf.c ****         break;
+ 708:Utilities/misc/stm32_tiny_sscanf.c ****     ok:
+ 709:Utilities/misc/stm32_tiny_sscanf.c ****         /*
+ 710:Utilities/misc/stm32_tiny_sscanf.c ****          * c is legal: store it and look at the next.
+ 711:Utilities/misc/stm32_tiny_sscanf.c ****          */
+ 712:Utilities/misc/stm32_tiny_sscanf.c ****         *p++ = c;
+ 713:Utilities/misc/stm32_tiny_sscanf.c ****         if (--fp_r > 0)
+ 714:Utilities/misc/stm32_tiny_sscanf.c ****           fp_p++;
+ 715:Utilities/misc/stm32_tiny_sscanf.c ****         else if (__srefill(fp))
+ 716:Utilities/misc/stm32_tiny_sscanf.c ****           break;    /* EOF */
+ 717:Utilities/misc/stm32_tiny_sscanf.c ****       }
+ 718:Utilities/misc/stm32_tiny_sscanf.c ****       /*
+ 719:Utilities/misc/stm32_tiny_sscanf.c ****        * If we had only a sign, it is no good; push
+ 720:Utilities/misc/stm32_tiny_sscanf.c ****        * back the sign.  If the number ends in `x',
+ 721:Utilities/misc/stm32_tiny_sscanf.c ****        * it was [sign] '0' 'x', so push back the x
+ 722:Utilities/misc/stm32_tiny_sscanf.c ****        * and treat it as [sign] '0'.
+ 723:Utilities/misc/stm32_tiny_sscanf.c ****        */
+ 724:Utilities/misc/stm32_tiny_sscanf.c ****       if (flags & NDIGITS) {
+ 725:Utilities/misc/stm32_tiny_sscanf.c ****         if (p > buf)
+ 726:Utilities/misc/stm32_tiny_sscanf.c ****         {
+ 727:Utilities/misc/stm32_tiny_sscanf.c ****           --c;
+ 728:Utilities/misc/stm32_tiny_sscanf.c ****           --p;
+ 729:Utilities/misc/stm32_tiny_sscanf.c ****           ungetc(c++, fp);
+ 730:Utilities/misc/stm32_tiny_sscanf.c ****           /* There is a dummy post-increment to 
+ 731:Utilities/misc/stm32_tiny_sscanf.c ****              avoid an unused value warning */
+ 732:Utilities/misc/stm32_tiny_sscanf.c ****         }
+ 733:Utilities/misc/stm32_tiny_sscanf.c ****         goto match_failure;
+ 734:Utilities/misc/stm32_tiny_sscanf.c ****       }
+ 735:Utilities/misc/stm32_tiny_sscanf.c **** #ifdef TINY_NO_OX 
+ 736:Utilities/misc/stm32_tiny_sscanf.c **** #else
+ 737:Utilities/misc/stm32_tiny_sscanf.c ****       c = ((u_char *)p)[-1];
+ 738:Utilities/misc/stm32_tiny_sscanf.c ****       if (c == 'x' || c == 'X') {
+ 739:Utilities/misc/stm32_tiny_sscanf.c ****         --p;
+ 740:Utilities/misc/stm32_tiny_sscanf.c ****         ungetc(c, fp);
+ 741:Utilities/misc/stm32_tiny_sscanf.c ****       }
+ 742:Utilities/misc/stm32_tiny_sscanf.c **** #endif
+ 743:Utilities/misc/stm32_tiny_sscanf.c ****       
+ 744:Utilities/misc/stm32_tiny_sscanf.c **** #ifdef TINY_SSCANF
+ 745:Utilities/misc/stm32_tiny_sscanf.c ****       {
+ 746:Utilities/misc/stm32_tiny_sscanf.c **** #else
+ 747:Utilities/misc/stm32_tiny_sscanf.c ****       if ((flags & SUPPRESS) == 0) {
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccRU2Xxh.s 			page 16
+
+
+ 748:Utilities/misc/stm32_tiny_sscanf.c **** #endif
+ 749:Utilities/misc/stm32_tiny_sscanf.c **** 
+ 750:Utilities/misc/stm32_tiny_sscanf.c ****         *p = '\0';
+ 751:Utilities/misc/stm32_tiny_sscanf.c ****         if (sign_minus)
+ 752:Utilities/misc/stm32_tiny_sscanf.c ****           value = -value;
+ 753:Utilities/misc/stm32_tiny_sscanf.c **** 
+ 754:Utilities/misc/stm32_tiny_sscanf.c **** #ifdef TINY_SSCANF
+ 755:Utilities/misc/stm32_tiny_sscanf.c **** #else
+ 756:Utilities/misc/stm32_tiny_sscanf.c ****         if (flags & POINTER)
+ 757:Utilities/misc/stm32_tiny_sscanf.c ****           *va_arg(ap, void **) =
+ 758:Utilities/misc/stm32_tiny_sscanf.c ****               (void *)(uintptr_t)value;
+ 759:Utilities/misc/stm32_tiny_sscanf.c ****         else if (flags & MAXINT)
+ 760:Utilities/misc/stm32_tiny_sscanf.c ****           *va_arg(ap, intmax_t *) = value;
+ 761:Utilities/misc/stm32_tiny_sscanf.c ****         else if (flags & LLONG)
+ 762:Utilities/misc/stm32_tiny_sscanf.c ****           *va_arg(ap, long long *) = value;
+ 763:Utilities/misc/stm32_tiny_sscanf.c ****         else if (flags & SIZEINT)
+ 764:Utilities/misc/stm32_tiny_sscanf.c ****           *va_arg(ap, size_t *) = value;
+ 765:Utilities/misc/stm32_tiny_sscanf.c ****         else if (flags & PTRINT)
+ 766:Utilities/misc/stm32_tiny_sscanf.c ****           *va_arg(ap, ptrdiff_t *) = value;
+ 767:Utilities/misc/stm32_tiny_sscanf.c ****         else 
+ 768:Utilities/misc/stm32_tiny_sscanf.c **** #endif
+ 769:Utilities/misc/stm32_tiny_sscanf.c ****         if (flags & LONG)
+ 770:Utilities/misc/stm32_tiny_sscanf.c ****           *va_arg(ap, long *) = value;
+ 771:Utilities/misc/stm32_tiny_sscanf.c ****         else if (flags & SHORT)
+ 772:Utilities/misc/stm32_tiny_sscanf.c ****           *va_arg(ap, short *) = value;
+ 773:Utilities/misc/stm32_tiny_sscanf.c ****         else if (flags & SHORTSHORT)
+ 774:Utilities/misc/stm32_tiny_sscanf.c ****           *va_arg(ap, char *) = value;
+ 775:Utilities/misc/stm32_tiny_sscanf.c ****         else
+ 776:Utilities/misc/stm32_tiny_sscanf.c ****           *va_arg(ap, int *) = value;
+ 777:Utilities/misc/stm32_tiny_sscanf.c ****         nassigned++;
+ 778:Utilities/misc/stm32_tiny_sscanf.c ****       }
+ 779:Utilities/misc/stm32_tiny_sscanf.c ****       nread += p - buf;
+ 780:Utilities/misc/stm32_tiny_sscanf.c ****       break;
+ 781:Utilities/misc/stm32_tiny_sscanf.c **** 
+ 782:Utilities/misc/stm32_tiny_sscanf.c **** #ifdef FLOATING_POINT
+ 783:Utilities/misc/stm32_tiny_sscanf.c ****     case CT_FLOAT:
+ 784:Utilities/misc/stm32_tiny_sscanf.c ****       /* scan a floating point number as if by strtod */
+ 785:Utilities/misc/stm32_tiny_sscanf.c **** #ifdef hardway
+ 786:Utilities/misc/stm32_tiny_sscanf.c ****       if (width == 0 || width > sizeof(buf) - 1)
+ 787:Utilities/misc/stm32_tiny_sscanf.c ****         width = sizeof(buf) - 1;
+ 788:Utilities/misc/stm32_tiny_sscanf.c **** #else
+ 789:Utilities/misc/stm32_tiny_sscanf.c ****       /* size_t is unsigned, hence this optimisation */
+ 790:Utilities/misc/stm32_tiny_sscanf.c ****       if (--width > sizeof(buf) - 2)
+ 791:Utilities/misc/stm32_tiny_sscanf.c ****         width = sizeof(buf) - 2;
+ 792:Utilities/misc/stm32_tiny_sscanf.c ****       width++;
+ 793:Utilities/misc/stm32_tiny_sscanf.c **** #endif
+ 794:Utilities/misc/stm32_tiny_sscanf.c ****       flags |= SIGNOK | NDIGITS | DPTOK | EXPOK;
+ 795:Utilities/misc/stm32_tiny_sscanf.c ****       for (p = buf; width; width--) {
+ 796:Utilities/misc/stm32_tiny_sscanf.c ****         c = *fp->_p;
+ 797:Utilities/misc/stm32_tiny_sscanf.c ****         /*
+ 798:Utilities/misc/stm32_tiny_sscanf.c ****          * This code mimics the integer conversion
+ 799:Utilities/misc/stm32_tiny_sscanf.c ****          * code, but is much simpler.
+ 800:Utilities/misc/stm32_tiny_sscanf.c ****          */
+ 801:Utilities/misc/stm32_tiny_sscanf.c ****         switch (c) {
+ 802:Utilities/misc/stm32_tiny_sscanf.c **** 
+ 803:Utilities/misc/stm32_tiny_sscanf.c ****         case '0': case '1': case '2': case '3':
+ 804:Utilities/misc/stm32_tiny_sscanf.c ****         case '4': case '5': case '6': case '7':
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccRU2Xxh.s 			page 17
+
+
+ 805:Utilities/misc/stm32_tiny_sscanf.c ****         case '8': case '9':
+ 806:Utilities/misc/stm32_tiny_sscanf.c ****           flags &= ~(SIGNOK | NDIGITS);
+ 807:Utilities/misc/stm32_tiny_sscanf.c ****           goto fok;
+ 808:Utilities/misc/stm32_tiny_sscanf.c **** 
+ 809:Utilities/misc/stm32_tiny_sscanf.c ****         case '+': case '-':
+ 810:Utilities/misc/stm32_tiny_sscanf.c ****           if (flags & SIGNOK) {
+ 811:Utilities/misc/stm32_tiny_sscanf.c ****             flags &= ~SIGNOK;
+ 812:Utilities/misc/stm32_tiny_sscanf.c ****             goto fok;
+ 813:Utilities/misc/stm32_tiny_sscanf.c ****           }
+ 814:Utilities/misc/stm32_tiny_sscanf.c ****           break;
+ 815:Utilities/misc/stm32_tiny_sscanf.c ****         case '.':
+ 816:Utilities/misc/stm32_tiny_sscanf.c ****           if (flags & DPTOK) {
+ 817:Utilities/misc/stm32_tiny_sscanf.c ****             flags &= ~(SIGNOK | DPTOK);
+ 818:Utilities/misc/stm32_tiny_sscanf.c ****             goto fok;
+ 819:Utilities/misc/stm32_tiny_sscanf.c ****           }
+ 820:Utilities/misc/stm32_tiny_sscanf.c ****           break;
+ 821:Utilities/misc/stm32_tiny_sscanf.c ****         case 'e': case 'E':
+ 822:Utilities/misc/stm32_tiny_sscanf.c ****           /* no exponent without some digits */
+ 823:Utilities/misc/stm32_tiny_sscanf.c ****           if ((flags&(NDIGITS|EXPOK)) == EXPOK) {
+ 824:Utilities/misc/stm32_tiny_sscanf.c ****             flags =
+ 825:Utilities/misc/stm32_tiny_sscanf.c ****                 (flags & ~(EXPOK|DPTOK)) |
+ 826:Utilities/misc/stm32_tiny_sscanf.c ****                 SIGNOK | NDIGITS;
+ 827:Utilities/misc/stm32_tiny_sscanf.c ****             goto fok;
+ 828:Utilities/misc/stm32_tiny_sscanf.c ****           }
+ 829:Utilities/misc/stm32_tiny_sscanf.c ****           break;
+ 830:Utilities/misc/stm32_tiny_sscanf.c ****         }
+ 831:Utilities/misc/stm32_tiny_sscanf.c ****         break;
+ 832:Utilities/misc/stm32_tiny_sscanf.c ****     fok:
+ 833:Utilities/misc/stm32_tiny_sscanf.c ****         *p++ = c;
+ 834:Utilities/misc/stm32_tiny_sscanf.c ****         if (--fp->_r > 0)
+ 835:Utilities/misc/stm32_tiny_sscanf.c ****           fp->_p++;
+ 836:Utilities/misc/stm32_tiny_sscanf.c ****         else if (__srefill(fp))
+ 837:Utilities/misc/stm32_tiny_sscanf.c ****           break;  /* EOF */
+ 838:Utilities/misc/stm32_tiny_sscanf.c ****       }
+ 839:Utilities/misc/stm32_tiny_sscanf.c ****       /*
+ 840:Utilities/misc/stm32_tiny_sscanf.c ****        * If no digits, might be missing exponent digits
+ 841:Utilities/misc/stm32_tiny_sscanf.c ****        * (just give back the exponent) or might be missing
+ 842:Utilities/misc/stm32_tiny_sscanf.c ****        * regular digits, but had sign and/or decimal point.
+ 843:Utilities/misc/stm32_tiny_sscanf.c ****        */
+ 844:Utilities/misc/stm32_tiny_sscanf.c ****       if (flags & NDIGITS) {
+ 845:Utilities/misc/stm32_tiny_sscanf.c ****         if (flags & EXPOK) {
+ 846:Utilities/misc/stm32_tiny_sscanf.c ****           /* no digits at all */
+ 847:Utilities/misc/stm32_tiny_sscanf.c ****           while (p > buf)
+ 848:Utilities/misc/stm32_tiny_sscanf.c ****             ungetc(*(u_char *)--p, fp);
+ 849:Utilities/misc/stm32_tiny_sscanf.c ****           goto match_failure;
+ 850:Utilities/misc/stm32_tiny_sscanf.c ****         }
+ 851:Utilities/misc/stm32_tiny_sscanf.c ****         /* just a bad exponent (e and maybe sign) */
+ 852:Utilities/misc/stm32_tiny_sscanf.c ****         c = *(u_char *)--p;
+ 853:Utilities/misc/stm32_tiny_sscanf.c ****         if (c != 'e' && c != 'E') {
+ 854:Utilities/misc/stm32_tiny_sscanf.c ****           (void) ungetc(c, fp);/* sign */
+ 855:Utilities/misc/stm32_tiny_sscanf.c ****           c = *(u_char *)--p;
+ 856:Utilities/misc/stm32_tiny_sscanf.c ****         }
+ 857:Utilities/misc/stm32_tiny_sscanf.c ****         (void) ungetc(c, fp);
+ 858:Utilities/misc/stm32_tiny_sscanf.c ****       }
+ 859:Utilities/misc/stm32_tiny_sscanf.c ****       if ((flags & SUPPRESS) == 0) {
+ 860:Utilities/misc/stm32_tiny_sscanf.c ****         double res;
+ 861:Utilities/misc/stm32_tiny_sscanf.c **** 
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccRU2Xxh.s 			page 18
+
+
+ 862:Utilities/misc/stm32_tiny_sscanf.c ****         *p = '\0';
+ 863:Utilities/misc/stm32_tiny_sscanf.c ****         res = strtod(buf, (char **) NULL);
+ 864:Utilities/misc/stm32_tiny_sscanf.c ****         if (flags & LONGDBL)
+ 865:Utilities/misc/stm32_tiny_sscanf.c ****           *va_arg(ap, long double *) = res;
+ 866:Utilities/misc/stm32_tiny_sscanf.c ****         else if (flags & LONG)
+ 867:Utilities/misc/stm32_tiny_sscanf.c ****           *va_arg(ap, double *) = res;
+ 868:Utilities/misc/stm32_tiny_sscanf.c ****         else
+ 869:Utilities/misc/stm32_tiny_sscanf.c ****           *va_arg(ap, float *) = res;
+ 870:Utilities/misc/stm32_tiny_sscanf.c ****         nassigned++;
+ 871:Utilities/misc/stm32_tiny_sscanf.c ****       }
+ 872:Utilities/misc/stm32_tiny_sscanf.c ****       nread += p - buf;
+ 873:Utilities/misc/stm32_tiny_sscanf.c ****       break;
+ 874:Utilities/misc/stm32_tiny_sscanf.c **** #endif /* FLOATING_POINT */
+ 875:Utilities/misc/stm32_tiny_sscanf.c ****     }
+ 876:Utilities/misc/stm32_tiny_sscanf.c ****   }
+ 877:Utilities/misc/stm32_tiny_sscanf.c **** input_failure:
+ 878:Utilities/misc/stm32_tiny_sscanf.c ****   return (nassigned ? nassigned : -1);
+ 879:Utilities/misc/stm32_tiny_sscanf.c **** match_failure:
+ 880:Utilities/misc/stm32_tiny_sscanf.c ****   return (nassigned);
+ 881:Utilities/misc/stm32_tiny_sscanf.c **** }
+ 109              		.loc 1 881 1 view .LVU37
+ 110 0034 0DF5057D 		add	sp, sp, #532
+ 111              	.LCFI2:
+ 112              		.cfi_remember_state
+ 113              		.cfi_def_cfa_offset 36
+ 114              		@ sp needed
+ 115 0038 BDE8F08F 		pop	{r4, r5, r6, r7, r8, r9, r10, fp, pc}
+ 116              	.LVL8:
+ 117              	.L46:
+ 118              	.LCFI3:
+ 119              		.cfi_restore_state
+ 206:Utilities/misc/stm32_tiny_sscanf.c ****     /*
+ 120              		.loc 1 206 11 view .LVU38
+ 121 003c 0026     		movs	r6, #0
+ 205:Utilities/misc/stm32_tiny_sscanf.c ****     flags = 0;
+ 122              		.loc 1 205 11 view .LVU39
+ 123 003e 3746     		mov	r7, r6
+ 124              	.LVL9:
+ 125              	.L5:
+ 211:Utilities/misc/stm32_tiny_sscanf.c ****     switch (c) {
+ 126              		.loc 1 211 11 is_stmt 1 view .LVU40
+ 211:Utilities/misc/stm32_tiny_sscanf.c ****     switch (c) {
+ 127              		.loc 1 211 19 is_stmt 0 view .LVU41
+ 128 0040 0C46     		mov	r4, r1
+ 129              	.LVL10:
+ 211:Utilities/misc/stm32_tiny_sscanf.c ****     switch (c) {
+ 130              		.loc 1 211 15 view .LVU42
+ 131 0042 14F8013B 		ldrb	r3, [r4], #1	@ zero_extendqisi2
+ 132              	.LVL11:
+ 211:Utilities/misc/stm32_tiny_sscanf.c ****     switch (c) {
+ 133              		.loc 1 211 13 view .LVU43
+ 134 0046 1A46     		mov	r2, r3
+ 135              	.LVL12:
+ 212:Utilities/misc/stm32_tiny_sscanf.c ****     case '%':
+ 136              		.loc 1 212 5 is_stmt 1 view .LVU44
+ 137 0048 782B     		cmp	r3, #120
+ 138 004a 50D8     		bhi	.L7
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccRU2Xxh.s 			page 19
+
+
+ 139 004c 442B     		cmp	r3, #68
+ 140 004e 1FD3     		bcc	.L48
+ 141 0050 443B     		subs	r3, r3, #68
+ 142 0052 342B     		cmp	r3, #52
+ 143 0054 4BD8     		bhi	.L7
+ 144 0056 DFE803F0 		tbb	[pc, r3]
+ 145              	.L12:
+ 146 005a 45       		.byte	(.L16-.L12)/2
+ 147 005b 4A       		.byte	(.L7-.L12)/2
+ 148 005c 4A       		.byte	(.L7-.L12)/2
+ 149 005d 4A       		.byte	(.L7-.L12)/2
+ 150 005e 4A       		.byte	(.L7-.L12)/2
+ 151 005f 4A       		.byte	(.L7-.L12)/2
+ 152 0060 4A       		.byte	(.L7-.L12)/2
+ 153 0061 4A       		.byte	(.L7-.L12)/2
+ 154 0062 4A       		.byte	(.L7-.L12)/2
+ 155 0063 4A       		.byte	(.L7-.L12)/2
+ 156 0064 4A       		.byte	(.L7-.L12)/2
+ 157 0065 4A       		.byte	(.L7-.L12)/2
+ 158 0066 4A       		.byte	(.L7-.L12)/2
+ 159 0067 4A       		.byte	(.L7-.L12)/2
+ 160 0068 4A       		.byte	(.L7-.L12)/2
+ 161 0069 4A       		.byte	(.L7-.L12)/2
+ 162 006a 4A       		.byte	(.L7-.L12)/2
+ 163 006b 4A       		.byte	(.L7-.L12)/2
+ 164 006c 4A       		.byte	(.L7-.L12)/2
+ 165 006d 4A       		.byte	(.L7-.L12)/2
+ 166 006e 65       		.byte	(.L11-.L12)/2
+ 167 006f 4A       		.byte	(.L7-.L12)/2
+ 168 0070 4A       		.byte	(.L7-.L12)/2
+ 169 0071 4A       		.byte	(.L7-.L12)/2
+ 170 0072 4A       		.byte	(.L7-.L12)/2
+ 171 0073 4A       		.byte	(.L7-.L12)/2
+ 172 0074 4A       		.byte	(.L7-.L12)/2
+ 173 0075 4A       		.byte	(.L7-.L12)/2
+ 174 0076 4A       		.byte	(.L7-.L12)/2
+ 175 0077 4A       		.byte	(.L7-.L12)/2
+ 176 0078 4A       		.byte	(.L7-.L12)/2
+ 177 0079 4A       		.byte	(.L7-.L12)/2
+ 178 007a 6B       		.byte	(.L40-.L12)/2
+ 179 007b 4A       		.byte	(.L7-.L12)/2
+ 180 007c 4A       		.byte	(.L7-.L12)/2
+ 181 007d 4A       		.byte	(.L7-.L12)/2
+ 182 007e 36       		.byte	(.L15-.L12)/2
+ 183 007f 4A       		.byte	(.L7-.L12)/2
+ 184 0080 4A       		.byte	(.L7-.L12)/2
+ 185 0081 4A       		.byte	(.L7-.L12)/2
+ 186 0082 41       		.byte	(.L14-.L12)/2
+ 187 0083 4A       		.byte	(.L7-.L12)/2
+ 188 0084 4A       		.byte	(.L7-.L12)/2
+ 189 0085 4A       		.byte	(.L7-.L12)/2
+ 190 0086 4A       		.byte	(.L7-.L12)/2
+ 191 0087 4A       		.byte	(.L7-.L12)/2
+ 192 0088 4A       		.byte	(.L7-.L12)/2
+ 193 0089 4A       		.byte	(.L7-.L12)/2
+ 194 008a 4A       		.byte	(.L7-.L12)/2
+ 195 008b 5F       		.byte	(.L13-.L12)/2
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccRU2Xxh.s 			page 20
+
+
+ 196 008c 4A       		.byte	(.L7-.L12)/2
+ 197 008d 4A       		.byte	(.L7-.L12)/2
+ 198 008e 65       		.byte	(.L11-.L12)/2
+ 199 008f 00       		.p2align 1
+ 200              	.L48:
+ 212:Utilities/misc/stm32_tiny_sscanf.c ****     case '%':
+ 201              		.loc 1 212 5 is_stmt 0 view .LVU45
+ 202 0090 252B     		cmp	r3, #37
+ 203 0092 11D0     		beq	.L38
+ 204 0094 0CD9     		bls	.L49
+ 205 0096 A3F13001 		sub	r1, r3, #48
+ 206 009a C9B2     		uxtb	r1, r1
+ 207 009c 0929     		cmp	r1, #9
+ 208 009e 26D8     		bhi	.L7
+ 272:Utilities/misc/stm32_tiny_sscanf.c ****       goto again;
+ 209              		.loc 1 272 7 is_stmt 1 view .LVU46
+ 272:Utilities/misc/stm32_tiny_sscanf.c ****       goto again;
+ 210              		.loc 1 272 21 is_stmt 0 view .LVU47
+ 211 00a0 07EB8707 		add	r7, r7, r7, lsl #2
+ 212              	.LVL13:
+ 272:Utilities/misc/stm32_tiny_sscanf.c ****       goto again;
+ 213              		.loc 1 272 26 view .LVU48
+ 214 00a4 03EB4703 		add	r3, r3, r7, lsl #1
+ 272:Utilities/misc/stm32_tiny_sscanf.c ****       goto again;
+ 215              		.loc 1 272 13 view .LVU49
+ 216 00a8 A3F13007 		sub	r7, r3, #48
+ 217              	.LVL14:
+ 273:Utilities/misc/stm32_tiny_sscanf.c **** 
+ 218              		.loc 1 273 7 is_stmt 1 view .LVU50
+ 211:Utilities/misc/stm32_tiny_sscanf.c ****     switch (c) {
+ 219              		.loc 1 211 19 is_stmt 0 view .LVU51
+ 220 00ac 2146     		mov	r1, r4
+ 221              	.L6:
+ 273:Utilities/misc/stm32_tiny_sscanf.c **** 
+ 222              		.loc 1 273 7 view .LVU52
+ 223 00ae C7E7     		b	.L5
+ 224              	.L49:
+ 212:Utilities/misc/stm32_tiny_sscanf.c ****     case '%':
+ 225              		.loc 1 212 5 view .LVU53
+ 226 00b0 EBB9     		cbnz	r3, .L7
+ 227 00b2 4FF0FF30 		mov	r0, #-1
+ 228              	.LVL15:
+ 212:Utilities/misc/stm32_tiny_sscanf.c ****     case '%':
+ 229              		.loc 1 212 5 view .LVU54
+ 230 00b6 BDE7     		b	.L1
+ 231              	.LVL16:
+ 232              	.L38:
+ 212:Utilities/misc/stm32_tiny_sscanf.c ****     case '%':
+ 233              		.loc 1 212 5 view .LVU55
+ 234 00b8 2146     		mov	r1, r4
+ 235 00ba B4E7     		b	.L4
+ 236              	.LVL17:
+ 237              	.L47:
+ 219:Utilities/misc/stm32_tiny_sscanf.c ****       nread++;
+ 238              		.loc 1 219 7 is_stmt 1 view .LVU56
+ 219:Utilities/misc/stm32_tiny_sscanf.c ****       nread++;
+ 239              		.loc 1 219 11 is_stmt 0 view .LVU57
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccRU2Xxh.s 			page 21
+
+
+ 240 00bc 0CF1FF3C 		add	ip, ip, #-1
+ 241              	.LVL18:
+ 219:Utilities/misc/stm32_tiny_sscanf.c ****       nread++;
+ 242              		.loc 1 219 19 view .LVU58
+ 243 00c0 0135     		adds	r5, r5, #1
+ 244              	.LVL19:
+ 220:Utilities/misc/stm32_tiny_sscanf.c ****       continue;
+ 245              		.loc 1 220 7 is_stmt 1 view .LVU59
+ 221:Utilities/misc/stm32_tiny_sscanf.c **** 
+ 246              		.loc 1 221 7 view .LVU60
+ 247 00c2 0C46     		mov	r4, r1
+ 248 00c4 A9E7     		b	.L2
+ 249              	.LVL20:
+ 250              	.L15:
+ 236:Utilities/misc/stm32_tiny_sscanf.c ****         fmt++;
+ 251              		.loc 1 236 7 view .LVU61
+ 236:Utilities/misc/stm32_tiny_sscanf.c ****         fmt++;
+ 252              		.loc 1 236 11 is_stmt 0 view .LVU62
+ 253 00c6 2378     		ldrb	r3, [r4]	@ zero_extendqisi2
+ 236:Utilities/misc/stm32_tiny_sscanf.c ****         fmt++;
+ 254              		.loc 1 236 10 view .LVU63
+ 255 00c8 682B     		cmp	r3, #104
+ 256 00ca 03D0     		beq	.L50
+ 240:Utilities/misc/stm32_tiny_sscanf.c ****       }
+ 257              		.loc 1 240 9 is_stmt 1 view .LVU64
+ 240:Utilities/misc/stm32_tiny_sscanf.c ****       }
+ 258              		.loc 1 240 15 is_stmt 0 view .LVU65
+ 259 00cc 46F00406 		orr	r6, r6, #4
+ 260              	.LVL21:
+ 211:Utilities/misc/stm32_tiny_sscanf.c ****     switch (c) {
+ 261              		.loc 1 211 19 view .LVU66
+ 262 00d0 2146     		mov	r1, r4
+ 263              	.LVL22:
+ 242:Utilities/misc/stm32_tiny_sscanf.c ****     case 'l':
+ 264              		.loc 1 242 7 is_stmt 1 view .LVU67
+ 265 00d2 B5E7     		b	.L5
+ 266              	.LVL23:
+ 267              	.L50:
+ 237:Utilities/misc/stm32_tiny_sscanf.c ****         flags |= SHORTSHORT;
+ 268              		.loc 1 237 9 view .LVU68
+ 237:Utilities/misc/stm32_tiny_sscanf.c ****         flags |= SHORTSHORT;
+ 269              		.loc 1 237 12 is_stmt 0 view .LVU69
+ 270 00d4 0231     		adds	r1, r1, #2
+ 271              	.LVL24:
+ 238:Utilities/misc/stm32_tiny_sscanf.c ****       } else {
+ 272              		.loc 1 238 9 is_stmt 1 view .LVU70
+ 238:Utilities/misc/stm32_tiny_sscanf.c ****       } else {
+ 273              		.loc 1 238 15 is_stmt 0 view .LVU71
+ 274 00d6 46F00806 		orr	r6, r6, #8
+ 275              	.LVL25:
+ 238:Utilities/misc/stm32_tiny_sscanf.c ****       } else {
+ 276              		.loc 1 238 15 view .LVU72
+ 277 00da B1E7     		b	.L5
+ 278              	.LVL26:
+ 279              	.L14:
+ 246:Utilities/misc/stm32_tiny_sscanf.c ****       goto again;
+ 280              		.loc 1 246 7 is_stmt 1 view .LVU73
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccRU2Xxh.s 			page 22
+
+
+ 246:Utilities/misc/stm32_tiny_sscanf.c ****       goto again;
+ 281              		.loc 1 246 13 is_stmt 0 view .LVU74
+ 282 00dc 46F00106 		orr	r6, r6, #1
+ 283              	.LVL27:
+ 247:Utilities/misc/stm32_tiny_sscanf.c **** #else
+ 284              		.loc 1 247 7 is_stmt 1 view .LVU75
+ 211:Utilities/misc/stm32_tiny_sscanf.c ****     switch (c) {
+ 285              		.loc 1 211 19 is_stmt 0 view .LVU76
+ 286 00e0 2146     		mov	r1, r4
+ 247:Utilities/misc/stm32_tiny_sscanf.c **** #else
+ 287              		.loc 1 247 7 view .LVU77
+ 288 00e2 ADE7     		b	.L5
+ 289              	.L16:
+ 283:Utilities/misc/stm32_tiny_sscanf.c ****       /* FALLTHROUGH */
+ 290              		.loc 1 283 7 is_stmt 1 view .LVU78
+ 283:Utilities/misc/stm32_tiny_sscanf.c ****       /* FALLTHROUGH */
+ 291              		.loc 1 283 13 is_stmt 0 view .LVU79
+ 292 00e4 46F00106 		orr	r6, r6, #1
+ 293              	.LVL28:
+ 287:Utilities/misc/stm32_tiny_sscanf.c ****       break;
+ 294              		.loc 1 287 12 view .LVU80
+ 295 00e8 4FF00A0E 		mov	lr, #10
+ 296              	.LVL29:
+ 286:Utilities/misc/stm32_tiny_sscanf.c ****       base = 10;
+ 297              		.loc 1 286 9 view .LVU81
+ 298 00ec 0322     		movs	r2, #3
+ 299              	.LVL30:
+ 300              	.L7:
+ 407:Utilities/misc/stm32_tiny_sscanf.c ****       goto input_failure;
+ 301              		.loc 1 407 5 is_stmt 1 view .LVU82
+ 407:Utilities/misc/stm32_tiny_sscanf.c ****       goto input_failure;
+ 302              		.loc 1 407 8 is_stmt 0 view .LVU83
+ 303 00ee BCF1000F 		cmp	ip, #0
+ 304 00f2 40F31781 		ble	.L18
+ 436:Utilities/misc/stm32_tiny_sscanf.c **** #ifdef TINY_SSCANF
+ 305              		.loc 1 436 5 is_stmt 1 view .LVU84
+ 306 00f6 032A     		cmp	r2, #3
+ 307 00f8 8FD1     		bne	.L2
+ 559:Utilities/misc/stm32_tiny_sscanf.c ****         width = sizeof(buf) - 2;
+ 308              		.loc 1 559 7 view .LVU85
+ 559:Utilities/misc/stm32_tiny_sscanf.c ****         width = sizeof(buf) - 2;
+ 309              		.loc 1 559 10 is_stmt 0 view .LVU86
+ 310 00fa 013F     		subs	r7, r7, #1
+ 311              	.LVL31:
+ 559:Utilities/misc/stm32_tiny_sscanf.c ****         width = sizeof(buf) - 2;
+ 312              		.loc 1 559 10 view .LVU87
+ 313 00fc B7F5007F 		cmp	r7, #512
+ 314 0100 01D3     		bcc	.L22
+ 560:Utilities/misc/stm32_tiny_sscanf.c ****       width++;
+ 315              		.loc 1 560 15 view .LVU88
+ 316 0102 40F2FF17 		movw	r7, #511
+ 317              	.LVL32:
+ 318              	.L22:
+ 561:Utilities/misc/stm32_tiny_sscanf.c **** #endif
+ 319              		.loc 1 561 7 is_stmt 1 view .LVU89
+ 561:Utilities/misc/stm32_tiny_sscanf.c **** #endif
+ 320              		.loc 1 561 12 is_stmt 0 view .LVU90
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccRU2Xxh.s 			page 23
+
+
+ 321 0106 0137     		adds	r7, r7, #1
+ 322              	.LVL33:
+ 565:Utilities/misc/stm32_tiny_sscanf.c **** #else
+ 323              		.loc 1 565 7 is_stmt 1 view .LVU91
+ 565:Utilities/misc/stm32_tiny_sscanf.c **** #else
+ 324              		.loc 1 565 13 is_stmt 0 view .LVU92
+ 325 0108 46F4A048 		orr	r8, r6, #20480
+ 326              	.LVL34:
+ 570:Utilities/misc/stm32_tiny_sscanf.c ****       value = 0;
+ 327              		.loc 1 570 7 is_stmt 1 view .LVU93
+ 571:Utilities/misc/stm32_tiny_sscanf.c ****       for (p = buf; width; width--) {
+ 328              		.loc 1 571 7 view .LVU94
+ 572:Utilities/misc/stm32_tiny_sscanf.c ****         c = *fp_p;
+ 329              		.loc 1 572 7 view .LVU95
+ 570:Utilities/misc/stm32_tiny_sscanf.c ****       value = 0;
+ 330              		.loc 1 570 18 is_stmt 0 view .LVU96
+ 331 010c 4FF00009 		mov	r9, #0
+ 571:Utilities/misc/stm32_tiny_sscanf.c ****       for (p = buf; width; width--) {
+ 332              		.loc 1 571 13 view .LVU97
+ 333 0110 4B46     		mov	r3, r9
+ 334 0112 CA46     		mov	r10, r9
+ 572:Utilities/misc/stm32_tiny_sscanf.c ****         c = *fp_p;
+ 335              		.loc 1 572 14 view .LVU98
+ 336 0114 03AA     		add	r2, sp, #12
+ 337              	.LVL35:
+ 572:Utilities/misc/stm32_tiny_sscanf.c ****         c = *fp_p;
+ 338              		.loc 1 572 7 view .LVU99
+ 339 0116 55E0     		b	.L23
+ 340              	.LVL36:
+ 341              	.L13:
+ 315:Utilities/misc/stm32_tiny_sscanf.c ****       flags |= UNSIGNED;
+ 342              		.loc 1 315 7 is_stmt 1 view .LVU100
+ 316:Utilities/misc/stm32_tiny_sscanf.c ****       base = 10;
+ 343              		.loc 1 316 7 view .LVU101
+ 316:Utilities/misc/stm32_tiny_sscanf.c ****       base = 10;
+ 344              		.loc 1 316 13 is_stmt 0 view .LVU102
+ 345 0118 46F40066 		orr	r6, r6, #2048
+ 346              	.LVL37:
+ 317:Utilities/misc/stm32_tiny_sscanf.c ****       break;
+ 347              		.loc 1 317 7 is_stmt 1 view .LVU103
+ 318:Utilities/misc/stm32_tiny_sscanf.c **** 
+ 348              		.loc 1 318 7 view .LVU104
+ 317:Utilities/misc/stm32_tiny_sscanf.c ****       break;
+ 349              		.loc 1 317 12 is_stmt 0 view .LVU105
+ 350 011c 4FF00A0E 		mov	lr, #10
+ 315:Utilities/misc/stm32_tiny_sscanf.c ****       flags |= UNSIGNED;
+ 351              		.loc 1 315 9 view .LVU106
+ 352 0120 0322     		movs	r2, #3
+ 318:Utilities/misc/stm32_tiny_sscanf.c **** 
+ 353              		.loc 1 318 7 view .LVU107
+ 354 0122 E4E7     		b	.L7
+ 355              	.LVL38:
+ 356              	.L11:
+ 326:Utilities/misc/stm32_tiny_sscanf.c ****       flags |= UNSIGNED;
+ 357              		.loc 1 326 7 is_stmt 1 view .LVU108
+ 327:Utilities/misc/stm32_tiny_sscanf.c ****       base = 16;
+ 358              		.loc 1 327 7 view .LVU109
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccRU2Xxh.s 			page 24
+
+
+ 327:Utilities/misc/stm32_tiny_sscanf.c ****       base = 16;
+ 359              		.loc 1 327 13 is_stmt 0 view .LVU110
+ 360 0124 46F40066 		orr	r6, r6, #2048
+ 361              	.LVL39:
+ 328:Utilities/misc/stm32_tiny_sscanf.c ****       break;
+ 362              		.loc 1 328 7 is_stmt 1 view .LVU111
+ 329:Utilities/misc/stm32_tiny_sscanf.c **** 
+ 363              		.loc 1 329 7 view .LVU112
+ 328:Utilities/misc/stm32_tiny_sscanf.c ****       break;
+ 364              		.loc 1 328 12 is_stmt 0 view .LVU113
+ 365 0128 4FF0100E 		mov	lr, #16
+ 326:Utilities/misc/stm32_tiny_sscanf.c ****       flags |= UNSIGNED;
+ 366              		.loc 1 326 9 view .LVU114
+ 367 012c 0322     		movs	r2, #3
+ 329:Utilities/misc/stm32_tiny_sscanf.c **** 
+ 368              		.loc 1 329 7 view .LVU115
+ 369 012e DEE7     		b	.L7
+ 370              	.LVL40:
+ 371              	.L40:
+ 287:Utilities/misc/stm32_tiny_sscanf.c ****       break;
+ 372              		.loc 1 287 12 view .LVU116
+ 373 0130 4FF00A0E 		mov	lr, #10
+ 374              	.LVL41:
+ 286:Utilities/misc/stm32_tiny_sscanf.c ****       base = 10;
+ 375              		.loc 1 286 9 view .LVU117
+ 376 0134 0322     		movs	r2, #3
+ 377              	.LVL42:
+ 286:Utilities/misc/stm32_tiny_sscanf.c ****       base = 10;
+ 378              		.loc 1 286 9 view .LVU118
+ 379 0136 DAE7     		b	.L7
+ 380              	.LVL43:
+ 381              	.L28:
+ 620:Utilities/misc/stm32_tiny_sscanf.c **** #else
+ 382              		.loc 1 620 11 is_stmt 1 view .LVU119
+ 620:Utilities/misc/stm32_tiny_sscanf.c **** #else
+ 383              		.loc 1 620 17 is_stmt 0 view .LVU120
+ 384 0138 28F4A048 		bic	r8, r8, #20480
+ 385              	.LVL44:
+ 624:Utilities/misc/stm32_tiny_sscanf.c ****           goto ok;
+ 386              		.loc 1 624 11 is_stmt 1 view .LVU121
+ 624:Utilities/misc/stm32_tiny_sscanf.c ****           goto ok;
+ 387              		.loc 1 624 25 is_stmt 0 view .LVU122
+ 388 013c AEFB0331 		umull	r3, r1, lr, r3
+ 624:Utilities/misc/stm32_tiny_sscanf.c ****           goto ok;
+ 389              		.loc 1 624 25 view .LVU123
+ 390 0140 0EFB0A1A 		mla	r10, lr, r10, r1
+ 624:Utilities/misc/stm32_tiny_sscanf.c ****           goto ok;
+ 391              		.loc 1 624 32 view .LVU124
+ 392 0144 F318     		adds	r3, r6, r3
+ 393 0146 4AF1000A 		adc	r10, r10, #0
+ 624:Utilities/misc/stm32_tiny_sscanf.c ****           goto ok;
+ 394              		.loc 1 624 17 view .LVU125
+ 395 014a 303B     		subs	r3, r3, #48
+ 396 014c 4AF1FF3A 		adc	r10, r10, #-1
+ 397              	.LVL45:
+ 625:Utilities/misc/stm32_tiny_sscanf.c **** #else
+ 398              		.loc 1 625 11 is_stmt 1 view .LVU126
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccRU2Xxh.s 			page 25
+
+
+ 399 0150 2EE0     		b	.L31
+ 400              	.LVL46:
+ 401              	.L27:
+ 649:Utilities/misc/stm32_tiny_sscanf.c ****             break;  /* not legal here */
+ 402              		.loc 1 649 11 view .LVU127
+ 649:Utilities/misc/stm32_tiny_sscanf.c ****             break;  /* not legal here */
+ 403              		.loc 1 649 14 is_stmt 0 view .LVU128
+ 404 0152 BEF10A0F 		cmp	lr, #10
+ 405 0156 40F3B980 		ble	.L24
+ 652:Utilities/misc/stm32_tiny_sscanf.c **** #else
+ 406              		.loc 1 652 11 is_stmt 1 view .LVU129
+ 652:Utilities/misc/stm32_tiny_sscanf.c **** #else
+ 407              		.loc 1 652 17 is_stmt 0 view .LVU130
+ 408 015a 28F4A048 		bic	r8, r8, #20480
+ 409              	.LVL47:
+ 656:Utilities/misc/stm32_tiny_sscanf.c ****           goto ok;          
+ 410              		.loc 1 656 11 is_stmt 1 view .LVU131
+ 656:Utilities/misc/stm32_tiny_sscanf.c ****           goto ok;          
+ 411              		.loc 1 656 25 is_stmt 0 view .LVU132
+ 412 015e AEFB0331 		umull	r3, r1, lr, r3
+ 656:Utilities/misc/stm32_tiny_sscanf.c ****           goto ok;          
+ 413              		.loc 1 656 25 view .LVU133
+ 414 0162 0EFB0A1A 		mla	r10, lr, r10, r1
+ 656:Utilities/misc/stm32_tiny_sscanf.c ****           goto ok;          
+ 415              		.loc 1 656 32 view .LVU134
+ 416 0166 F318     		adds	r3, r6, r3
+ 417 0168 4AF1000A 		adc	r10, r10, #0
+ 656:Utilities/misc/stm32_tiny_sscanf.c ****           goto ok;          
+ 418              		.loc 1 656 17 view .LVU135
+ 419 016c 373B     		subs	r3, r3, #55
+ 420 016e 4AF1FF3A 		adc	r10, r10, #-1
+ 421              	.LVL48:
+ 657:Utilities/misc/stm32_tiny_sscanf.c ****         
+ 422              		.loc 1 657 11 is_stmt 1 view .LVU136
+ 423 0172 1DE0     		b	.L31
+ 424              	.LVL49:
+ 425              	.L25:
+ 662:Utilities/misc/stm32_tiny_sscanf.c ****             break;  /* not legal here */
+ 426              		.loc 1 662 11 view .LVU137
+ 662:Utilities/misc/stm32_tiny_sscanf.c ****             break;  /* not legal here */
+ 427              		.loc 1 662 14 is_stmt 0 view .LVU138
+ 428 0174 BEF10A0F 		cmp	lr, #10
+ 429 0178 40F3A880 		ble	.L24
+ 665:Utilities/misc/stm32_tiny_sscanf.c **** #else
+ 430              		.loc 1 665 11 is_stmt 1 view .LVU139
+ 665:Utilities/misc/stm32_tiny_sscanf.c **** #else
+ 431              		.loc 1 665 17 is_stmt 0 view .LVU140
+ 432 017c 28F4A048 		bic	r8, r8, #20480
+ 433              	.LVL50:
+ 669:Utilities/misc/stm32_tiny_sscanf.c ****           goto ok;
+ 434              		.loc 1 669 11 is_stmt 1 view .LVU141
+ 669:Utilities/misc/stm32_tiny_sscanf.c ****           goto ok;
+ 435              		.loc 1 669 25 is_stmt 0 view .LVU142
+ 436 0180 AEFB0331 		umull	r3, r1, lr, r3
+ 669:Utilities/misc/stm32_tiny_sscanf.c ****           goto ok;
+ 437              		.loc 1 669 25 view .LVU143
+ 438 0184 0EFB0A1A 		mla	r10, lr, r10, r1
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccRU2Xxh.s 			page 26
+
+
+ 669:Utilities/misc/stm32_tiny_sscanf.c ****           goto ok;
+ 439              		.loc 1 669 32 view .LVU144
+ 440 0188 F318     		adds	r3, r6, r3
+ 441 018a 4AF1000A 		adc	r10, r10, #0
+ 669:Utilities/misc/stm32_tiny_sscanf.c ****           goto ok;
+ 442              		.loc 1 669 17 view .LVU145
+ 443 018e 573B     		subs	r3, r3, #87
+ 444 0190 4AF1FF3A 		adc	r10, r10, #-1
+ 445              	.LVL51:
+ 670:Utilities/misc/stm32_tiny_sscanf.c **** 
+ 446              		.loc 1 670 11 is_stmt 1 view .LVU146
+ 447 0194 0CE0     		b	.L31
+ 448              	.LVL52:
+ 449              	.L29:
+ 674:Utilities/misc/stm32_tiny_sscanf.c ****             sign_minus = 1;
+ 450              		.loc 1 674 11 view .LVU147
+ 674:Utilities/misc/stm32_tiny_sscanf.c ****             sign_minus = 1;
+ 451              		.loc 1 674 14 is_stmt 0 view .LVU148
+ 452 0196 18F4005F 		tst	r8, #8192
+ 453 019a 01D1     		bne	.L30
+ 675:Utilities/misc/stm32_tiny_sscanf.c ****           }
+ 454              		.loc 1 675 24 view .LVU149
+ 455 019c 4FF00109 		mov	r9, #1
+ 456              	.LVL53:
+ 457              	.L30:
+ 679:Utilities/misc/stm32_tiny_sscanf.c ****             flags &= ~SIGNOK;
+ 458              		.loc 1 679 11 is_stmt 1 view .LVU150
+ 679:Utilities/misc/stm32_tiny_sscanf.c ****             flags &= ~SIGNOK;
+ 459              		.loc 1 679 14 is_stmt 0 view .LVU151
+ 460 01a0 18F4805F 		tst	r8, #4096
+ 461 01a4 00F09280 		beq	.L24
+ 680:Utilities/misc/stm32_tiny_sscanf.c ****             flags |= HAVESIGN;
+ 462              		.loc 1 680 13 is_stmt 1 view .LVU152
+ 680:Utilities/misc/stm32_tiny_sscanf.c ****             flags |= HAVESIGN;
+ 463              		.loc 1 680 19 is_stmt 0 view .LVU153
+ 464 01a8 28F48058 		bic	r8, r8, #4096
+ 465              	.LVL54:
+ 681:Utilities/misc/stm32_tiny_sscanf.c ****             goto ok;
+ 466              		.loc 1 681 13 is_stmt 1 view .LVU154
+ 681:Utilities/misc/stm32_tiny_sscanf.c ****             goto ok;
+ 467              		.loc 1 681 19 is_stmt 0 view .LVU155
+ 468 01ac 48F40058 		orr	r8, r8, #8192
+ 469              	.LVL55:
+ 682:Utilities/misc/stm32_tiny_sscanf.c ****           }
+ 470              		.loc 1 682 13 is_stmt 1 view .LVU156
+ 471              	.L31:
+ 712:Utilities/misc/stm32_tiny_sscanf.c ****         if (--fp_r > 0)
+ 472              		.loc 1 712 9 view .LVU157
+ 712:Utilities/misc/stm32_tiny_sscanf.c ****         if (--fp_r > 0)
+ 473              		.loc 1 712 14 is_stmt 0 view .LVU158
+ 474 01b0 02F8016B 		strb	r6, [r2], #1
+ 475              	.LVL56:
+ 713:Utilities/misc/stm32_tiny_sscanf.c ****           fp_p++;
+ 476              		.loc 1 713 9 is_stmt 1 view .LVU159
+ 713:Utilities/misc/stm32_tiny_sscanf.c ****           fp_p++;
+ 477              		.loc 1 713 12 is_stmt 0 view .LVU160
+ 478 01b4 0CF1FF3C 		add	ip, ip, #-1
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccRU2Xxh.s 			page 27
+
+
+ 479              	.LVL57:
+ 713:Utilities/misc/stm32_tiny_sscanf.c ****           fp_p++;
+ 480              		.loc 1 713 12 view .LVU161
+ 481 01b8 BCF1000F 		cmp	ip, #0
+ 482 01bc 40F38680 		ble	.L24
+ 714:Utilities/misc/stm32_tiny_sscanf.c ****         else if (__srefill(fp))
+ 483              		.loc 1 714 11 is_stmt 1 view .LVU162
+ 714:Utilities/misc/stm32_tiny_sscanf.c ****         else if (__srefill(fp))
+ 484              		.loc 1 714 15 is_stmt 0 view .LVU163
+ 485 01c0 0135     		adds	r5, r5, #1
+ 486              	.LVL58:
+ 572:Utilities/misc/stm32_tiny_sscanf.c ****         c = *fp_p;
+ 487              		.loc 1 572 28 is_stmt 1 view .LVU164
+ 572:Utilities/misc/stm32_tiny_sscanf.c ****         c = *fp_p;
+ 488              		.loc 1 572 33 is_stmt 0 view .LVU165
+ 489 01c2 013F     		subs	r7, r7, #1
+ 490              	.LVL59:
+ 491              	.L23:
+ 572:Utilities/misc/stm32_tiny_sscanf.c ****         c = *fp_p;
+ 492              		.loc 1 572 21 is_stmt 1 discriminator 1 view .LVU166
+ 572:Utilities/misc/stm32_tiny_sscanf.c ****         c = *fp_p;
+ 493              		.loc 1 572 7 is_stmt 0 discriminator 1 view .LVU167
+ 494 01c4 002F     		cmp	r7, #0
+ 495 01c6 00F08180 		beq	.L24
+ 573:Utilities/misc/stm32_tiny_sscanf.c ****         /*
+ 496              		.loc 1 573 9 is_stmt 1 view .LVU168
+ 573:Utilities/misc/stm32_tiny_sscanf.c ****         /*
+ 497              		.loc 1 573 13 is_stmt 0 view .LVU169
+ 498 01ca 2E78     		ldrb	r6, [r5]	@ zero_extendqisi2
+ 499              	.LVL60:
+ 578:Utilities/misc/stm32_tiny_sscanf.c **** 
+ 500              		.loc 1 578 9 is_stmt 1 view .LVU170
+ 501 01cc A6F12B01 		sub	r1, r6, #43
+ 502 01d0 3B29     		cmp	r1, #59
+ 503 01d2 7BD8     		bhi	.L24
+ 504 01d4 0FF2040B 		adr	fp, .L26
+ 505 01d8 5BF821F0 		ldr	pc, [fp, r1, lsl #2]
+ 506              		.p2align 2
+ 507              	.L26:
+ 508 01dc A1010000 		.word	.L30+1
+ 509 01e0 CD020000 		.word	.L24+1
+ 510 01e4 97010000 		.word	.L29+1
+ 511 01e8 CD020000 		.word	.L24+1
+ 512 01ec CD020000 		.word	.L24+1
+ 513 01f0 39010000 		.word	.L28+1
+ 514 01f4 39010000 		.word	.L28+1
+ 515 01f8 39010000 		.word	.L28+1
+ 516 01fc 39010000 		.word	.L28+1
+ 517 0200 39010000 		.word	.L28+1
+ 518 0204 39010000 		.word	.L28+1
+ 519 0208 39010000 		.word	.L28+1
+ 520 020c 39010000 		.word	.L28+1
+ 521 0210 39010000 		.word	.L28+1
+ 522 0214 39010000 		.word	.L28+1
+ 523 0218 CD020000 		.word	.L24+1
+ 524 021c CD020000 		.word	.L24+1
+ 525 0220 CD020000 		.word	.L24+1
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccRU2Xxh.s 			page 28
+
+
+ 526 0224 CD020000 		.word	.L24+1
+ 527 0228 CD020000 		.word	.L24+1
+ 528 022c CD020000 		.word	.L24+1
+ 529 0230 CD020000 		.word	.L24+1
+ 530 0234 53010000 		.word	.L27+1
+ 531 0238 53010000 		.word	.L27+1
+ 532 023c 53010000 		.word	.L27+1
+ 533 0240 53010000 		.word	.L27+1
+ 534 0244 53010000 		.word	.L27+1
+ 535 0248 53010000 		.word	.L27+1
+ 536 024c CD020000 		.word	.L24+1
+ 537 0250 CD020000 		.word	.L24+1
+ 538 0254 CD020000 		.word	.L24+1
+ 539 0258 CD020000 		.word	.L24+1
+ 540 025c CD020000 		.word	.L24+1
+ 541 0260 CD020000 		.word	.L24+1
+ 542 0264 CD020000 		.word	.L24+1
+ 543 0268 CD020000 		.word	.L24+1
+ 544 026c CD020000 		.word	.L24+1
+ 545 0270 CD020000 		.word	.L24+1
+ 546 0274 CD020000 		.word	.L24+1
+ 547 0278 CD020000 		.word	.L24+1
+ 548 027c CD020000 		.word	.L24+1
+ 549 0280 CD020000 		.word	.L24+1
+ 550 0284 CD020000 		.word	.L24+1
+ 551 0288 CD020000 		.word	.L24+1
+ 552 028c CD020000 		.word	.L24+1
+ 553 0290 CD020000 		.word	.L24+1
+ 554 0294 CD020000 		.word	.L24+1
+ 555 0298 CD020000 		.word	.L24+1
+ 556 029c CD020000 		.word	.L24+1
+ 557 02a0 CD020000 		.word	.L24+1
+ 558 02a4 CD020000 		.word	.L24+1
+ 559 02a8 CD020000 		.word	.L24+1
+ 560 02ac CD020000 		.word	.L24+1
+ 561 02b0 CD020000 		.word	.L24+1
+ 562 02b4 75010000 		.word	.L25+1
+ 563 02b8 75010000 		.word	.L25+1
+ 564 02bc 75010000 		.word	.L25+1
+ 565 02c0 75010000 		.word	.L25+1
+ 566 02c4 75010000 		.word	.L25+1
+ 567 02c8 75010000 		.word	.L25+1
+ 568              	.LVL61:
+ 569              		.p2align 1
+ 570              	.L24:
+ 724:Utilities/misc/stm32_tiny_sscanf.c ****         if (p > buf)
+ 571              		.loc 1 724 7 view .LVU171
+ 724:Utilities/misc/stm32_tiny_sscanf.c ****         if (p > buf)
+ 572              		.loc 1 724 10 is_stmt 0 view .LVU172
+ 573 02cc 18F4804F 		tst	r8, #16384
+ 574 02d0 7FF4B0AE 		bne	.L1
+ 750:Utilities/misc/stm32_tiny_sscanf.c ****         if (sign_minus)
+ 575              		.loc 1 750 9 is_stmt 1 view .LVU173
+ 750:Utilities/misc/stm32_tiny_sscanf.c ****         if (sign_minus)
+ 576              		.loc 1 750 12 is_stmt 0 view .LVU174
+ 577 02d4 0021     		movs	r1, #0
+ 578 02d6 1170     		strb	r1, [r2]
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccRU2Xxh.s 			page 29
+
+
+ 751:Utilities/misc/stm32_tiny_sscanf.c ****           value = -value;
+ 579              		.loc 1 751 9 is_stmt 1 view .LVU175
+ 751:Utilities/misc/stm32_tiny_sscanf.c ****           value = -value;
+ 580              		.loc 1 751 12 is_stmt 0 view .LVU176
+ 581 02d8 B9F1000F 		cmp	r9, #0
+ 582 02dc 00D0     		beq	.L33
+ 752:Utilities/misc/stm32_tiny_sscanf.c **** 
+ 583              		.loc 1 752 11 is_stmt 1 view .LVU177
+ 752:Utilities/misc/stm32_tiny_sscanf.c **** 
+ 584              		.loc 1 752 17 is_stmt 0 view .LVU178
+ 585 02de 5B42     		negs	r3, r3
+ 586              	.L33:
+ 769:Utilities/misc/stm32_tiny_sscanf.c ****           *va_arg(ap, long *) = value;
+ 587              		.loc 1 769 9 is_stmt 1 view .LVU179
+ 769:Utilities/misc/stm32_tiny_sscanf.c ****           *va_arg(ap, long *) = value;
+ 588              		.loc 1 769 12 is_stmt 0 view .LVU180
+ 589 02e0 18F0010F 		tst	r8, #1
+ 590 02e4 06D0     		beq	.L34
+ 770:Utilities/misc/stm32_tiny_sscanf.c ****         else if (flags & SHORT)
+ 591              		.loc 1 770 11 is_stmt 1 view .LVU181
+ 770:Utilities/misc/stm32_tiny_sscanf.c ****         else if (flags & SHORT)
+ 592              		.loc 1 770 12 is_stmt 0 view .LVU182
+ 593 02e6 019A     		ldr	r2, [sp, #4]
+ 594 02e8 111D     		adds	r1, r2, #4
+ 595 02ea 0191     		str	r1, [sp, #4]
+ 596 02ec 1268     		ldr	r2, [r2]
+ 770:Utilities/misc/stm32_tiny_sscanf.c ****         else if (flags & SHORT)
+ 597              		.loc 1 770 31 view .LVU183
+ 598 02ee 1360     		str	r3, [r2]
+ 599              	.L35:
+ 777:Utilities/misc/stm32_tiny_sscanf.c ****       }
+ 600              		.loc 1 777 9 is_stmt 1 view .LVU184
+ 777:Utilities/misc/stm32_tiny_sscanf.c ****       }
+ 601              		.loc 1 777 18 is_stmt 0 view .LVU185
+ 602 02f0 0130     		adds	r0, r0, #1
+ 603              	.LVL62:
+ 779:Utilities/misc/stm32_tiny_sscanf.c ****       break;
+ 604              		.loc 1 779 7 is_stmt 1 view .LVU186
+ 780:Utilities/misc/stm32_tiny_sscanf.c **** 
+ 605              		.loc 1 780 7 view .LVU187
+ 606 02f2 92E6     		b	.L2
+ 607              	.L34:
+ 771:Utilities/misc/stm32_tiny_sscanf.c ****           *va_arg(ap, short *) = value;
+ 608              		.loc 1 771 14 view .LVU188
+ 771:Utilities/misc/stm32_tiny_sscanf.c ****           *va_arg(ap, short *) = value;
+ 609              		.loc 1 771 17 is_stmt 0 view .LVU189
+ 610 02f4 18F0040F 		tst	r8, #4
+ 611 02f8 05D0     		beq	.L36
+ 772:Utilities/misc/stm32_tiny_sscanf.c ****         else if (flags & SHORTSHORT)
+ 612              		.loc 1 772 11 is_stmt 1 view .LVU190
+ 772:Utilities/misc/stm32_tiny_sscanf.c ****         else if (flags & SHORTSHORT)
+ 613              		.loc 1 772 12 is_stmt 0 view .LVU191
+ 614 02fa 019A     		ldr	r2, [sp, #4]
+ 615 02fc 111D     		adds	r1, r2, #4
+ 616 02fe 0191     		str	r1, [sp, #4]
+ 617 0300 1268     		ldr	r2, [r2]
+ 772:Utilities/misc/stm32_tiny_sscanf.c ****         else if (flags & SHORTSHORT)
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccRU2Xxh.s 			page 30
+
+
+ 618              		.loc 1 772 32 view .LVU192
+ 619 0302 1380     		strh	r3, [r2]	@ movhi
+ 620 0304 F4E7     		b	.L35
+ 621              	.L36:
+ 773:Utilities/misc/stm32_tiny_sscanf.c ****           *va_arg(ap, char *) = value;
+ 622              		.loc 1 773 14 is_stmt 1 view .LVU193
+ 773:Utilities/misc/stm32_tiny_sscanf.c ****           *va_arg(ap, char *) = value;
+ 623              		.loc 1 773 17 is_stmt 0 view .LVU194
+ 624 0306 18F0080F 		tst	r8, #8
+ 625 030a 05D0     		beq	.L37
+ 774:Utilities/misc/stm32_tiny_sscanf.c ****         else
+ 626              		.loc 1 774 11 is_stmt 1 view .LVU195
+ 774:Utilities/misc/stm32_tiny_sscanf.c ****         else
+ 627              		.loc 1 774 12 is_stmt 0 view .LVU196
+ 628 030c 019A     		ldr	r2, [sp, #4]
+ 629 030e 111D     		adds	r1, r2, #4
+ 630 0310 0191     		str	r1, [sp, #4]
+ 631 0312 1268     		ldr	r2, [r2]
+ 774:Utilities/misc/stm32_tiny_sscanf.c ****         else
+ 632              		.loc 1 774 31 view .LVU197
+ 633 0314 1370     		strb	r3, [r2]
+ 634 0316 EBE7     		b	.L35
+ 635              	.L37:
+ 776:Utilities/misc/stm32_tiny_sscanf.c ****         nassigned++;
+ 636              		.loc 1 776 11 is_stmt 1 view .LVU198
+ 776:Utilities/misc/stm32_tiny_sscanf.c ****         nassigned++;
+ 637              		.loc 1 776 12 is_stmt 0 view .LVU199
+ 638 0318 019A     		ldr	r2, [sp, #4]
+ 639 031a 111D     		adds	r1, r2, #4
+ 640 031c 0191     		str	r1, [sp, #4]
+ 641 031e 1268     		ldr	r2, [r2]
+ 776:Utilities/misc/stm32_tiny_sscanf.c ****         nassigned++;
+ 642              		.loc 1 776 30 view .LVU200
+ 643 0320 1360     		str	r3, [r2]
+ 644 0322 E5E7     		b	.L35
+ 645              	.LVL63:
+ 646              	.L18:
+ 878:Utilities/misc/stm32_tiny_sscanf.c **** match_failure:
+ 647              		.loc 1 878 3 is_stmt 1 view .LVU201
+ 878:Utilities/misc/stm32_tiny_sscanf.c **** match_failure:
+ 648              		.loc 1 878 33 is_stmt 0 view .LVU202
+ 649 0324 0028     		cmp	r0, #0
+ 650 0326 7FF485AE 		bne	.L1
+ 651 032a 4FF0FF30 		mov	r0, #-1
+ 652              	.LVL64:
+ 878:Utilities/misc/stm32_tiny_sscanf.c **** match_failure:
+ 653              		.loc 1 878 33 view .LVU203
+ 654 032e 81E6     		b	.L1
+ 655              		.cfi_endproc
+ 656              	.LFE3:
+ 658              		.section	.text.tiny_sscanf,"ax",%progbits
+ 659              		.align	1
+ 660              		.global	tiny_sscanf
+ 661              		.syntax unified
+ 662              		.thumb
+ 663              		.thumb_func
+ 665              	tiny_sscanf:
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccRU2Xxh.s 			page 31
+
+
+ 666              	.LVL65:
+ 667              	.LFB4:
+ 882:Utilities/misc/stm32_tiny_sscanf.c **** 
+ 883:Utilities/misc/stm32_tiny_sscanf.c **** #ifdef TINY_SSCANF
+ 884:Utilities/misc/stm32_tiny_sscanf.c **** #else
+ 885:Utilities/misc/stm32_tiny_sscanf.c **** /*
+ 886:Utilities/misc/stm32_tiny_sscanf.c ****  * Fill in the given table from the scanset at the given format
+ 887:Utilities/misc/stm32_tiny_sscanf.c ****  * (just after `[').  Return a pointer to the character past the
+ 888:Utilities/misc/stm32_tiny_sscanf.c ****  * closing `]'.  The table has a 1 wherever characters should be
+ 889:Utilities/misc/stm32_tiny_sscanf.c ****  * considered part of the scanset.
+ 890:Utilities/misc/stm32_tiny_sscanf.c ****  */
+ 891:Utilities/misc/stm32_tiny_sscanf.c **** static u_char *
+ 892:Utilities/misc/stm32_tiny_sscanf.c **** __sccl(char *tab, u_char *fmt)
+ 893:Utilities/misc/stm32_tiny_sscanf.c **** {
+ 894:Utilities/misc/stm32_tiny_sscanf.c ****   int c, n, v;
+ 895:Utilities/misc/stm32_tiny_sscanf.c **** 
+ 896:Utilities/misc/stm32_tiny_sscanf.c ****   /* first `clear' the whole table */
+ 897:Utilities/misc/stm32_tiny_sscanf.c ****   c = *fmt++;    /* first char hat => negated scanset */
+ 898:Utilities/misc/stm32_tiny_sscanf.c ****   if (c == '^') {
+ 899:Utilities/misc/stm32_tiny_sscanf.c ****     v = 1;    /* default => accept */
+ 900:Utilities/misc/stm32_tiny_sscanf.c ****     c = *fmt++;  /* get new first char */
+ 901:Utilities/misc/stm32_tiny_sscanf.c ****   } else
+ 902:Utilities/misc/stm32_tiny_sscanf.c ****     v = 0;    /* default => reject */
+ 903:Utilities/misc/stm32_tiny_sscanf.c ****   /* should probably use memset here */
+ 904:Utilities/misc/stm32_tiny_sscanf.c ****   for (n = 0; n < 256; n++)
+ 905:Utilities/misc/stm32_tiny_sscanf.c ****     tab[n] = v;
+ 906:Utilities/misc/stm32_tiny_sscanf.c ****   if (c == 0)
+ 907:Utilities/misc/stm32_tiny_sscanf.c ****     return (fmt - 1);/* format ended before closing ] */
+ 908:Utilities/misc/stm32_tiny_sscanf.c **** 
+ 909:Utilities/misc/stm32_tiny_sscanf.c ****   /*
+ 910:Utilities/misc/stm32_tiny_sscanf.c ****    * Now set the entries corresponding to the actual scanset
+ 911:Utilities/misc/stm32_tiny_sscanf.c ****    * to the opposite of the above.
+ 912:Utilities/misc/stm32_tiny_sscanf.c ****    *
+ 913:Utilities/misc/stm32_tiny_sscanf.c ****    * The first character may be ']' (or '-') without being special;
+ 914:Utilities/misc/stm32_tiny_sscanf.c ****    * the last character may be '-'.
+ 915:Utilities/misc/stm32_tiny_sscanf.c ****    */
+ 916:Utilities/misc/stm32_tiny_sscanf.c ****   v = 1 - v;
+ 917:Utilities/misc/stm32_tiny_sscanf.c ****   for (;;) {
+ 918:Utilities/misc/stm32_tiny_sscanf.c ****     tab[c] = v;    /* take character c */
+ 919:Utilities/misc/stm32_tiny_sscanf.c **** doswitch:
+ 920:Utilities/misc/stm32_tiny_sscanf.c ****     n = *fmt++;    /* and examine the next */
+ 921:Utilities/misc/stm32_tiny_sscanf.c ****     switch (n) {
+ 922:Utilities/misc/stm32_tiny_sscanf.c **** 
+ 923:Utilities/misc/stm32_tiny_sscanf.c ****     case 0:      /* format ended too soon */
+ 924:Utilities/misc/stm32_tiny_sscanf.c ****       return (fmt - 1);
+ 925:Utilities/misc/stm32_tiny_sscanf.c **** 
+ 926:Utilities/misc/stm32_tiny_sscanf.c ****     case '-':
+ 927:Utilities/misc/stm32_tiny_sscanf.c ****       /*
+ 928:Utilities/misc/stm32_tiny_sscanf.c ****        * A scanset of the form
+ 929:Utilities/misc/stm32_tiny_sscanf.c ****        *  [01+-]
+ 930:Utilities/misc/stm32_tiny_sscanf.c ****        * is defined as `the digit 0, the digit 1,
+ 931:Utilities/misc/stm32_tiny_sscanf.c ****        * the character +, the character -', but
+ 932:Utilities/misc/stm32_tiny_sscanf.c ****        * the effect of a scanset such as
+ 933:Utilities/misc/stm32_tiny_sscanf.c ****        *  [a-zA-Z0-9]
+ 934:Utilities/misc/stm32_tiny_sscanf.c ****        * is implementation defined.  The V7 Unix
+ 935:Utilities/misc/stm32_tiny_sscanf.c ****        * scanf treats `a-z' as `the letters a through
+ 936:Utilities/misc/stm32_tiny_sscanf.c ****        * z', but treats `a-a' as `the letter a, the
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccRU2Xxh.s 			page 32
+
+
+ 937:Utilities/misc/stm32_tiny_sscanf.c ****        * character -, and the letter a'.
+ 938:Utilities/misc/stm32_tiny_sscanf.c ****        *
+ 939:Utilities/misc/stm32_tiny_sscanf.c ****        * For compatibility, the `-' is not considered
+ 940:Utilities/misc/stm32_tiny_sscanf.c ****        * to define a range if the character following
+ 941:Utilities/misc/stm32_tiny_sscanf.c ****        * it is either a close bracket (required by ANSI)
+ 942:Utilities/misc/stm32_tiny_sscanf.c ****        * or is not numerically greater than the character
+ 943:Utilities/misc/stm32_tiny_sscanf.c ****        * we just stored in the table (c).
+ 944:Utilities/misc/stm32_tiny_sscanf.c ****        */
+ 945:Utilities/misc/stm32_tiny_sscanf.c ****       n = *fmt;
+ 946:Utilities/misc/stm32_tiny_sscanf.c ****       if (n == ']' || n < c) {
+ 947:Utilities/misc/stm32_tiny_sscanf.c ****         c = '-';
+ 948:Utilities/misc/stm32_tiny_sscanf.c ****         break;  /* resume the for(;;) */
+ 949:Utilities/misc/stm32_tiny_sscanf.c ****       }
+ 950:Utilities/misc/stm32_tiny_sscanf.c ****       fmt++;
+ 951:Utilities/misc/stm32_tiny_sscanf.c ****       do {    /* fill in the range */
+ 952:Utilities/misc/stm32_tiny_sscanf.c ****         tab[++c] = v;
+ 953:Utilities/misc/stm32_tiny_sscanf.c ****       } while (c < n);
+ 954:Utilities/misc/stm32_tiny_sscanf.c **** #if 1  /* XXX another disgusting compatibility hack */
+ 955:Utilities/misc/stm32_tiny_sscanf.c ****       /*
+ 956:Utilities/misc/stm32_tiny_sscanf.c ****        * Alas, the V7 Unix scanf also treats formats
+ 957:Utilities/misc/stm32_tiny_sscanf.c ****        * such as [a-c-e] as `the letters a through e'.
+ 958:Utilities/misc/stm32_tiny_sscanf.c ****        * This too is permitted by the standard....
+ 959:Utilities/misc/stm32_tiny_sscanf.c ****        */
+ 960:Utilities/misc/stm32_tiny_sscanf.c ****       goto doswitch;
+ 961:Utilities/misc/stm32_tiny_sscanf.c **** #else
+ 962:Utilities/misc/stm32_tiny_sscanf.c ****       c = *fmt++;
+ 963:Utilities/misc/stm32_tiny_sscanf.c ****       if (c == 0)
+ 964:Utilities/misc/stm32_tiny_sscanf.c ****         return (fmt - 1);
+ 965:Utilities/misc/stm32_tiny_sscanf.c ****       if (c == ']')
+ 966:Utilities/misc/stm32_tiny_sscanf.c ****         return (fmt);
+ 967:Utilities/misc/stm32_tiny_sscanf.c **** #endif
+ 968:Utilities/misc/stm32_tiny_sscanf.c ****       break;
+ 969:Utilities/misc/stm32_tiny_sscanf.c **** 
+ 970:Utilities/misc/stm32_tiny_sscanf.c ****     case ']':    /* end of scanset */
+ 971:Utilities/misc/stm32_tiny_sscanf.c ****       return (fmt);
+ 972:Utilities/misc/stm32_tiny_sscanf.c **** 
+ 973:Utilities/misc/stm32_tiny_sscanf.c ****     default:    /* just another character */
+ 974:Utilities/misc/stm32_tiny_sscanf.c ****       c = n;
+ 975:Utilities/misc/stm32_tiny_sscanf.c ****       break;
+ 976:Utilities/misc/stm32_tiny_sscanf.c ****     }
+ 977:Utilities/misc/stm32_tiny_sscanf.c ****   }
+ 978:Utilities/misc/stm32_tiny_sscanf.c ****   /* NOTREACHED */
+ 979:Utilities/misc/stm32_tiny_sscanf.c **** }
+ 980:Utilities/misc/stm32_tiny_sscanf.c **** #endif
+ 981:Utilities/misc/stm32_tiny_sscanf.c **** 
+ 982:Utilities/misc/stm32_tiny_sscanf.c **** int
+ 983:Utilities/misc/stm32_tiny_sscanf.c **** tiny_sscanf(const char *str, const char *fmt, ...)
+ 984:Utilities/misc/stm32_tiny_sscanf.c **** {
+ 668              		.loc 1 984 1 is_stmt 1 view -0
+ 669              		.cfi_startproc
+ 670              		@ args = 4, pretend = 12, frame = 8
+ 671              		@ frame_needed = 0, uses_anonymous_args = 1
+ 672              		.loc 1 984 1 is_stmt 0 view .LVU205
+ 673 0000 0EB4     		push	{r1, r2, r3}
+ 674              	.LCFI4:
+ 675              		.cfi_def_cfa_offset 12
+ 676              		.cfi_offset 1, -12
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccRU2Xxh.s 			page 33
+
+
+ 677              		.cfi_offset 2, -8
+ 678              		.cfi_offset 3, -4
+ 679 0002 00B5     		push	{lr}
+ 680              	.LCFI5:
+ 681              		.cfi_def_cfa_offset 16
+ 682              		.cfi_offset 14, -16
+ 683 0004 82B0     		sub	sp, sp, #8
+ 684              	.LCFI6:
+ 685              		.cfi_def_cfa_offset 24
+ 686 0006 03AA     		add	r2, sp, #12
+ 687 0008 52F8041B 		ldr	r1, [r2], #4
+ 985:Utilities/misc/stm32_tiny_sscanf.c ****   int ret;
+ 688              		.loc 1 985 3 is_stmt 1 view .LVU206
+ 986:Utilities/misc/stm32_tiny_sscanf.c ****   va_list ap;
+ 689              		.loc 1 986 3 view .LVU207
+ 987:Utilities/misc/stm32_tiny_sscanf.c ****   
+ 988:Utilities/misc/stm32_tiny_sscanf.c ****   va_start(ap, fmt);
+ 690              		.loc 1 988 3 view .LVU208
+ 691 000c 0192     		str	r2, [sp, #4]
+ 989:Utilities/misc/stm32_tiny_sscanf.c ****   ret = tiny_vfscanf(str, fmt, ap);
+ 692              		.loc 1 989 3 view .LVU209
+ 693              		.loc 1 989 9 is_stmt 0 view .LVU210
+ 694 000e FFF7FEFF 		bl	tiny_vfscanf
+ 695              	.LVL66:
+ 990:Utilities/misc/stm32_tiny_sscanf.c ****   va_end(ap);
+ 696              		.loc 1 990 3 is_stmt 1 view .LVU211
+ 991:Utilities/misc/stm32_tiny_sscanf.c ****   return (ret);
+ 697              		.loc 1 991 3 view .LVU212
+ 992:Utilities/misc/stm32_tiny_sscanf.c **** }
+ 698              		.loc 1 992 1 is_stmt 0 view .LVU213
+ 699 0012 02B0     		add	sp, sp, #8
+ 700              	.LCFI7:
+ 701              		.cfi_def_cfa_offset 16
+ 702              		@ sp needed
+ 703 0014 5DF804EB 		ldr	lr, [sp], #4
+ 704              	.LCFI8:
+ 705              		.cfi_restore 14
+ 706              		.cfi_def_cfa_offset 12
+ 707 0018 03B0     		add	sp, sp, #12
+ 708              	.LCFI9:
+ 709              		.cfi_restore 3
+ 710              		.cfi_restore 2
+ 711              		.cfi_restore 1
+ 712              		.cfi_def_cfa_offset 0
+ 713 001a 7047     		bx	lr
+ 714              		.cfi_endproc
+ 715              	.LFE4:
+ 717              		.text
+ 718              	.Letext0:
+ 719              		.file 2 "c:\\program files (x86)\\gnu arm embedded toolchain\\10 2021.10\\arm-none-eabi\\include\\
+ 720              		.file 3 "c:\\program files (x86)\\gnu arm embedded toolchain\\10 2021.10\\lib\\gcc\\arm-none-eabi\
+ 721              		.file 4 "c:\\program files (x86)\\gnu arm embedded toolchain\\10 2021.10\\lib\\gcc\\arm-none-eabi\
+ 722              		.file 5 "c:\\program files (x86)\\gnu arm embedded toolchain\\10 2021.10\\arm-none-eabi\\include\\
+ 723              		.file 6 "c:\\program files (x86)\\gnu arm embedded toolchain\\10 2021.10\\arm-none-eabi\\include\\
+ 724              		.file 7 "<built-in>"
+ 725              		.file 8 "c:\\program files (x86)\\gnu arm embedded toolchain\\10 2021.10\\arm-none-eabi\\include\\
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccRU2Xxh.s 			page 34
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 stm32_tiny_sscanf.c
+C:\Users\NATHAN~1\AppData\Local\Temp\ccRU2Xxh.s:18     .text.tiny_vfscanf:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\ccRU2Xxh.s:23     .text.tiny_vfscanf:00000000 tiny_vfscanf
+C:\Users\NATHAN~1\AppData\Local\Temp\ccRU2Xxh.s:146    .text.tiny_vfscanf:0000005a $d
+C:\Users\NATHAN~1\AppData\Local\Temp\ccRU2Xxh.s:508    .text.tiny_vfscanf:000001dc $d
+C:\Users\NATHAN~1\AppData\Local\Temp\ccRU2Xxh.s:569    .text.tiny_vfscanf:000002cc $t
+C:\Users\NATHAN~1\AppData\Local\Temp\ccRU2Xxh.s:659    .text.tiny_sscanf:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\ccRU2Xxh.s:665    .text.tiny_sscanf:00000000 tiny_sscanf
+C:\Users\NATHAN~1\AppData\Local\Temp\ccRU2Xxh.s:199    .text.tiny_vfscanf:0000008f $d
+C:\Users\NATHAN~1\AppData\Local\Temp\ccRU2Xxh.s:199    .text.tiny_vfscanf:00000090 $t
+
+UNDEFINED SYMBOLS
+strlen

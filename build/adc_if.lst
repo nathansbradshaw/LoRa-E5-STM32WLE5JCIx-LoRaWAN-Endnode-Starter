@@ -1,0 +1,775 @@
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccomKay7.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"adc_if.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.section	.text.ADC_ReadChannels,"ax",%progbits
+  18              		.align	1
+  19              		.syntax unified
+  20              		.thumb
+  21              		.thumb_func
+  23              	ADC_ReadChannels:
+  24              	.LVL0:
+  25              	.LFB995:
+  26              		.file 1 "Core/Src/adc_if.c"
+   1:Core/Src/adc_if.c **** /* USER CODE BEGIN Header */
+   2:Core/Src/adc_if.c **** /**
+   3:Core/Src/adc_if.c ****   ******************************************************************************
+   4:Core/Src/adc_if.c ****   * @file    adc_if.c
+   5:Core/Src/adc_if.c ****   * @author  MCD Application Team
+   6:Core/Src/adc_if.c ****   * @brief   Read status related to the chip (battery level, VREF, chip temperature)
+   7:Core/Src/adc_if.c ****   ******************************************************************************
+   8:Core/Src/adc_if.c ****   * @attention
+   9:Core/Src/adc_if.c ****   *
+  10:Core/Src/adc_if.c ****   * Copyright (c) 2022 STMicroelectronics.
+  11:Core/Src/adc_if.c ****   * All rights reserved.
+  12:Core/Src/adc_if.c ****   *
+  13:Core/Src/adc_if.c ****   * This software is licensed under terms that can be found in the LICENSE file
+  14:Core/Src/adc_if.c ****   * in the root directory of this software component.
+  15:Core/Src/adc_if.c ****   * If no LICENSE file comes with this software, it is provided AS-IS.
+  16:Core/Src/adc_if.c ****   *
+  17:Core/Src/adc_if.c ****   ******************************************************************************
+  18:Core/Src/adc_if.c ****   */
+  19:Core/Src/adc_if.c **** /* USER CODE END Header */
+  20:Core/Src/adc_if.c **** 
+  21:Core/Src/adc_if.c **** /* Includes ------------------------------------------------------------------*/
+  22:Core/Src/adc_if.c **** #include "adc_if.h"
+  23:Core/Src/adc_if.c **** #include "sys_app.h"
+  24:Core/Src/adc_if.c **** 
+  25:Core/Src/adc_if.c **** /* USER CODE BEGIN Includes */
+  26:Core/Src/adc_if.c **** 
+  27:Core/Src/adc_if.c **** /* USER CODE END Includes */
+  28:Core/Src/adc_if.c **** 
+  29:Core/Src/adc_if.c **** /* External variables ---------------------------------------------------------*/
+  30:Core/Src/adc_if.c **** /**
+  31:Core/Src/adc_if.c ****   * @brief ADC handle
+  32:Core/Src/adc_if.c ****   */
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccomKay7.s 			page 2
+
+
+  33:Core/Src/adc_if.c **** extern ADC_HandleTypeDef hadc;
+  34:Core/Src/adc_if.c **** /* USER CODE BEGIN EV */
+  35:Core/Src/adc_if.c **** 
+  36:Core/Src/adc_if.c **** /* USER CODE END EV */
+  37:Core/Src/adc_if.c **** 
+  38:Core/Src/adc_if.c **** /* Private typedef -----------------------------------------------------------*/
+  39:Core/Src/adc_if.c **** /* USER CODE BEGIN PTD */
+  40:Core/Src/adc_if.c **** 
+  41:Core/Src/adc_if.c **** /* USER CODE END PTD */
+  42:Core/Src/adc_if.c **** 
+  43:Core/Src/adc_if.c **** /* Private define ------------------------------------------------------------*/
+  44:Core/Src/adc_if.c **** #define TEMPSENSOR_TYP_CAL1_V          (( int32_t)  760)        /*!< Internal temperature sensor, p
+  45:Core/Src/adc_if.c **** #define TEMPSENSOR_TYP_AVGSLOPE        (( int32_t) 2500)        /*!< Internal temperature sensor, p
+  46:Core/Src/adc_if.c **** 
+  47:Core/Src/adc_if.c **** /* USER CODE BEGIN PD */
+  48:Core/Src/adc_if.c **** 
+  49:Core/Src/adc_if.c **** /* USER CODE END PD */
+  50:Core/Src/adc_if.c **** 
+  51:Core/Src/adc_if.c **** /* Private macro -------------------------------------------------------------*/
+  52:Core/Src/adc_if.c **** /* USER CODE BEGIN PM */
+  53:Core/Src/adc_if.c **** 
+  54:Core/Src/adc_if.c **** /* USER CODE END PM */
+  55:Core/Src/adc_if.c **** 
+  56:Core/Src/adc_if.c **** /* Private variables ---------------------------------------------------------*/
+  57:Core/Src/adc_if.c **** 
+  58:Core/Src/adc_if.c **** /* USER CODE BEGIN PV */
+  59:Core/Src/adc_if.c **** 
+  60:Core/Src/adc_if.c **** /* USER CODE END PV */
+  61:Core/Src/adc_if.c **** 
+  62:Core/Src/adc_if.c **** /* Private function prototypes -----------------------------------------------*/
+  63:Core/Src/adc_if.c **** /**
+  64:Core/Src/adc_if.c ****   * @brief This function reads the ADC channel
+  65:Core/Src/adc_if.c ****   * @param channel channel number to read
+  66:Core/Src/adc_if.c ****   * @return adc measured level value
+  67:Core/Src/adc_if.c ****   */
+  68:Core/Src/adc_if.c **** static uint32_t ADC_ReadChannels(uint32_t channel);
+  69:Core/Src/adc_if.c **** 
+  70:Core/Src/adc_if.c **** /* USER CODE BEGIN PFP */
+  71:Core/Src/adc_if.c **** 
+  72:Core/Src/adc_if.c **** /* USER CODE END PFP */
+  73:Core/Src/adc_if.c **** 
+  74:Core/Src/adc_if.c **** /* Exported functions --------------------------------------------------------*/
+  75:Core/Src/adc_if.c **** /* USER CODE BEGIN EF */
+  76:Core/Src/adc_if.c **** 
+  77:Core/Src/adc_if.c **** /* USER CODE END EF */
+  78:Core/Src/adc_if.c **** 
+  79:Core/Src/adc_if.c **** void SYS_InitMeasurement(void)
+  80:Core/Src/adc_if.c **** {
+  81:Core/Src/adc_if.c ****   /* USER CODE BEGIN SYS_InitMeasurement_1 */
+  82:Core/Src/adc_if.c **** 
+  83:Core/Src/adc_if.c ****   /* USER CODE END SYS_InitMeasurement_1 */
+  84:Core/Src/adc_if.c ****   hadc.Instance = ADC;
+  85:Core/Src/adc_if.c ****   /* USER CODE BEGIN SYS_InitMeasurement_2 */
+  86:Core/Src/adc_if.c **** 
+  87:Core/Src/adc_if.c ****   /* USER CODE END SYS_InitMeasurement_2 */
+  88:Core/Src/adc_if.c **** }
+  89:Core/Src/adc_if.c **** 
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccomKay7.s 			page 3
+
+
+  90:Core/Src/adc_if.c **** void SYS_DeInitMeasurement(void)
+  91:Core/Src/adc_if.c **** {
+  92:Core/Src/adc_if.c ****   /* USER CODE BEGIN SYS_DeInitMeasurement_1 */
+  93:Core/Src/adc_if.c **** 
+  94:Core/Src/adc_if.c ****   /* USER CODE END SYS_DeInitMeasurement_1 */
+  95:Core/Src/adc_if.c **** }
+  96:Core/Src/adc_if.c **** 
+  97:Core/Src/adc_if.c **** int16_t SYS_GetTemperatureLevel(void)
+  98:Core/Src/adc_if.c **** {
+  99:Core/Src/adc_if.c ****   /* USER CODE BEGIN SYS_GetTemperatureLevel_1 */
+ 100:Core/Src/adc_if.c **** 
+ 101:Core/Src/adc_if.c ****   /* USER CODE END SYS_GetTemperatureLevel_1 */
+ 102:Core/Src/adc_if.c ****   int16_t temperatureDegreeC = 0;
+ 103:Core/Src/adc_if.c ****   uint32_t measuredLevel = 0;
+ 104:Core/Src/adc_if.c ****   uint16_t batteryLevelmV = SYS_GetBatteryLevel();
+ 105:Core/Src/adc_if.c **** 
+ 106:Core/Src/adc_if.c ****   measuredLevel = ADC_ReadChannels(ADC_CHANNEL_TEMPSENSOR);
+ 107:Core/Src/adc_if.c **** 
+ 108:Core/Src/adc_if.c ****   /* convert ADC level to temperature */
+ 109:Core/Src/adc_if.c ****   /* check whether device has temperature sensor calibrated in production */
+ 110:Core/Src/adc_if.c ****   if (((int32_t)*TEMPSENSOR_CAL2_ADDR - (int32_t)*TEMPSENSOR_CAL1_ADDR) != 0)
+ 111:Core/Src/adc_if.c ****   {
+ 112:Core/Src/adc_if.c ****     /* Device with temperature sensor calibrated in production:
+ 113:Core/Src/adc_if.c ****        use device optimized parameters */
+ 114:Core/Src/adc_if.c ****     temperatureDegreeC = __LL_ADC_CALC_TEMPERATURE(batteryLevelmV,
+ 115:Core/Src/adc_if.c ****                                                    measuredLevel,
+ 116:Core/Src/adc_if.c ****                                                    LL_ADC_RESOLUTION_12B);
+ 117:Core/Src/adc_if.c ****   }
+ 118:Core/Src/adc_if.c ****   else
+ 119:Core/Src/adc_if.c ****   {
+ 120:Core/Src/adc_if.c ****     /* Device with temperature sensor not calibrated in production:
+ 121:Core/Src/adc_if.c ****        use generic parameters */
+ 122:Core/Src/adc_if.c ****     temperatureDegreeC = __LL_ADC_CALC_TEMPERATURE_TYP_PARAMS(TEMPSENSOR_TYP_AVGSLOPE,
+ 123:Core/Src/adc_if.c ****                                                               TEMPSENSOR_TYP_CAL1_V,
+ 124:Core/Src/adc_if.c ****                                                               TEMPSENSOR_CAL1_TEMP,
+ 125:Core/Src/adc_if.c ****                                                               batteryLevelmV,
+ 126:Core/Src/adc_if.c ****                                                               measuredLevel,
+ 127:Core/Src/adc_if.c ****                                                               LL_ADC_RESOLUTION_12B);
+ 128:Core/Src/adc_if.c ****   }
+ 129:Core/Src/adc_if.c **** 
+ 130:Core/Src/adc_if.c ****   APP_LOG(TS_ON, VLEVEL_L, "temp= %d\n\r", temperatureDegreeC);
+ 131:Core/Src/adc_if.c **** 
+ 132:Core/Src/adc_if.c ****   /* from int16 to q8.7*/
+ 133:Core/Src/adc_if.c ****   temperatureDegreeC <<= 8;
+ 134:Core/Src/adc_if.c **** 
+ 135:Core/Src/adc_if.c ****   return (int16_t) temperatureDegreeC;
+ 136:Core/Src/adc_if.c ****   /* USER CODE BEGIN SYS_GetTemperatureLevel_2 */
+ 137:Core/Src/adc_if.c **** 
+ 138:Core/Src/adc_if.c ****   /* USER CODE END SYS_GetTemperatureLevel_2 */
+ 139:Core/Src/adc_if.c **** }
+ 140:Core/Src/adc_if.c **** 
+ 141:Core/Src/adc_if.c **** uint16_t SYS_GetBatteryLevel(void)
+ 142:Core/Src/adc_if.c **** {
+ 143:Core/Src/adc_if.c ****   /* USER CODE BEGIN SYS_GetBatteryLevel_1 */
+ 144:Core/Src/adc_if.c **** 
+ 145:Core/Src/adc_if.c ****   /* USER CODE END SYS_GetBatteryLevel_1 */
+ 146:Core/Src/adc_if.c ****   uint16_t batteryLevelmV = 0;
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccomKay7.s 			page 4
+
+
+ 147:Core/Src/adc_if.c ****   uint32_t measuredLevel = 0;
+ 148:Core/Src/adc_if.c **** 
+ 149:Core/Src/adc_if.c ****   measuredLevel = ADC_ReadChannels(ADC_CHANNEL_VREFINT);
+ 150:Core/Src/adc_if.c **** 
+ 151:Core/Src/adc_if.c ****   if (measuredLevel == 0)
+ 152:Core/Src/adc_if.c ****   {
+ 153:Core/Src/adc_if.c ****     batteryLevelmV = 0;
+ 154:Core/Src/adc_if.c ****   }
+ 155:Core/Src/adc_if.c ****   else
+ 156:Core/Src/adc_if.c ****   {
+ 157:Core/Src/adc_if.c ****     if ((uint32_t)*VREFINT_CAL_ADDR != (uint32_t)0xFFFFU)
+ 158:Core/Src/adc_if.c ****     {
+ 159:Core/Src/adc_if.c ****       /* Device with Reference voltage calibrated in production:
+ 160:Core/Src/adc_if.c ****          use device optimized parameters */
+ 161:Core/Src/adc_if.c ****       batteryLevelmV = __LL_ADC_CALC_VREFANALOG_VOLTAGE(measuredLevel,
+ 162:Core/Src/adc_if.c ****                                                         ADC_RESOLUTION_12B);
+ 163:Core/Src/adc_if.c ****     }
+ 164:Core/Src/adc_if.c ****     else
+ 165:Core/Src/adc_if.c ****     {
+ 166:Core/Src/adc_if.c ****       /* Device with Reference voltage not calibrated in production:
+ 167:Core/Src/adc_if.c ****          use generic parameters */
+ 168:Core/Src/adc_if.c ****       batteryLevelmV = (VREFINT_CAL_VREF * 1510) / measuredLevel;
+ 169:Core/Src/adc_if.c ****     }
+ 170:Core/Src/adc_if.c ****   }
+ 171:Core/Src/adc_if.c **** 
+ 172:Core/Src/adc_if.c ****   return batteryLevelmV;
+ 173:Core/Src/adc_if.c ****   /* USER CODE BEGIN SYS_GetBatteryLevel_2 */
+ 174:Core/Src/adc_if.c **** 
+ 175:Core/Src/adc_if.c ****   /* USER CODE END SYS_GetBatteryLevel_2 */
+ 176:Core/Src/adc_if.c **** }
+ 177:Core/Src/adc_if.c **** 
+ 178:Core/Src/adc_if.c **** /* Private Functions Definition -----------------------------------------------*/
+ 179:Core/Src/adc_if.c **** /* USER CODE BEGIN PrFD */
+ 180:Core/Src/adc_if.c **** 
+ 181:Core/Src/adc_if.c **** /* USER CODE END PrFD */
+ 182:Core/Src/adc_if.c **** 
+ 183:Core/Src/adc_if.c **** static uint32_t ADC_ReadChannels(uint32_t channel)
+ 184:Core/Src/adc_if.c **** {
+  27              		.loc 1 184 1 view -0
+  28              		.cfi_startproc
+  29              		@ args = 0, pretend = 0, frame = 16
+  30              		@ frame_needed = 0, uses_anonymous_args = 0
+  31              		.loc 1 184 1 is_stmt 0 view .LVU1
+  32 0000 30B5     		push	{r4, r5, lr}
+  33              	.LCFI0:
+  34              		.cfi_def_cfa_offset 12
+  35              		.cfi_offset 4, -12
+  36              		.cfi_offset 5, -8
+  37              		.cfi_offset 14, -4
+  38 0002 85B0     		sub	sp, sp, #20
+  39              	.LCFI1:
+  40              		.cfi_def_cfa_offset 32
+  41 0004 0446     		mov	r4, r0
+ 185:Core/Src/adc_if.c ****   /* USER CODE BEGIN ADC_ReadChannels_1 */
+ 186:Core/Src/adc_if.c **** 
+ 187:Core/Src/adc_if.c ****   /* USER CODE END ADC_ReadChannels_1 */
+ 188:Core/Src/adc_if.c ****   uint32_t ADCxConvertedValues = 0;
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccomKay7.s 			page 5
+
+
+  42              		.loc 1 188 3 is_stmt 1 view .LVU2
+  43              	.LVL1:
+ 189:Core/Src/adc_if.c ****   ADC_ChannelConfTypeDef sConfig = {0};
+  44              		.loc 1 189 3 view .LVU3
+  45              		.loc 1 189 26 is_stmt 0 view .LVU4
+  46 0006 0023     		movs	r3, #0
+  47 0008 0193     		str	r3, [sp, #4]
+  48 000a 0293     		str	r3, [sp, #8]
+  49 000c 0393     		str	r3, [sp, #12]
+ 190:Core/Src/adc_if.c **** 
+ 191:Core/Src/adc_if.c ****   MX_ADC_Init();
+  50              		.loc 1 191 3 is_stmt 1 view .LVU5
+  51 000e FFF7FEFF 		bl	MX_ADC_Init
+  52              	.LVL2:
+ 192:Core/Src/adc_if.c **** 
+ 193:Core/Src/adc_if.c ****   /* Start Calibration */
+ 194:Core/Src/adc_if.c ****   if (HAL_ADCEx_Calibration_Start(&hadc) != HAL_OK)
+  53              		.loc 1 194 3 view .LVU6
+  54              		.loc 1 194 7 is_stmt 0 view .LVU7
+  55 0012 1648     		ldr	r0, .L9
+  56 0014 FFF7FEFF 		bl	HAL_ADCEx_Calibration_Start
+  57              	.LVL3:
+  58              		.loc 1 194 6 view .LVU8
+  59 0018 F8B9     		cbnz	r0, .L6
+  60              	.L2:
+ 195:Core/Src/adc_if.c ****   {
+ 196:Core/Src/adc_if.c ****     Error_Handler();
+ 197:Core/Src/adc_if.c ****   }
+ 198:Core/Src/adc_if.c **** 
+ 199:Core/Src/adc_if.c ****   /* Configure Regular Channel */
+ 200:Core/Src/adc_if.c ****   sConfig.Channel = channel;
+  61              		.loc 1 200 3 is_stmt 1 view .LVU9
+  62              		.loc 1 200 19 is_stmt 0 view .LVU10
+  63 001a 0194     		str	r4, [sp, #4]
+ 201:Core/Src/adc_if.c ****   sConfig.Rank = ADC_REGULAR_RANK_1;
+  64              		.loc 1 201 3 is_stmt 1 view .LVU11
+  65              		.loc 1 201 16 is_stmt 0 view .LVU12
+  66 001c 0023     		movs	r3, #0
+  67 001e 0293     		str	r3, [sp, #8]
+ 202:Core/Src/adc_if.c ****   sConfig.SamplingTime = ADC_SAMPLINGTIME_COMMON_1;
+  68              		.loc 1 202 3 is_stmt 1 view .LVU13
+  69              		.loc 1 202 24 is_stmt 0 view .LVU14
+  70 0020 0393     		str	r3, [sp, #12]
+ 203:Core/Src/adc_if.c ****   if (HAL_ADC_ConfigChannel(&hadc, &sConfig) != HAL_OK)
+  71              		.loc 1 203 3 is_stmt 1 view .LVU15
+  72              		.loc 1 203 7 is_stmt 0 view .LVU16
+  73 0022 01A9     		add	r1, sp, #4
+  74 0024 1148     		ldr	r0, .L9
+  75 0026 FFF7FEFF 		bl	HAL_ADC_ConfigChannel
+  76              	.LVL4:
+  77              		.loc 1 203 6 view .LVU17
+  78 002a C8B9     		cbnz	r0, .L7
+  79              	.L3:
+ 204:Core/Src/adc_if.c ****   {
+ 205:Core/Src/adc_if.c ****     Error_Handler();
+ 206:Core/Src/adc_if.c ****   }
+ 207:Core/Src/adc_if.c **** 
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccomKay7.s 			page 6
+
+
+ 208:Core/Src/adc_if.c ****   if (HAL_ADC_Start(&hadc) != HAL_OK)
+  80              		.loc 1 208 3 is_stmt 1 view .LVU18
+  81              		.loc 1 208 7 is_stmt 0 view .LVU19
+  82 002c 0F48     		ldr	r0, .L9
+  83 002e FFF7FEFF 		bl	HAL_ADC_Start
+  84              	.LVL5:
+  85              		.loc 1 208 6 view .LVU20
+  86 0032 C0B9     		cbnz	r0, .L8
+  87              	.L4:
+ 209:Core/Src/adc_if.c ****   {
+ 210:Core/Src/adc_if.c ****     /* Start Error */
+ 211:Core/Src/adc_if.c ****     Error_Handler();
+ 212:Core/Src/adc_if.c ****   }
+ 213:Core/Src/adc_if.c ****   /** Wait for end of conversion */
+ 214:Core/Src/adc_if.c ****   HAL_ADC_PollForConversion(&hadc, HAL_MAX_DELAY);
+  88              		.loc 1 214 3 is_stmt 1 view .LVU21
+  89 0034 0D4C     		ldr	r4, .L9
+  90              	.LVL6:
+  91              		.loc 1 214 3 is_stmt 0 view .LVU22
+  92 0036 4FF0FF31 		mov	r1, #-1
+  93 003a 2046     		mov	r0, r4
+  94 003c FFF7FEFF 		bl	HAL_ADC_PollForConversion
+  95              	.LVL7:
+ 215:Core/Src/adc_if.c **** 
+ 216:Core/Src/adc_if.c ****   /** Wait for end of conversion */
+ 217:Core/Src/adc_if.c ****   HAL_ADC_Stop(&hadc) ;   /* it calls also ADC_Disable() */
+  96              		.loc 1 217 3 is_stmt 1 view .LVU23
+  97 0040 2046     		mov	r0, r4
+  98 0042 FFF7FEFF 		bl	HAL_ADC_Stop
+  99              	.LVL8:
+ 218:Core/Src/adc_if.c **** 
+ 219:Core/Src/adc_if.c ****   ADCxConvertedValues = HAL_ADC_GetValue(&hadc);
+ 100              		.loc 1 219 3 view .LVU24
+ 101              		.loc 1 219 25 is_stmt 0 view .LVU25
+ 102 0046 2046     		mov	r0, r4
+ 103 0048 FFF7FEFF 		bl	HAL_ADC_GetValue
+ 104              	.LVL9:
+ 105 004c 0546     		mov	r5, r0
+ 106              	.LVL10:
+ 220:Core/Src/adc_if.c **** 
+ 221:Core/Src/adc_if.c ****   HAL_ADC_DeInit(&hadc);
+ 107              		.loc 1 221 3 is_stmt 1 view .LVU26
+ 108 004e 2046     		mov	r0, r4
+ 109              	.LVL11:
+ 110              		.loc 1 221 3 is_stmt 0 view .LVU27
+ 111 0050 FFF7FEFF 		bl	HAL_ADC_DeInit
+ 112              	.LVL12:
+ 222:Core/Src/adc_if.c **** 
+ 223:Core/Src/adc_if.c ****   return ADCxConvertedValues;
+ 113              		.loc 1 223 3 is_stmt 1 view .LVU28
+ 224:Core/Src/adc_if.c ****   /* USER CODE BEGIN ADC_ReadChannels_2 */
+ 225:Core/Src/adc_if.c **** 
+ 226:Core/Src/adc_if.c ****   /* USER CODE END ADC_ReadChannels_2 */
+ 227:Core/Src/adc_if.c **** }
+ 114              		.loc 1 227 1 is_stmt 0 view .LVU29
+ 115 0054 2846     		mov	r0, r5
+ 116 0056 05B0     		add	sp, sp, #20
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccomKay7.s 			page 7
+
+
+ 117              	.LCFI2:
+ 118              		.cfi_remember_state
+ 119              		.cfi_def_cfa_offset 12
+ 120              		@ sp needed
+ 121 0058 30BD     		pop	{r4, r5, pc}
+ 122              	.LVL13:
+ 123              	.L6:
+ 124              	.LCFI3:
+ 125              		.cfi_restore_state
+ 196:Core/Src/adc_if.c ****   }
+ 126              		.loc 1 196 5 is_stmt 1 view .LVU30
+ 127 005a FFF7FEFF 		bl	Error_Handler
+ 128              	.LVL14:
+ 129 005e DCE7     		b	.L2
+ 130              	.L7:
+ 205:Core/Src/adc_if.c ****   }
+ 131              		.loc 1 205 5 view .LVU31
+ 132 0060 FFF7FEFF 		bl	Error_Handler
+ 133              	.LVL15:
+ 134 0064 E2E7     		b	.L3
+ 135              	.L8:
+ 211:Core/Src/adc_if.c ****   }
+ 136              		.loc 1 211 5 view .LVU32
+ 137 0066 FFF7FEFF 		bl	Error_Handler
+ 138              	.LVL16:
+ 139 006a E3E7     		b	.L4
+ 140              	.L10:
+ 141              		.align	2
+ 142              	.L9:
+ 143 006c 00000000 		.word	hadc
+ 144              		.cfi_endproc
+ 145              	.LFE995:
+ 147              		.section	.text.SYS_InitMeasurement,"ax",%progbits
+ 148              		.align	1
+ 149              		.global	SYS_InitMeasurement
+ 150              		.syntax unified
+ 151              		.thumb
+ 152              		.thumb_func
+ 154              	SYS_InitMeasurement:
+ 155              	.LFB991:
+  80:Core/Src/adc_if.c ****   /* USER CODE BEGIN SYS_InitMeasurement_1 */
+ 156              		.loc 1 80 1 view -0
+ 157              		.cfi_startproc
+ 158              		@ args = 0, pretend = 0, frame = 0
+ 159              		@ frame_needed = 0, uses_anonymous_args = 0
+ 160              		@ link register save eliminated.
+  84:Core/Src/adc_if.c ****   /* USER CODE BEGIN SYS_InitMeasurement_2 */
+ 161              		.loc 1 84 3 view .LVU34
+  84:Core/Src/adc_if.c ****   /* USER CODE BEGIN SYS_InitMeasurement_2 */
+ 162              		.loc 1 84 17 is_stmt 0 view .LVU35
+ 163 0000 014B     		ldr	r3, .L12
+ 164 0002 024A     		ldr	r2, .L12+4
+ 165 0004 1A60     		str	r2, [r3]
+  88:Core/Src/adc_if.c **** 
+ 166              		.loc 1 88 1 view .LVU36
+ 167 0006 7047     		bx	lr
+ 168              	.L13:
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccomKay7.s 			page 8
+
+
+ 169              		.align	2
+ 170              	.L12:
+ 171 0008 00000000 		.word	hadc
+ 172 000c 00240140 		.word	1073816576
+ 173              		.cfi_endproc
+ 174              	.LFE991:
+ 176              		.section	.text.SYS_DeInitMeasurement,"ax",%progbits
+ 177              		.align	1
+ 178              		.global	SYS_DeInitMeasurement
+ 179              		.syntax unified
+ 180              		.thumb
+ 181              		.thumb_func
+ 183              	SYS_DeInitMeasurement:
+ 184              	.LFB992:
+  91:Core/Src/adc_if.c ****   /* USER CODE BEGIN SYS_DeInitMeasurement_1 */
+ 185              		.loc 1 91 1 is_stmt 1 view -0
+ 186              		.cfi_startproc
+ 187              		@ args = 0, pretend = 0, frame = 0
+ 188              		@ frame_needed = 0, uses_anonymous_args = 0
+ 189              		@ link register save eliminated.
+  95:Core/Src/adc_if.c **** 
+ 190              		.loc 1 95 1 view .LVU38
+ 191 0000 7047     		bx	lr
+ 192              		.cfi_endproc
+ 193              	.LFE992:
+ 195              		.section	.text.SYS_GetBatteryLevel,"ax",%progbits
+ 196              		.align	1
+ 197              		.global	SYS_GetBatteryLevel
+ 198              		.syntax unified
+ 199              		.thumb
+ 200              		.thumb_func
+ 202              	SYS_GetBatteryLevel:
+ 203              	.LFB994:
+ 142:Core/Src/adc_if.c ****   /* USER CODE BEGIN SYS_GetBatteryLevel_1 */
+ 204              		.loc 1 142 1 view -0
+ 205              		.cfi_startproc
+ 206              		@ args = 0, pretend = 0, frame = 0
+ 207              		@ frame_needed = 0, uses_anonymous_args = 0
+ 208 0000 08B5     		push	{r3, lr}
+ 209              	.LCFI4:
+ 210              		.cfi_def_cfa_offset 8
+ 211              		.cfi_offset 3, -8
+ 212              		.cfi_offset 14, -4
+ 146:Core/Src/adc_if.c ****   uint32_t measuredLevel = 0;
+ 213              		.loc 1 146 3 view .LVU40
+ 214              	.LVL17:
+ 147:Core/Src/adc_if.c **** 
+ 215              		.loc 1 147 3 view .LVU41
+ 149:Core/Src/adc_if.c **** 
+ 216              		.loc 1 149 3 view .LVU42
+ 149:Core/Src/adc_if.c **** 
+ 217              		.loc 1 149 19 is_stmt 0 view .LVU43
+ 218 0002 0D48     		ldr	r0, .L20
+ 219 0004 FFF7FEFF 		bl	ADC_ReadChannels
+ 220              	.LVL18:
+ 151:Core/Src/adc_if.c ****   {
+ 221              		.loc 1 151 3 is_stmt 1 view .LVU44
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccomKay7.s 			page 9
+
+
+ 151:Core/Src/adc_if.c ****   {
+ 222              		.loc 1 151 6 is_stmt 0 view .LVU45
+ 223 0008 A0B1     		cbz	r0, .L18
+ 224 000a 0246     		mov	r2, r0
+ 157:Core/Src/adc_if.c ****     {
+ 225              		.loc 1 157 5 is_stmt 1 view .LVU46
+ 157:Core/Src/adc_if.c ****     {
+ 226              		.loc 1 157 19 is_stmt 0 view .LVU47
+ 227 000c 0B4B     		ldr	r3, .L20+4
+ 228 000e B3F8AA30 		ldrh	r3, [r3, #170]
+ 157:Core/Src/adc_if.c ****     {
+ 229              		.loc 1 157 8 view .LVU48
+ 230 0012 4FF6FF71 		movw	r1, #65535
+ 231 0016 8B42     		cmp	r3, r1
+ 232 0018 07D0     		beq	.L17
+ 161:Core/Src/adc_if.c ****                                                         ADC_RESOLUTION_12B);
+ 233              		.loc 1 161 7 is_stmt 1 view .LVU49
+ 161:Core/Src/adc_if.c ****                                                         ADC_RESOLUTION_12B);
+ 234              		.loc 1 161 24 is_stmt 0 view .LVU50
+ 235 001a 40F6E440 		movw	r0, #3300
+ 236              	.LVL19:
+ 161:Core/Src/adc_if.c ****                                                         ADC_RESOLUTION_12B);
+ 237              		.loc 1 161 24 view .LVU51
+ 238 001e 03FB00F0 		mul	r0, r3, r0
+ 239 0022 B0FBF2F0 		udiv	r0, r0, r2
+ 161:Core/Src/adc_if.c ****                                                         ADC_RESOLUTION_12B);
+ 240              		.loc 1 161 22 view .LVU52
+ 241 0026 80B2     		uxth	r0, r0
+ 242              	.LVL20:
+ 161:Core/Src/adc_if.c ****                                                         ADC_RESOLUTION_12B);
+ 243              		.loc 1 161 22 view .LVU53
+ 244 0028 05E0     		b	.L16
+ 245              	.LVL21:
+ 246              	.L17:
+ 168:Core/Src/adc_if.c ****     }
+ 247              		.loc 1 168 7 is_stmt 1 view .LVU54
+ 168:Core/Src/adc_if.c ****     }
+ 248              		.loc 1 168 50 is_stmt 0 view .LVU55
+ 249 002a 0548     		ldr	r0, .L20+8
+ 250              	.LVL22:
+ 168:Core/Src/adc_if.c ****     }
+ 251              		.loc 1 168 50 view .LVU56
+ 252 002c B0FBF2F0 		udiv	r0, r0, r2
+ 168:Core/Src/adc_if.c ****     }
+ 253              		.loc 1 168 22 view .LVU57
+ 254 0030 80B2     		uxth	r0, r0
+ 255              	.LVL23:
+ 168:Core/Src/adc_if.c ****     }
+ 256              		.loc 1 168 22 view .LVU58
+ 257 0032 00E0     		b	.L16
+ 258              	.LVL24:
+ 259              	.L18:
+ 153:Core/Src/adc_if.c ****   }
+ 260              		.loc 1 153 20 view .LVU59
+ 261 0034 0020     		movs	r0, #0
+ 262              	.LVL25:
+ 263              	.L16:
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccomKay7.s 			page 10
+
+
+ 172:Core/Src/adc_if.c ****   /* USER CODE BEGIN SYS_GetBatteryLevel_2 */
+ 264              		.loc 1 172 3 is_stmt 1 view .LVU60
+ 176:Core/Src/adc_if.c **** 
+ 265              		.loc 1 176 1 is_stmt 0 view .LVU61
+ 266 0036 08BD     		pop	{r3, pc}
+ 267              	.L21:
+ 268              		.align	2
+ 269              	.L20:
+ 270 0038 002000B4 		.word	-1275060224
+ 271 003c 0075FF1F 		.word	536835328
+ 272 0040 D8084C00 		.word	4983000
+ 273              		.cfi_endproc
+ 274              	.LFE994:
+ 276              		.section	.rodata.SYS_GetTemperatureLevel.str1.4,"aMS",%progbits,1
+ 277              		.align	2
+ 278              	.LC0:
+ 279 0000 74656D70 		.ascii	"temp= %d\012\015\000"
+ 279      3D202564 
+ 279      0A0D00
+ 280              		.section	.text.SYS_GetTemperatureLevel,"ax",%progbits
+ 281              		.align	1
+ 282              		.global	SYS_GetTemperatureLevel
+ 283              		.syntax unified
+ 284              		.thumb
+ 285              		.thumb_func
+ 287              	SYS_GetTemperatureLevel:
+ 288              	.LFB993:
+  98:Core/Src/adc_if.c ****   /* USER CODE BEGIN SYS_GetTemperatureLevel_1 */
+ 289              		.loc 1 98 1 is_stmt 1 view -0
+ 290              		.cfi_startproc
+ 291              		@ args = 0, pretend = 0, frame = 0
+ 292              		@ frame_needed = 0, uses_anonymous_args = 0
+ 293 0000 10B5     		push	{r4, lr}
+ 294              	.LCFI5:
+ 295              		.cfi_def_cfa_offset 8
+ 296              		.cfi_offset 4, -8
+ 297              		.cfi_offset 14, -4
+ 298 0002 82B0     		sub	sp, sp, #8
+ 299              	.LCFI6:
+ 300              		.cfi_def_cfa_offset 16
+ 102:Core/Src/adc_if.c ****   uint32_t measuredLevel = 0;
+ 301              		.loc 1 102 3 view .LVU63
+ 302              	.LVL26:
+ 103:Core/Src/adc_if.c ****   uint16_t batteryLevelmV = SYS_GetBatteryLevel();
+ 303              		.loc 1 103 3 view .LVU64
+ 104:Core/Src/adc_if.c **** 
+ 304              		.loc 1 104 3 view .LVU65
+ 104:Core/Src/adc_if.c **** 
+ 305              		.loc 1 104 29 is_stmt 0 view .LVU66
+ 306 0004 FFF7FEFF 		bl	SYS_GetBatteryLevel
+ 307              	.LVL27:
+ 308 0008 0446     		mov	r4, r0
+ 309              	.LVL28:
+ 106:Core/Src/adc_if.c **** 
+ 310              		.loc 1 106 3 is_stmt 1 view .LVU67
+ 106:Core/Src/adc_if.c **** 
+ 311              		.loc 1 106 19 is_stmt 0 view .LVU68
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccomKay7.s 			page 11
+
+
+ 312 000a 1F48     		ldr	r0, .L26
+ 313 000c FFF7FEFF 		bl	ADC_ReadChannels
+ 314              	.LVL29:
+ 110:Core/Src/adc_if.c ****   {
+ 315              		.loc 1 110 3 is_stmt 1 view .LVU69
+ 110:Core/Src/adc_if.c ****   {
+ 316              		.loc 1 110 17 is_stmt 0 view .LVU70
+ 317 0010 1E4A     		ldr	r2, .L26+4
+ 318 0012 B2F8C830 		ldrh	r3, [r2, #200]
+ 110:Core/Src/adc_if.c ****   {
+ 319              		.loc 1 110 50 view .LVU71
+ 320 0016 B2F8A820 		ldrh	r2, [r2, #168]
+ 110:Core/Src/adc_if.c ****   {
+ 321              		.loc 1 110 6 view .LVU72
+ 322 001a 9342     		cmp	r3, r2
+ 323 001c 1AD0     		beq	.L23
+ 114:Core/Src/adc_if.c ****                                                    measuredLevel,
+ 324              		.loc 1 114 5 is_stmt 1 discriminator 1 view .LVU73
+ 114:Core/Src/adc_if.c ****                                                    measuredLevel,
+ 325              		.loc 1 114 26 is_stmt 0 discriminator 1 view .LVU74
+ 326 001e 00FB04F4 		mul	r4, r0, r4
+ 327              	.LVL30:
+ 114:Core/Src/adc_if.c ****                                                    measuredLevel,
+ 328              		.loc 1 114 26 discriminator 1 view .LVU75
+ 329 0022 A408     		lsrs	r4, r4, #2
+ 330 0024 1A49     		ldr	r1, .L26+8
+ 331 0026 A1FB0414 		umull	r1, r4, r1, r4
+ 332 002a C2EB5414 		rsb	r4, r2, r4, lsr #5
+ 333 002e 6421     		movs	r1, #100
+ 334 0030 01FB04F4 		mul	r4, r1, r4
+ 335 0034 9B1A     		subs	r3, r3, r2
+ 336 0036 94FBF3F4 		sdiv	r4, r4, r3
+ 337 003a 1E34     		adds	r4, r4, #30
+ 114:Core/Src/adc_if.c ****                                                    measuredLevel,
+ 338              		.loc 1 114 24 discriminator 1 view .LVU76
+ 339 003c 24B2     		sxth	r4, r4
+ 340              	.LVL31:
+ 341              	.L24:
+ 130:Core/Src/adc_if.c **** 
+ 342              		.loc 1 130 3 is_stmt 1 view .LVU77
+ 130:Core/Src/adc_if.c **** 
+ 343              		.loc 1 130 3 view .LVU78
+ 344 003e 0094     		str	r4, [sp]
+ 345 0040 144B     		ldr	r3, .L26+12
+ 346 0042 0122     		movs	r2, #1
+ 347 0044 0021     		movs	r1, #0
+ 348 0046 1046     		mov	r0, r2
+ 349 0048 FFF7FEFF 		bl	UTIL_ADV_TRACE_COND_FSend
+ 350              	.LVL32:
+ 130:Core/Src/adc_if.c **** 
+ 351              		.loc 1 130 3 view .LVU79
+ 130:Core/Src/adc_if.c **** 
+ 352              		.loc 1 130 63 view .LVU80
+ 133:Core/Src/adc_if.c **** 
+ 353              		.loc 1 133 3 view .LVU81
+ 133:Core/Src/adc_if.c **** 
+ 354              		.loc 1 133 22 is_stmt 0 view .LVU82
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccomKay7.s 			page 12
+
+
+ 355 004c 2002     		lsls	r0, r4, #8
+ 356              	.LVL33:
+ 135:Core/Src/adc_if.c ****   /* USER CODE BEGIN SYS_GetTemperatureLevel_2 */
+ 357              		.loc 1 135 3 is_stmt 1 view .LVU83
+ 139:Core/Src/adc_if.c **** 
+ 358              		.loc 1 139 1 is_stmt 0 view .LVU84
+ 359 004e 00B2     		sxth	r0, r0
+ 139:Core/Src/adc_if.c **** 
+ 360              		.loc 1 139 1 view .LVU85
+ 361 0050 02B0     		add	sp, sp, #8
+ 362              	.LCFI7:
+ 363              		.cfi_remember_state
+ 364              		.cfi_def_cfa_offset 8
+ 365              		@ sp needed
+ 366 0052 10BD     		pop	{r4, pc}
+ 367              	.LVL34:
+ 368              	.L23:
+ 369              	.LCFI8:
+ 370              		.cfi_restore_state
+ 122:Core/Src/adc_if.c ****                                                               TEMPSENSOR_TYP_CAL1_V,
+ 371              		.loc 1 122 5 is_stmt 1 view .LVU86
+ 122:Core/Src/adc_if.c ****                                                               TEMPSENSOR_TYP_CAL1_V,
+ 372              		.loc 1 122 26 is_stmt 0 view .LVU87
+ 373 0054 00FB04F4 		mul	r4, r0, r4
+ 374              	.LVL35:
+ 122:Core/Src/adc_if.c ****                                                               TEMPSENSOR_TYP_CAL1_V,
+ 375              		.loc 1 122 26 view .LVU88
+ 376 0058 0F4B     		ldr	r3, .L26+16
+ 377 005a A3FB0423 		umull	r2, r3, r3, r4
+ 378 005e E41A     		subs	r4, r4, r3
+ 379 0060 03EB5404 		add	r4, r3, r4, lsr #1
+ 380 0064 E40A     		lsrs	r4, r4, #11
+ 381 0066 4FF47A73 		mov	r3, #1000
+ 382 006a 03FB04F4 		mul	r4, r3, r4
+ 383 006e A4F53924 		sub	r4, r4, #757760
+ 384 0072 A4F50C64 		sub	r4, r4, #2240
+ 385 0076 0948     		ldr	r0, .L26+20
+ 386              	.LVL36:
+ 122:Core/Src/adc_if.c ****                                                               TEMPSENSOR_TYP_CAL1_V,
+ 387              		.loc 1 122 26 view .LVU89
+ 388 0078 80FB0430 		smull	r3, r0, r0, r4
+ 389 007c E417     		asrs	r4, r4, #31
+ 390 007e C4EBA024 		rsb	r4, r4, r0, asr #10
+ 391 0082 1E34     		adds	r4, r4, #30
+ 122:Core/Src/adc_if.c ****                                                               TEMPSENSOR_TYP_CAL1_V,
+ 392              		.loc 1 122 24 view .LVU90
+ 393 0084 24B2     		sxth	r4, r4
+ 394              	.LVL37:
+ 122:Core/Src/adc_if.c ****                                                               TEMPSENSOR_TYP_CAL1_V,
+ 395              		.loc 1 122 24 view .LVU91
+ 396 0086 DAE7     		b	.L24
+ 397              	.L27:
+ 398              		.align	2
+ 399              	.L26:
+ 400 0088 001000B0 		.word	-1342173184
+ 401 008c 0075FF1F 		.word	536835328
+ 402 0090 9F00EE09 		.word	166592671
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccomKay7.s 			page 13
+
+
+ 403 0094 00000000 		.word	.LC0
+ 404 0098 01011000 		.word	1048833
+ 405 009c AD8BDB68 		.word	1759218605
+ 406              		.cfi_endproc
+ 407              	.LFE993:
+ 409              		.text
+ 410              	.Letext0:
+ 411              		.file 2 "c:\\program files (x86)\\gnu arm embedded toolchain\\10 2021.10\\arm-none-eabi\\include\\
+ 412              		.file 3 "c:\\program files (x86)\\gnu arm embedded toolchain\\10 2021.10\\arm-none-eabi\\include\\
+ 413              		.file 4 "Drivers/CMSIS/Device/ST/STM32WLxx/Include/stm32wle5xx.h"
+ 414              		.file 5 "Drivers/CMSIS/Device/ST/STM32WLxx/Include/stm32wlxx.h"
+ 415              		.file 6 "Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_hal_def.h"
+ 416              		.file 7 "Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_hal_dma.h"
+ 417              		.file 8 "Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_hal_adc.h"
+ 418              		.file 9 "Core/Inc/adc.h"
+ 419              		.file 10 "Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_dma.h"
+ 420              		.file 11 "Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_hal_adc_ex.h"
+ 421              		.file 12 "Core/Inc/main.h"
+ 422              		.file 13 "Utilities/trace/adv_trace/stm32_adv_trace.h"
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccomKay7.s 			page 14
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 adc_if.c
+C:\Users\NATHAN~1\AppData\Local\Temp\ccomKay7.s:18     .text.ADC_ReadChannels:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\ccomKay7.s:23     .text.ADC_ReadChannels:00000000 ADC_ReadChannels
+C:\Users\NATHAN~1\AppData\Local\Temp\ccomKay7.s:143    .text.ADC_ReadChannels:0000006c $d
+C:\Users\NATHAN~1\AppData\Local\Temp\ccomKay7.s:148    .text.SYS_InitMeasurement:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\ccomKay7.s:154    .text.SYS_InitMeasurement:00000000 SYS_InitMeasurement
+C:\Users\NATHAN~1\AppData\Local\Temp\ccomKay7.s:171    .text.SYS_InitMeasurement:00000008 $d
+C:\Users\NATHAN~1\AppData\Local\Temp\ccomKay7.s:177    .text.SYS_DeInitMeasurement:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\ccomKay7.s:183    .text.SYS_DeInitMeasurement:00000000 SYS_DeInitMeasurement
+C:\Users\NATHAN~1\AppData\Local\Temp\ccomKay7.s:196    .text.SYS_GetBatteryLevel:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\ccomKay7.s:202    .text.SYS_GetBatteryLevel:00000000 SYS_GetBatteryLevel
+C:\Users\NATHAN~1\AppData\Local\Temp\ccomKay7.s:270    .text.SYS_GetBatteryLevel:00000038 $d
+C:\Users\NATHAN~1\AppData\Local\Temp\ccomKay7.s:277    .rodata.SYS_GetTemperatureLevel.str1.4:00000000 $d
+C:\Users\NATHAN~1\AppData\Local\Temp\ccomKay7.s:281    .text.SYS_GetTemperatureLevel:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\ccomKay7.s:287    .text.SYS_GetTemperatureLevel:00000000 SYS_GetTemperatureLevel
+C:\Users\NATHAN~1\AppData\Local\Temp\ccomKay7.s:400    .text.SYS_GetTemperatureLevel:00000088 $d
+
+UNDEFINED SYMBOLS
+MX_ADC_Init
+HAL_ADCEx_Calibration_Start
+HAL_ADC_ConfigChannel
+HAL_ADC_Start
+HAL_ADC_PollForConversion
+HAL_ADC_Stop
+HAL_ADC_GetValue
+HAL_ADC_DeInit
+Error_Handler
+hadc
+UTIL_ADV_TRACE_COND_FSend

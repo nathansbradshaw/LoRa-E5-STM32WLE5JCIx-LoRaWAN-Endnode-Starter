@@ -1,0 +1,408 @@
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\cc395Ssk.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"NvmDataMgmt.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.section	.text.NvmDataMgmtEvent,"ax",%progbits
+  18              		.align	1
+  19              		.global	NvmDataMgmtEvent
+  20              		.syntax unified
+  21              		.thumb
+  22              		.thumb_func
+  24              	NvmDataMgmtEvent:
+  25              	.LVL0:
+  26              	.LFB107:
+  27              		.file 1 "Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c"
+   1:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c **** /*!
+   2:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****  * \file      NvmDataMgmt.c
+   3:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****  *
+   4:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****  * \brief     NVM context management implementation
+   5:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****  *
+   6:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****  * \copyright Revised BSD License, see section \ref LICENSE.
+   7:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****  *
+   8:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****  * \code
+   9:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****  *                ______                              _
+  10:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****  *               / _____)             _              | |
+  11:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****  *              ( (____  _____ ____ _| |_ _____  ____| |__
+  12:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****  *               \____ \| ___ |    (_   _) ___ |/ ___)  _ \
+  13:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****  *               _____) ) ____| | | || |_| ____( (___| | | |
+  14:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****  *              (______/|_____)_|_|_| \__)_____)\____)_| |_|
+  15:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****  *              (C)2013-2017 Semtech
+  16:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****  *
+  17:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****  *               ___ _____ _   ___ _  _____ ___  ___  ___ ___
+  18:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****  *              / __|_   _/_\ / __| |/ / __/ _ \| _ \/ __| __|
+  19:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****  *              \__ \ | |/ _ \ (__| ' <| _| (_) |   / (__| _|
+  20:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****  *              |___/ |_/_/ \_\___|_|\_\_| \___/|_|_\\___|___|
+  21:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****  *              embedded.connectivity.solutions===============
+  22:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****  *
+  23:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****  * \endcode
+  24:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****  *
+  25:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****  * \author    Miguel Luis ( Semtech )
+  26:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****  *
+  27:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****  * \author    Gregory Cristian ( Semtech )
+  28:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****  *
+  29:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****  * \author    Daniel Jaeckle ( STACKFORCE )
+  30:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****  *
+  31:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****  * \author    Johannes Bruder ( STACKFORCE )
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\cc395Ssk.s 			page 2
+
+
+  32:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****  */
+  33:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c **** 
+  34:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c **** #include <stdio.h>
+  35:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c **** #include "utilities.h"
+  36:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c **** #include "LoRaMac.h"
+  37:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c **** #include "NvmDataMgmt.h"
+  38:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c **** /*!
+  39:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****  * Enables/Disables the context storage management storage.
+  40:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****  * Must be enabled for LoRaWAN 1.0.4 or later.
+  41:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****  */
+  42:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c **** #ifndef CONTEXT_MANAGEMENT_ENABLED
+  43:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c **** #define CONTEXT_MANAGEMENT_ENABLED         0
+  44:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c **** #endif
+  45:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c **** 
+  46:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c **** #if( CONTEXT_MANAGEMENT_ENABLED == 1 )
+  47:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c **** #include "nvmm.h"
+  48:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c **** 
+  49:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c **** static uint16_t NvmNotifyFlags = 0;
+  50:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c **** #endif /* CONTEXT_MANAGEMENT_ENABLED == 1 */
+  51:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c **** 
+  52:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c **** void NvmDataMgmtEvent( uint16_t notifyFlags )
+  53:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c **** {
+  28              		.loc 1 53 1 view -0
+  29              		.cfi_startproc
+  30              		@ args = 0, pretend = 0, frame = 0
+  31              		@ frame_needed = 0, uses_anonymous_args = 0
+  32              		@ link register save eliminated.
+  54:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c **** #if( CONTEXT_MANAGEMENT_ENABLED == 1 )
+  55:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****     NvmNotifyFlags = notifyFlags;
+  56:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c **** #endif /* CONTEXT_MANAGEMENT_ENABLED == 1 */
+  57:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c **** }
+  33              		.loc 1 57 1 view .LVU1
+  34 0000 7047     		bx	lr
+  35              		.cfi_endproc
+  36              	.LFE107:
+  38              		.section	.text.NvmDataMgmtStore,"ax",%progbits
+  39              		.align	1
+  40              		.global	NvmDataMgmtStore
+  41              		.syntax unified
+  42              		.thumb
+  43              		.thumb_func
+  45              	NvmDataMgmtStore:
+  46              	.LFB108:
+  58:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c **** 
+  59:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c **** uint16_t NvmDataMgmtStore( void )
+  60:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c **** {
+  47              		.loc 1 60 1 view -0
+  48              		.cfi_startproc
+  49              		@ args = 0, pretend = 0, frame = 0
+  50              		@ frame_needed = 0, uses_anonymous_args = 0
+  51              		@ link register save eliminated.
+  61:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c **** #if( CONTEXT_MANAGEMENT_ENABLED == 1 )
+  62:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****     uint16_t offset = 0;
+  63:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****     uint16_t dataSize = 0;
+  64:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****     MibRequestConfirm_t mibReq;
+  65:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****     mibReq.Type = MIB_NVM_CTXS;
+  66:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****     LoRaMacMibGetRequestConfirm( &mibReq );
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\cc395Ssk.s 			page 3
+
+
+  67:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****     LoRaMacNvmData_t* nvm = mibReq.Param.Contexts;
+  68:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c **** 
+  69:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****     // Input checks
+  70:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****     if( NvmNotifyFlags == LORAMAC_NVM_NOTIFY_FLAG_NONE )
+  71:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****     {
+  72:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****         // There was no update.
+  73:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****         return 0;
+  74:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****     }
+  75:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****     if( LoRaMacStop( ) != LORAMAC_STATUS_OK )
+  76:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****     {
+  77:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****         return 0;
+  78:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****     }
+  79:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c **** 
+  80:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****     // Crypto
+  81:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****     if( ( NvmNotifyFlags & LORAMAC_NVM_NOTIFY_FLAG_CRYPTO ) ==
+  82:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****         LORAMAC_NVM_NOTIFY_FLAG_CRYPTO )
+  83:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****     {
+  84:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****         dataSize += NvmmWrite( ( uint8_t* ) &nvm->Crypto, sizeof( nvm->Crypto ),
+  85:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****                                offset );
+  86:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****     }
+  87:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****     offset += sizeof( nvm->Crypto );
+  88:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c **** 
+  89:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****     // MacGroup1
+  90:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****     if( ( NvmNotifyFlags & LORAMAC_NVM_NOTIFY_FLAG_MAC_GROUP1 ) ==
+  91:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****         LORAMAC_NVM_NOTIFY_FLAG_MAC_GROUP1 )
+  92:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****     {
+  93:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****         dataSize += NvmmWrite( ( uint8_t* ) &nvm->MacGroup1,
+  94:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****                                sizeof( nvm->MacGroup1 ), offset );
+  95:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****     }
+  96:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****     offset += sizeof( nvm->MacGroup1 );
+  97:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c **** 
+  98:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****     // MacGroup2
+  99:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****     if( ( NvmNotifyFlags & LORAMAC_NVM_NOTIFY_FLAG_MAC_GROUP2 ) ==
+ 100:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****         LORAMAC_NVM_NOTIFY_FLAG_MAC_GROUP2 )
+ 101:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****     {
+ 102:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****         dataSize += NvmmWrite( ( uint8_t* ) &nvm->MacGroup2,
+ 103:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****                                sizeof( nvm->MacGroup2 ), offset );
+ 104:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****     }
+ 105:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****     offset += sizeof( nvm->MacGroup2 );
+ 106:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c **** 
+ 107:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****     // Secure element
+ 108:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****     if( ( NvmNotifyFlags & LORAMAC_NVM_NOTIFY_FLAG_SECURE_ELEMENT ) ==
+ 109:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****         LORAMAC_NVM_NOTIFY_FLAG_SECURE_ELEMENT )
+ 110:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****     {
+ 111:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****         dataSize += NvmmWrite( ( uint8_t* ) &nvm->SecureElement, sizeof( nvm->SecureElement ),
+ 112:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****                                offset );
+ 113:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****     }
+ 114:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****     offset += sizeof( nvm->SecureElement );
+ 115:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c **** 
+ 116:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****     // Region group 1
+ 117:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****     if( ( NvmNotifyFlags & LORAMAC_NVM_NOTIFY_FLAG_REGION_GROUP1 ) ==
+ 118:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****         LORAMAC_NVM_NOTIFY_FLAG_REGION_GROUP1 )
+ 119:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****     {
+ 120:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****         dataSize += NvmmWrite( ( uint8_t* ) &nvm->RegionGroup1,
+ 121:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****                                sizeof( nvm->RegionGroup1 ), offset );
+ 122:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****     }
+ 123:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****     offset += sizeof( nvm->RegionGroup1 );
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\cc395Ssk.s 			page 4
+
+
+ 124:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c **** 
+ 125:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****     // Region group 2
+ 126:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****     if( ( NvmNotifyFlags & LORAMAC_NVM_NOTIFY_FLAG_REGION_GROUP2 ) ==
+ 127:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****         LORAMAC_NVM_NOTIFY_FLAG_REGION_GROUP2 )
+ 128:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****     {
+ 129:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****         dataSize += NvmmWrite( ( uint8_t* ) &nvm->RegionGroup2,
+ 130:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****                                sizeof( nvm->RegionGroup2 ), offset );
+ 131:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****     }
+ 132:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****     offset += sizeof( nvm->RegionGroup2 );
+ 133:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c **** 
+ 134:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****     // Class b
+ 135:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****     if( ( NvmNotifyFlags & LORAMAC_NVM_NOTIFY_FLAG_CLASS_B ) ==
+ 136:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****         LORAMAC_NVM_NOTIFY_FLAG_CLASS_B )
+ 137:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****     {
+ 138:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****         dataSize += NvmmWrite( ( uint8_t* ) &nvm->ClassB, sizeof( nvm->ClassB ),
+ 139:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****                                offset );
+ 140:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****     }
+ 141:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****     offset += sizeof( nvm->ClassB );
+ 142:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c **** 
+ 143:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****     // Reset notification flags
+ 144:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****     NvmNotifyFlags = LORAMAC_NVM_NOTIFY_FLAG_NONE;
+ 145:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c **** 
+ 146:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****     // Resume LoRaMac
+ 147:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****     LoRaMacStart( );
+ 148:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****     return dataSize;
+ 149:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c **** #else
+ 150:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****     return 0;
+  52              		.loc 1 150 5 view .LVU3
+ 151:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c **** #endif
+ 152:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c **** }
+  53              		.loc 1 152 1 is_stmt 0 view .LVU4
+  54 0000 0020     		movs	r0, #0
+  55 0002 7047     		bx	lr
+  56              		.cfi_endproc
+  57              	.LFE108:
+  59              		.section	.text.NvmDataMgmtRestore,"ax",%progbits
+  60              		.align	1
+  61              		.global	NvmDataMgmtRestore
+  62              		.syntax unified
+  63              		.thumb
+  64              		.thumb_func
+  66              	NvmDataMgmtRestore:
+  67              	.LFB109:
+ 153:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c **** 
+ 154:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c **** uint16_t NvmDataMgmtRestore( void )
+ 155:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c **** {
+  68              		.loc 1 155 1 is_stmt 1 view -0
+  69              		.cfi_startproc
+  70              		@ args = 0, pretend = 0, frame = 0
+  71              		@ frame_needed = 0, uses_anonymous_args = 0
+  72              		@ link register save eliminated.
+ 156:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c **** #if( CONTEXT_MANAGEMENT_ENABLED == 1 )
+ 157:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****     MibRequestConfirm_t mibReq;
+ 158:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****     mibReq.Type = MIB_NVM_CTXS;
+ 159:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****     LoRaMacMibGetRequestConfirm( &mibReq );
+ 160:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****     LoRaMacNvmData_t* nvm = mibReq.Param.Contexts;
+ 161:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****     uint16_t offset = 0;
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\cc395Ssk.s 			page 5
+
+
+ 162:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c **** 
+ 163:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****     // Crypto
+ 164:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****     if( NvmmCrc32Check( sizeof( LoRaMacCryptoNvmData_t ), offset ) == false )
+ 165:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****     {
+ 166:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****         return 0;
+ 167:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****     }
+ 168:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****     offset += sizeof( LoRaMacCryptoNvmData_t );
+ 169:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c **** 
+ 170:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****     // Mac Group 1
+ 171:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****     if( NvmmCrc32Check( sizeof( LoRaMacNvmDataGroup1_t ), offset ) == false )
+ 172:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****     {
+ 173:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****         return 0;
+ 174:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****     }
+ 175:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****     offset += sizeof( LoRaMacNvmDataGroup1_t );
+ 176:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c **** 
+ 177:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****     // Mac Group 2
+ 178:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****     if( NvmmCrc32Check( sizeof( LoRaMacNvmDataGroup2_t ), offset ) == false )
+ 179:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****     {
+ 180:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****         return 0;
+ 181:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****     }
+ 182:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****     offset += sizeof( LoRaMacNvmDataGroup2_t );
+ 183:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c **** 
+ 184:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****     // Secure element
+ 185:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****     if( NvmmCrc32Check( sizeof( SecureElementNvmData_t ), offset ) == false )
+ 186:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****     {
+ 187:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****         return 0;
+ 188:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****     }
+ 189:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****     offset += sizeof( SecureElementNvmData_t );
+ 190:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c **** 
+ 191:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****     // Region group 1
+ 192:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****     if( NvmmCrc32Check( sizeof( RegionNvmDataGroup1_t ), offset ) == false )
+ 193:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****     {
+ 194:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****         return 0;
+ 195:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****     }
+ 196:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****     offset += sizeof( RegionNvmDataGroup1_t );
+ 197:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c **** 
+ 198:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****     // Region group 2
+ 199:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****     if( NvmmCrc32Check( sizeof( RegionNvmDataGroup2_t ), offset ) == false )
+ 200:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****     {
+ 201:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****         return 0;
+ 202:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****     }
+ 203:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****     offset += sizeof( RegionNvmDataGroup2_t );
+ 204:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c **** 
+ 205:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****     // Class b
+ 206:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****     if( NvmmCrc32Check( sizeof( LoRaMacClassBNvmData_t ), offset ) == false )
+ 207:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****     {
+ 208:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****         return 0;
+ 209:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****     }
+ 210:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****     offset += sizeof( LoRaMacClassBNvmData_t );
+ 211:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c **** 
+ 212:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****     if( NvmmRead( ( uint8_t* ) nvm, sizeof( LoRaMacNvmData_t ), 0 ) ==
+ 213:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****                   sizeof( LoRaMacNvmData_t ) )
+ 214:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****     {
+ 215:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****         return sizeof( LoRaMacNvmData_t );
+ 216:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****     }
+ 217:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c **** #endif
+ 218:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****     return 0;
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\cc395Ssk.s 			page 6
+
+
+  73              		.loc 1 218 5 view .LVU6
+ 219:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c **** }
+  74              		.loc 1 219 1 is_stmt 0 view .LVU7
+  75 0000 0020     		movs	r0, #0
+  76 0002 7047     		bx	lr
+  77              		.cfi_endproc
+  78              	.LFE109:
+  80              		.section	.text.NvmDataMgmtFactoryReset,"ax",%progbits
+  81              		.align	1
+  82              		.global	NvmDataMgmtFactoryReset
+  83              		.syntax unified
+  84              		.thumb
+  85              		.thumb_func
+  87              	NvmDataMgmtFactoryReset:
+  88              	.LFB110:
+ 220:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c **** 
+ 221:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c **** bool NvmDataMgmtFactoryReset( void )
+ 222:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c **** {
+  89              		.loc 1 222 1 is_stmt 1 view -0
+  90              		.cfi_startproc
+  91              		@ args = 0, pretend = 0, frame = 0
+  92              		@ frame_needed = 0, uses_anonymous_args = 0
+  93              		@ link register save eliminated.
+ 223:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c **** #if( CONTEXT_MANAGEMENT_ENABLED == 1 )
+ 224:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****     uint16_t offset = 0;
+ 225:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****     // Crypto
+ 226:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****     if( NvmmReset( sizeof( LoRaMacCryptoNvmData_t ), offset ) == false )
+ 227:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****     {
+ 228:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****         return false;
+ 229:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****     }
+ 230:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****     offset += sizeof( LoRaMacCryptoNvmData_t );
+ 231:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c **** 
+ 232:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****     // Mac Group 1
+ 233:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****     if( NvmmReset( sizeof( LoRaMacNvmDataGroup1_t ), offset ) == false )
+ 234:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****     {
+ 235:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****         return false;
+ 236:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****     }
+ 237:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****     offset += sizeof( LoRaMacNvmDataGroup1_t );
+ 238:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c **** 
+ 239:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****     // Mac Group 2
+ 240:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****     if( NvmmReset( sizeof( LoRaMacNvmDataGroup2_t ), offset ) == false )
+ 241:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****     {
+ 242:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****         return false;
+ 243:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****     }
+ 244:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****     offset += sizeof( LoRaMacNvmDataGroup2_t );
+ 245:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c **** 
+ 246:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****     // Secure element
+ 247:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****     if( NvmmReset( sizeof( SecureElementNvmData_t ), offset ) == false )
+ 248:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****     {
+ 249:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****         return false;
+ 250:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****     }
+ 251:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****     offset += sizeof( SecureElementNvmData_t );
+ 252:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c **** 
+ 253:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****     // Region group 1
+ 254:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****     if( NvmmReset( sizeof( RegionNvmDataGroup1_t ), offset ) == false )
+ 255:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****     {
+ 256:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****         return false;
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\cc395Ssk.s 			page 7
+
+
+ 257:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****     }
+ 258:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****     offset += sizeof( RegionNvmDataGroup1_t );
+ 259:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c **** 
+ 260:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****     // Region group 2
+ 261:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****     if( NvmmReset( sizeof( RegionNvmDataGroup2_t ), offset ) == false )
+ 262:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****     {
+ 263:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****         return false;
+ 264:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****     }
+ 265:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****     offset += sizeof( RegionNvmDataGroup2_t );
+ 266:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c **** 
+ 267:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****     // Class b
+ 268:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****     if( NvmmReset( sizeof( LoRaMacClassBNvmData_t ), offset ) == false )
+ 269:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****     {
+ 270:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****         return false;
+ 271:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****     }
+ 272:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****     offset += sizeof( LoRaMacClassBNvmData_t );
+ 273:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c **** #endif
+ 274:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c ****     return true;
+  94              		.loc 1 274 5 view .LVU9
+ 275:Middlewares/Third_Party/LoRaWAN/LmHandler/NvmDataMgmt.c **** }
+  95              		.loc 1 275 1 is_stmt 0 view .LVU10
+  96 0000 0120     		movs	r0, #1
+  97 0002 7047     		bx	lr
+  98              		.cfi_endproc
+  99              	.LFE110:
+ 101              		.text
+ 102              	.Letext0:
+ 103              		.file 2 "c:\\program files (x86)\\gnu arm embedded toolchain\\10 2021.10\\arm-none-eabi\\include\\
+ 104              		.file 3 "c:\\program files (x86)\\gnu arm embedded toolchain\\10 2021.10\\arm-none-eabi\\include\\
+ 105              		.file 4 "Middlewares/Third_Party/LoRaWAN/Mac/LoRaMac.h"
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\cc395Ssk.s 			page 8
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 NvmDataMgmt.c
+C:\Users\NATHAN~1\AppData\Local\Temp\cc395Ssk.s:18     .text.NvmDataMgmtEvent:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\cc395Ssk.s:24     .text.NvmDataMgmtEvent:00000000 NvmDataMgmtEvent
+C:\Users\NATHAN~1\AppData\Local\Temp\cc395Ssk.s:39     .text.NvmDataMgmtStore:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\cc395Ssk.s:45     .text.NvmDataMgmtStore:00000000 NvmDataMgmtStore
+C:\Users\NATHAN~1\AppData\Local\Temp\cc395Ssk.s:60     .text.NvmDataMgmtRestore:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\cc395Ssk.s:66     .text.NvmDataMgmtRestore:00000000 NvmDataMgmtRestore
+C:\Users\NATHAN~1\AppData\Local\Temp\cc395Ssk.s:81     .text.NvmDataMgmtFactoryReset:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\cc395Ssk.s:87     .text.NvmDataMgmtFactoryReset:00000000 NvmDataMgmtFactoryReset
+
+NO UNDEFINED SYMBOLS

@@ -1,0 +1,866 @@
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccJdNubp.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"utilities.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.section	.text.rand1,"ax",%progbits
+  18              		.align	1
+  19              		.syntax unified
+  20              		.thumb
+  21              		.thumb_func
+  23              	rand1:
+  24              	.LFB104:
+  25              		.file 1 "Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c"
+   1:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c **** /*!
+   2:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****  * \file      utilities.c
+   3:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****  *
+   4:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****  * \brief     Helper functions implementation
+   5:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****  *
+   6:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****  * \copyright Revised BSD License, see section \ref LICENSE.
+   7:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****  *
+   8:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****  * \code
+   9:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****  *                ______                              _
+  10:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****  *               / _____)             _              | |
+  11:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****  *              ( (____  _____ ____ _| |_ _____  ____| |__
+  12:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****  *               \____ \| ___ |    (_   _) ___ |/ ___)  _ \
+  13:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****  *               _____) ) ____| | | || |_| ____( (___| | | |
+  14:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****  *              (______/|_____)_|_|_| \__)_____)\____)_| |_|
+  15:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****  *              (C)2013-2017 Semtech
+  16:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****  *
+  17:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****  * \endcode
+  18:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****  *
+  19:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****  * \author    Miguel Luis ( Semtech )
+  20:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****  *
+  21:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****  * \author    Gregory Cristian ( Semtech )
+  22:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****  */
+  23:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c **** /**
+  24:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****   ******************************************************************************
+  25:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****   *
+  26:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****   *          Portions COPYRIGHT 2020 STMicroelectronics
+  27:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****   *
+  28:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****   * @file    utilities.c
+  29:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****   * @author  MCD Application Team
+  30:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****   * @brief   Helper functions implementation
+  31:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****   ******************************************************************************
+  32:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****   */
+  33:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c **** 
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccJdNubp.s 			page 2
+
+
+  34:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c **** #include "utilities.h"
+  35:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c **** 
+  36:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c **** /*!
+  37:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****  * Redefinition of rand() and srand() standard C functions.
+  38:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****  * These functions are redefined in order to get the same behavior across
+  39:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****  * different compiler toolchains implementations.
+  40:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****  */
+  41:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c **** // Standard random functions redefinition start
+  42:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c **** #define RAND_LOCAL_MAX 2147483647L
+  43:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c **** 
+  44:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c **** static uint32_t next = 1;
+  45:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c **** 
+  46:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c **** static int32_t rand1( void );
+  47:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c **** 
+  48:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c **** static int32_t rand1( void )
+  49:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c **** {
+  26              		.loc 1 49 1 view -0
+  27              		.cfi_startproc
+  28              		@ args = 0, pretend = 0, frame = 0
+  29              		@ frame_needed = 0, uses_anonymous_args = 0
+  30              		@ link register save eliminated.
+  50:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****     return ( ( next = next * 1103515245L + 12345L ) % RAND_LOCAL_MAX );
+  31              		.loc 1 50 5 view .LVU1
+  32              		.loc 1 50 28 is_stmt 0 view .LVU2
+  33 0000 094B     		ldr	r3, .L2
+  34 0002 1A68     		ldr	r2, [r3]
+  35              		.loc 1 50 42 view .LVU3
+  36 0004 0949     		ldr	r1, .L2+4
+  37 0006 43F23900 		movw	r0, #12345
+  38 000a 01FB0200 		mla	r0, r1, r2, r0
+  39              		.loc 1 50 21 view .LVU4
+  40 000e 1860     		str	r0, [r3]
+  41              		.loc 1 50 53 view .LVU5
+  42 0010 0323     		movs	r3, #3
+  43 0012 A3FB0023 		umull	r2, r3, r3, r0
+  44 0016 C21A     		subs	r2, r0, r3
+  45 0018 03EB5203 		add	r3, r3, r2, lsr #1
+  46 001c 9B0F     		lsrs	r3, r3, #30
+  47 001e C3EBC373 		rsb	r3, r3, r3, lsl #31
+  51:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c **** }
+  48              		.loc 1 51 1 view .LVU6
+  49 0022 C01A     		subs	r0, r0, r3
+  50 0024 7047     		bx	lr
+  51              	.L3:
+  52 0026 00BF     		.align	2
+  53              	.L2:
+  54 0028 00000000 		.word	.LANCHOR0
+  55 002c 6D4EC641 		.word	1103515245
+  56              		.cfi_endproc
+  57              	.LFE104:
+  59              		.section	.text.srand1,"ax",%progbits
+  60              		.align	1
+  61              		.global	srand1
+  62              		.syntax unified
+  63              		.thumb
+  64              		.thumb_func
+  66              	srand1:
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccJdNubp.s 			page 3
+
+
+  67              	.LVL0:
+  68              	.LFB105:
+  52:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c **** 
+  53:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c **** void srand1( uint32_t seed )
+  54:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c **** {
+  69              		.loc 1 54 1 is_stmt 1 view -0
+  70              		.cfi_startproc
+  71              		@ args = 0, pretend = 0, frame = 0
+  72              		@ frame_needed = 0, uses_anonymous_args = 0
+  73              		@ link register save eliminated.
+  55:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****     next = seed;
+  74              		.loc 1 55 5 view .LVU8
+  75              		.loc 1 55 10 is_stmt 0 view .LVU9
+  76 0000 014B     		ldr	r3, .L5
+  77 0002 1860     		str	r0, [r3]
+  56:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c **** }
+  78              		.loc 1 56 1 view .LVU10
+  79 0004 7047     		bx	lr
+  80              	.L6:
+  81 0006 00BF     		.align	2
+  82              	.L5:
+  83 0008 00000000 		.word	.LANCHOR0
+  84              		.cfi_endproc
+  85              	.LFE105:
+  87              		.section	.text.randr,"ax",%progbits
+  88              		.align	1
+  89              		.global	randr
+  90              		.syntax unified
+  91              		.thumb
+  92              		.thumb_func
+  94              	randr:
+  95              	.LVL1:
+  96              	.LFB106:
+  57:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c **** // Standard random functions redefinition end
+  58:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c **** 
+  59:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c **** int32_t randr( int32_t min, int32_t max )
+  60:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c **** {
+  97              		.loc 1 60 1 is_stmt 1 view -0
+  98              		.cfi_startproc
+  99              		@ args = 0, pretend = 0, frame = 0
+ 100              		@ frame_needed = 0, uses_anonymous_args = 0
+ 101              		.loc 1 60 1 is_stmt 0 view .LVU12
+ 102 0000 38B5     		push	{r3, r4, r5, lr}
+ 103              	.LCFI0:
+ 104              		.cfi_def_cfa_offset 16
+ 105              		.cfi_offset 3, -16
+ 106              		.cfi_offset 4, -12
+ 107              		.cfi_offset 5, -8
+ 108              		.cfi_offset 14, -4
+ 109 0002 0546     		mov	r5, r0
+ 110 0004 0C46     		mov	r4, r1
+  61:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****     return ( int32_t )rand1( ) % ( max - min + 1 ) + min;
+ 111              		.loc 1 61 5 is_stmt 1 view .LVU13
+ 112              		.loc 1 61 23 is_stmt 0 view .LVU14
+ 113 0006 FFF7FEFF 		bl	rand1
+ 114              	.LVL2:
+ 115              		.loc 1 61 40 view .LVU15
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccJdNubp.s 			page 4
+
+
+ 116 000a 611B     		subs	r1, r4, r5
+ 117              		.loc 1 61 46 view .LVU16
+ 118 000c 0131     		adds	r1, r1, #1
+ 119              		.loc 1 61 32 view .LVU17
+ 120 000e 90FBF1F3 		sdiv	r3, r0, r1
+ 121 0012 01FB1300 		mls	r0, r1, r3, r0
+  62:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c **** }
+ 122              		.loc 1 62 1 view .LVU18
+ 123 0016 2844     		add	r0, r0, r5
+ 124 0018 38BD     		pop	{r3, r4, r5, pc}
+ 125              		.loc 1 62 1 view .LVU19
+ 126              		.cfi_endproc
+ 127              	.LFE106:
+ 129              		.section	.text.memcpy1,"ax",%progbits
+ 130              		.align	1
+ 131              		.global	memcpy1
+ 132              		.syntax unified
+ 133              		.thumb
+ 134              		.thumb_func
+ 136              	memcpy1:
+ 137              	.LVL3:
+ 138              	.LFB107:
+  63:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c **** 
+  64:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c **** void memcpy1( uint8_t *dst, const uint8_t *src, uint16_t size )
+  65:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c **** {
+ 139              		.loc 1 65 1 is_stmt 1 view -0
+ 140              		.cfi_startproc
+ 141              		@ args = 0, pretend = 0, frame = 0
+ 142              		@ frame_needed = 0, uses_anonymous_args = 0
+ 143              		@ link register save eliminated.
+  66:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****     while( size-- )
+ 144              		.loc 1 66 5 view .LVU21
+ 145              		.loc 1 66 10 is_stmt 0 view .LVU22
+ 146 0000 04E0     		b	.L10
+ 147              	.LVL4:
+ 148              	.L11:
+  67:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****     {
+  68:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****         *dst++ = *src++;
+ 149              		.loc 1 68 9 is_stmt 1 view .LVU23
+ 150              		.loc 1 68 18 is_stmt 0 view .LVU24
+ 151 0002 11F8012B 		ldrb	r2, [r1], #1	@ zero_extendqisi2
+ 152              	.LVL5:
+ 153              		.loc 1 68 16 view .LVU25
+ 154 0006 00F8012B 		strb	r2, [r0], #1
+ 155              	.LVL6:
+  66:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****     while( size-- )
+ 156              		.loc 1 66 16 view .LVU26
+ 157 000a 1A46     		mov	r2, r3
+ 158              	.LVL7:
+ 159              	.L10:
+  66:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****     while( size-- )
+ 160              		.loc 1 66 10 is_stmt 1 view .LVU27
+  66:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****     while( size-- )
+ 161              		.loc 1 66 16 is_stmt 0 view .LVU28
+ 162 000c 531E     		subs	r3, r2, #1
+ 163 000e 9BB2     		uxth	r3, r3
+ 164              	.LVL8:
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccJdNubp.s 			page 5
+
+
+  66:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****     while( size-- )
+ 165              		.loc 1 66 10 view .LVU29
+ 166 0010 002A     		cmp	r2, #0
+ 167 0012 F6D1     		bne	.L11
+  69:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****     }
+  70:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c **** }
+ 168              		.loc 1 70 1 view .LVU30
+ 169 0014 7047     		bx	lr
+ 170              		.cfi_endproc
+ 171              	.LFE107:
+ 173              		.section	.text.memcpyr,"ax",%progbits
+ 174              		.align	1
+ 175              		.global	memcpyr
+ 176              		.syntax unified
+ 177              		.thumb
+ 178              		.thumb_func
+ 180              	memcpyr:
+ 181              	.LVL9:
+ 182              	.LFB108:
+  71:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c **** 
+  72:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c **** void memcpyr( uint8_t *dst, const uint8_t *src, uint16_t size )
+  73:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c **** {
+ 183              		.loc 1 73 1 is_stmt 1 view -0
+ 184              		.cfi_startproc
+ 185              		@ args = 0, pretend = 0, frame = 0
+ 186              		@ frame_needed = 0, uses_anonymous_args = 0
+ 187              		@ link register save eliminated.
+  74:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****     dst = dst + ( size - 1 );
+ 188              		.loc 1 74 5 view .LVU32
+ 189              		.loc 1 74 15 is_stmt 0 view .LVU33
+ 190 0000 531E     		subs	r3, r2, #1
+ 191              		.loc 1 74 9 view .LVU34
+ 192 0002 1844     		add	r0, r0, r3
+ 193              	.LVL10:
+  75:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****     while( size-- )
+ 194              		.loc 1 75 5 is_stmt 1 view .LVU35
+ 195              		.loc 1 75 10 is_stmt 0 view .LVU36
+ 196 0004 04E0     		b	.L13
+ 197              	.LVL11:
+ 198              	.L14:
+  76:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****     {
+  77:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****         *dst-- = *src++;
+ 199              		.loc 1 77 9 is_stmt 1 view .LVU37
+ 200              		.loc 1 77 18 is_stmt 0 view .LVU38
+ 201 0006 11F8012B 		ldrb	r2, [r1], #1	@ zero_extendqisi2
+ 202              	.LVL12:
+ 203              		.loc 1 77 16 view .LVU39
+ 204 000a 00F80129 		strb	r2, [r0], #-1
+ 205              	.LVL13:
+  75:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****     while( size-- )
+ 206              		.loc 1 75 16 view .LVU40
+ 207 000e 1A46     		mov	r2, r3
+ 208              	.LVL14:
+ 209              	.L13:
+  75:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****     while( size-- )
+ 210              		.loc 1 75 10 is_stmt 1 view .LVU41
+  75:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****     while( size-- )
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccJdNubp.s 			page 6
+
+
+ 211              		.loc 1 75 16 is_stmt 0 view .LVU42
+ 212 0010 531E     		subs	r3, r2, #1
+ 213 0012 9BB2     		uxth	r3, r3
+ 214              	.LVL15:
+  75:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****     while( size-- )
+ 215              		.loc 1 75 10 view .LVU43
+ 216 0014 002A     		cmp	r2, #0
+ 217 0016 F6D1     		bne	.L14
+  78:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****     }
+  79:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c **** }
+ 218              		.loc 1 79 1 view .LVU44
+ 219 0018 7047     		bx	lr
+ 220              		.cfi_endproc
+ 221              	.LFE108:
+ 223              		.section	.text.memset1,"ax",%progbits
+ 224              		.align	1
+ 225              		.global	memset1
+ 226              		.syntax unified
+ 227              		.thumb
+ 228              		.thumb_func
+ 230              	memset1:
+ 231              	.LVL16:
+ 232              	.LFB109:
+  80:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c **** 
+  81:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c **** void memset1( uint8_t *dst, uint8_t value, uint16_t size )
+  82:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c **** {
+ 233              		.loc 1 82 1 is_stmt 1 view -0
+ 234              		.cfi_startproc
+ 235              		@ args = 0, pretend = 0, frame = 0
+ 236              		@ frame_needed = 0, uses_anonymous_args = 0
+ 237              		@ link register save eliminated.
+  83:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****     while( size-- )
+ 238              		.loc 1 83 5 view .LVU46
+ 239              		.loc 1 83 10 is_stmt 0 view .LVU47
+ 240 0000 02E0     		b	.L16
+ 241              	.LVL17:
+ 242              	.L17:
+  84:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****     {
+  85:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****         *dst++ = value;
+ 243              		.loc 1 85 9 is_stmt 1 view .LVU48
+ 244              		.loc 1 85 16 is_stmt 0 view .LVU49
+ 245 0002 00F8011B 		strb	r1, [r0], #1
+ 246              	.LVL18:
+  83:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****     while( size-- )
+ 247              		.loc 1 83 16 view .LVU50
+ 248 0006 1A46     		mov	r2, r3
+ 249              	.LVL19:
+ 250              	.L16:
+  83:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****     while( size-- )
+ 251              		.loc 1 83 10 is_stmt 1 view .LVU51
+  83:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****     while( size-- )
+ 252              		.loc 1 83 16 is_stmt 0 view .LVU52
+ 253 0008 531E     		subs	r3, r2, #1
+ 254 000a 9BB2     		uxth	r3, r3
+ 255              	.LVL20:
+  83:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****     while( size-- )
+ 256              		.loc 1 83 10 view .LVU53
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccJdNubp.s 			page 7
+
+
+ 257 000c 002A     		cmp	r2, #0
+ 258 000e F8D1     		bne	.L17
+  86:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****     }
+  87:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c **** }
+ 259              		.loc 1 87 1 view .LVU54
+ 260 0010 7047     		bx	lr
+ 261              		.cfi_endproc
+ 262              	.LFE109:
+ 264              		.section	.text.Nibble2HexChar,"ax",%progbits
+ 265              		.align	1
+ 266              		.global	Nibble2HexChar
+ 267              		.syntax unified
+ 268              		.thumb
+ 269              		.thumb_func
+ 271              	Nibble2HexChar:
+ 272              	.LVL21:
+ 273              	.LFB110:
+  88:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c **** 
+  89:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c **** int8_t Nibble2HexChar( uint8_t a )
+  90:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c **** {
+ 274              		.loc 1 90 1 is_stmt 1 view -0
+ 275              		.cfi_startproc
+ 276              		@ args = 0, pretend = 0, frame = 0
+ 277              		@ frame_needed = 0, uses_anonymous_args = 0
+ 278              		@ link register save eliminated.
+  91:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****     if( a < 10 )
+ 279              		.loc 1 91 5 view .LVU56
+ 280              		.loc 1 91 7 is_stmt 0 view .LVU57
+ 281 0000 0928     		cmp	r0, #9
+ 282 0002 04D9     		bls	.L22
+  92:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****     {
+  93:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****         return '0' + a;
+  94:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****     }
+  95:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****     else if( a < 16 )
+ 283              		.loc 1 95 10 is_stmt 1 view .LVU58
+ 284              		.loc 1 95 12 is_stmt 0 view .LVU59
+ 285 0004 0F28     		cmp	r0, #15
+ 286 0006 05D8     		bhi	.L21
+  96:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****     {
+  97:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****         return 'A' + ( a - 10 );
+ 287              		.loc 1 97 9 is_stmt 1 view .LVU60
+ 288              		.loc 1 97 20 is_stmt 0 view .LVU61
+ 289 0008 3730     		adds	r0, r0, #55
+ 290              	.LVL22:
+ 291              		.loc 1 97 20 view .LVU62
+ 292 000a 40B2     		sxtb	r0, r0
+ 293 000c 7047     		bx	lr
+ 294              	.LVL23:
+ 295              	.L22:
+  93:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****     }
+ 296              		.loc 1 93 9 is_stmt 1 view .LVU63
+  93:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****     }
+ 297              		.loc 1 93 20 is_stmt 0 view .LVU64
+ 298 000e 3030     		adds	r0, r0, #48
+ 299              	.LVL24:
+  93:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****     }
+ 300              		.loc 1 93 20 view .LVU65
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccJdNubp.s 			page 8
+
+
+ 301 0010 40B2     		sxtb	r0, r0
+ 302 0012 7047     		bx	lr
+ 303              	.LVL25:
+ 304              	.L21:
+  98:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****     }
+  99:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****     else
+ 100:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****     {
+ 101:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****         return '?';
+ 305              		.loc 1 101 16 view .LVU66
+ 306 0014 3F20     		movs	r0, #63
+ 307              	.LVL26:
+ 102:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****     }
+ 103:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c **** }
+ 308              		.loc 1 103 1 view .LVU67
+ 309 0016 7047     		bx	lr
+ 310              		.cfi_endproc
+ 311              	.LFE110:
+ 313              		.section	.text.Crc32,"ax",%progbits
+ 314              		.align	1
+ 315              		.global	Crc32
+ 316              		.syntax unified
+ 317              		.thumb
+ 318              		.thumb_func
+ 320              	Crc32:
+ 321              	.LVL27:
+ 322              	.LFB111:
+ 104:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c **** 
+ 105:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c **** uint32_t Crc32( uint8_t *buffer, uint16_t length )
+ 106:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c **** {
+ 323              		.loc 1 106 1 is_stmt 1 view -0
+ 324              		.cfi_startproc
+ 325              		@ args = 0, pretend = 0, frame = 0
+ 326              		@ frame_needed = 0, uses_anonymous_args = 0
+ 107:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****     // The CRC calculation follows CCITT - 0x04C11DB7
+ 108:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****     const uint32_t reversedPolynom = 0xEDB88320;
+ 327              		.loc 1 108 5 view .LVU69
+ 109:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c **** 
+ 110:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****     // CRC initial value
+ 111:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****     uint32_t crc = 0xFFFFFFFF;
+ 328              		.loc 1 111 5 view .LVU70
+ 112:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c **** 
+ 113:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****     if( buffer == NULL )
+ 329              		.loc 1 113 5 view .LVU71
+ 330              		.loc 1 113 7 is_stmt 0 view .LVU72
+ 331 0000 F0B1     		cbz	r0, .L29
+ 106:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****     // The CRC calculation follows CCITT - 0x04C11DB7
+ 332              		.loc 1 106 1 view .LVU73
+ 333 0002 10B5     		push	{r4, lr}
+ 334              	.LCFI1:
+ 335              		.cfi_def_cfa_offset 8
+ 336              		.cfi_offset 4, -8
+ 337              		.cfi_offset 14, -4
+ 338 0004 0446     		mov	r4, r0
+ 339              	.LBB2:
+ 114:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****     {
+ 115:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****         return 0;
+ 116:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****     }
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccJdNubp.s 			page 9
+
+
+ 117:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c **** 
+ 118:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****     for( uint16_t i = 0; i < length; ++i )
+ 340              		.loc 1 118 19 view .LVU74
+ 341 0006 4FF0000E 		mov	lr, #0
+ 342              	.LBE2:
+ 111:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c **** 
+ 343              		.loc 1 111 14 view .LVU75
+ 344 000a 4FF0FF30 		mov	r0, #-1
+ 345              	.LVL28:
+ 111:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c **** 
+ 346              		.loc 1 111 14 view .LVU76
+ 347 000e 0EE0     		b	.L25
+ 348              	.LVL29:
+ 349              	.L27:
+ 350              	.LBB5:
+ 351              	.LBB3:
+ 119:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****     {
+ 120:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****         crc ^= ( uint32_t )buffer[i];
+ 121:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****         for( uint16_t i = 0; i < 8; i++ )
+ 122:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****         {
+ 123:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****             crc = ( crc >> 1 ) ^ ( reversedPolynom & ~( ( crc & 0x01 ) - 1 ) );
+ 352              		.loc 1 123 13 is_stmt 1 discriminator 3 view .LVU77
+ 353              		.loc 1 123 54 is_stmt 0 discriminator 3 view .LVU78
+ 354 0010 40F3000C 		sbfx	ip, r0, #0, #1
+ 355              		.loc 1 123 52 discriminator 3 view .LVU79
+ 356 0014 0B4A     		ldr	r2, .L35
+ 357 0016 0CEA0202 		and	r2, ip, r2
+ 358              		.loc 1 123 17 discriminator 3 view .LVU80
+ 359 001a 82EA5000 		eor	r0, r2, r0, lsr #1
+ 360              	.LVL30:
+ 121:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****         {
+ 361              		.loc 1 121 37 is_stmt 1 discriminator 3 view .LVU81
+ 121:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****         {
+ 362              		.loc 1 121 38 is_stmt 0 discriminator 3 view .LVU82
+ 363 001e 0133     		adds	r3, r3, #1
+ 364              	.LVL31:
+ 121:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****         {
+ 365              		.loc 1 121 38 discriminator 3 view .LVU83
+ 366 0020 9BB2     		uxth	r3, r3
+ 367              	.LVL32:
+ 368              	.L26:
+ 121:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****         {
+ 369              		.loc 1 121 30 is_stmt 1 discriminator 1 view .LVU84
+ 121:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****         {
+ 370              		.loc 1 121 9 is_stmt 0 discriminator 1 view .LVU85
+ 371 0022 072B     		cmp	r3, #7
+ 372 0024 F4D9     		bls	.L27
+ 121:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****         {
+ 373              		.loc 1 121 9 discriminator 1 view .LVU86
+ 374              	.LBE3:
+ 118:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****     {
+ 375              		.loc 1 118 38 is_stmt 1 discriminator 2 view .LVU87
+ 376 0026 0EF1010E 		add	lr, lr, #1
+ 377              	.LVL33:
+ 118:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****     {
+ 378              		.loc 1 118 38 is_stmt 0 discriminator 2 view .LVU88
+ 379 002a 1FFA8EFE 		uxth	lr, lr
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccJdNubp.s 			page 10
+
+
+ 380              	.LVL34:
+ 381              	.L25:
+ 118:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****     {
+ 382              		.loc 1 118 26 is_stmt 1 discriminator 1 view .LVU89
+ 118:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****     {
+ 383              		.loc 1 118 5 is_stmt 0 discriminator 1 view .LVU90
+ 384 002e 8E45     		cmp	lr, r1
+ 385 0030 04D2     		bcs	.L34
+ 120:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****         for( uint16_t i = 0; i < 8; i++ )
+ 386              		.loc 1 120 9 is_stmt 1 view .LVU91
+ 120:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****         for( uint16_t i = 0; i < 8; i++ )
+ 387              		.loc 1 120 34 is_stmt 0 view .LVU92
+ 388 0032 14F80E30 		ldrb	r3, [r4, lr]	@ zero_extendqisi2
+ 120:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****         for( uint16_t i = 0; i < 8; i++ )
+ 389              		.loc 1 120 13 view .LVU93
+ 390 0036 5840     		eors	r0, r0, r3
+ 391              	.LVL35:
+ 121:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****         {
+ 392              		.loc 1 121 9 is_stmt 1 view .LVU94
+ 393              	.LBB4:
+ 121:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****         {
+ 394              		.loc 1 121 14 view .LVU95
+ 121:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****         {
+ 395              		.loc 1 121 23 is_stmt 0 view .LVU96
+ 396 0038 0023     		movs	r3, #0
+ 121:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****         {
+ 397              		.loc 1 121 9 view .LVU97
+ 398 003a F2E7     		b	.L26
+ 399              	.LVL36:
+ 400              	.L34:
+ 121:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****         {
+ 401              		.loc 1 121 9 view .LVU98
+ 402              	.LBE4:
+ 403              	.LBE5:
+ 124:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****         }
+ 125:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****     }
+ 126:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c **** 
+ 127:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****     return ~crc;
+ 404              		.loc 1 127 5 is_stmt 1 view .LVU99
+ 405              		.loc 1 127 12 is_stmt 0 view .LVU100
+ 406 003c C043     		mvns	r0, r0
+ 407              	.LVL37:
+ 128:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c **** }
+ 408              		.loc 1 128 1 view .LVU101
+ 409 003e 10BD     		pop	{r4, pc}
+ 410              	.LVL38:
+ 411              	.L29:
+ 412              	.LCFI2:
+ 413              		.cfi_def_cfa_offset 0
+ 414              		.cfi_restore 4
+ 415              		.cfi_restore 14
+ 115:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****     }
+ 416              		.loc 1 115 16 view .LVU102
+ 417 0040 0020     		movs	r0, #0
+ 418              	.LVL39:
+ 419              		.loc 1 128 1 view .LVU103
+ 420 0042 7047     		bx	lr
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccJdNubp.s 			page 11
+
+
+ 421              	.L36:
+ 422              		.align	2
+ 423              	.L35:
+ 424 0044 2083B8ED 		.word	-306674912
+ 425              		.cfi_endproc
+ 426              	.LFE111:
+ 428              		.section	.text.Crc32Init,"ax",%progbits
+ 429              		.align	1
+ 430              		.global	Crc32Init
+ 431              		.syntax unified
+ 432              		.thumb
+ 433              		.thumb_func
+ 435              	Crc32Init:
+ 436              	.LFB112:
+ 129:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c **** 
+ 130:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c **** uint32_t Crc32Init( void )
+ 131:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c **** {
+ 437              		.loc 1 131 1 is_stmt 1 view -0
+ 438              		.cfi_startproc
+ 439              		@ args = 0, pretend = 0, frame = 0
+ 440              		@ frame_needed = 0, uses_anonymous_args = 0
+ 441              		@ link register save eliminated.
+ 132:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****     return 0xFFFFFFFF;
+ 442              		.loc 1 132 5 view .LVU105
+ 133:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c **** }
+ 443              		.loc 1 133 1 is_stmt 0 view .LVU106
+ 444 0000 4FF0FF30 		mov	r0, #-1
+ 445 0004 7047     		bx	lr
+ 446              		.cfi_endproc
+ 447              	.LFE112:
+ 449              		.section	.text.Crc32Update,"ax",%progbits
+ 450              		.align	1
+ 451              		.global	Crc32Update
+ 452              		.syntax unified
+ 453              		.thumb
+ 454              		.thumb_func
+ 456              	Crc32Update:
+ 457              	.LVL40:
+ 458              	.LFB113:
+ 134:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c **** 
+ 135:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c **** uint32_t Crc32Update( uint32_t crcInit, uint8_t *buffer, uint16_t length )
+ 136:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c **** {
+ 459              		.loc 1 136 1 is_stmt 1 view -0
+ 460              		.cfi_startproc
+ 461              		@ args = 0, pretend = 0, frame = 0
+ 462              		@ frame_needed = 0, uses_anonymous_args = 0
+ 137:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****     // The CRC calculation follows CCITT - 0x04C11DB7
+ 138:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****     const uint32_t reversedPolynom = 0xEDB88320;
+ 463              		.loc 1 138 5 view .LVU108
+ 139:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c **** 
+ 140:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****     // CRC initial value
+ 141:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****     uint32_t crc = crcInit;
+ 464              		.loc 1 141 5 view .LVU109
+ 142:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c **** 
+ 143:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****     if( buffer == NULL )
+ 465              		.loc 1 143 5 view .LVU110
+ 466              		.loc 1 143 7 is_stmt 0 view .LVU111
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccJdNubp.s 			page 12
+
+
+ 467 0000 D1B1     		cbz	r1, .L44
+ 136:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****     // The CRC calculation follows CCITT - 0x04C11DB7
+ 468              		.loc 1 136 1 view .LVU112
+ 469 0002 10B5     		push	{r4, lr}
+ 470              	.LCFI3:
+ 471              		.cfi_def_cfa_offset 8
+ 472              		.cfi_offset 4, -8
+ 473              		.cfi_offset 14, -4
+ 474 0004 0C46     		mov	r4, r1
+ 475              	.LBB6:
+ 144:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****     {
+ 145:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****         return 0;
+ 146:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****     }
+ 147:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c **** 
+ 148:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****     for( uint16_t i = 0; i < length; ++i )
+ 476              		.loc 1 148 19 view .LVU113
+ 477 0006 4FF0000E 		mov	lr, #0
+ 478 000a 0EE0     		b	.L40
+ 479              	.LVL41:
+ 480              	.L42:
+ 481              	.LBB7:
+ 149:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****     {
+ 150:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****         crc ^= ( uint32_t )buffer[i];
+ 151:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****         for( uint16_t i = 0; i < 8; i++ )
+ 152:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****         {
+ 153:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****             crc = ( crc >> 1 ) ^ ( reversedPolynom & ~( ( crc & 0x01 ) - 1 ) );
+ 482              		.loc 1 153 13 is_stmt 1 discriminator 3 view .LVU114
+ 483              		.loc 1 153 54 is_stmt 0 discriminator 3 view .LVU115
+ 484 000c 40F3000C 		sbfx	ip, r0, #0, #1
+ 485              		.loc 1 153 52 discriminator 3 view .LVU116
+ 486 0010 0B49     		ldr	r1, .L50
+ 487 0012 0CEA0101 		and	r1, ip, r1
+ 488              		.loc 1 153 17 discriminator 3 view .LVU117
+ 489 0016 81EA5000 		eor	r0, r1, r0, lsr #1
+ 490              	.LVL42:
+ 151:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****         {
+ 491              		.loc 1 151 37 is_stmt 1 discriminator 3 view .LVU118
+ 151:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****         {
+ 492              		.loc 1 151 38 is_stmt 0 discriminator 3 view .LVU119
+ 493 001a 0133     		adds	r3, r3, #1
+ 494              	.LVL43:
+ 151:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****         {
+ 495              		.loc 1 151 38 discriminator 3 view .LVU120
+ 496 001c 9BB2     		uxth	r3, r3
+ 497              	.LVL44:
+ 498              	.L41:
+ 151:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****         {
+ 499              		.loc 1 151 30 is_stmt 1 discriminator 1 view .LVU121
+ 151:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****         {
+ 500              		.loc 1 151 9 is_stmt 0 discriminator 1 view .LVU122
+ 501 001e 072B     		cmp	r3, #7
+ 502 0020 F4D9     		bls	.L42
+ 151:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****         {
+ 503              		.loc 1 151 9 discriminator 1 view .LVU123
+ 504              	.LBE7:
+ 148:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****     {
+ 505              		.loc 1 148 38 is_stmt 1 discriminator 2 view .LVU124
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccJdNubp.s 			page 13
+
+
+ 506 0022 0EF1010E 		add	lr, lr, #1
+ 507              	.LVL45:
+ 148:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****     {
+ 508              		.loc 1 148 38 is_stmt 0 discriminator 2 view .LVU125
+ 509 0026 1FFA8EFE 		uxth	lr, lr
+ 510              	.LVL46:
+ 511              	.L40:
+ 148:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****     {
+ 512              		.loc 1 148 26 is_stmt 1 discriminator 1 view .LVU126
+ 148:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****     {
+ 513              		.loc 1 148 5 is_stmt 0 discriminator 1 view .LVU127
+ 514 002a 9645     		cmp	lr, r2
+ 515 002c 06D2     		bcs	.L49
+ 150:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****         for( uint16_t i = 0; i < 8; i++ )
+ 516              		.loc 1 150 9 is_stmt 1 view .LVU128
+ 150:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****         for( uint16_t i = 0; i < 8; i++ )
+ 517              		.loc 1 150 34 is_stmt 0 view .LVU129
+ 518 002e 14F80E30 		ldrb	r3, [r4, lr]	@ zero_extendqisi2
+ 150:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****         for( uint16_t i = 0; i < 8; i++ )
+ 519              		.loc 1 150 13 view .LVU130
+ 520 0032 5840     		eors	r0, r0, r3
+ 521              	.LVL47:
+ 151:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****         {
+ 522              		.loc 1 151 9 is_stmt 1 view .LVU131
+ 523              	.LBB8:
+ 151:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****         {
+ 524              		.loc 1 151 14 view .LVU132
+ 151:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****         {
+ 525              		.loc 1 151 23 is_stmt 0 view .LVU133
+ 526 0034 0023     		movs	r3, #0
+ 151:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****         {
+ 527              		.loc 1 151 9 view .LVU134
+ 528 0036 F2E7     		b	.L41
+ 529              	.LVL48:
+ 530              	.L44:
+ 531              	.LCFI4:
+ 532              		.cfi_def_cfa_offset 0
+ 533              		.cfi_restore 4
+ 534              		.cfi_restore 14
+ 151:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****         {
+ 535              		.loc 1 151 9 view .LVU135
+ 536              	.LBE8:
+ 537              	.LBE6:
+ 145:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****     }
+ 538              		.loc 1 145 16 view .LVU136
+ 539 0038 0020     		movs	r0, #0
+ 540              	.LVL49:
+ 154:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****         }
+ 155:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****     }
+ 156:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****     return crc;
+ 157:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c **** }
+ 541              		.loc 1 157 1 view .LVU137
+ 542 003a 7047     		bx	lr
+ 543              	.LVL50:
+ 544              	.L49:
+ 545              	.LCFI5:
+ 546              		.cfi_def_cfa_offset 8
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccJdNubp.s 			page 14
+
+
+ 547              		.cfi_offset 4, -8
+ 548              		.cfi_offset 14, -4
+ 549              		.loc 1 157 1 view .LVU138
+ 550 003c 10BD     		pop	{r4, pc}
+ 551              	.LVL51:
+ 552              	.L51:
+ 553              		.loc 1 157 1 view .LVU139
+ 554 003e 00BF     		.align	2
+ 555              	.L50:
+ 556 0040 2083B8ED 		.word	-306674912
+ 557              		.cfi_endproc
+ 558              	.LFE113:
+ 560              		.section	.text.Crc32Finalize,"ax",%progbits
+ 561              		.align	1
+ 562              		.global	Crc32Finalize
+ 563              		.syntax unified
+ 564              		.thumb
+ 565              		.thumb_func
+ 567              	Crc32Finalize:
+ 568              	.LVL52:
+ 569              	.LFB114:
+ 158:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c **** 
+ 159:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c **** uint32_t Crc32Finalize( uint32_t crc )
+ 160:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c **** {
+ 570              		.loc 1 160 1 is_stmt 1 view -0
+ 571              		.cfi_startproc
+ 572              		@ args = 0, pretend = 0, frame = 0
+ 573              		@ frame_needed = 0, uses_anonymous_args = 0
+ 574              		@ link register save eliminated.
+ 161:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c ****     return ~crc;
+ 575              		.loc 1 161 5 view .LVU141
+ 162:Middlewares/Third_Party/LoRaWAN/Utilities/utilities.c **** }
+ 576              		.loc 1 162 1 is_stmt 0 view .LVU142
+ 577 0000 C043     		mvns	r0, r0
+ 578              	.LVL53:
+ 579              		.loc 1 162 1 view .LVU143
+ 580 0002 7047     		bx	lr
+ 581              		.cfi_endproc
+ 582              	.LFE114:
+ 584              		.section	.data.next,"aw"
+ 585              		.align	2
+ 586              		.set	.LANCHOR0,. + 0
+ 589              	next:
+ 590 0000 01000000 		.word	1
+ 591              		.text
+ 592              	.Letext0:
+ 593              		.file 2 "c:\\program files (x86)\\gnu arm embedded toolchain\\10 2021.10\\arm-none-eabi\\include\\
+ 594              		.file 3 "c:\\program files (x86)\\gnu arm embedded toolchain\\10 2021.10\\arm-none-eabi\\include\\
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccJdNubp.s 			page 15
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 utilities.c
+C:\Users\NATHAN~1\AppData\Local\Temp\ccJdNubp.s:18     .text.rand1:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\ccJdNubp.s:23     .text.rand1:00000000 rand1
+C:\Users\NATHAN~1\AppData\Local\Temp\ccJdNubp.s:54     .text.rand1:00000028 $d
+C:\Users\NATHAN~1\AppData\Local\Temp\ccJdNubp.s:60     .text.srand1:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\ccJdNubp.s:66     .text.srand1:00000000 srand1
+C:\Users\NATHAN~1\AppData\Local\Temp\ccJdNubp.s:83     .text.srand1:00000008 $d
+C:\Users\NATHAN~1\AppData\Local\Temp\ccJdNubp.s:88     .text.randr:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\ccJdNubp.s:94     .text.randr:00000000 randr
+C:\Users\NATHAN~1\AppData\Local\Temp\ccJdNubp.s:130    .text.memcpy1:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\ccJdNubp.s:136    .text.memcpy1:00000000 memcpy1
+C:\Users\NATHAN~1\AppData\Local\Temp\ccJdNubp.s:174    .text.memcpyr:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\ccJdNubp.s:180    .text.memcpyr:00000000 memcpyr
+C:\Users\NATHAN~1\AppData\Local\Temp\ccJdNubp.s:224    .text.memset1:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\ccJdNubp.s:230    .text.memset1:00000000 memset1
+C:\Users\NATHAN~1\AppData\Local\Temp\ccJdNubp.s:265    .text.Nibble2HexChar:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\ccJdNubp.s:271    .text.Nibble2HexChar:00000000 Nibble2HexChar
+C:\Users\NATHAN~1\AppData\Local\Temp\ccJdNubp.s:314    .text.Crc32:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\ccJdNubp.s:320    .text.Crc32:00000000 Crc32
+C:\Users\NATHAN~1\AppData\Local\Temp\ccJdNubp.s:424    .text.Crc32:00000044 $d
+C:\Users\NATHAN~1\AppData\Local\Temp\ccJdNubp.s:429    .text.Crc32Init:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\ccJdNubp.s:435    .text.Crc32Init:00000000 Crc32Init
+C:\Users\NATHAN~1\AppData\Local\Temp\ccJdNubp.s:450    .text.Crc32Update:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\ccJdNubp.s:456    .text.Crc32Update:00000000 Crc32Update
+C:\Users\NATHAN~1\AppData\Local\Temp\ccJdNubp.s:556    .text.Crc32Update:00000040 $d
+C:\Users\NATHAN~1\AppData\Local\Temp\ccJdNubp.s:561    .text.Crc32Finalize:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\ccJdNubp.s:567    .text.Crc32Finalize:00000000 Crc32Finalize
+C:\Users\NATHAN~1\AppData\Local\Temp\ccJdNubp.s:585    .data.next:00000000 $d
+C:\Users\NATHAN~1\AppData\Local\Temp\ccJdNubp.s:589    .data.next:00000000 next
+
+NO UNDEFINED SYMBOLS

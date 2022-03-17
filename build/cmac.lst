@@ -1,0 +1,889 @@
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccskFZ8F.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"cmac.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.section	.text.AES_CMAC_Init,"ax",%progbits
+  18              		.align	1
+  19              		.global	AES_CMAC_Init
+  20              		.syntax unified
+  21              		.thumb
+  22              		.thumb_func
+  24              	AES_CMAC_Init:
+  25              	.LVL0:
+  26              	.LFB104:
+  27              		.file 1 "Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c"
+   1:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c **** /**************************************************************************
+   2:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c **** Copyright (C) 2009 Lander Casado, Philippas Tsigas
+   3:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c **** 
+   4:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c **** All rights reserved.
+   5:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c **** 
+   6:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c **** Permission is hereby granted, free of charge, to any person obtaining
+   7:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c **** a copy of this software and associated documentation files
+   8:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c **** (the "Software"), to deal with the Software without restriction, including
+   9:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c **** without limitation the rights to use, copy, modify, merge, publish,
+  10:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c **** distribute, sublicense, and/or sell copies of the Software, and to
+  11:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c **** permit persons to whom the Software is furnished to do so, subject to
+  12:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c **** the following conditions:
+  13:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c **** 
+  14:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c **** Redistributions of source code must retain the above copyright notice,
+  15:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c **** this list of conditions and the following disclaimers. Redistributions in
+  16:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c **** binary form must reproduce the above copyright notice, this list of
+  17:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c **** conditions and the following disclaimers in the documentation and/or
+  18:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c **** other materials provided with the distribution.
+  19:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c **** 
+  20:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c **** In no event shall the authors or copyright holders be liable for any special,
+  21:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c **** incidental, indirect or consequential damages of any kind, or any damages
+  22:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c **** whatsoever resulting from loss of use, data or profits, whether or not
+  23:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c **** advised of the possibility of damage, and on any theory of liability,
+  24:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c **** arising out of or in connection with the use or performance of this software.
+  25:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c **** 
+  26:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c **** THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+  27:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c **** OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  28:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c **** FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  29:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c **** CONTRIBUTORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  30:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c **** LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+  31:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c **** FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccskFZ8F.s 			page 2
+
+
+  32:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c **** DEALINGS WITH THE SOFTWARE
+  33:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c **** 
+  34:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c **** *****************************************************************************/
+  35:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c **** #include <stdint.h>
+  36:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c **** #include "lorawan_aes.h"
+  37:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c **** #include "cmac.h"
+  38:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c **** #include "utilities.h"
+  39:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c **** 
+  40:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c **** #define LSHIFT( v, r )                                    \
+  41:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c ****     do                                                    \
+  42:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c ****     {                                                     \
+  43:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c ****         int32_t i;                                        \
+  44:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c ****         for( i = 0; i < 15; i++ )                         \
+  45:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c ****             ( r )[i] = ( v )[i] << 1 | ( v )[i + 1] >> 7; \
+  46:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c ****         ( r )[15] = ( v )[15] << 1;                       \
+  47:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c ****     } while( 0 )
+  48:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c **** 
+  49:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c **** #define XOR( v, r )                         \
+  50:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c ****     do                                      \
+  51:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c ****     {                                       \
+  52:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c ****         int32_t i;                          \
+  53:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c ****         for( i = 0; i < 16; i++ )           \
+  54:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c ****         {                                   \
+  55:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c ****             ( r )[i] = ( r )[i] ^ ( v )[i]; \
+  56:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c ****         }                                   \
+  57:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c ****     } while( 0 )
+  58:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c **** 
+  59:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c **** void AES_CMAC_Init( AES_CMAC_CTX* ctx )
+  60:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c **** {
+  28              		.loc 1 60 1 view -0
+  29              		.cfi_startproc
+  30              		@ args = 0, pretend = 0, frame = 0
+  31              		@ frame_needed = 0, uses_anonymous_args = 0
+  32              		.loc 1 60 1 is_stmt 0 view .LVU1
+  33 0000 10B5     		push	{r4, lr}
+  34              	.LCFI0:
+  35              		.cfi_def_cfa_offset 8
+  36              		.cfi_offset 4, -8
+  37              		.cfi_offset 14, -4
+  38 0002 0446     		mov	r4, r0
+  61:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c ****     memset1( ctx->X, 0, sizeof ctx->X );
+  39              		.loc 1 61 5 is_stmt 1 view .LVU2
+  40 0004 1022     		movs	r2, #16
+  41 0006 0021     		movs	r1, #0
+  42 0008 F130     		adds	r0, r0, #241
+  43              	.LVL1:
+  44              		.loc 1 61 5 is_stmt 0 view .LVU3
+  45 000a FFF7FEFF 		bl	memset1
+  46              	.LVL2:
+  62:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c ****     ctx->M_n = 0;
+  47              		.loc 1 62 5 is_stmt 1 view .LVU4
+  48              		.loc 1 62 14 is_stmt 0 view .LVU5
+  49 000e 0021     		movs	r1, #0
+  50 0010 C4F81411 		str	r1, [r4, #276]
+  63:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c ****     memset1( ctx->rijndael.ksch, '\0', 240 );
+  51              		.loc 1 63 5 is_stmt 1 view .LVU6
+  52 0014 F022     		movs	r2, #240
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccskFZ8F.s 			page 3
+
+
+  53 0016 2046     		mov	r0, r4
+  54 0018 FFF7FEFF 		bl	memset1
+  55              	.LVL3:
+  64:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c **** }
+  56              		.loc 1 64 1 is_stmt 0 view .LVU7
+  57 001c 10BD     		pop	{r4, pc}
+  58              		.loc 1 64 1 view .LVU8
+  59              		.cfi_endproc
+  60              	.LFE104:
+  62              		.section	.text.AES_CMAC_SetKey,"ax",%progbits
+  63              		.align	1
+  64              		.global	AES_CMAC_SetKey
+  65              		.syntax unified
+  66              		.thumb
+  67              		.thumb_func
+  69              	AES_CMAC_SetKey:
+  70              	.LVL4:
+  71              	.LFB105:
+  65:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c **** 
+  66:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c **** void AES_CMAC_SetKey( AES_CMAC_CTX* ctx, const uint8_t key[AES_CMAC_KEY_LENGTH] )
+  67:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c **** {
+  72              		.loc 1 67 1 is_stmt 1 view -0
+  73              		.cfi_startproc
+  74              		@ args = 0, pretend = 0, frame = 0
+  75              		@ frame_needed = 0, uses_anonymous_args = 0
+  76              		.loc 1 67 1 is_stmt 0 view .LVU10
+  77 0000 08B5     		push	{r3, lr}
+  78              	.LCFI1:
+  79              		.cfi_def_cfa_offset 8
+  80              		.cfi_offset 3, -8
+  81              		.cfi_offset 14, -4
+  82 0002 0246     		mov	r2, r0
+  83 0004 0846     		mov	r0, r1
+  84              	.LVL5:
+  68:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c ****     lorawan_aes_set_key( key, AES_CMAC_KEY_LENGTH, &ctx->rijndael );
+  85              		.loc 1 68 5 is_stmt 1 view .LVU11
+  86 0006 1021     		movs	r1, #16
+  87              	.LVL6:
+  88              		.loc 1 68 5 is_stmt 0 view .LVU12
+  89 0008 FFF7FEFF 		bl	lorawan_aes_set_key
+  90              	.LVL7:
+  69:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c **** }
+  91              		.loc 1 69 1 view .LVU13
+  92 000c 08BD     		pop	{r3, pc}
+  93              		.cfi_endproc
+  94              	.LFE105:
+  96              		.section	.text.AES_CMAC_Update,"ax",%progbits
+  97              		.align	1
+  98              		.global	AES_CMAC_Update
+  99              		.syntax unified
+ 100              		.thumb
+ 101              		.thumb_func
+ 103              	AES_CMAC_Update:
+ 104              	.LVL8:
+ 105              	.LFB106:
+  70:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c **** 
+  71:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c **** void AES_CMAC_Update( AES_CMAC_CTX* ctx, const uint8_t* data, uint32_t len )
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccskFZ8F.s 			page 4
+
+
+  72:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c **** {
+ 106              		.loc 1 72 1 is_stmt 1 view -0
+ 107              		.cfi_startproc
+ 108              		@ args = 0, pretend = 0, frame = 16
+ 109              		@ frame_needed = 0, uses_anonymous_args = 0
+ 110              		.loc 1 72 1 is_stmt 0 view .LVU15
+ 111 0000 2DE9F041 		push	{r4, r5, r6, r7, r8, lr}
+ 112              	.LCFI2:
+ 113              		.cfi_def_cfa_offset 24
+ 114              		.cfi_offset 4, -24
+ 115              		.cfi_offset 5, -20
+ 116              		.cfi_offset 6, -16
+ 117              		.cfi_offset 7, -12
+ 118              		.cfi_offset 8, -8
+ 119              		.cfi_offset 14, -4
+ 120 0004 84B0     		sub	sp, sp, #16
+ 121              	.LCFI3:
+ 122              		.cfi_def_cfa_offset 40
+ 123 0006 0446     		mov	r4, r0
+ 124 0008 0D46     		mov	r5, r1
+ 125 000a 1646     		mov	r6, r2
+  73:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c ****     uint32_t mlen;
+ 126              		.loc 1 73 5 is_stmt 1 view .LVU16
+  74:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c ****     uint8_t  in[16];
+ 127              		.loc 1 74 5 view .LVU17
+  75:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c **** 
+  76:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c ****     if( ctx->M_n > 0 )
+ 128              		.loc 1 76 5 view .LVU18
+ 129              		.loc 1 76 12 is_stmt 0 view .LVU19
+ 130 000c D0F81431 		ldr	r3, [r0, #276]
+ 131              		.loc 1 76 7 view .LVU20
+ 132 0010 002B     		cmp	r3, #0
+ 133 0012 54D0     		beq	.L11
+  77:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c ****     {
+  78:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c ****         mlen = MIN( 16 - ctx->M_n, len );
+ 134              		.loc 1 78 9 is_stmt 1 view .LVU21
+ 135              		.loc 1 78 16 is_stmt 0 view .LVU22
+ 136 0014 C3F11008 		rsb	r8, r3, #16
+ 137              		.loc 1 78 14 view .LVU23
+ 138 0018 4746     		mov	r7, r8
+ 139 001a 9045     		cmp	r8, r2
+ 140 001c 28BF     		it	cs
+ 141 001e 1746     		movcs	r7, r2
+ 142              	.LVL9:
+  79:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c ****         memcpy1( ctx->M_last + ctx->M_n, data, mlen );
+ 143              		.loc 1 79 9 is_stmt 1 view .LVU24
+ 144              		.loc 1 79 18 is_stmt 0 view .LVU25
+ 145 0020 00F20110 		addw	r0, r0, #257
+ 146              	.LVL10:
+ 147              		.loc 1 79 9 view .LVU26
+ 148 0024 BAB2     		uxth	r2, r7
+ 149              	.LVL11:
+ 150              		.loc 1 79 9 view .LVU27
+ 151 0026 1844     		add	r0, r0, r3
+ 152 0028 FFF7FEFF 		bl	memcpy1
+ 153              	.LVL12:
+  80:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c ****         ctx->M_n += mlen;
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccskFZ8F.s 			page 5
+
+
+ 154              		.loc 1 80 9 is_stmt 1 view .LVU28
+ 155              		.loc 1 80 18 is_stmt 0 view .LVU29
+ 156 002c D4F81431 		ldr	r3, [r4, #276]
+ 157 0030 3B44     		add	r3, r3, r7
+ 158 0032 C4F81431 		str	r3, [r4, #276]
+  81:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c ****         if( ctx->M_n < 16 || len == mlen )
+ 159              		.loc 1 81 9 is_stmt 1 view .LVU30
+ 160              		.loc 1 81 11 is_stmt 0 view .LVU31
+ 161 0036 0F2B     		cmp	r3, #15
+ 162 0038 4DD9     		bls	.L5
+ 163              		.loc 1 81 27 discriminator 1 view .LVU32
+ 164 003a B045     		cmp	r8, r6
+ 165 003c 4BD2     		bcs	.L5
+ 166              	.LBB2:
+  82:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c ****             return;
+  83:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c ****         XOR( ctx->M_last, ctx->X );
+ 167              		.loc 1 83 9 view .LVU33
+ 168 003e 0023     		movs	r3, #0
+ 169 0040 08E0     		b	.L8
+ 170              	.LVL13:
+ 171              	.L10:
+ 172              		.loc 1 83 9 is_stmt 1 discriminator 3 view .LVU34
+ 173 0042 E218     		adds	r2, r4, r3
+ 174 0044 92F8F110 		ldrb	r1, [r2, #241]	@ zero_extendqisi2
+ 175 0048 92F80101 		ldrb	r0, [r2, #257]	@ zero_extendqisi2
+ 176 004c 4140     		eors	r1, r1, r0
+ 177 004e 82F8F110 		strb	r1, [r2, #241]
+ 178              		.loc 1 83 9 discriminator 3 view .LVU35
+ 179 0052 0133     		adds	r3, r3, #1
+ 180              	.LVL14:
+ 181              	.L8:
+ 182              		.loc 1 83 9 discriminator 1 view .LVU36
+ 183 0054 0F2B     		cmp	r3, #15
+ 184 0056 F4DD     		ble	.L10
+ 185              	.LBE2:
+ 186              		.loc 1 83 9 discriminator 4 view .LVU37
+  84:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c **** 
+  85:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c ****         memcpy1( in, &ctx->X[0], 16 );  // Otherwise it does not look good
+ 187              		.loc 1 85 9 discriminator 4 view .LVU38
+ 188              		.loc 1 85 22 is_stmt 0 discriminator 4 view .LVU39
+ 189 0058 04F1F108 		add	r8, r4, #241
+ 190              		.loc 1 85 9 discriminator 4 view .LVU40
+ 191 005c 1022     		movs	r2, #16
+ 192 005e 4146     		mov	r1, r8
+ 193 0060 6846     		mov	r0, sp
+ 194 0062 FFF7FEFF 		bl	memcpy1
+ 195              	.LVL15:
+  86:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c ****         lorawan_aes_encrypt( in, in, &ctx->rijndael );
+ 196              		.loc 1 86 9 is_stmt 1 discriminator 4 view .LVU41
+ 197 0066 2246     		mov	r2, r4
+ 198 0068 6946     		mov	r1, sp
+ 199 006a 6846     		mov	r0, sp
+ 200 006c FFF7FEFF 		bl	lorawan_aes_encrypt
+ 201              	.LVL16:
+  87:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c ****         memcpy1( &ctx->X[0], in, 16 );
+ 202              		.loc 1 87 9 discriminator 4 view .LVU42
+ 203 0070 1022     		movs	r2, #16
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccskFZ8F.s 			page 6
+
+
+ 204 0072 6946     		mov	r1, sp
+ 205 0074 4046     		mov	r0, r8
+ 206 0076 FFF7FEFF 		bl	memcpy1
+ 207              	.LVL17:
+  88:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c **** 
+  89:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c ****         data += mlen;
+ 208              		.loc 1 89 9 discriminator 4 view .LVU43
+ 209              		.loc 1 89 14 is_stmt 0 discriminator 4 view .LVU44
+ 210 007a 3D44     		add	r5, r5, r7
+ 211              	.LVL18:
+  90:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c ****         len -= mlen;
+ 212              		.loc 1 90 9 is_stmt 1 discriminator 4 view .LVU45
+ 213              		.loc 1 90 13 is_stmt 0 discriminator 4 view .LVU46
+ 214 007c F61B     		subs	r6, r6, r7
+ 215              	.LVL19:
+ 216              		.loc 1 90 13 discriminator 4 view .LVU47
+ 217 007e 1EE0     		b	.L11
+ 218              	.LVL20:
+ 219              	.L12:
+ 220              	.LBB3:
+  91:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c ****     }
+  92:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c ****     while( len > 16 )
+  93:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c ****     { /* not last block */
+  94:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c **** 
+  95:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c ****         XOR( data, ctx->X );
+ 221              		.loc 1 95 9 is_stmt 1 discriminator 3 view .LVU48
+ 222 0080 04EB030E 		add	lr, r4, r3
+ 223 0084 9EF8F1C0 		ldrb	ip, [lr, #241]	@ zero_extendqisi2
+ 224 0088 EA5C     		ldrb	r2, [r5, r3]	@ zero_extendqisi2
+ 225 008a 8CEA020C 		eor	ip, ip, r2
+ 226 008e 8EF8F1C0 		strb	ip, [lr, #241]
+ 227              		.loc 1 95 9 discriminator 3 view .LVU49
+ 228 0092 0133     		adds	r3, r3, #1
+ 229              	.LVL21:
+ 230              	.L13:
+ 231              		.loc 1 95 9 discriminator 1 view .LVU50
+ 232 0094 0F2B     		cmp	r3, #15
+ 233 0096 F3DD     		ble	.L12
+ 234              	.LBE3:
+ 235              		.loc 1 95 9 discriminator 4 view .LVU51
+  96:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c **** 
+  97:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c ****         memcpy1( in, &ctx->X[0], 16 );  // Otherwise it does not look good
+ 236              		.loc 1 97 9 discriminator 4 view .LVU52
+ 237              		.loc 1 97 22 is_stmt 0 discriminator 4 view .LVU53
+ 238 0098 04F1F107 		add	r7, r4, #241
+ 239              		.loc 1 97 9 discriminator 4 view .LVU54
+ 240 009c 1022     		movs	r2, #16
+ 241 009e 3946     		mov	r1, r7
+ 242 00a0 6846     		mov	r0, sp
+ 243 00a2 FFF7FEFF 		bl	memcpy1
+ 244              	.LVL22:
+  98:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c ****         lorawan_aes_encrypt( in, in, &ctx->rijndael );
+ 245              		.loc 1 98 9 is_stmt 1 discriminator 4 view .LVU55
+ 246 00a6 2246     		mov	r2, r4
+ 247 00a8 6946     		mov	r1, sp
+ 248 00aa 6846     		mov	r0, sp
+ 249 00ac FFF7FEFF 		bl	lorawan_aes_encrypt
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccskFZ8F.s 			page 7
+
+
+ 250              	.LVL23:
+  99:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c ****         memcpy1( &ctx->X[0], in, 16 );
+ 251              		.loc 1 99 9 discriminator 4 view .LVU56
+ 252 00b0 1022     		movs	r2, #16
+ 253 00b2 6946     		mov	r1, sp
+ 254 00b4 3846     		mov	r0, r7
+ 255 00b6 FFF7FEFF 		bl	memcpy1
+ 256              	.LVL24:
+ 100:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c **** 
+ 101:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c ****         data += 16;
+ 257              		.loc 1 101 9 discriminator 4 view .LVU57
+ 258              		.loc 1 101 14 is_stmt 0 discriminator 4 view .LVU58
+ 259 00ba 1035     		adds	r5, r5, #16
+ 260              	.LVL25:
+ 102:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c ****         len -= 16;
+ 261              		.loc 1 102 9 is_stmt 1 discriminator 4 view .LVU59
+ 262              		.loc 1 102 13 is_stmt 0 discriminator 4 view .LVU60
+ 263 00bc 103E     		subs	r6, r6, #16
+ 264              	.LVL26:
+ 265              	.L11:
+  92:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c ****     { /* not last block */
+ 266              		.loc 1 92 10 is_stmt 1 view .LVU61
+ 267 00be 102E     		cmp	r6, #16
+ 268 00c0 01D9     		bls	.L17
+ 269              	.LBB4:
+  95:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c **** 
+ 270              		.loc 1 95 9 is_stmt 0 view .LVU62
+ 271 00c2 0023     		movs	r3, #0
+ 272 00c4 E6E7     		b	.L13
+ 273              	.L17:
+ 274              	.LBE4:
+ 103:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c ****     }
+ 104:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c ****     /* potential last block, save it */
+ 105:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c ****     memcpy1( ctx->M_last, data, len );
+ 275              		.loc 1 105 5 is_stmt 1 view .LVU63
+ 276 00c6 B2B2     		uxth	r2, r6
+ 277 00c8 2946     		mov	r1, r5
+ 278 00ca 04F20110 		addw	r0, r4, #257
+ 279 00ce FFF7FEFF 		bl	memcpy1
+ 280              	.LVL27:
+ 106:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c ****     ctx->M_n = len;
+ 281              		.loc 1 106 5 view .LVU64
+ 282              		.loc 1 106 14 is_stmt 0 view .LVU65
+ 283 00d2 C4F81461 		str	r6, [r4, #276]
+ 284              	.L5:
+ 107:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c **** }
+ 285              		.loc 1 107 1 view .LVU66
+ 286 00d6 04B0     		add	sp, sp, #16
+ 287              	.LCFI4:
+ 288              		.cfi_def_cfa_offset 24
+ 289              		@ sp needed
+ 290 00d8 BDE8F081 		pop	{r4, r5, r6, r7, r8, pc}
+ 291              		.loc 1 107 1 view .LVU67
+ 292              		.cfi_endproc
+ 293              	.LFE106:
+ 295              		.section	.text.AES_CMAC_Final,"ax",%progbits
+ 296              		.align	1
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccskFZ8F.s 			page 8
+
+
+ 297              		.global	AES_CMAC_Final
+ 298              		.syntax unified
+ 299              		.thumb
+ 300              		.thumb_func
+ 302              	AES_CMAC_Final:
+ 303              	.LVL28:
+ 304              	.LFB107:
+ 108:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c **** 
+ 109:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c **** void AES_CMAC_Final( uint8_t digest[AES_CMAC_DIGEST_LENGTH], AES_CMAC_CTX* ctx )
+ 110:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c **** {
+ 305              		.loc 1 110 1 is_stmt 1 view -0
+ 306              		.cfi_startproc
+ 307              		@ args = 0, pretend = 0, frame = 32
+ 308              		@ frame_needed = 0, uses_anonymous_args = 0
+ 309              		.loc 1 110 1 is_stmt 0 view .LVU69
+ 310 0000 30B5     		push	{r4, r5, lr}
+ 311              	.LCFI5:
+ 312              		.cfi_def_cfa_offset 12
+ 313              		.cfi_offset 4, -12
+ 314              		.cfi_offset 5, -8
+ 315              		.cfi_offset 14, -4
+ 316 0002 89B0     		sub	sp, sp, #36
+ 317              	.LCFI6:
+ 318              		.cfi_def_cfa_offset 48
+ 319 0004 0546     		mov	r5, r0
+ 320 0006 0C46     		mov	r4, r1
+ 111:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c ****     uint8_t K[16];
+ 321              		.loc 1 111 5 is_stmt 1 view .LVU70
+ 112:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c ****     uint8_t in[16];
+ 322              		.loc 1 112 5 view .LVU71
+ 113:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c ****     /* generate subkey K1 */
+ 114:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c ****     memset1( K, '\0', 16 );
+ 323              		.loc 1 114 5 view .LVU72
+ 324 0008 1022     		movs	r2, #16
+ 325 000a 0021     		movs	r1, #0
+ 326              	.LVL29:
+ 327              		.loc 1 114 5 is_stmt 0 view .LVU73
+ 328 000c 0DEB0200 		add	r0, sp, r2
+ 329              	.LVL30:
+ 330              		.loc 1 114 5 view .LVU74
+ 331 0010 FFF7FEFF 		bl	memset1
+ 332              	.LVL31:
+ 115:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c **** 
+ 116:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c ****     lorawan_aes_encrypt( K, K, &ctx->rijndael );
+ 333              		.loc 1 116 5 is_stmt 1 view .LVU75
+ 334 0014 2246     		mov	r2, r4
+ 335 0016 04A9     		add	r1, sp, #16
+ 336 0018 0846     		mov	r0, r1
+ 337 001a FFF7FEFF 		bl	lorawan_aes_encrypt
+ 338              	.LVL32:
+ 117:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c **** 
+ 118:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c ****     if( K[0] & 0x80 )
+ 339              		.loc 1 118 5 view .LVU76
+ 340              		.loc 1 118 9 is_stmt 0 view .LVU77
+ 341 001e 9DF91030 		ldrsb	r3, [sp, #16]
+ 342              		.loc 1 118 7 view .LVU78
+ 343 0022 002B     		cmp	r3, #0
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccskFZ8F.s 			page 9
+
+
+ 344 0024 01DB     		blt	.L39
+ 345              	.LBB5:
+ 119:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c ****     {
+ 120:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c ****         LSHIFT( K, K );
+ 121:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c ****         K[15] ^= 0x87;
+ 122:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c ****     }
+ 123:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c ****     else
+ 124:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c ****         LSHIFT( K, K );
+ 346              		.loc 1 124 9 view .LVU79
+ 347 0026 0023     		movs	r3, #0
+ 348 0028 30E0     		b	.L20
+ 349              	.L39:
+ 350              	.LBE5:
+ 351              	.LBB6:
+ 120:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c ****         K[15] ^= 0x87;
+ 352              		.loc 1 120 9 view .LVU80
+ 353 002a 0023     		movs	r3, #0
+ 354              	.L19:
+ 355              	.LVL33:
+ 120:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c ****         K[15] ^= 0x87;
+ 356              		.loc 1 120 9 is_stmt 1 discriminator 1 view .LVU81
+ 357 002c 0E2B     		cmp	r3, #14
+ 358 002e 11DC     		bgt	.L44
+ 120:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c ****         K[15] ^= 0x87;
+ 359              		.loc 1 120 9 discriminator 3 view .LVU82
+ 360 0030 03F12002 		add	r2, r3, #32
+ 361 0034 0DEB0201 		add	r1, sp, r2
+ 362 0038 11F8100C 		ldrb	r0, [r1, #-16]	@ zero_extendqisi2
+ 363 003c 0133     		adds	r3, r3, #1
+ 364              	.LVL34:
+ 120:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c ****         K[15] ^= 0x87;
+ 365              		.loc 1 120 9 is_stmt 0 discriminator 3 view .LVU83
+ 366 003e 03F12002 		add	r2, r3, #32
+ 367 0042 6A44     		add	r2, sp, r2
+ 368 0044 12F8102C 		ldrb	r2, [r2, #-16]	@ zero_extendqisi2
+ 369 0048 D209     		lsrs	r2, r2, #7
+ 370 004a 42EA4002 		orr	r2, r2, r0, lsl #1
+ 371 004e 01F8102C 		strb	r2, [r1, #-16]
+ 120:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c ****         K[15] ^= 0x87;
+ 372              		.loc 1 120 9 is_stmt 1 discriminator 3 view .LVU84
+ 373              	.LVL35:
+ 120:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c ****         K[15] ^= 0x87;
+ 374              		.loc 1 120 9 is_stmt 0 discriminator 3 view .LVU85
+ 375 0052 EBE7     		b	.L19
+ 376              	.L44:
+ 120:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c ****         K[15] ^= 0x87;
+ 377              		.loc 1 120 9 is_stmt 1 discriminator 4 view .LVU86
+ 378 0054 9DF81F30 		ldrb	r3, [sp, #31]	@ zero_extendqisi2
+ 379              	.LVL36:
+ 120:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c ****         K[15] ^= 0x87;
+ 380              		.loc 1 120 9 is_stmt 0 discriminator 4 view .LVU87
+ 381 0058 5B00     		lsls	r3, r3, #1
+ 382 005a DBB2     		uxtb	r3, r3
+ 383 005c 8DF81F30 		strb	r3, [sp, #31]
+ 384              	.LBE6:
+ 120:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c ****         K[15] ^= 0x87;
+ 385              		.loc 1 120 9 is_stmt 1 discriminator 4 view .LVU88
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccskFZ8F.s 			page 10
+
+
+ 121:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c ****     }
+ 386              		.loc 1 121 9 discriminator 4 view .LVU89
+ 121:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c ****     }
+ 387              		.loc 1 121 15 is_stmt 0 discriminator 4 view .LVU90
+ 388 0060 83F08703 		eor	r3, r3, #135
+ 389 0064 8DF81F30 		strb	r3, [sp, #31]
+ 390 0068 17E0     		b	.L22
+ 391              	.LVL37:
+ 392              	.L23:
+ 393              	.LBB7:
+ 394              		.loc 1 124 9 is_stmt 1 discriminator 3 view .LVU91
+ 395 006a 03F12002 		add	r2, r3, #32
+ 396 006e 0DEB0201 		add	r1, sp, r2
+ 397 0072 11F8100C 		ldrb	r0, [r1, #-16]	@ zero_extendqisi2
+ 398 0076 0133     		adds	r3, r3, #1
+ 399              	.LVL38:
+ 400              		.loc 1 124 9 is_stmt 0 discriminator 3 view .LVU92
+ 401 0078 03F12002 		add	r2, r3, #32
+ 402 007c 6A44     		add	r2, sp, r2
+ 403 007e 12F8102C 		ldrb	r2, [r2, #-16]	@ zero_extendqisi2
+ 404 0082 D209     		lsrs	r2, r2, #7
+ 405 0084 42EA4002 		orr	r2, r2, r0, lsl #1
+ 406 0088 01F8102C 		strb	r2, [r1, #-16]
+ 407              		.loc 1 124 9 is_stmt 1 discriminator 3 view .LVU93
+ 408              	.LVL39:
+ 409              	.L20:
+ 410              		.loc 1 124 9 discriminator 1 view .LVU94
+ 411 008c 0E2B     		cmp	r3, #14
+ 412 008e ECDD     		ble	.L23
+ 413              		.loc 1 124 9 discriminator 4 view .LVU95
+ 414 0090 9DF81F30 		ldrb	r3, [sp, #31]	@ zero_extendqisi2
+ 415              	.LVL40:
+ 416              		.loc 1 124 9 is_stmt 0 discriminator 4 view .LVU96
+ 417 0094 5B00     		lsls	r3, r3, #1
+ 418 0096 8DF81F30 		strb	r3, [sp, #31]
+ 419              	.L22:
+ 420              		.loc 1 124 9 discriminator 4 view .LVU97
+ 421              	.LBE7:
+ 422              		.loc 1 124 9 is_stmt 1 discriminator 5 view .LVU98
+ 125:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c **** 
+ 126:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c ****     if( ctx->M_n == 16 )
+ 423              		.loc 1 126 5 discriminator 5 view .LVU99
+ 424              		.loc 1 126 12 is_stmt 0 discriminator 5 view .LVU100
+ 425 009a D4F81401 		ldr	r0, [r4, #276]
+ 426              		.loc 1 126 7 discriminator 5 view .LVU101
+ 427 009e 1028     		cmp	r0, #16
+ 428 00a0 14D0     		beq	.L45
+ 127:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c ****     {
+ 128:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c ****         /* last block was a complete block */
+ 129:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c ****         XOR( K, ctx->M_last );
+ 130:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c ****     }
+ 131:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c ****     else
+ 132:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c ****     {
+ 133:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c ****         /* generate subkey K2 */
+ 134:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c ****         if( K[0] & 0x80 )
+ 429              		.loc 1 134 9 is_stmt 1 view .LVU102
+ 430              		.loc 1 134 13 is_stmt 0 view .LVU103
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccskFZ8F.s 			page 11
+
+
+ 431 00a2 9DF91030 		ldrsb	r3, [sp, #16]
+ 432              		.loc 1 134 11 view .LVU104
+ 433 00a6 002B     		cmp	r3, #0
+ 434 00a8 30DB     		blt	.L41
+ 435              	.LBB8:
+ 135:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c ****         {
+ 136:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c ****             LSHIFT( K, K );
+ 137:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c ****             K[15] ^= 0x87;
+ 138:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c ****         }
+ 139:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c ****         else
+ 140:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c ****             LSHIFT( K, K );
+ 436              		.loc 1 140 13 view .LVU105
+ 437 00aa 0023     		movs	r3, #0
+ 438 00ac 41E0     		b	.L29
+ 439              	.LVL41:
+ 440              	.L26:
+ 441              		.loc 1 140 13 view .LVU106
+ 442              	.LBE8:
+ 443              	.LBB9:
+ 129:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c ****     }
+ 444              		.loc 1 129 9 is_stmt 1 discriminator 3 view .LVU107
+ 445 00ae E118     		adds	r1, r4, r3
+ 446 00b0 91F80121 		ldrb	r2, [r1, #257]	@ zero_extendqisi2
+ 447 00b4 03F12000 		add	r0, r3, #32
+ 448 00b8 6844     		add	r0, sp, r0
+ 449 00ba 10F8100C 		ldrb	r0, [r0, #-16]	@ zero_extendqisi2
+ 450 00be 4240     		eors	r2, r2, r0
+ 451 00c0 81F80121 		strb	r2, [r1, #257]
+ 129:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c ****     }
+ 452              		.loc 1 129 9 discriminator 3 view .LVU108
+ 453 00c4 0133     		adds	r3, r3, #1
+ 454              	.LVL42:
+ 455              	.L24:
+ 129:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c ****     }
+ 456              		.loc 1 129 9 discriminator 1 view .LVU109
+ 457 00c6 0F2B     		cmp	r3, #15
+ 458 00c8 F1DD     		ble	.L26
+ 459 00ca 59E0     		b	.L27
+ 460              	.LVL43:
+ 461              	.L45:
+ 129:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c ****     }
+ 462              		.loc 1 129 9 is_stmt 0 view .LVU110
+ 463 00cc 0023     		movs	r3, #0
+ 464 00ce FAE7     		b	.L24
+ 465              	.LVL44:
+ 466              	.L30:
+ 129:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c ****     }
+ 467              		.loc 1 129 9 view .LVU111
+ 468              	.LBE9:
+ 469              	.LBB10:
+ 136:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c ****             K[15] ^= 0x87;
+ 470              		.loc 1 136 13 is_stmt 1 discriminator 3 view .LVU112
+ 471 00d0 03F12002 		add	r2, r3, #32
+ 472 00d4 0DEB0201 		add	r1, sp, r2
+ 473 00d8 11F810CC 		ldrb	ip, [r1, #-16]	@ zero_extendqisi2
+ 474 00dc 0133     		adds	r3, r3, #1
+ 475              	.LVL45:
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccskFZ8F.s 			page 12
+
+
+ 136:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c ****             K[15] ^= 0x87;
+ 476              		.loc 1 136 13 is_stmt 0 discriminator 3 view .LVU113
+ 477 00de 03F12002 		add	r2, r3, #32
+ 478 00e2 6A44     		add	r2, sp, r2
+ 479 00e4 12F8102C 		ldrb	r2, [r2, #-16]	@ zero_extendqisi2
+ 480 00e8 D209     		lsrs	r2, r2, #7
+ 481 00ea 42EA4C02 		orr	r2, r2, ip, lsl #1
+ 482 00ee 01F8102C 		strb	r2, [r1, #-16]
+ 136:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c ****             K[15] ^= 0x87;
+ 483              		.loc 1 136 13 is_stmt 1 discriminator 3 view .LVU114
+ 484              	.LVL46:
+ 485              	.L28:
+ 136:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c ****             K[15] ^= 0x87;
+ 486              		.loc 1 136 13 discriminator 1 view .LVU115
+ 487 00f2 0E2B     		cmp	r3, #14
+ 488 00f4 ECDD     		ble	.L30
+ 136:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c ****             K[15] ^= 0x87;
+ 489              		.loc 1 136 13 discriminator 4 view .LVU116
+ 490 00f6 9DF81F30 		ldrb	r3, [sp, #31]	@ zero_extendqisi2
+ 491              	.LVL47:
+ 136:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c ****             K[15] ^= 0x87;
+ 492              		.loc 1 136 13 is_stmt 0 discriminator 4 view .LVU117
+ 493 00fa 5B00     		lsls	r3, r3, #1
+ 494 00fc DBB2     		uxtb	r3, r3
+ 495 00fe 8DF81F30 		strb	r3, [sp, #31]
+ 496              	.LBE10:
+ 136:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c ****             K[15] ^= 0x87;
+ 497              		.loc 1 136 13 is_stmt 1 discriminator 4 view .LVU118
+ 137:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c ****         }
+ 498              		.loc 1 137 13 discriminator 4 view .LVU119
+ 137:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c ****         }
+ 499              		.loc 1 137 19 is_stmt 0 discriminator 4 view .LVU120
+ 500 0102 83F08703 		eor	r3, r3, #135
+ 501 0106 8DF81F30 		strb	r3, [sp, #31]
+ 502 010a 19E0     		b	.L31
+ 503              	.L41:
+ 504              	.LBB11:
+ 136:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c ****             K[15] ^= 0x87;
+ 505              		.loc 1 136 13 view .LVU121
+ 506 010c 0023     		movs	r3, #0
+ 507 010e F0E7     		b	.L28
+ 508              	.LVL48:
+ 509              	.L32:
+ 136:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c ****             K[15] ^= 0x87;
+ 510              		.loc 1 136 13 view .LVU122
+ 511              	.LBE11:
+ 512              	.LBB12:
+ 513              		.loc 1 140 13 is_stmt 1 discriminator 3 view .LVU123
+ 514 0110 03F12002 		add	r2, r3, #32
+ 515 0114 0DEB0201 		add	r1, sp, r2
+ 516 0118 11F810CC 		ldrb	ip, [r1, #-16]	@ zero_extendqisi2
+ 517 011c 0133     		adds	r3, r3, #1
+ 518              	.LVL49:
+ 519              		.loc 1 140 13 is_stmt 0 discriminator 3 view .LVU124
+ 520 011e 03F12002 		add	r2, r3, #32
+ 521 0122 6A44     		add	r2, sp, r2
+ 522 0124 12F8102C 		ldrb	r2, [r2, #-16]	@ zero_extendqisi2
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccskFZ8F.s 			page 13
+
+
+ 523 0128 D209     		lsrs	r2, r2, #7
+ 524 012a 42EA4C02 		orr	r2, r2, ip, lsl #1
+ 525 012e 01F8102C 		strb	r2, [r1, #-16]
+ 526              		.loc 1 140 13 is_stmt 1 discriminator 3 view .LVU125
+ 527              	.LVL50:
+ 528              	.L29:
+ 529              		.loc 1 140 13 discriminator 1 view .LVU126
+ 530 0132 0E2B     		cmp	r3, #14
+ 531 0134 ECDD     		ble	.L32
+ 532              		.loc 1 140 13 discriminator 4 view .LVU127
+ 533 0136 9DF81F30 		ldrb	r3, [sp, #31]	@ zero_extendqisi2
+ 534              	.LVL51:
+ 535              		.loc 1 140 13 is_stmt 0 discriminator 4 view .LVU128
+ 536 013a 5B00     		lsls	r3, r3, #1
+ 537 013c 8DF81F30 		strb	r3, [sp, #31]
+ 538              	.L31:
+ 539              		.loc 1 140 13 discriminator 4 view .LVU129
+ 540              	.LBE12:
+ 541              		.loc 1 140 13 is_stmt 1 discriminator 5 view .LVU130
+ 141:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c **** 
+ 142:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c ****         /* padding(M_last) */
+ 143:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c ****         ctx->M_last[ctx->M_n] = 0x80;
+ 542              		.loc 1 143 9 discriminator 5 view .LVU131
+ 543              		.loc 1 143 31 is_stmt 0 discriminator 5 view .LVU132
+ 544 0140 2044     		add	r0, r0, r4
+ 545 0142 8023     		movs	r3, #128
+ 546 0144 80F80131 		strb	r3, [r0, #257]
+ 144:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c ****         while( ++ctx->M_n < 16 )
+ 547              		.loc 1 144 9 is_stmt 1 discriminator 5 view .LVU133
+ 548              		.loc 1 144 14 is_stmt 0 discriminator 5 view .LVU134
+ 549 0148 03E0     		b	.L33
+ 550              	.L34:
+ 145:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c ****             ctx->M_last[ctx->M_n] = 0;
+ 551              		.loc 1 145 13 is_stmt 1 view .LVU135
+ 552              		.loc 1 145 35 is_stmt 0 view .LVU136
+ 553 014a 2344     		add	r3, r3, r4
+ 554 014c 0022     		movs	r2, #0
+ 555 014e 83F80121 		strb	r2, [r3, #257]
+ 556              	.L33:
+ 144:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c ****         while( ++ctx->M_n < 16 )
+ 557              		.loc 1 144 14 is_stmt 1 view .LVU137
+ 144:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c ****         while( ++ctx->M_n < 16 )
+ 558              		.loc 1 144 21 is_stmt 0 view .LVU138
+ 559 0152 D4F81431 		ldr	r3, [r4, #276]
+ 144:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c ****         while( ++ctx->M_n < 16 )
+ 560              		.loc 1 144 16 view .LVU139
+ 561 0156 0133     		adds	r3, r3, #1
+ 144:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c ****         while( ++ctx->M_n < 16 )
+ 562              		.loc 1 144 14 view .LVU140
+ 563 0158 C4F81431 		str	r3, [r4, #276]
+ 564 015c 0F2B     		cmp	r3, #15
+ 565 015e F4D9     		bls	.L34
+ 566              	.LBB13:
+ 146:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c **** 
+ 147:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c ****         XOR( K, ctx->M_last );
+ 567              		.loc 1 147 9 view .LVU141
+ 568 0160 0023     		movs	r3, #0
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccskFZ8F.s 			page 14
+
+
+ 569 0162 0BE0     		b	.L35
+ 570              	.LVL52:
+ 571              	.L36:
+ 572              		.loc 1 147 9 is_stmt 1 discriminator 3 view .LVU142
+ 573 0164 E118     		adds	r1, r4, r3
+ 574 0166 91F80121 		ldrb	r2, [r1, #257]	@ zero_extendqisi2
+ 575 016a 03F12000 		add	r0, r3, #32
+ 576 016e 6844     		add	r0, sp, r0
+ 577 0170 10F8100C 		ldrb	r0, [r0, #-16]	@ zero_extendqisi2
+ 578 0174 4240     		eors	r2, r2, r0
+ 579 0176 81F80121 		strb	r2, [r1, #257]
+ 580              		.loc 1 147 9 discriminator 3 view .LVU143
+ 581 017a 0133     		adds	r3, r3, #1
+ 582              	.LVL53:
+ 583              	.L35:
+ 584              		.loc 1 147 9 discriminator 1 view .LVU144
+ 585 017c 0F2B     		cmp	r3, #15
+ 586 017e F1DD     		ble	.L36
+ 587              	.LVL54:
+ 588              	.L27:
+ 589              		.loc 1 147 9 is_stmt 0 discriminator 1 view .LVU145
+ 590 0180 0023     		movs	r3, #0
+ 591 0182 09E0     		b	.L37
+ 592              	.LVL55:
+ 593              	.L38:
+ 594              		.loc 1 147 9 discriminator 1 view .LVU146
+ 595              	.LBE13:
+ 596              	.LBB14:
+ 148:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c ****     }
+ 149:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c ****     XOR( ctx->M_last, ctx->X );
+ 597              		.loc 1 149 5 is_stmt 1 discriminator 3 view .LVU147
+ 598 0184 E218     		adds	r2, r4, r3
+ 599 0186 92F8F1C0 		ldrb	ip, [r2, #241]	@ zero_extendqisi2
+ 600 018a 92F80111 		ldrb	r1, [r2, #257]	@ zero_extendqisi2
+ 601 018e 8CEA010C 		eor	ip, ip, r1
+ 602 0192 82F8F1C0 		strb	ip, [r2, #241]
+ 603              		.loc 1 149 5 discriminator 3 view .LVU148
+ 604 0196 0133     		adds	r3, r3, #1
+ 605              	.LVL56:
+ 606              	.L37:
+ 607              		.loc 1 149 5 discriminator 1 view .LVU149
+ 608 0198 0F2B     		cmp	r3, #15
+ 609 019a F3DD     		ble	.L38
+ 610              	.LBE14:
+ 611              		.loc 1 149 5 discriminator 4 view .LVU150
+ 150:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c **** 
+ 151:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c ****     memcpy1( in, &ctx->X[0], 16 );  // Otherwise it does not look good
+ 612              		.loc 1 151 5 discriminator 4 view .LVU151
+ 613 019c 1022     		movs	r2, #16
+ 614 019e 04F1F101 		add	r1, r4, #241
+ 615 01a2 6846     		mov	r0, sp
+ 616 01a4 FFF7FEFF 		bl	memcpy1
+ 617              	.LVL57:
+ 152:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c ****     lorawan_aes_encrypt( in, digest, &ctx->rijndael );
+ 618              		.loc 1 152 5 discriminator 4 view .LVU152
+ 619 01a8 2246     		mov	r2, r4
+ 620 01aa 2946     		mov	r1, r5
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccskFZ8F.s 			page 15
+
+
+ 621 01ac 6846     		mov	r0, sp
+ 622 01ae FFF7FEFF 		bl	lorawan_aes_encrypt
+ 623              	.LVL58:
+ 153:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c ****     memset1( K, 0, sizeof K );
+ 624              		.loc 1 153 5 discriminator 4 view .LVU153
+ 625 01b2 1022     		movs	r2, #16
+ 626 01b4 0021     		movs	r1, #0
+ 627 01b6 0DEB0200 		add	r0, sp, r2
+ 628 01ba FFF7FEFF 		bl	memset1
+ 629              	.LVL59:
+ 154:Middlewares/Third_Party/LoRaWAN/Crypto/cmac.c **** }
+ 630              		.loc 1 154 1 is_stmt 0 discriminator 4 view .LVU154
+ 631 01be 09B0     		add	sp, sp, #36
+ 632              	.LCFI7:
+ 633              		.cfi_def_cfa_offset 12
+ 634              		@ sp needed
+ 635 01c0 30BD     		pop	{r4, r5, pc}
+ 636              		.loc 1 154 1 discriminator 4 view .LVU155
+ 637              		.cfi_endproc
+ 638              	.LFE107:
+ 640              		.text
+ 641              	.Letext0:
+ 642              		.file 2 "c:\\program files (x86)\\gnu arm embedded toolchain\\10 2021.10\\arm-none-eabi\\include\\
+ 643              		.file 3 "c:\\program files (x86)\\gnu arm embedded toolchain\\10 2021.10\\arm-none-eabi\\include\\
+ 644              		.file 4 "Middlewares/Third_Party/LoRaWAN/Crypto/lorawan_aes.h"
+ 645              		.file 5 "Middlewares/Third_Party/LoRaWAN/Crypto/cmac.h"
+ 646              		.file 6 "Middlewares/Third_Party/LoRaWAN/Utilities/utilities.h"
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccskFZ8F.s 			page 16
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 cmac.c
+C:\Users\NATHAN~1\AppData\Local\Temp\ccskFZ8F.s:18     .text.AES_CMAC_Init:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\ccskFZ8F.s:24     .text.AES_CMAC_Init:00000000 AES_CMAC_Init
+C:\Users\NATHAN~1\AppData\Local\Temp\ccskFZ8F.s:63     .text.AES_CMAC_SetKey:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\ccskFZ8F.s:69     .text.AES_CMAC_SetKey:00000000 AES_CMAC_SetKey
+C:\Users\NATHAN~1\AppData\Local\Temp\ccskFZ8F.s:97     .text.AES_CMAC_Update:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\ccskFZ8F.s:103    .text.AES_CMAC_Update:00000000 AES_CMAC_Update
+C:\Users\NATHAN~1\AppData\Local\Temp\ccskFZ8F.s:296    .text.AES_CMAC_Final:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\ccskFZ8F.s:302    .text.AES_CMAC_Final:00000000 AES_CMAC_Final
+
+UNDEFINED SYMBOLS
+memset1
+lorawan_aes_set_key
+memcpy1
+lorawan_aes_encrypt

@@ -1,0 +1,399 @@
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccxqCI5z.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"radio_board_if.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.section	.text.RBI_Init,"ax",%progbits
+  18              		.align	1
+  19              		.global	RBI_Init
+  20              		.syntax unified
+  21              		.thumb
+  22              		.thumb_func
+  24              	RBI_Init:
+  25              	.LFB991:
+  26              		.file 1 "LoRaWAN/Target/radio_board_if.c"
+   1:LoRaWAN/Target/radio_board_if.c **** /* USER CODE BEGIN Header */
+   2:LoRaWAN/Target/radio_board_if.c **** /**
+   3:LoRaWAN/Target/radio_board_if.c ****   ******************************************************************************
+   4:LoRaWAN/Target/radio_board_if.c ****   * @file    radio_board_if.c
+   5:LoRaWAN/Target/radio_board_if.c ****   * @author  MCD Application Team
+   6:LoRaWAN/Target/radio_board_if.c ****   * @brief   This file provides an interface layer between MW and Radio Board
+   7:LoRaWAN/Target/radio_board_if.c ****   ******************************************************************************
+   8:LoRaWAN/Target/radio_board_if.c ****   * @attention
+   9:LoRaWAN/Target/radio_board_if.c ****   *
+  10:LoRaWAN/Target/radio_board_if.c ****   * Copyright (c) 2022 STMicroelectronics.
+  11:LoRaWAN/Target/radio_board_if.c ****   * All rights reserved.
+  12:LoRaWAN/Target/radio_board_if.c ****   *
+  13:LoRaWAN/Target/radio_board_if.c ****   * This software is licensed under terms that can be found in the LICENSE file
+  14:LoRaWAN/Target/radio_board_if.c ****   * in the root directory of this software component.
+  15:LoRaWAN/Target/radio_board_if.c ****   * If no LICENSE file comes with this software, it is provided AS-IS.
+  16:LoRaWAN/Target/radio_board_if.c ****   *
+  17:LoRaWAN/Target/radio_board_if.c ****   ******************************************************************************
+  18:LoRaWAN/Target/radio_board_if.c ****   */
+  19:LoRaWAN/Target/radio_board_if.c **** /* USER CODE END Header */
+  20:LoRaWAN/Target/radio_board_if.c **** 
+  21:LoRaWAN/Target/radio_board_if.c **** /* Includes ------------------------------------------------------------------*/
+  22:LoRaWAN/Target/radio_board_if.c **** #include "radio_board_if.h"
+  23:LoRaWAN/Target/radio_board_if.c **** 
+  24:LoRaWAN/Target/radio_board_if.c **** /* USER CODE BEGIN Includes */
+  25:LoRaWAN/Target/radio_board_if.c **** 
+  26:LoRaWAN/Target/radio_board_if.c **** /* USER CODE END Includes */
+  27:LoRaWAN/Target/radio_board_if.c **** 
+  28:LoRaWAN/Target/radio_board_if.c **** /* External variables ---------------------------------------------------------*/
+  29:LoRaWAN/Target/radio_board_if.c **** /* USER CODE BEGIN EV */
+  30:LoRaWAN/Target/radio_board_if.c **** 
+  31:LoRaWAN/Target/radio_board_if.c **** /* USER CODE END EV */
+  32:LoRaWAN/Target/radio_board_if.c **** 
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccxqCI5z.s 			page 2
+
+
+  33:LoRaWAN/Target/radio_board_if.c **** /* Private typedef -----------------------------------------------------------*/
+  34:LoRaWAN/Target/radio_board_if.c **** /* USER CODE BEGIN PTD */
+  35:LoRaWAN/Target/radio_board_if.c **** 
+  36:LoRaWAN/Target/radio_board_if.c **** /* USER CODE END PTD */
+  37:LoRaWAN/Target/radio_board_if.c **** 
+  38:LoRaWAN/Target/radio_board_if.c **** /* Private define ------------------------------------------------------------*/
+  39:LoRaWAN/Target/radio_board_if.c **** /* USER CODE BEGIN PD */
+  40:LoRaWAN/Target/radio_board_if.c **** 
+  41:LoRaWAN/Target/radio_board_if.c **** /* USER CODE END PD */
+  42:LoRaWAN/Target/radio_board_if.c **** 
+  43:LoRaWAN/Target/radio_board_if.c **** /* Private macro -------------------------------------------------------------*/
+  44:LoRaWAN/Target/radio_board_if.c **** /* USER CODE BEGIN PM */
+  45:LoRaWAN/Target/radio_board_if.c **** 
+  46:LoRaWAN/Target/radio_board_if.c **** /* USER CODE END PM */
+  47:LoRaWAN/Target/radio_board_if.c **** 
+  48:LoRaWAN/Target/radio_board_if.c **** /* Private variables ---------------------------------------------------------*/
+  49:LoRaWAN/Target/radio_board_if.c **** /* USER CODE BEGIN PV */
+  50:LoRaWAN/Target/radio_board_if.c **** 
+  51:LoRaWAN/Target/radio_board_if.c **** /* USER CODE END PV */
+  52:LoRaWAN/Target/radio_board_if.c **** 
+  53:LoRaWAN/Target/radio_board_if.c **** /* Private function prototypes -----------------------------------------------*/
+  54:LoRaWAN/Target/radio_board_if.c **** /* USER CODE BEGIN PFP */
+  55:LoRaWAN/Target/radio_board_if.c **** 
+  56:LoRaWAN/Target/radio_board_if.c **** /* USER CODE END PFP */
+  57:LoRaWAN/Target/radio_board_if.c **** 
+  58:LoRaWAN/Target/radio_board_if.c **** /* Exported functions --------------------------------------------------------*/
+  59:LoRaWAN/Target/radio_board_if.c **** int32_t RBI_Init(void)
+  60:LoRaWAN/Target/radio_board_if.c **** {
+  27              		.loc 1 60 1 view -0
+  28              		.cfi_startproc
+  29              		@ args = 0, pretend = 0, frame = 0
+  30              		@ frame_needed = 0, uses_anonymous_args = 0
+  31              		@ link register save eliminated.
+  61:LoRaWAN/Target/radio_board_if.c ****   /* USER CODE BEGIN RBI_Init_1 */
+  62:LoRaWAN/Target/radio_board_if.c **** 
+  63:LoRaWAN/Target/radio_board_if.c ****   /* USER CODE END RBI_Init_1 */
+  64:LoRaWAN/Target/radio_board_if.c **** #if defined(USE_BSP_DRIVER)
+  65:LoRaWAN/Target/radio_board_if.c ****   /* Important note: BSP code is board dependent
+  66:LoRaWAN/Target/radio_board_if.c ****    * STM32WL_Nucleo code can be found
+  67:LoRaWAN/Target/radio_board_if.c ****    *       either in STM32CubeWL package under Drivers/BSP/STM32WLxx_Nucleo/
+  68:LoRaWAN/Target/radio_board_if.c ****    *       or at https://github.com/STMicroelectronics/STM32CubeWL/tree/main/Drivers/BSP/STM32WLxx_
+  69:LoRaWAN/Target/radio_board_if.c ****    * 1/ For User boards, the BSP/STM32WLxx_Nucleo/ directory can be copied and replaced in the proj
+  70:LoRaWAN/Target/radio_board_if.c ****    *       on board RF switch configuration (pin control, number of port etc)
+  71:LoRaWAN/Target/radio_board_if.c ****    *       on TCXO configuration
+  72:LoRaWAN/Target/radio_board_if.c ****    *       on DC/DC configuration */
+  73:LoRaWAN/Target/radio_board_if.c ****   return BSP_RADIO_Init();
+  74:LoRaWAN/Target/radio_board_if.c **** #else
+  75:LoRaWAN/Target/radio_board_if.c ****   /* 2/ Or implement RBI_Init here */
+  76:LoRaWAN/Target/radio_board_if.c ****   int32_t retcode = 0;
+  32              		.loc 1 76 3 view .LVU1
+  33              	.LVL0:
+  77:LoRaWAN/Target/radio_board_if.c ****   /* USER CODE BEGIN RBI_Init_2 */
+  78:LoRaWAN/Target/radio_board_if.c **** #warning user to provide its board code or to call his board driver functions
+  79:LoRaWAN/Target/radio_board_if.c ****   /* USER CODE END RBI_Init_2 */
+  80:LoRaWAN/Target/radio_board_if.c ****   return retcode;
+  34              		.loc 1 80 3 view .LVU2
+  81:LoRaWAN/Target/radio_board_if.c **** #endif  /* USE_BSP_DRIVER  */
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccxqCI5z.s 			page 3
+
+
+  82:LoRaWAN/Target/radio_board_if.c **** }
+  35              		.loc 1 82 1 is_stmt 0 view .LVU3
+  36 0000 0020     		movs	r0, #0
+  37 0002 7047     		bx	lr
+  38              		.cfi_endproc
+  39              	.LFE991:
+  41              		.section	.text.RBI_DeInit,"ax",%progbits
+  42              		.align	1
+  43              		.global	RBI_DeInit
+  44              		.syntax unified
+  45              		.thumb
+  46              		.thumb_func
+  48              	RBI_DeInit:
+  49              	.LFB992:
+  83:LoRaWAN/Target/radio_board_if.c **** 
+  84:LoRaWAN/Target/radio_board_if.c **** int32_t RBI_DeInit(void)
+  85:LoRaWAN/Target/radio_board_if.c **** {
+  50              		.loc 1 85 1 is_stmt 1 view -0
+  51              		.cfi_startproc
+  52              		@ args = 0, pretend = 0, frame = 0
+  53              		@ frame_needed = 0, uses_anonymous_args = 0
+  54              		@ link register save eliminated.
+  86:LoRaWAN/Target/radio_board_if.c ****   /* USER CODE BEGIN RBI_DeInit_1 */
+  87:LoRaWAN/Target/radio_board_if.c **** 
+  88:LoRaWAN/Target/radio_board_if.c ****   /* USER CODE END RBI_DeInit_1 */
+  89:LoRaWAN/Target/radio_board_if.c **** #if defined(USE_BSP_DRIVER)
+  90:LoRaWAN/Target/radio_board_if.c ****   /* Important note: BSP code is board dependent
+  91:LoRaWAN/Target/radio_board_if.c ****    * STM32WL_Nucleo code can be found
+  92:LoRaWAN/Target/radio_board_if.c ****    *       either in STM32CubeWL package under Drivers/BSP/STM32WLxx_Nucleo/
+  93:LoRaWAN/Target/radio_board_if.c ****    *       or at https://github.com/STMicroelectronics/STM32CubeWL/tree/main/Drivers/BSP/STM32WLxx_
+  94:LoRaWAN/Target/radio_board_if.c ****    * 1/ For User boards, the BSP/STM32WLxx_Nucleo/ directory can be copied and replaced in the proj
+  95:LoRaWAN/Target/radio_board_if.c ****    *       on board RF switch configuration (pin control, number of port etc)
+  96:LoRaWAN/Target/radio_board_if.c ****    *       on TCXO configuration
+  97:LoRaWAN/Target/radio_board_if.c ****    *       on DC/DC configuration */
+  98:LoRaWAN/Target/radio_board_if.c ****   return BSP_RADIO_DeInit();
+  99:LoRaWAN/Target/radio_board_if.c **** #else
+ 100:LoRaWAN/Target/radio_board_if.c ****   /* 2/ Or implement RBI_DeInit here */
+ 101:LoRaWAN/Target/radio_board_if.c ****   int32_t retcode = 0;
+  55              		.loc 1 101 3 view .LVU5
+  56              	.LVL1:
+ 102:LoRaWAN/Target/radio_board_if.c ****   /* USER CODE BEGIN RBI_DeInit_2 */
+ 103:LoRaWAN/Target/radio_board_if.c **** #warning user to provide its board code or to call his board driver functions
+ 104:LoRaWAN/Target/radio_board_if.c ****   /* USER CODE END RBI_DeInit_2 */
+ 105:LoRaWAN/Target/radio_board_if.c ****   return retcode;
+  57              		.loc 1 105 3 view .LVU6
+ 106:LoRaWAN/Target/radio_board_if.c **** #endif  /* USE_BSP_DRIVER */
+ 107:LoRaWAN/Target/radio_board_if.c **** }
+  58              		.loc 1 107 1 is_stmt 0 view .LVU7
+  59 0000 0020     		movs	r0, #0
+  60 0002 7047     		bx	lr
+  61              		.cfi_endproc
+  62              	.LFE992:
+  64              		.section	.text.RBI_ConfigRFSwitch,"ax",%progbits
+  65              		.align	1
+  66              		.global	RBI_ConfigRFSwitch
+  67              		.syntax unified
+  68              		.thumb
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccxqCI5z.s 			page 4
+
+
+  69              		.thumb_func
+  71              	RBI_ConfigRFSwitch:
+  72              	.LVL2:
+  73              	.LFB993:
+ 108:LoRaWAN/Target/radio_board_if.c **** 
+ 109:LoRaWAN/Target/radio_board_if.c **** int32_t RBI_ConfigRFSwitch(RBI_Switch_TypeDef Config)
+ 110:LoRaWAN/Target/radio_board_if.c **** {
+  74              		.loc 1 110 1 is_stmt 1 view -0
+  75              		.cfi_startproc
+  76              		@ args = 0, pretend = 0, frame = 0
+  77              		@ frame_needed = 0, uses_anonymous_args = 0
+  78              		@ link register save eliminated.
+ 111:LoRaWAN/Target/radio_board_if.c ****   /* USER CODE BEGIN RBI_ConfigRFSwitch_1 */
+ 112:LoRaWAN/Target/radio_board_if.c **** 
+ 113:LoRaWAN/Target/radio_board_if.c ****   /* USER CODE END RBI_ConfigRFSwitch_1 */
+ 114:LoRaWAN/Target/radio_board_if.c **** #if defined(USE_BSP_DRIVER)
+ 115:LoRaWAN/Target/radio_board_if.c **** 
+ 116:LoRaWAN/Target/radio_board_if.c ****   /* Important note: BSP code is board dependent
+ 117:LoRaWAN/Target/radio_board_if.c ****    * STM32WL_Nucleo code can be found
+ 118:LoRaWAN/Target/radio_board_if.c ****    *       either in STM32CubeWL package under Drivers/BSP/STM32WLxx_Nucleo/
+ 119:LoRaWAN/Target/radio_board_if.c ****    *       or at https://github.com/STMicroelectronics/STM32CubeWL/tree/main/Drivers/BSP/STM32WLxx_
+ 120:LoRaWAN/Target/radio_board_if.c ****    * 1/ For User boards, the BSP/STM32WLxx_Nucleo/ directory can be copied and replaced in the proj
+ 121:LoRaWAN/Target/radio_board_if.c ****    *       on board RF switch configuration (pin control, number of port etc)
+ 122:LoRaWAN/Target/radio_board_if.c ****    *       on TCXO configuration
+ 123:LoRaWAN/Target/radio_board_if.c ****    *       on DC/DC configuration */
+ 124:LoRaWAN/Target/radio_board_if.c ****   return BSP_RADIO_ConfigRFSwitch((BSP_RADIO_Switch_TypeDef) Config);
+ 125:LoRaWAN/Target/radio_board_if.c **** #else
+ 126:LoRaWAN/Target/radio_board_if.c ****   /* 2/ Or implement RBI_ConfigRFSwitch here */
+ 127:LoRaWAN/Target/radio_board_if.c ****   int32_t retcode = 0;
+  79              		.loc 1 127 3 view .LVU9
+ 128:LoRaWAN/Target/radio_board_if.c ****   /* USER CODE BEGIN RBI_ConfigRFSwitch_2 */
+ 129:LoRaWAN/Target/radio_board_if.c **** #warning user to provide its board code or to call his board driver functions
+ 130:LoRaWAN/Target/radio_board_if.c ****   /* USER CODE END RBI_ConfigRFSwitch_2 */
+ 131:LoRaWAN/Target/radio_board_if.c ****   return retcode;
+  80              		.loc 1 131 3 view .LVU10
+ 132:LoRaWAN/Target/radio_board_if.c **** #endif  /* USE_BSP_DRIVER */
+ 133:LoRaWAN/Target/radio_board_if.c **** }
+  81              		.loc 1 133 1 is_stmt 0 view .LVU11
+  82 0000 0020     		movs	r0, #0
+  83              	.LVL3:
+  84              		.loc 1 133 1 view .LVU12
+  85 0002 7047     		bx	lr
+  86              		.cfi_endproc
+  87              	.LFE993:
+  89              		.section	.text.RBI_GetTxConfig,"ax",%progbits
+  90              		.align	1
+  91              		.global	RBI_GetTxConfig
+  92              		.syntax unified
+  93              		.thumb
+  94              		.thumb_func
+  96              	RBI_GetTxConfig:
+  97              	.LFB994:
+ 134:LoRaWAN/Target/radio_board_if.c **** 
+ 135:LoRaWAN/Target/radio_board_if.c **** int32_t RBI_GetTxConfig(void)
+ 136:LoRaWAN/Target/radio_board_if.c **** {
+  98              		.loc 1 136 1 is_stmt 1 view -0
+  99              		.cfi_startproc
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccxqCI5z.s 			page 5
+
+
+ 100              		@ args = 0, pretend = 0, frame = 0
+ 101              		@ frame_needed = 0, uses_anonymous_args = 0
+ 102              		@ link register save eliminated.
+ 137:LoRaWAN/Target/radio_board_if.c ****   /* USER CODE BEGIN RBI_GetTxConfig_1 */
+ 138:LoRaWAN/Target/radio_board_if.c **** 
+ 139:LoRaWAN/Target/radio_board_if.c ****   /* USER CODE END RBI_GetTxConfig_1 */
+ 140:LoRaWAN/Target/radio_board_if.c **** #if defined(USE_BSP_DRIVER)
+ 141:LoRaWAN/Target/radio_board_if.c ****   /* Important note: BSP code is board dependent
+ 142:LoRaWAN/Target/radio_board_if.c ****    * STM32WL_Nucleo code can be found
+ 143:LoRaWAN/Target/radio_board_if.c ****    *       either in STM32CubeWL package under Drivers/BSP/STM32WLxx_Nucleo/
+ 144:LoRaWAN/Target/radio_board_if.c ****    *       or at https://github.com/STMicroelectronics/STM32CubeWL/tree/main/Drivers/BSP/STM32WLxx_
+ 145:LoRaWAN/Target/radio_board_if.c ****    * 1/ For User boards, the BSP/STM32WLxx_Nucleo/ directory can be copied and replaced in the proj
+ 146:LoRaWAN/Target/radio_board_if.c ****    *       on board RF switch configuration (pin control, number of port etc)
+ 147:LoRaWAN/Target/radio_board_if.c ****    *       on TCXO configuration
+ 148:LoRaWAN/Target/radio_board_if.c ****    *       on DC/DC configuration */
+ 149:LoRaWAN/Target/radio_board_if.c ****   return BSP_RADIO_GetTxConfig();
+ 150:LoRaWAN/Target/radio_board_if.c **** #else
+ 151:LoRaWAN/Target/radio_board_if.c ****   /* 2/ Or implement RBI_GetTxConfig here */
+ 152:LoRaWAN/Target/radio_board_if.c ****   int32_t retcode = RBI_CONF_RFO;
+ 103              		.loc 1 152 3 view .LVU14
+ 104              	.LVL4:
+ 153:LoRaWAN/Target/radio_board_if.c ****   /* USER CODE BEGIN RBI_GetTxConfig_2 */
+ 154:LoRaWAN/Target/radio_board_if.c **** #warning user to provide its board code or to call his board driver functions
+ 155:LoRaWAN/Target/radio_board_if.c ****   /* USER CODE END RBI_GetTxConfig_2 */
+ 156:LoRaWAN/Target/radio_board_if.c ****   return retcode;
+ 105              		.loc 1 156 3 view .LVU15
+ 157:LoRaWAN/Target/radio_board_if.c **** #endif  /* USE_BSP_DRIVER */
+ 158:LoRaWAN/Target/radio_board_if.c **** }
+ 106              		.loc 1 158 1 is_stmt 0 view .LVU16
+ 107 0000 0020     		movs	r0, #0
+ 108 0002 7047     		bx	lr
+ 109              		.cfi_endproc
+ 110              	.LFE994:
+ 112              		.section	.text.RBI_IsTCXO,"ax",%progbits
+ 113              		.align	1
+ 114              		.global	RBI_IsTCXO
+ 115              		.syntax unified
+ 116              		.thumb
+ 117              		.thumb_func
+ 119              	RBI_IsTCXO:
+ 120              	.LFB995:
+ 159:LoRaWAN/Target/radio_board_if.c **** 
+ 160:LoRaWAN/Target/radio_board_if.c **** int32_t RBI_IsTCXO(void)
+ 161:LoRaWAN/Target/radio_board_if.c **** {
+ 121              		.loc 1 161 1 is_stmt 1 view -0
+ 122              		.cfi_startproc
+ 123              		@ args = 0, pretend = 0, frame = 0
+ 124              		@ frame_needed = 0, uses_anonymous_args = 0
+ 125              		@ link register save eliminated.
+ 162:LoRaWAN/Target/radio_board_if.c ****   /* USER CODE BEGIN RBI_IsTCXO_1 */
+ 163:LoRaWAN/Target/radio_board_if.c **** 
+ 164:LoRaWAN/Target/radio_board_if.c ****   /* USER CODE END RBI_IsTCXO_1 */
+ 165:LoRaWAN/Target/radio_board_if.c **** #if defined(USE_BSP_DRIVER)
+ 166:LoRaWAN/Target/radio_board_if.c ****   /* Important note: BSP code is board dependent
+ 167:LoRaWAN/Target/radio_board_if.c ****    * STM32WL_Nucleo code can be found
+ 168:LoRaWAN/Target/radio_board_if.c ****    *       either in STM32CubeWL package under Drivers/BSP/STM32WLxx_Nucleo/
+ 169:LoRaWAN/Target/radio_board_if.c ****    *       or at https://github.com/STMicroelectronics/STM32CubeWL/tree/main/Drivers/BSP/STM32WLxx_
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccxqCI5z.s 			page 6
+
+
+ 170:LoRaWAN/Target/radio_board_if.c ****    * 1/ For User boards, the BSP/STM32WLxx_Nucleo/ directory can be copied and replaced in the proj
+ 171:LoRaWAN/Target/radio_board_if.c ****    *       on board RF switch configuration (pin control, number of port etc)
+ 172:LoRaWAN/Target/radio_board_if.c ****    *       on TCXO configuration
+ 173:LoRaWAN/Target/radio_board_if.c ****    *       on DC/DC configuration */
+ 174:LoRaWAN/Target/radio_board_if.c ****   return BSP_RADIO_IsTCXO();
+ 175:LoRaWAN/Target/radio_board_if.c **** #else
+ 176:LoRaWAN/Target/radio_board_if.c ****   /* 2/ Or implement RBI_IsTCXO here */
+ 177:LoRaWAN/Target/radio_board_if.c ****   int32_t retcode = IS_TCXO_SUPPORTED;
+ 126              		.loc 1 177 3 view .LVU18
+ 127              	.LVL5:
+ 178:LoRaWAN/Target/radio_board_if.c ****   /* USER CODE BEGIN RBI_IsTCXO_2 */
+ 179:LoRaWAN/Target/radio_board_if.c **** #warning user to provide its board code or to call his board driver functions
+ 180:LoRaWAN/Target/radio_board_if.c ****   /* USER CODE END RBI_IsTCXO_2 */
+ 181:LoRaWAN/Target/radio_board_if.c ****   return retcode;
+ 128              		.loc 1 181 3 view .LVU19
+ 182:LoRaWAN/Target/radio_board_if.c **** #endif  /* USE_BSP_DRIVER  */
+ 183:LoRaWAN/Target/radio_board_if.c **** }
+ 129              		.loc 1 183 1 is_stmt 0 view .LVU20
+ 130 0000 0120     		movs	r0, #1
+ 131 0002 7047     		bx	lr
+ 132              		.cfi_endproc
+ 133              	.LFE995:
+ 135              		.section	.text.RBI_IsDCDC,"ax",%progbits
+ 136              		.align	1
+ 137              		.global	RBI_IsDCDC
+ 138              		.syntax unified
+ 139              		.thumb
+ 140              		.thumb_func
+ 142              	RBI_IsDCDC:
+ 143              	.LFB996:
+ 184:LoRaWAN/Target/radio_board_if.c **** 
+ 185:LoRaWAN/Target/radio_board_if.c **** int32_t RBI_IsDCDC(void)
+ 186:LoRaWAN/Target/radio_board_if.c **** {
+ 144              		.loc 1 186 1 is_stmt 1 view -0
+ 145              		.cfi_startproc
+ 146              		@ args = 0, pretend = 0, frame = 0
+ 147              		@ frame_needed = 0, uses_anonymous_args = 0
+ 148              		@ link register save eliminated.
+ 187:LoRaWAN/Target/radio_board_if.c ****   /* USER CODE BEGIN RBI_IsDCDC_1 */
+ 188:LoRaWAN/Target/radio_board_if.c **** 
+ 189:LoRaWAN/Target/radio_board_if.c ****   /* USER CODE END RBI_IsDCDC_1 */
+ 190:LoRaWAN/Target/radio_board_if.c **** #if defined(USE_BSP_DRIVER)
+ 191:LoRaWAN/Target/radio_board_if.c ****   /* Important note: BSP code is board dependent
+ 192:LoRaWAN/Target/radio_board_if.c ****    * STM32WL_Nucleo code can be found
+ 193:LoRaWAN/Target/radio_board_if.c ****    *       either in STM32CubeWL package under Drivers/BSP/STM32WLxx_Nucleo/
+ 194:LoRaWAN/Target/radio_board_if.c ****    *       or at https://github.com/STMicroelectronics/STM32CubeWL/tree/main/Drivers/BSP/STM32WLxx_
+ 195:LoRaWAN/Target/radio_board_if.c ****    * 1/ For User boards, the BSP/STM32WLxx_Nucleo/ directory can be copied and replaced in the proj
+ 196:LoRaWAN/Target/radio_board_if.c ****    *       on board RF switch configuration (pin control, number of port etc)
+ 197:LoRaWAN/Target/radio_board_if.c ****    *       on TCXO configuration
+ 198:LoRaWAN/Target/radio_board_if.c ****    *       on DC/DC configuration */
+ 199:LoRaWAN/Target/radio_board_if.c ****   return BSP_RADIO_IsDCDC();
+ 200:LoRaWAN/Target/radio_board_if.c **** #else
+ 201:LoRaWAN/Target/radio_board_if.c ****   /* 2/ Or implement RBI_IsDCDC here */
+ 202:LoRaWAN/Target/radio_board_if.c ****   int32_t retcode = IS_DCDC_SUPPORTED;
+ 149              		.loc 1 202 3 view .LVU22
+ 150              	.LVL6:
+ 203:LoRaWAN/Target/radio_board_if.c ****   /* USER CODE BEGIN RBI_IsDCDC_2 */
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccxqCI5z.s 			page 7
+
+
+ 204:LoRaWAN/Target/radio_board_if.c **** #warning user to provide its board code or to call his board driver functions
+ 205:LoRaWAN/Target/radio_board_if.c ****   /* USER CODE END RBI_IsDCDC_2 */
+ 206:LoRaWAN/Target/radio_board_if.c ****   return retcode;
+ 151              		.loc 1 206 3 view .LVU23
+ 207:LoRaWAN/Target/radio_board_if.c **** #endif  /* USE_BSP_DRIVER  */
+ 208:LoRaWAN/Target/radio_board_if.c **** }
+ 152              		.loc 1 208 1 is_stmt 0 view .LVU24
+ 153 0000 0120     		movs	r0, #1
+ 154 0002 7047     		bx	lr
+ 155              		.cfi_endproc
+ 156              	.LFE996:
+ 158              		.text
+ 159              	.Letext0:
+ 160              		.file 2 "c:\\program files (x86)\\gnu arm embedded toolchain\\10 2021.10\\arm-none-eabi\\include\\
+ 161              		.file 3 "c:\\program files (x86)\\gnu arm embedded toolchain\\10 2021.10\\arm-none-eabi\\include\\
+ 162              		.file 4 "LoRaWAN/Target/radio_board_if.h"
+ 163              		.file 5 "Drivers/STM32WLxx_HAL_Driver/Inc/stm32wlxx_ll_dma.h"
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccxqCI5z.s 			page 8
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 radio_board_if.c
+C:\Users\NATHAN~1\AppData\Local\Temp\ccxqCI5z.s:18     .text.RBI_Init:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\ccxqCI5z.s:24     .text.RBI_Init:00000000 RBI_Init
+C:\Users\NATHAN~1\AppData\Local\Temp\ccxqCI5z.s:42     .text.RBI_DeInit:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\ccxqCI5z.s:48     .text.RBI_DeInit:00000000 RBI_DeInit
+C:\Users\NATHAN~1\AppData\Local\Temp\ccxqCI5z.s:65     .text.RBI_ConfigRFSwitch:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\ccxqCI5z.s:71     .text.RBI_ConfigRFSwitch:00000000 RBI_ConfigRFSwitch
+C:\Users\NATHAN~1\AppData\Local\Temp\ccxqCI5z.s:90     .text.RBI_GetTxConfig:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\ccxqCI5z.s:96     .text.RBI_GetTxConfig:00000000 RBI_GetTxConfig
+C:\Users\NATHAN~1\AppData\Local\Temp\ccxqCI5z.s:113    .text.RBI_IsTCXO:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\ccxqCI5z.s:119    .text.RBI_IsTCXO:00000000 RBI_IsTCXO
+C:\Users\NATHAN~1\AppData\Local\Temp\ccxqCI5z.s:136    .text.RBI_IsDCDC:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\ccxqCI5z.s:142    .text.RBI_IsDCDC:00000000 RBI_IsDCDC
+
+NO UNDEFINED SYMBOLS

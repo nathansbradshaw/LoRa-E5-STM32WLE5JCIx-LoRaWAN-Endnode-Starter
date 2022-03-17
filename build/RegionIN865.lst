@@ -1,0 +1,1823 @@
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccto82TZ.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"RegionIN865.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.section	.text.RegionIN865GetPhyParam,"ax",%progbits
+  18              		.align	1
+  19              		.global	RegionIN865GetPhyParam
+  20              		.syntax unified
+  21              		.thumb
+  22              		.thumb_func
+  24              	RegionIN865GetPhyParam:
+  25              	.LVL0:
+  26              	.LFB104:
+  27              		.file 1 "Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c"
+   1:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** /*!
+   2:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****  * \file      RegionIN865.c
+   3:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****  *
+   4:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****  * \brief     Region implementation for IN865
+   5:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****  *
+   6:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****  * \copyright Revised BSD License, see section \ref LICENSE.
+   7:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****  *
+   8:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****  * \code
+   9:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****  *                ______                              _
+  10:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****  *               / _____)             _              | |
+  11:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****  *              ( (____  _____ ____ _| |_ _____  ____| |__
+  12:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****  *               \____ \| ___ |    (_   _) ___ |/ ___)  _ \
+  13:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****  *               _____) ) ____| | | || |_| ____( (___| | | |
+  14:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****  *              (______/|_____)_|_|_| \__)_____)\____)_| |_|
+  15:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****  *              (C)2013-2017 Semtech
+  16:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****  *
+  17:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****  *               ___ _____ _   ___ _  _____ ___  ___  ___ ___
+  18:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****  *              / __|_   _/_\ / __| |/ / __/ _ \| _ \/ __| __|
+  19:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****  *              \__ \ | |/ _ \ (__| ' <| _| (_) |   / (__| _|
+  20:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****  *              |___/ |_/_/ \_\___|_|\_\_| \___/|_|_\\___|___|
+  21:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****  *              embedded.connectivity.solutions===============
+  22:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****  *
+  23:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****  * \endcode
+  24:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****  *
+  25:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****  * \author    Miguel Luis ( Semtech )
+  26:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****  *
+  27:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****  * \author    Gregory Cristian ( Semtech )
+  28:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****  *
+  29:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****  * \author    Daniel Jaeckle ( STACKFORCE )
+  30:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** */
+  31:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** /**
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccto82TZ.s 			page 2
+
+
+  32:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****   ******************************************************************************
+  33:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****   *
+  34:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****   *          Portions COPYRIGHT 2020 STMicroelectronics
+  35:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****   *
+  36:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****   * @file    RegionIN865.c
+  37:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****   * @author  MCD Application Team
+  38:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****   * @brief   Region implementation for IN865
+  39:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****   ******************************************************************************
+  40:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****   */
+  41:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** #include "radio.h"
+  42:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** #include "RegionCommon.h"
+  43:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** #include "RegionIN865.h"
+  44:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** #include "lorawan_conf.h"  /* REGION_* */
+  45:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** 
+  46:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** // Definitions
+  47:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** #define CHANNELS_MASK_SIZE              1
+  48:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** 
+  49:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** #if defined( REGION_IN865 )
+  50:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** /*
+  51:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****  * Non-volatile module context.
+  52:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****  */
+  53:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** static RegionNvmDataGroup1_t* RegionNvmGroup1;
+  54:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** static RegionNvmDataGroup2_t* RegionNvmGroup2;
+  55:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** 
+  56:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** 
+  57:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** static bool VerifyRfFreq( uint32_t freq )
+  58:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** {
+  59:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     // Check radio driver support
+  60:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     if( Radio.CheckRfFrequency( freq ) == false )
+  61:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     {
+  62:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         return false;
+  63:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     }
+  64:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** 
+  65:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     if( ( freq < 865000000 ) || ( freq > 867000000 ) )
+  66:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     {
+  67:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         return false;
+  68:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     }
+  69:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     return true;
+  70:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** }
+  71:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** 
+  72:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** static TimerTime_t GetTimeOnAir( int8_t datarate, uint16_t pktLen )
+  73:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** {
+  74:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     int8_t phyDr = DataratesIN865[datarate];
+  75:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     uint32_t bandwidth = RegionCommonGetBandwidth( datarate, BandwidthsIN865 );
+  76:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     TimerTime_t timeOnAir = 0;
+  77:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** 
+  78:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     if( datarate == DR_7 )
+  79:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     { // High Speed FSK channel
+  80:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         timeOnAir = Radio.TimeOnAir( MODEM_FSK, bandwidth, phyDr * 1000, 0, 5, false, pktLen, true 
+  81:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     }
+  82:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     else
+  83:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     {
+  84:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         timeOnAir = Radio.TimeOnAir( MODEM_LORA, bandwidth, phyDr, 1, 8, false, pktLen, true );
+  85:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     }
+  86:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     return timeOnAir;
+  87:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** }
+  88:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** #endif /* REGION_IN865 */
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccto82TZ.s 			page 3
+
+
+  89:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** 
+  90:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** PhyParam_t RegionIN865GetPhyParam( GetPhyParams_t* getPhy )
+  91:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** {
+  28              		.loc 1 91 1 view -0
+  29              		.cfi_startproc
+  30              		@ args = 0, pretend = 0, frame = 8
+  31              		@ frame_needed = 0, uses_anonymous_args = 0
+  32              		@ link register save eliminated.
+  33              		.loc 1 91 1 is_stmt 0 view .LVU1
+  34 0000 82B0     		sub	sp, sp, #8
+  35              	.LCFI0:
+  36              		.cfi_def_cfa_offset 8
+  92:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     PhyParam_t phyParam = { 0 };
+  37              		.loc 1 92 5 is_stmt 1 view .LVU2
+  38              		.loc 1 92 16 is_stmt 0 view .LVU3
+  39 0002 0020     		movs	r0, #0
+  40              	.LVL1:
+  41              		.loc 1 92 16 view .LVU4
+  42 0004 0090     		str	r0, [sp]
+  93:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** 
+  94:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** #if defined( REGION_IN865 )
+  95:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     switch( getPhy->Attribute )
+  96:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     {
+  97:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         case PHY_MIN_RX_DR:
+  98:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         {
+  99:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             phyParam.Value = IN865_RX_MIN_DATARATE;
+ 100:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             break;
+ 101:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         }
+ 102:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         case PHY_MIN_TX_DR:
+ 103:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         {
+ 104:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             phyParam.Value = IN865_TX_MIN_DATARATE;
+ 105:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             break;
+ 106:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         }
+ 107:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         case PHY_DEF_TX_DR:
+ 108:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         {
+ 109:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             phyParam.Value = IN865_DEFAULT_DATARATE;
+ 110:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             break;
+ 111:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         }
+ 112:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         case PHY_NEXT_LOWER_TX_DR:
+ 113:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         {
+ 114:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             RegionCommonGetNextLowerTxDrParams_t nextLowerTxDrParams =
+ 115:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             {
+ 116:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****                 .CurrentDr = getPhy->Datarate,
+ 117:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****                 .MaxDr = ( int8_t )IN865_TX_MAX_DATARATE,
+ 118:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****                 .MinDr = ( int8_t )IN865_TX_MIN_DATARATE,
+ 119:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****                 .NbChannels = IN865_MAX_NB_CHANNELS,
+ 120:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****                 .ChannelsMask = RegionNvmGroup2->ChannelsMask,
+ 121:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****                 .Channels = RegionNvmGroup2->Channels,
+ 122:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             };
+ 123:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             phyParam.Value = RegionCommonGetNextLowerTxDr( &nextLowerTxDrParams );
+ 124:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             break;
+ 125:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         }
+ 126:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         case PHY_MAX_TX_POWER:
+ 127:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         {
+ 128:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             phyParam.Value = IN865_MAX_TX_POWER;
+ 129:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             break;
+ 130:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         }
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccto82TZ.s 			page 4
+
+
+ 131:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         case PHY_DEF_TX_POWER:
+ 132:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         {
+ 133:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             phyParam.Value = IN865_DEFAULT_TX_POWER;
+ 134:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             break;
+ 135:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         }
+ 136:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         case PHY_DEF_ADR_ACK_LIMIT:
+ 137:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         {
+ 138:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             phyParam.Value = REGION_COMMON_DEFAULT_ADR_ACK_LIMIT;
+ 139:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             break;
+ 140:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         }
+ 141:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         case PHY_DEF_ADR_ACK_DELAY:
+ 142:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         {
+ 143:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             phyParam.Value = REGION_COMMON_DEFAULT_ADR_ACK_DELAY;
+ 144:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             break;
+ 145:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         }
+ 146:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         case PHY_MAX_PAYLOAD:
+ 147:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         {
+ 148:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             phyParam.Value = MaxPayloadOfDatarateIN865[getPhy->Datarate];
+ 149:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             break;
+ 150:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         }
+ 151:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         /* ST_WORKAROUND_BEGIN: Keep repeater feature */
+ 152:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         case PHY_MAX_PAYLOAD_REPEATER:
+ 153:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         {
+ 154:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             phyParam.Value = MaxPayloadOfDatarateRepeaterIN865[getPhy->Datarate];
+ 155:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             break;
+ 156:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         }
+ 157:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         /* ST_WORKAROUND_END */
+ 158:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         case PHY_DUTY_CYCLE:
+ 159:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         {
+ 160:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             phyParam.Value = IN865_DUTY_CYCLE_ENABLED;
+ 161:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             break;
+ 162:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         }
+ 163:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         case PHY_MAX_RX_WINDOW:
+ 164:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         {
+ 165:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             phyParam.Value = IN865_MAX_RX_WINDOW;
+ 166:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             break;
+ 167:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         }
+ 168:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         case PHY_RECEIVE_DELAY1:
+ 169:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         {
+ 170:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             phyParam.Value = REGION_COMMON_DEFAULT_RECEIVE_DELAY1;
+ 171:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             break;
+ 172:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         }
+ 173:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         case PHY_RECEIVE_DELAY2:
+ 174:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         {
+ 175:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             phyParam.Value = REGION_COMMON_DEFAULT_RECEIVE_DELAY2;
+ 176:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             break;
+ 177:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         }
+ 178:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         case PHY_JOIN_ACCEPT_DELAY1:
+ 179:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         {
+ 180:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             phyParam.Value = REGION_COMMON_DEFAULT_JOIN_ACCEPT_DELAY1;
+ 181:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             break;
+ 182:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         }
+ 183:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         case PHY_JOIN_ACCEPT_DELAY2:
+ 184:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         {
+ 185:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             phyParam.Value = REGION_COMMON_DEFAULT_JOIN_ACCEPT_DELAY2;
+ 186:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             break;
+ 187:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         }
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccto82TZ.s 			page 5
+
+
+ 188:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         case PHY_MAX_FCNT_GAP:
+ 189:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         {
+ 190:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             phyParam.Value = REGION_COMMON_DEFAULT_MAX_FCNT_GAP;
+ 191:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             break;
+ 192:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         }
+ 193:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         case PHY_ACK_TIMEOUT:
+ 194:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         {
+ 195:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             phyParam.Value = ( REGION_COMMON_DEFAULT_ACK_TIMEOUT + randr( -REGION_COMMON_DEFAULT_AC
+ 196:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             break;
+ 197:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         }
+ 198:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         case PHY_DEF_DR1_OFFSET:
+ 199:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         {
+ 200:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             phyParam.Value = REGION_COMMON_DEFAULT_RX1_DR_OFFSET;
+ 201:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             break;
+ 202:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         }
+ 203:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         case PHY_DEF_RX2_FREQUENCY:
+ 204:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         {
+ 205:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             phyParam.Value = IN865_RX_WND_2_FREQ;
+ 206:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             break;
+ 207:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         }
+ 208:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         case PHY_DEF_RX2_DR:
+ 209:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         {
+ 210:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             phyParam.Value = IN865_RX_WND_2_DR;
+ 211:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             break;
+ 212:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         }
+ 213:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         case PHY_CHANNELS_MASK:
+ 214:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         {
+ 215:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             phyParam.ChannelsMask = RegionNvmGroup2->ChannelsMask;
+ 216:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             break;
+ 217:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         }
+ 218:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         case PHY_CHANNELS_DEFAULT_MASK:
+ 219:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         {
+ 220:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             phyParam.ChannelsMask = RegionNvmGroup2->ChannelsDefaultMask;
+ 221:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             break;
+ 222:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         }
+ 223:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         case PHY_MAX_NB_CHANNELS:
+ 224:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         {
+ 225:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             phyParam.Value = IN865_MAX_NB_CHANNELS;
+ 226:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             break;
+ 227:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         }
+ 228:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         case PHY_CHANNELS:
+ 229:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         {
+ 230:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             phyParam.Channels = RegionNvmGroup2->Channels;
+ 231:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             break;
+ 232:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         }
+ 233:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         case PHY_DEF_UPLINK_DWELL_TIME:
+ 234:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         {
+ 235:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             phyParam.Value = IN865_DEFAULT_UPLINK_DWELL_TIME;
+ 236:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             break;
+ 237:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         }
+ 238:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         case PHY_DEF_DOWNLINK_DWELL_TIME:
+ 239:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         {
+ 240:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             phyParam.Value = REGION_COMMON_DEFAULT_DOWNLINK_DWELL_TIME;
+ 241:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             break;
+ 242:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         }
+ 243:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         case PHY_DEF_MAX_EIRP:
+ 244:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         {
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccto82TZ.s 			page 6
+
+
+ 245:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             phyParam.fValue = IN865_DEFAULT_MAX_EIRP;
+ 246:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             break;
+ 247:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         }
+ 248:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         case PHY_DEF_ANTENNA_GAIN:
+ 249:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         {
+ 250:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             phyParam.fValue = IN865_DEFAULT_ANTENNA_GAIN;
+ 251:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             break;
+ 252:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         }
+ 253:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         case PHY_BEACON_CHANNEL_FREQ:
+ 254:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         {
+ 255:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             phyParam.Value = IN865_BEACON_CHANNEL_FREQ;
+ 256:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             break;
+ 257:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         }
+ 258:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         case PHY_BEACON_FORMAT:
+ 259:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         {
+ 260:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             phyParam.BeaconFormat.BeaconSize = IN865_BEACON_SIZE;
+ 261:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             phyParam.BeaconFormat.Rfu1Size = IN865_RFU1_SIZE;
+ 262:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             phyParam.BeaconFormat.Rfu2Size = IN865_RFU2_SIZE;
+ 263:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             break;
+ 264:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         }
+ 265:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         case PHY_BEACON_CHANNEL_DR:
+ 266:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         {
+ 267:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             phyParam.Value = IN865_BEACON_CHANNEL_DR;
+ 268:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             break;
+ 269:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         }
+ 270:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         case PHY_PING_SLOT_CHANNEL_FREQ:
+ 271:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         {
+ 272:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             phyParam.Value = IN865_PING_SLOT_CHANNEL_FREQ;
+ 273:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             break;
+ 274:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         }
+ 275:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         case PHY_PING_SLOT_CHANNEL_DR:
+ 276:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         {
+ 277:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             phyParam.Value = IN865_PING_SLOT_CHANNEL_DR;
+ 278:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             break;
+ 279:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         }
+ 280:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         case PHY_SF_FROM_DR:
+ 281:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         {
+ 282:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             phyParam.Value = DataratesIN865[getPhy->Datarate];
+ 283:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             break;
+ 284:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         }
+ 285:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         case PHY_BW_FROM_DR:
+ 286:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         {
+ 287:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             phyParam.Value = RegionCommonGetBandwidth( getPhy->Datarate, BandwidthsIN865 );
+ 288:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             break;
+ 289:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         }
+ 290:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         default:
+ 291:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         {
+ 292:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             break;
+ 293:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         }
+ 294:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     }
+ 295:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** 
+ 296:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** #endif /* REGION_IN865 */
+ 297:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     return phyParam;
+  43              		.loc 1 297 5 is_stmt 1 view .LVU5
+  44              		.loc 1 297 12 is_stmt 0 view .LVU6
+  45 0006 0190     		str	r0, [sp, #4]
+ 298:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** }
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccto82TZ.s 			page 7
+
+
+  46              		.loc 1 298 1 view .LVU7
+  47 0008 02B0     		add	sp, sp, #8
+  48              	.LCFI1:
+  49              		.cfi_def_cfa_offset 0
+  50              		@ sp needed
+  51 000a 7047     		bx	lr
+  52              		.cfi_endproc
+  53              	.LFE104:
+  55              		.section	.text.RegionIN865SetBandTxDone,"ax",%progbits
+  56              		.align	1
+  57              		.global	RegionIN865SetBandTxDone
+  58              		.syntax unified
+  59              		.thumb
+  60              		.thumb_func
+  62              	RegionIN865SetBandTxDone:
+  63              	.LVL2:
+  64              	.LFB105:
+ 299:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** 
+ 300:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** void RegionIN865SetBandTxDone( SetBandTxDoneParams_t* txDone )
+ 301:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** {
+  65              		.loc 1 301 1 is_stmt 1 view -0
+  66              		.cfi_startproc
+  67              		@ args = 0, pretend = 0, frame = 0
+  68              		@ frame_needed = 0, uses_anonymous_args = 0
+  69              		@ link register save eliminated.
+ 302:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** #if defined( REGION_IN865 )
+ 303:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     RegionCommonSetBandTxDone( &RegionNvmGroup1->Bands[RegionNvmGroup2->Channels[txDone->Channel].B
+ 304:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****                                txDone->LastTxAirTime, txDone->Joined, txDone->ElapsedTimeSinceStart
+ 305:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** #endif /* REGION_IN865 */
+ 306:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** }
+  70              		.loc 1 306 1 view .LVU9
+  71 0000 7047     		bx	lr
+  72              		.cfi_endproc
+  73              	.LFE105:
+  75              		.section	.text.RegionIN865InitDefaults,"ax",%progbits
+  76              		.align	1
+  77              		.global	RegionIN865InitDefaults
+  78              		.syntax unified
+  79              		.thumb
+  80              		.thumb_func
+  82              	RegionIN865InitDefaults:
+  83              	.LVL3:
+  84              	.LFB106:
+ 307:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** 
+ 308:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** void RegionIN865InitDefaults( InitDefaultsParams_t* params )
+ 309:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** {
+  85              		.loc 1 309 1 view -0
+  86              		.cfi_startproc
+  87              		@ args = 0, pretend = 0, frame = 0
+  88              		@ frame_needed = 0, uses_anonymous_args = 0
+  89              		@ link register save eliminated.
+ 310:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** #if defined( REGION_IN865 )
+ 311:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     Band_t bands[IN865_MAX_NB_BANDS] =
+ 312:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     {
+ 313:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         IN865_BAND0
+ 314:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     };
+ 315:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** 
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccto82TZ.s 			page 8
+
+
+ 316:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     switch( params->Type )
+ 317:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     {
+ 318:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         case INIT_TYPE_DEFAULTS:
+ 319:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         {
+ 320:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             if( ( params->NvmGroup1 == NULL ) || ( params->NvmGroup2 == NULL ) )
+ 321:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             {
+ 322:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****                 return;
+ 323:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             }
+ 324:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** 
+ 325:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             RegionNvmGroup1 = (RegionNvmDataGroup1_t*) params->NvmGroup1;
+ 326:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             RegionNvmGroup2 = (RegionNvmDataGroup2_t*) params->NvmGroup2;
+ 327:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** 
+ 328:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             // Initialize bands
+ 329:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             memcpy1( ( uint8_t* )RegionNvmGroup1->Bands, ( uint8_t* )bands, sizeof( Band_t ) * IN86
+ 330:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** 
+ 331:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             // Default channels
+ 332:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             RegionNvmGroup2->Channels[0] = ( ChannelParams_t ) IN865_LC1;
+ 333:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             RegionNvmGroup2->Channels[1] = ( ChannelParams_t ) IN865_LC2;
+ 334:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             RegionNvmGroup2->Channels[2] = ( ChannelParams_t ) IN865_LC3;
+ 335:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** 
+ 336:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             // Initialize the channels default mask
+ 337:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             RegionNvmGroup2->ChannelsDefaultMask[0] = LC( 1 ) + LC( 2 ) + LC( 3 );
+ 338:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** 
+ 339:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             // Default ChannelsMask
+ 340:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             RegionCommonChanMaskCopy( RegionNvmGroup2->ChannelsMask, RegionNvmGroup2->ChannelsDefau
+ 341:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             break;
+ 342:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         }
+ 343:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         case INIT_TYPE_RESET_TO_DEFAULT_CHANNELS:
+ 344:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         {
+ 345:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             // Reset Channels Rx1Frequency to default 0
+ 346:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             RegionNvmGroup2->Channels[0].Rx1Frequency = 0;
+ 347:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             RegionNvmGroup2->Channels[1].Rx1Frequency = 0;
+ 348:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             RegionNvmGroup2->Channels[2].Rx1Frequency = 0;
+ 349:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             // Default ChannelsMask
+ 350:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             RegionCommonChanMaskCopy( RegionNvmGroup2->ChannelsMask, RegionNvmGroup2->ChannelsDefau
+ 351:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             break;
+ 352:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         }
+ 353:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         case INIT_TYPE_ACTIVATE_DEFAULT_CHANNELS:
+ 354:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         {
+ 355:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             // Restore channels default mask
+ 356:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             RegionNvmGroup2->ChannelsMask[0] |= RegionNvmGroup2->ChannelsDefaultMask[0];
+ 357:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             break;
+ 358:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         }
+ 359:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         default:
+ 360:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         {
+ 361:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             break;
+ 362:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         }
+ 363:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     }
+ 364:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** #endif /* REGION_IN865 */
+ 365:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** }
+  90              		.loc 1 365 1 view .LVU11
+  91 0000 7047     		bx	lr
+  92              		.cfi_endproc
+  93              	.LFE106:
+  95              		.section	.text.RegionIN865Verify,"ax",%progbits
+  96              		.align	1
+  97              		.global	RegionIN865Verify
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccto82TZ.s 			page 9
+
+
+  98              		.syntax unified
+  99              		.thumb
+ 100              		.thumb_func
+ 102              	RegionIN865Verify:
+ 103              	.LVL4:
+ 104              	.LFB107:
+ 366:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** 
+ 367:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** bool RegionIN865Verify( VerifyParams_t* verify, PhyAttribute_t phyAttribute )
+ 368:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** {
+ 105              		.loc 1 368 1 view -0
+ 106              		.cfi_startproc
+ 107              		@ args = 0, pretend = 0, frame = 0
+ 108              		@ frame_needed = 0, uses_anonymous_args = 0
+ 109              		@ link register save eliminated.
+ 369:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** #if defined( REGION_IN865 )
+ 370:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     switch( phyAttribute )
+ 371:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     {
+ 372:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         case PHY_FREQUENCY:
+ 373:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         {
+ 374:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             return VerifyRfFreq( verify->Frequency );
+ 375:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         }
+ 376:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         case PHY_TX_DR:
+ 377:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         {
+ 378:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             if( verify->DatarateParams.Datarate == DR_6 )
+ 379:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             {// DR_6 is not supported by this region
+ 380:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****                 return false;
+ 381:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             }
+ 382:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             else
+ 383:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             {
+ 384:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****                 return RegionCommonValueInRange( verify->DatarateParams.Datarate, IN865_TX_MIN_DATA
+ 385:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             }
+ 386:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         }
+ 387:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         case PHY_DEF_TX_DR:
+ 388:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         {
+ 389:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             return RegionCommonValueInRange( verify->DatarateParams.Datarate, DR_0, DR_5 );
+ 390:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         }
+ 391:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         case PHY_RX_DR:
+ 392:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         {
+ 393:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             if( verify->DatarateParams.Datarate == DR_6 )
+ 394:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             {// DR_6 is not supported by this region
+ 395:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****                 return false;
+ 396:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             }
+ 397:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             else
+ 398:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             {
+ 399:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****                 return RegionCommonValueInRange( verify->DatarateParams.Datarate, IN865_RX_MIN_DATA
+ 400:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             }
+ 401:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         }
+ 402:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         case PHY_DEF_TX_POWER:
+ 403:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         case PHY_TX_POWER:
+ 404:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         {
+ 405:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             // Remark: switched min and max!
+ 406:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             return RegionCommonValueInRange( verify->TxPower, IN865_MAX_TX_POWER, IN865_MIN_TX_POWE
+ 407:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         }
+ 408:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         case PHY_DUTY_CYCLE:
+ 409:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         {
+ 410:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             return IN865_DUTY_CYCLE_ENABLED;
+ 411:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         }
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccto82TZ.s 			page 10
+
+
+ 412:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         default:
+ 413:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             return false;
+ 414:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     }
+ 415:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** #else
+ 416:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     return false;
+ 110              		.loc 1 416 5 view .LVU13
+ 417:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** #endif /* REGION_IN865 */
+ 418:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** }
+ 111              		.loc 1 418 1 is_stmt 0 view .LVU14
+ 112 0000 0020     		movs	r0, #0
+ 113              	.LVL5:
+ 114              		.loc 1 418 1 view .LVU15
+ 115 0002 7047     		bx	lr
+ 116              		.cfi_endproc
+ 117              	.LFE107:
+ 119              		.section	.text.RegionIN865ApplyCFList,"ax",%progbits
+ 120              		.align	1
+ 121              		.global	RegionIN865ApplyCFList
+ 122              		.syntax unified
+ 123              		.thumb
+ 124              		.thumb_func
+ 126              	RegionIN865ApplyCFList:
+ 127              	.LVL6:
+ 128              	.LFB108:
+ 419:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** 
+ 420:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** void RegionIN865ApplyCFList( ApplyCFListParams_t* applyCFList )
+ 421:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** {
+ 129              		.loc 1 421 1 is_stmt 1 view -0
+ 130              		.cfi_startproc
+ 131              		@ args = 0, pretend = 0, frame = 0
+ 132              		@ frame_needed = 0, uses_anonymous_args = 0
+ 133              		@ link register save eliminated.
+ 422:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** #if defined( REGION_IN865 )
+ 423:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     ChannelParams_t newChannel;
+ 424:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     ChannelAddParams_t channelAdd;
+ 425:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     ChannelRemoveParams_t channelRemove;
+ 426:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** 
+ 427:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     // Setup default datarate range
+ 428:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     newChannel.DrRange.Value = ( DR_5 << 4 ) | DR_0;
+ 429:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** 
+ 430:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     // Size of the optional CF list
+ 431:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     if( applyCFList->Size != 16 )
+ 432:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     {
+ 433:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         return;
+ 434:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     }
+ 435:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** 
+ 436:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     // Last byte CFListType must be 0 to indicate the CFList contains a list of frequencies
+ 437:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     if( applyCFList->Payload[15] != 0 )
+ 438:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     {
+ 439:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         return;
+ 440:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     }
+ 441:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** 
+ 442:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     // Last byte is RFU, don't take it into account
+ 443:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     for( uint8_t i = 0, chanIdx = IN865_NUMB_DEFAULT_CHANNELS; chanIdx < IN865_MAX_NB_CHANNELS; i+=
+ 444:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     {
+ 445:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         if( chanIdx < ( IN865_NUMB_CHANNELS_CF_LIST + IN865_NUMB_DEFAULT_CHANNELS ) )
+ 446:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         {
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccto82TZ.s 			page 11
+
+
+ 447:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             // Channel frequency
+ 448:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             newChannel.Frequency = (uint32_t) applyCFList->Payload[i];
+ 449:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             newChannel.Frequency |= ( (uint32_t) applyCFList->Payload[i + 1] << 8 );
+ 450:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             newChannel.Frequency |= ( (uint32_t) applyCFList->Payload[i + 2] << 16 );
+ 451:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             newChannel.Frequency *= 100;
+ 452:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** 
+ 453:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             // Initialize alternative frequency to 0
+ 454:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             newChannel.Rx1Frequency = 0;
+ 455:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         }
+ 456:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         else
+ 457:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         {
+ 458:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             newChannel.Frequency = 0;
+ 459:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             newChannel.DrRange.Value = 0;
+ 460:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             newChannel.Rx1Frequency = 0;
+ 461:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         }
+ 462:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** 
+ 463:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         if( newChannel.Frequency != 0 )
+ 464:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         {
+ 465:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             channelAdd.NewChannel = &newChannel;
+ 466:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             channelAdd.ChannelId = chanIdx;
+ 467:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** 
+ 468:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             // Try to add all channels
+ 469:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             RegionIN865ChannelAdd( &channelAdd );
+ 470:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         }
+ 471:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         else
+ 472:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         {
+ 473:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             channelRemove.ChannelId = chanIdx;
+ 474:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** 
+ 475:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             RegionIN865ChannelsRemove( &channelRemove );
+ 476:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         }
+ 477:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     }
+ 478:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** #endif /* REGION_IN865 */
+ 479:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** }
+ 134              		.loc 1 479 1 view .LVU17
+ 135 0000 7047     		bx	lr
+ 136              		.cfi_endproc
+ 137              	.LFE108:
+ 139              		.section	.text.RegionIN865ChanMaskSet,"ax",%progbits
+ 140              		.align	1
+ 141              		.global	RegionIN865ChanMaskSet
+ 142              		.syntax unified
+ 143              		.thumb
+ 144              		.thumb_func
+ 146              	RegionIN865ChanMaskSet:
+ 147              	.LVL7:
+ 148              	.LFB109:
+ 480:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** 
+ 481:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** bool RegionIN865ChanMaskSet( ChanMaskSetParams_t* chanMaskSet )
+ 482:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** {
+ 149              		.loc 1 482 1 view -0
+ 150              		.cfi_startproc
+ 151              		@ args = 0, pretend = 0, frame = 0
+ 152              		@ frame_needed = 0, uses_anonymous_args = 0
+ 153              		@ link register save eliminated.
+ 483:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** #if defined( REGION_IN865 )
+ 484:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     switch( chanMaskSet->ChannelsMaskType )
+ 485:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     {
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccto82TZ.s 			page 12
+
+
+ 486:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         case CHANNELS_MASK:
+ 487:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         {
+ 488:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             RegionCommonChanMaskCopy( RegionNvmGroup2->ChannelsMask, chanMaskSet->ChannelsMaskIn, 1
+ 489:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             break;
+ 490:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         }
+ 491:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         case CHANNELS_DEFAULT_MASK:
+ 492:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         {
+ 493:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             RegionCommonChanMaskCopy( RegionNvmGroup2->ChannelsDefaultMask, chanMaskSet->ChannelsMa
+ 494:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             break;
+ 495:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         }
+ 496:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         default:
+ 497:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             return false;
+ 498:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     }
+ 499:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     return true;
+ 500:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** #else
+ 501:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     return false;
+ 154              		.loc 1 501 5 view .LVU19
+ 502:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** #endif /* REGION_IN865 */
+ 503:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** }
+ 155              		.loc 1 503 1 is_stmt 0 view .LVU20
+ 156 0000 0020     		movs	r0, #0
+ 157              	.LVL8:
+ 158              		.loc 1 503 1 view .LVU21
+ 159 0002 7047     		bx	lr
+ 160              		.cfi_endproc
+ 161              	.LFE109:
+ 163              		.section	.text.RegionIN865ComputeRxWindowParameters,"ax",%progbits
+ 164              		.align	1
+ 165              		.global	RegionIN865ComputeRxWindowParameters
+ 166              		.syntax unified
+ 167              		.thumb
+ 168              		.thumb_func
+ 170              	RegionIN865ComputeRxWindowParameters:
+ 171              	.LVL9:
+ 172              	.LFB110:
+ 504:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** 
+ 505:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** void RegionIN865ComputeRxWindowParameters( int8_t datarate, uint8_t minRxSymbols, uint32_t rxError,
+ 506:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** {
+ 173              		.loc 1 506 1 is_stmt 1 view -0
+ 174              		.cfi_startproc
+ 175              		@ args = 0, pretend = 0, frame = 0
+ 176              		@ frame_needed = 0, uses_anonymous_args = 0
+ 177              		@ link register save eliminated.
+ 507:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** #if defined( REGION_IN865 )
+ 508:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     uint32_t tSymbolInUs = 0;
+ 509:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** 
+ 510:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     // Get the datarate, perform a boundary check
+ 511:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     rxConfigParams->Datarate = MIN( datarate, IN865_RX_MAX_DATARATE );
+ 512:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     rxConfigParams->Bandwidth = RegionCommonGetBandwidth( rxConfigParams->Datarate, BandwidthsIN865
+ 513:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** 
+ 514:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     if( rxConfigParams->Datarate == DR_7 )
+ 515:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     { // FSK
+ 516:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         tSymbolInUs = RegionCommonComputeSymbolTimeFsk( DataratesIN865[rxConfigParams->Datarate] );
+ 517:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     }
+ 518:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     else
+ 519:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     { // LoRa
+ 520:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         tSymbolInUs = RegionCommonComputeSymbolTimeLoRa( DataratesIN865[rxConfigParams->Datarate], 
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccto82TZ.s 			page 13
+
+
+ 521:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     }
+ 522:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** 
+ 523:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     RegionCommonComputeRxWindowParameters( tSymbolInUs, minRxSymbols, rxError, Radio.GetWakeupTime(
+ 524:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** #endif /* REGION_IN865 */
+ 525:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** }
+ 178              		.loc 1 525 1 view .LVU23
+ 179 0000 7047     		bx	lr
+ 180              		.cfi_endproc
+ 181              	.LFE110:
+ 183              		.section	.text.RegionIN865RxConfig,"ax",%progbits
+ 184              		.align	1
+ 185              		.global	RegionIN865RxConfig
+ 186              		.syntax unified
+ 187              		.thumb
+ 188              		.thumb_func
+ 190              	RegionIN865RxConfig:
+ 191              	.LVL10:
+ 192              	.LFB111:
+ 526:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** 
+ 527:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** bool RegionIN865RxConfig( RxConfigParams_t* rxConfig, int8_t* datarate )
+ 528:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** {
+ 193              		.loc 1 528 1 view -0
+ 194              		.cfi_startproc
+ 195              		@ args = 0, pretend = 0, frame = 0
+ 196              		@ frame_needed = 0, uses_anonymous_args = 0
+ 197              		@ link register save eliminated.
+ 529:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** #if defined( REGION_IN865 )
+ 530:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     RadioModems_t modem;
+ 531:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     int8_t dr = rxConfig->Datarate;
+ 532:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     uint8_t maxPayload = 0;
+ 533:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     int8_t phyDr = 0;
+ 534:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     uint32_t frequency = rxConfig->Frequency;
+ 535:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** 
+ 536:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     if( Radio.GetStatus( ) != RF_IDLE )
+ 537:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     {
+ 538:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         return false;
+ 539:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     }
+ 540:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** 
+ 541:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     if( rxConfig->RxSlot == RX_SLOT_WIN_1 )
+ 542:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     {
+ 543:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         // Apply window 1 frequency
+ 544:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         frequency = RegionNvmGroup2->Channels[rxConfig->Channel].Frequency;
+ 545:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         // Apply the alternative RX 1 window frequency, if it is available
+ 546:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         if( RegionNvmGroup2->Channels[rxConfig->Channel].Rx1Frequency != 0 )
+ 547:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         {
+ 548:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             frequency = RegionNvmGroup2->Channels[rxConfig->Channel].Rx1Frequency;
+ 549:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         }
+ 550:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     }
+ 551:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** 
+ 552:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     // Read the physical datarate from the datarates table
+ 553:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     phyDr = DataratesIN865[dr];
+ 554:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** 
+ 555:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     Radio.SetChannel( frequency );
+ 556:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** 
+ 557:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     // Radio configuration
+ 558:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     if( dr == DR_7 )
+ 559:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     {
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccto82TZ.s 			page 14
+
+
+ 560:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         modem = MODEM_FSK;
+ 561:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         Radio.SetRxConfig( modem, 50000, phyDr * 1000, 0, 83333, 5, rxConfig->WindowTimeout, false,
+ 562:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     }
+ 563:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     else
+ 564:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     {
+ 565:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         modem = MODEM_LORA;
+ 566:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         Radio.SetRxConfig( modem, rxConfig->Bandwidth, phyDr, 1, 0, 8, rxConfig->WindowTimeout, fal
+ 567:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     }
+ 568:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** 
+ 569:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     /* ST_WORKAROUND_BEGIN: Keep repeater feature */
+ 570:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     if( rxConfig->RepeaterSupport == true )
+ 571:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     {
+ 572:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         maxPayload = MaxPayloadOfDatarateRepeaterIN865[dr];
+ 573:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     }
+ 574:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     else
+ 575:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     {
+ 576:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         maxPayload = MaxPayloadOfDatarateIN865[dr];
+ 577:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     }
+ 578:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     Radio.SetMaxPayloadLength( modem, maxPayload + LORAMAC_FRAME_PAYLOAD_OVERHEAD_SIZE );
+ 579:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     /* ST_WORKAROUND_END */
+ 580:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** 
+ 581:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     /* ST_WORKAROUND_BEGIN: Print Rx config */
+ 582:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     RegionCommonRxConfigPrint(rxConfig->RxSlot, frequency, dr);
+ 583:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     /* ST_WORKAROUND_END */
+ 584:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** 
+ 585:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     *datarate = (uint8_t) dr;
+ 586:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     return true;
+ 587:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** #else
+ 588:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     return false;
+ 198              		.loc 1 588 5 view .LVU25
+ 589:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** #endif /* REGION_IN865 */
+ 590:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** }
+ 199              		.loc 1 590 1 is_stmt 0 view .LVU26
+ 200 0000 0020     		movs	r0, #0
+ 201              	.LVL11:
+ 202              		.loc 1 590 1 view .LVU27
+ 203 0002 7047     		bx	lr
+ 204              		.cfi_endproc
+ 205              	.LFE111:
+ 207              		.section	.text.RegionIN865TxConfig,"ax",%progbits
+ 208              		.align	1
+ 209              		.global	RegionIN865TxConfig
+ 210              		.syntax unified
+ 211              		.thumb
+ 212              		.thumb_func
+ 214              	RegionIN865TxConfig:
+ 215              	.LVL12:
+ 216              	.LFB112:
+ 591:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** 
+ 592:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** bool RegionIN865TxConfig( TxConfigParams_t* txConfig, int8_t* txPower, TimerTime_t* txTimeOnAir )
+ 593:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** {
+ 217              		.loc 1 593 1 is_stmt 1 view -0
+ 218              		.cfi_startproc
+ 219              		@ args = 0, pretend = 0, frame = 0
+ 220              		@ frame_needed = 0, uses_anonymous_args = 0
+ 221              		@ link register save eliminated.
+ 594:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** #if defined( REGION_IN865 )
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccto82TZ.s 			page 15
+
+
+ 595:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     RadioModems_t modem;
+ 596:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     int8_t phyDr = DataratesIN865[txConfig->Datarate];
+ 597:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     int8_t txPowerLimited = RegionCommonLimitTxPower( txConfig->TxPower, RegionNvmGroup1->Bands[Reg
+ 598:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     uint32_t bandwidth = RegionCommonGetBandwidth( txConfig->Datarate, BandwidthsIN865 );
+ 599:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     int8_t phyTxPower = 0;
+ 600:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** 
+ 601:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     // Calculate physical TX power
+ 602:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     phyTxPower = RegionCommonComputeTxPower( txPowerLimited, txConfig->MaxEirp, txConfig->AntennaGa
+ 603:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** 
+ 604:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     // Setup the radio frequency
+ 605:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     Radio.SetChannel( RegionNvmGroup2->Channels[txConfig->Channel].Frequency );
+ 606:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** 
+ 607:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     if( txConfig->Datarate == DR_7 )
+ 608:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     { // High Speed FSK channel
+ 609:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         modem = MODEM_FSK;
+ 610:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         Radio.SetTxConfig( modem, phyTxPower, 25000, bandwidth, phyDr * 1000, 0, 5, false, true, 0,
+ 611:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     }
+ 612:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     else
+ 613:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     {
+ 614:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         modem = MODEM_LORA;
+ 615:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         Radio.SetTxConfig( modem, phyTxPower, 0, bandwidth, phyDr, 1, 8, false, true, 0, 0, false, 
+ 616:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     }
+ 617:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     /* ST_WORKAROUND_BEGIN: Print Tx config */
+ 618:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     RegionCommonTxConfigPrint(RegionNvmGroup2->Channels[txConfig->Channel].Frequency, txConfig->Dat
+ 619:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     /* ST_WORKAROUND_END */
+ 620:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** 
+ 621:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     // Update time-on-air
+ 622:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     *txTimeOnAir = GetTimeOnAir( txConfig->Datarate, txConfig->PktLen );
+ 623:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** 
+ 624:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     // Setup maximum payload length of the radio driver
+ 625:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     Radio.SetMaxPayloadLength( modem, txConfig->PktLen );
+ 626:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** 
+ 627:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     *txPower = txPowerLimited;
+ 628:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     return true;
+ 629:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** #else
+ 630:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     return false;
+ 222              		.loc 1 630 5 view .LVU29
+ 631:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** #endif /* REGION_IN865 */
+ 632:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** }
+ 223              		.loc 1 632 1 is_stmt 0 view .LVU30
+ 224 0000 0020     		movs	r0, #0
+ 225              	.LVL13:
+ 226              		.loc 1 632 1 view .LVU31
+ 227 0002 7047     		bx	lr
+ 228              		.cfi_endproc
+ 229              	.LFE112:
+ 231              		.section	.text.RegionIN865LinkAdrReq,"ax",%progbits
+ 232              		.align	1
+ 233              		.global	RegionIN865LinkAdrReq
+ 234              		.syntax unified
+ 235              		.thumb
+ 236              		.thumb_func
+ 238              	RegionIN865LinkAdrReq:
+ 239              	.LVL14:
+ 240              	.LFB113:
+ 633:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** 
+ 634:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** uint8_t RegionIN865LinkAdrReq( LinkAdrReqParams_t* linkAdrReq, int8_t* drOut, int8_t* txPowOut, uin
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccto82TZ.s 			page 16
+
+
+ 635:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** {
+ 241              		.loc 1 635 1 is_stmt 1 view -0
+ 242              		.cfi_startproc
+ 243              		@ args = 4, pretend = 0, frame = 0
+ 244              		@ frame_needed = 0, uses_anonymous_args = 0
+ 245              		@ link register save eliminated.
+ 636:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     uint8_t status = 0x07;
+ 246              		.loc 1 636 5 view .LVU33
+ 637:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** #if defined( REGION_IN865 )
+ 638:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     RegionCommonLinkAdrParams_t linkAdrParams = { 0 };
+ 639:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     uint8_t nextIndex = 0;
+ 640:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     uint8_t bytesProcessed = 0;
+ 641:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     uint16_t chMask = 0;
+ 642:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     GetPhyParams_t getPhy;
+ 643:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     PhyParam_t phyParam;
+ 644:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     RegionCommonLinkAdrReqVerifyParams_t linkAdrVerifyParams;
+ 645:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** 
+ 646:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     while( bytesProcessed < linkAdrReq->PayloadSize )
+ 647:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     {
+ 648:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         // Get ADR request parameters
+ 649:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         nextIndex = RegionCommonParseLinkAdrReq( &( linkAdrReq->Payload[bytesProcessed] ), &linkAdr
+ 650:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** 
+ 651:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         if( nextIndex == 0 )
+ 652:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             break; // break loop, since no more request has been found
+ 653:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** 
+ 654:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         // Update bytes processed
+ 655:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         bytesProcessed += nextIndex;
+ 656:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** 
+ 657:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         // Revert status, as we only check the last ADR request for the channel mask KO
+ 658:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         status = 0x07;
+ 659:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** 
+ 660:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         // Setup temporary channels mask
+ 661:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         chMask = linkAdrParams.ChMask;
+ 662:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** 
+ 663:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         // Verify channels mask
+ 664:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         if( ( linkAdrParams.ChMaskCtrl == 0 ) && ( chMask == 0 ) )
+ 665:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         {
+ 666:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             status &= 0xFE; // Channel mask KO
+ 667:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         }
+ 668:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         else if( ( ( linkAdrParams.ChMaskCtrl >= 1 ) && ( linkAdrParams.ChMaskCtrl <= 5 )) ||
+ 669:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****                 ( linkAdrParams.ChMaskCtrl >= 7 ) )
+ 670:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         {
+ 671:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             // RFU
+ 672:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             status &= 0xFE; // Channel mask KO
+ 673:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         }
+ 674:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         else
+ 675:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         {
+ 676:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             for( uint8_t i = 0; i < IN865_MAX_NB_CHANNELS; i++ )
+ 677:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             {
+ 678:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****                 if( linkAdrParams.ChMaskCtrl == 6 )
+ 679:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****                 {
+ 680:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****                     if( RegionNvmGroup2->Channels[i].Frequency != 0 )
+ 681:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****                     {
+ 682:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****                         chMask |= 1 << i;
+ 683:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****                     }
+ 684:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****                 }
+ 685:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****                 else
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccto82TZ.s 			page 17
+
+
+ 686:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****                 {
+ 687:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****                     if( ( ( chMask & ( 1 << i ) ) != 0 ) &&
+ 688:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****                         ( RegionNvmGroup2->Channels[i].Frequency == 0 ) )
+ 689:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****                     {// Trying to enable an undefined channel
+ 690:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****                         status &= 0xFE; // Channel mask KO
+ 691:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****                     }
+ 692:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****                 }
+ 693:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             }
+ 694:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         }
+ 695:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     }
+ 696:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** 
+ 697:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     if( linkAdrParams.Datarate != DR_6 )
+ 698:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     {
+ 699:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         // Get the minimum possible datarate
+ 700:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         getPhy.Attribute = PHY_MIN_TX_DR;
+ 701:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         getPhy.UplinkDwellTime = linkAdrReq->UplinkDwellTime;
+ 702:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         phyParam = RegionIN865GetPhyParam( &getPhy );
+ 703:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** 
+ 704:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         linkAdrVerifyParams.Status = status;
+ 705:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         linkAdrVerifyParams.AdrEnabled = linkAdrReq->AdrEnabled;
+ 706:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         linkAdrVerifyParams.Datarate = linkAdrParams.Datarate;
+ 707:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         linkAdrVerifyParams.TxPower = linkAdrParams.TxPower;
+ 708:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         linkAdrVerifyParams.NbRep = linkAdrParams.NbRep;
+ 709:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         linkAdrVerifyParams.CurrentDatarate = linkAdrReq->CurrentDatarate;
+ 710:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         linkAdrVerifyParams.CurrentTxPower = linkAdrReq->CurrentTxPower;
+ 711:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         linkAdrVerifyParams.CurrentNbRep = linkAdrReq->CurrentNbRep;
+ 712:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         linkAdrVerifyParams.NbChannels = IN865_MAX_NB_CHANNELS;
+ 713:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         linkAdrVerifyParams.ChannelsMask = &chMask;
+ 714:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         linkAdrVerifyParams.MinDatarate = ( int8_t )phyParam.Value;
+ 715:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         linkAdrVerifyParams.MaxDatarate = IN865_TX_MAX_DATARATE;
+ 716:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         linkAdrVerifyParams.Channels = RegionNvmGroup2->Channels;
+ 717:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         linkAdrVerifyParams.MinTxPower = IN865_MIN_TX_POWER;
+ 718:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         linkAdrVerifyParams.MaxTxPower = IN865_MAX_TX_POWER;
+ 719:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         linkAdrVerifyParams.Version = linkAdrReq->Version;
+ 720:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** 
+ 721:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         // Verify the parameters and update, if necessary
+ 722:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         status = RegionCommonLinkAdrReqVerifyParams( &linkAdrVerifyParams, &linkAdrParams.Datarate,
+ 723:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     }
+ 724:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     else
+ 725:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     {// DR_6 is not supported by this region
+ 726:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         status &= 0xFD; // Datarate KO
+ 727:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     }
+ 728:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** 
+ 729:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     // Update channelsMask if everything is correct
+ 730:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     if( status == 0x07 )
+ 731:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     {
+ 732:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         // Set the channels mask to a default value
+ 733:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         memset1( ( uint8_t* ) RegionNvmGroup2->ChannelsMask, 0, sizeof( RegionNvmGroup2->ChannelsMa
+ 734:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         // Update the channels mask
+ 735:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         RegionNvmGroup2->ChannelsMask[0] = chMask;
+ 736:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     }
+ 737:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** 
+ 738:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     // Update status variables
+ 739:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     *drOut = linkAdrParams.Datarate;
+ 740:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     *txPowOut = linkAdrParams.TxPower;
+ 741:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     *nbRepOut = linkAdrParams.NbRep;
+ 742:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     *nbBytesParsed = bytesProcessed;
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccto82TZ.s 			page 18
+
+
+ 743:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** 
+ 744:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** #endif /* REGION_IN865 */
+ 745:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     return status;
+ 247              		.loc 1 745 5 view .LVU34
+ 746:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** }
+ 248              		.loc 1 746 1 is_stmt 0 view .LVU35
+ 249 0000 0720     		movs	r0, #7
+ 250              	.LVL15:
+ 251              		.loc 1 746 1 view .LVU36
+ 252 0002 7047     		bx	lr
+ 253              		.cfi_endproc
+ 254              	.LFE113:
+ 256              		.section	.text.RegionIN865RxParamSetupReq,"ax",%progbits
+ 257              		.align	1
+ 258              		.global	RegionIN865RxParamSetupReq
+ 259              		.syntax unified
+ 260              		.thumb
+ 261              		.thumb_func
+ 263              	RegionIN865RxParamSetupReq:
+ 264              	.LVL16:
+ 265              	.LFB114:
+ 747:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** 
+ 748:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** uint8_t RegionIN865RxParamSetupReq( RxParamSetupReqParams_t* rxParamSetupReq )
+ 749:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** {
+ 266              		.loc 1 749 1 is_stmt 1 view -0
+ 267              		.cfi_startproc
+ 268              		@ args = 0, pretend = 0, frame = 0
+ 269              		@ frame_needed = 0, uses_anonymous_args = 0
+ 270              		@ link register save eliminated.
+ 750:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     uint8_t status = 0x07;
+ 271              		.loc 1 750 5 view .LVU38
+ 751:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** #if defined( REGION_IN865 )
+ 752:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** 
+ 753:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     // Verify radio frequency
+ 754:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     if( VerifyRfFreq( rxParamSetupReq->Frequency ) == false )
+ 755:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     {
+ 756:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         status &= 0xFE; // Channel frequency KO
+ 757:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     }
+ 758:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** 
+ 759:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     // Verify datarate
+ 760:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     if( ( RegionCommonValueInRange( rxParamSetupReq->Datarate, IN865_RX_MIN_DATARATE, IN865_RX_MAX_
+ 761:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         // DR_6 is not supported by this region
+ 762:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         ( rxParamSetupReq->Datarate == DR_6 ) )
+ 763:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     {
+ 764:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         status &= 0xFD; // Datarate KO
+ 765:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     }
+ 766:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** 
+ 767:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     // Verify datarate offset
+ 768:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     if( RegionCommonValueInRange( rxParamSetupReq->DrOffset, IN865_MIN_RX1_DR_OFFSET, IN865_MAX_RX1
+ 769:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     {
+ 770:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         status &= 0xFB; // Rx1DrOffset range KO
+ 771:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     }
+ 772:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** 
+ 773:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** #endif /* REGION_IN865 */
+ 774:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     return status;
+ 272              		.loc 1 774 5 view .LVU39
+ 775:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** }
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccto82TZ.s 			page 19
+
+
+ 273              		.loc 1 775 1 is_stmt 0 view .LVU40
+ 274 0000 0720     		movs	r0, #7
+ 275              	.LVL17:
+ 276              		.loc 1 775 1 view .LVU41
+ 277 0002 7047     		bx	lr
+ 278              		.cfi_endproc
+ 279              	.LFE114:
+ 281              		.section	.text.RegionIN865TxParamSetupReq,"ax",%progbits
+ 282              		.align	1
+ 283              		.global	RegionIN865TxParamSetupReq
+ 284              		.syntax unified
+ 285              		.thumb
+ 286              		.thumb_func
+ 288              	RegionIN865TxParamSetupReq:
+ 289              	.LVL18:
+ 290              	.LFB116:
+ 776:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** 
+ 777:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** int8_t RegionIN865NewChannelReq( NewChannelReqParams_t* newChannelReq )
+ 778:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** {
+ 779:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     uint8_t status = 0x03;
+ 780:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     ChannelAddParams_t channelAdd;
+ 781:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     ChannelRemoveParams_t channelRemove;
+ 782:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** 
+ 783:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     if( newChannelReq->NewChannel->Frequency == 0 )
+ 784:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     {
+ 785:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         channelRemove.ChannelId = newChannelReq->ChannelId;
+ 786:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** 
+ 787:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         // Remove
+ 788:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         if( RegionIN865ChannelsRemove( &channelRemove ) == false )
+ 789:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         {
+ 790:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             status &= 0xFC;
+ 791:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         }
+ 792:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     }
+ 793:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     else
+ 794:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     {
+ 795:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         channelAdd.NewChannel = newChannelReq->NewChannel;
+ 796:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         channelAdd.ChannelId = newChannelReq->ChannelId;
+ 797:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** 
+ 798:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         switch( RegionIN865ChannelAdd( &channelAdd ) )
+ 799:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         {
+ 800:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             case LORAMAC_STATUS_OK:
+ 801:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             {
+ 802:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****                 break;
+ 803:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             }
+ 804:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             case LORAMAC_STATUS_FREQUENCY_INVALID:
+ 805:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             {
+ 806:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****                 status &= 0xFE;
+ 807:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****                 break;
+ 808:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             }
+ 809:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             case LORAMAC_STATUS_DATARATE_INVALID:
+ 810:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             {
+ 811:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****                 status &= 0xFD;
+ 812:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****                 break;
+ 813:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             }
+ 814:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             case LORAMAC_STATUS_FREQ_AND_DR_INVALID:
+ 815:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             {
+ 816:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****                 status &= 0xFC;
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccto82TZ.s 			page 20
+
+
+ 817:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****                 break;
+ 818:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             }
+ 819:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             default:
+ 820:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             {
+ 821:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****                 status &= 0xFC;
+ 822:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****                 break;
+ 823:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             }
+ 824:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         }
+ 825:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     }
+ 826:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** 
+ 827:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     return status;
+ 828:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** }
+ 829:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** 
+ 830:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** int8_t RegionIN865TxParamSetupReq( TxParamSetupReqParams_t* txParamSetupReq )
+ 831:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** {
+ 291              		.loc 1 831 1 is_stmt 1 view -0
+ 292              		.cfi_startproc
+ 293              		@ args = 0, pretend = 0, frame = 0
+ 294              		@ frame_needed = 0, uses_anonymous_args = 0
+ 295              		@ link register save eliminated.
+ 832:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     // Do not accept the request
+ 833:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     return -1;
+ 296              		.loc 1 833 5 view .LVU43
+ 834:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** }
+ 297              		.loc 1 834 1 is_stmt 0 view .LVU44
+ 298 0000 4FF0FF30 		mov	r0, #-1
+ 299              	.LVL19:
+ 300              		.loc 1 834 1 view .LVU45
+ 301 0004 7047     		bx	lr
+ 302              		.cfi_endproc
+ 303              	.LFE116:
+ 305              		.section	.text.RegionIN865DlChannelReq,"ax",%progbits
+ 306              		.align	1
+ 307              		.global	RegionIN865DlChannelReq
+ 308              		.syntax unified
+ 309              		.thumb
+ 310              		.thumb_func
+ 312              	RegionIN865DlChannelReq:
+ 313              	.LVL20:
+ 314              	.LFB117:
+ 835:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** 
+ 836:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** int8_t RegionIN865DlChannelReq( DlChannelReqParams_t* dlChannelReq )
+ 837:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** {
+ 315              		.loc 1 837 1 is_stmt 1 view -0
+ 316              		.cfi_startproc
+ 317              		@ args = 0, pretend = 0, frame = 0
+ 318              		@ frame_needed = 0, uses_anonymous_args = 0
+ 319              		@ link register save eliminated.
+ 838:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     uint8_t status = 0x03;
+ 320              		.loc 1 838 5 view .LVU47
+ 839:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** #if defined( REGION_IN865 )
+ 840:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** 
+ 841:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     // Verify if the frequency is supported
+ 842:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     if( VerifyRfFreq( dlChannelReq->Rx1Frequency ) == false )
+ 843:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     {
+ 844:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         status &= 0xFE;
+ 845:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     }
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccto82TZ.s 			page 21
+
+
+ 846:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** 
+ 847:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     // Verify if an uplink frequency exists
+ 848:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     if( RegionNvmGroup2->Channels[dlChannelReq->ChannelId].Frequency == 0 )
+ 849:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     {
+ 850:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         status &= 0xFD;
+ 851:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     }
+ 852:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** 
+ 853:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     // Apply Rx1 frequency, if the status is OK
+ 854:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     if( status == 0x03 )
+ 855:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     {
+ 856:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         RegionNvmGroup2->Channels[dlChannelReq->ChannelId].Rx1Frequency = dlChannelReq->Rx1Frequenc
+ 857:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     }
+ 858:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** 
+ 859:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** #endif /* REGION_IN865 */
+ 860:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     return status;
+ 321              		.loc 1 860 5 view .LVU48
+ 861:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** }
+ 322              		.loc 1 861 1 is_stmt 0 view .LVU49
+ 323 0000 0320     		movs	r0, #3
+ 324              	.LVL21:
+ 325              		.loc 1 861 1 view .LVU50
+ 326 0002 7047     		bx	lr
+ 327              		.cfi_endproc
+ 328              	.LFE117:
+ 330              		.section	.text.RegionIN865AlternateDr,"ax",%progbits
+ 331              		.align	1
+ 332              		.global	RegionIN865AlternateDr
+ 333              		.syntax unified
+ 334              		.thumb
+ 335              		.thumb_func
+ 337              	RegionIN865AlternateDr:
+ 338              	.LVL22:
+ 339              	.LFB118:
+ 862:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** 
+ 863:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** int8_t RegionIN865AlternateDr( int8_t currentDr, AlternateDrType_t type )
+ 864:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** {
+ 340              		.loc 1 864 1 is_stmt 1 view -0
+ 341              		.cfi_startproc
+ 342              		@ args = 0, pretend = 0, frame = 0
+ 343              		@ frame_needed = 0, uses_anonymous_args = 0
+ 344              		@ link register save eliminated.
+ 865:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** #if defined( REGION_IN865 )
+ 866:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     return currentDr;
+ 867:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** #else
+ 868:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     return -1;
+ 345              		.loc 1 868 5 view .LVU52
+ 869:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** #endif /* REGION_IN865 */
+ 870:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** }
+ 346              		.loc 1 870 1 is_stmt 0 view .LVU53
+ 347 0000 4FF0FF30 		mov	r0, #-1
+ 348              	.LVL23:
+ 349              		.loc 1 870 1 view .LVU54
+ 350 0004 7047     		bx	lr
+ 351              		.cfi_endproc
+ 352              	.LFE118:
+ 354              		.section	.text.RegionIN865NextChannel,"ax",%progbits
+ 355              		.align	1
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccto82TZ.s 			page 22
+
+
+ 356              		.global	RegionIN865NextChannel
+ 357              		.syntax unified
+ 358              		.thumb
+ 359              		.thumb_func
+ 361              	RegionIN865NextChannel:
+ 362              	.LVL24:
+ 363              	.LFB119:
+ 871:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** 
+ 872:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** LoRaMacStatus_t RegionIN865NextChannel( NextChanParams_t* nextChanParams, uint8_t* channel, TimerTi
+ 873:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** {
+ 364              		.loc 1 873 1 is_stmt 1 view -0
+ 365              		.cfi_startproc
+ 366              		@ args = 0, pretend = 0, frame = 0
+ 367              		@ frame_needed = 0, uses_anonymous_args = 0
+ 368              		@ link register save eliminated.
+ 874:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** #if defined( REGION_IN865 )
+ 875:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     uint8_t nbEnabledChannels = 0;
+ 876:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     uint8_t nbRestrictedChannels = 0;
+ 877:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     uint8_t enabledChannels[IN865_MAX_NB_CHANNELS] = { 0 };
+ 878:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     RegionCommonIdentifyChannelsParam_t identifyChannelsParam;
+ 879:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     RegionCommonCountNbOfEnabledChannelsParams_t countChannelsParams;
+ 880:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     LoRaMacStatus_t status = LORAMAC_STATUS_NO_CHANNEL_FOUND;
+ 881:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     uint16_t joinChannels = IN865_JOIN_CHANNELS;
+ 882:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** 
+ 883:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     if( RegionCommonCountChannels( RegionNvmGroup2->ChannelsMask, 0, 1 ) == 0 )
+ 884:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     { // Reactivate default channels
+ 885:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         RegionNvmGroup2->ChannelsMask[0] |= LC( 1 ) + LC( 2 ) + LC( 3 );
+ 886:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     }
+ 887:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** 
+ 888:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     // Search how many channels are enabled
+ 889:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     countChannelsParams.Joined = nextChanParams->Joined;
+ 890:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     countChannelsParams.Datarate = nextChanParams->Datarate;
+ 891:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     countChannelsParams.ChannelsMask = RegionNvmGroup2->ChannelsMask;
+ 892:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     countChannelsParams.Channels = RegionNvmGroup2->Channels;
+ 893:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     countChannelsParams.Bands = RegionNvmGroup1->Bands;
+ 894:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     countChannelsParams.MaxNbChannels = IN865_MAX_NB_CHANNELS;
+ 895:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     countChannelsParams.JoinChannels = &joinChannels;
+ 896:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** 
+ 897:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     identifyChannelsParam.AggrTimeOff = nextChanParams->AggrTimeOff;
+ 898:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     identifyChannelsParam.LastAggrTx = nextChanParams->LastAggrTx;
+ 899:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     identifyChannelsParam.DutyCycleEnabled = nextChanParams->DutyCycleEnabled;
+ 900:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     identifyChannelsParam.MaxBands = IN865_MAX_NB_BANDS;
+ 901:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** 
+ 902:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     identifyChannelsParam.ElapsedTimeSinceStartUp = nextChanParams->ElapsedTimeSinceStartUp;
+ 903:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     identifyChannelsParam.LastTxIsJoinRequest = nextChanParams->LastTxIsJoinRequest;
+ 904:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     identifyChannelsParam.ExpectedTimeOnAir = GetTimeOnAir( nextChanParams->Datarate, nextChanParam
+ 905:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** 
+ 906:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     identifyChannelsParam.CountNbOfEnabledChannelsParam = &countChannelsParams;
+ 907:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** 
+ 908:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     status = RegionCommonIdentifyChannels( &identifyChannelsParam, aggregatedTimeOff, enabledChanne
+ 909:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****                                            &nbEnabledChannels, &nbRestrictedChannels, time );
+ 910:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** 
+ 911:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     if( status == LORAMAC_STATUS_OK )
+ 912:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     {
+ 913:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         // We found a valid channel
+ 914:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         *channel = enabledChannels[randr( 0, nbEnabledChannels - 1 )];
+ 915:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     }
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccto82TZ.s 			page 23
+
+
+ 916:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     else if( status == LORAMAC_STATUS_NO_CHANNEL_FOUND )
+ 917:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     {
+ 918:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         // Datarate not supported by any channel, restore defaults
+ 919:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         RegionNvmGroup2->ChannelsMask[0] |= LC( 1 ) + LC( 2 ) + LC( 3 );
+ 920:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     }
+ 921:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     return status;
+ 922:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** #else
+ 923:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     return LORAMAC_STATUS_NO_CHANNEL_FOUND;
+ 369              		.loc 1 923 5 view .LVU56
+ 924:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** #endif /* REGION_IN865 */
+ 925:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** }
+ 370              		.loc 1 925 1 is_stmt 0 view .LVU57
+ 371 0000 0C20     		movs	r0, #12
+ 372              	.LVL25:
+ 373              		.loc 1 925 1 view .LVU58
+ 374 0002 7047     		bx	lr
+ 375              		.cfi_endproc
+ 376              	.LFE119:
+ 378              		.section	.text.RegionIN865ChannelAdd,"ax",%progbits
+ 379              		.align	1
+ 380              		.global	RegionIN865ChannelAdd
+ 381              		.syntax unified
+ 382              		.thumb
+ 383              		.thumb_func
+ 385              	RegionIN865ChannelAdd:
+ 386              	.LVL26:
+ 387              	.LFB120:
+ 926:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** 
+ 927:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** LoRaMacStatus_t RegionIN865ChannelAdd( ChannelAddParams_t* channelAdd )
+ 928:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** {
+ 388              		.loc 1 928 1 is_stmt 1 view -0
+ 389              		.cfi_startproc
+ 390              		@ args = 0, pretend = 0, frame = 0
+ 391              		@ frame_needed = 0, uses_anonymous_args = 0
+ 392              		@ link register save eliminated.
+ 929:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** #if defined( REGION_IN865 )
+ 930:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     bool drInvalid = false;
+ 931:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     bool freqInvalid = false;
+ 932:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     uint8_t id = channelAdd->ChannelId;
+ 933:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** 
+ 934:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     if( id < IN865_NUMB_DEFAULT_CHANNELS )
+ 935:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     {
+ 936:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         return LORAMAC_STATUS_FREQ_AND_DR_INVALID;
+ 937:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     }
+ 938:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** 
+ 939:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     if( id >= IN865_MAX_NB_CHANNELS )
+ 940:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     {
+ 941:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         return LORAMAC_STATUS_PARAMETER_INVALID;
+ 942:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     }
+ 943:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** 
+ 944:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     // Validate the datarate range
+ 945:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     if( RegionCommonValueInRange( channelAdd->NewChannel->DrRange.Fields.Min, IN865_TX_MIN_DATARATE
+ 946:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     {
+ 947:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         drInvalid = true;
+ 948:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     }
+ 949:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     if( RegionCommonValueInRange( channelAdd->NewChannel->DrRange.Fields.Max, IN865_TX_MIN_DATARATE
+ 950:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     {
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccto82TZ.s 			page 24
+
+
+ 951:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         drInvalid = true;
+ 952:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     }
+ 953:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     if( channelAdd->NewChannel->DrRange.Fields.Min > channelAdd->NewChannel->DrRange.Fields.Max )
+ 954:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     {
+ 955:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         drInvalid = true;
+ 956:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     }
+ 957:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** 
+ 958:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     // Check frequency
+ 959:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     if( freqInvalid == false )
+ 960:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     {
+ 961:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         if( VerifyRfFreq( channelAdd->NewChannel->Frequency ) == false )
+ 962:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         {
+ 963:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             freqInvalid = true;
+ 964:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         }
+ 965:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     }
+ 966:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** 
+ 967:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     // Check status
+ 968:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     if( ( drInvalid == true ) && ( freqInvalid == true ) )
+ 969:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     {
+ 970:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         return LORAMAC_STATUS_FREQ_AND_DR_INVALID;
+ 971:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     }
+ 972:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     if( drInvalid == true )
+ 973:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     {
+ 974:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         return LORAMAC_STATUS_DATARATE_INVALID;
+ 975:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     }
+ 976:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     if( freqInvalid == true )
+ 977:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     {
+ 978:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         return LORAMAC_STATUS_FREQUENCY_INVALID;
+ 979:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     }
+ 980:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** 
+ 981:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     memcpy1( ( uint8_t* ) &(RegionNvmGroup2->Channels[id]), ( uint8_t* ) channelAdd->NewChannel, si
+ 982:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     RegionNvmGroup2->Channels[id].Band = 0;
+ 983:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     RegionNvmGroup2->ChannelsMask[0] |= ( 1 << id );
+ 984:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     return LORAMAC_STATUS_OK;
+ 985:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** #else
+ 986:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     return LORAMAC_STATUS_NO_CHANNEL_FOUND;
+ 393              		.loc 1 986 5 view .LVU60
+ 987:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** #endif /* REGION_IN865 */
+ 988:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** }
+ 394              		.loc 1 988 1 is_stmt 0 view .LVU61
+ 395 0000 0C20     		movs	r0, #12
+ 396              	.LVL27:
+ 397              		.loc 1 988 1 view .LVU62
+ 398 0002 7047     		bx	lr
+ 399              		.cfi_endproc
+ 400              	.LFE120:
+ 402              		.section	.text.RegionIN865ChannelsRemove,"ax",%progbits
+ 403              		.align	1
+ 404              		.global	RegionIN865ChannelsRemove
+ 405              		.syntax unified
+ 406              		.thumb
+ 407              		.thumb_func
+ 409              	RegionIN865ChannelsRemove:
+ 410              	.LVL28:
+ 411              	.LFB121:
+ 989:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** 
+ 990:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** bool RegionIN865ChannelsRemove( ChannelRemoveParams_t* channelRemove  )
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccto82TZ.s 			page 25
+
+
+ 991:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** {
+ 412              		.loc 1 991 1 is_stmt 1 view -0
+ 413              		.cfi_startproc
+ 414              		@ args = 0, pretend = 0, frame = 0
+ 415              		@ frame_needed = 0, uses_anonymous_args = 0
+ 416              		@ link register save eliminated.
+ 992:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** #if defined( REGION_IN865 )
+ 993:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     uint8_t id = channelRemove->ChannelId;
+ 994:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** 
+ 995:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     if( id < IN865_NUMB_DEFAULT_CHANNELS )
+ 996:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     {
+ 997:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         return false;
+ 998:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     }
+ 999:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** 
+1000:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     // Remove the channel from the list of channels
+1001:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     RegionNvmGroup2->Channels[id] = ( ChannelParams_t ){ 0, 0, { 0 }, 0 };
+1002:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** 
+1003:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     return RegionCommonChanDisable( RegionNvmGroup2->ChannelsMask, id, IN865_MAX_NB_CHANNELS );
+1004:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** #else
+1005:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     return false;
+ 417              		.loc 1 1005 5 view .LVU64
+1006:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** #endif /* REGION_IN865 */
+1007:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** }
+ 418              		.loc 1 1007 1 is_stmt 0 view .LVU65
+ 419 0000 0020     		movs	r0, #0
+ 420              	.LVL29:
+ 421              		.loc 1 1007 1 view .LVU66
+ 422 0002 7047     		bx	lr
+ 423              		.cfi_endproc
+ 424              	.LFE121:
+ 426              		.section	.text.RegionIN865NewChannelReq,"ax",%progbits
+ 427              		.align	1
+ 428              		.global	RegionIN865NewChannelReq
+ 429              		.syntax unified
+ 430              		.thumb
+ 431              		.thumb_func
+ 433              	RegionIN865NewChannelReq:
+ 434              	.LVL30:
+ 435              	.LFB115:
+ 778:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     uint8_t status = 0x03;
+ 436              		.loc 1 778 1 is_stmt 1 view -0
+ 437              		.cfi_startproc
+ 438              		@ args = 0, pretend = 0, frame = 16
+ 439              		@ frame_needed = 0, uses_anonymous_args = 0
+ 778:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     uint8_t status = 0x03;
+ 440              		.loc 1 778 1 is_stmt 0 view .LVU68
+ 441 0000 00B5     		push	{lr}
+ 442              	.LCFI2:
+ 443              		.cfi_def_cfa_offset 4
+ 444              		.cfi_offset 14, -4
+ 445 0002 85B0     		sub	sp, sp, #20
+ 446              	.LCFI3:
+ 447              		.cfi_def_cfa_offset 24
+ 779:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     ChannelAddParams_t channelAdd;
+ 448              		.loc 1 779 5 is_stmt 1 view .LVU69
+ 449              	.LVL31:
+ 780:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     ChannelRemoveParams_t channelRemove;
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccto82TZ.s 			page 26
+
+
+ 450              		.loc 1 780 5 view .LVU70
+ 781:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** 
+ 451              		.loc 1 781 5 view .LVU71
+ 783:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     {
+ 452              		.loc 1 783 5 view .LVU72
+ 783:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     {
+ 453              		.loc 1 783 22 is_stmt 0 view .LVU73
+ 454 0004 0368     		ldr	r3, [r0]
+ 783:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     {
+ 455              		.loc 1 783 34 view .LVU74
+ 456 0006 1A68     		ldr	r2, [r3]
+ 783:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     {
+ 457              		.loc 1 783 7 view .LVU75
+ 458 0008 52B9     		cbnz	r2, .L20
+ 785:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** 
+ 459              		.loc 1 785 9 is_stmt 1 view .LVU76
+ 785:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** 
+ 460              		.loc 1 785 48 is_stmt 0 view .LVU77
+ 461 000a 0379     		ldrb	r3, [r0, #4]	@ zero_extendqisi2
+ 785:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** 
+ 462              		.loc 1 785 33 view .LVU78
+ 463 000c 8DF80430 		strb	r3, [sp, #4]
+ 788:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         {
+ 464              		.loc 1 788 9 is_stmt 1 view .LVU79
+ 788:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         {
+ 465              		.loc 1 788 13 is_stmt 0 view .LVU80
+ 466 0010 01A8     		add	r0, sp, #4
+ 467              	.LVL32:
+ 788:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         {
+ 468              		.loc 1 788 13 view .LVU81
+ 469 0012 FFF7FEFF 		bl	RegionIN865ChannelsRemove
+ 470              	.LVL33:
+ 788:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         {
+ 471              		.loc 1 788 11 view .LVU82
+ 472 0016 D0B1     		cbz	r0, .L27
+ 779:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     ChannelAddParams_t channelAdd;
+ 473              		.loc 1 779 13 view .LVU83
+ 474 0018 0320     		movs	r0, #3
+ 475              	.LVL34:
+ 476              	.L21:
+ 827:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** }
+ 477              		.loc 1 827 5 is_stmt 1 view .LVU84
+ 828:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** 
+ 478              		.loc 1 828 1 is_stmt 0 view .LVU85
+ 479 001a 05B0     		add	sp, sp, #20
+ 480              	.LCFI4:
+ 481              		.cfi_remember_state
+ 482              		.cfi_def_cfa_offset 4
+ 483              		@ sp needed
+ 484 001c 5DF804FB 		ldr	pc, [sp], #4
+ 485              	.LVL35:
+ 486              	.L20:
+ 487              	.LCFI5:
+ 488              		.cfi_restore_state
+ 795:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         channelAdd.ChannelId = newChannelReq->ChannelId;
+ 489              		.loc 1 795 9 is_stmt 1 view .LVU86
+ 795:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         channelAdd.ChannelId = newChannelReq->ChannelId;
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccto82TZ.s 			page 27
+
+
+ 490              		.loc 1 795 31 is_stmt 0 view .LVU87
+ 491 0020 0293     		str	r3, [sp, #8]
+ 796:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** 
+ 492              		.loc 1 796 9 is_stmt 1 view .LVU88
+ 796:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** 
+ 493              		.loc 1 796 45 is_stmt 0 view .LVU89
+ 494 0022 0379     		ldrb	r3, [r0, #4]	@ zero_extendqisi2
+ 796:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** 
+ 495              		.loc 1 796 30 view .LVU90
+ 496 0024 8DF80C30 		strb	r3, [sp, #12]
+ 798:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         {
+ 497              		.loc 1 798 9 is_stmt 1 view .LVU91
+ 798:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         {
+ 498              		.loc 1 798 17 is_stmt 0 view .LVU92
+ 499 0028 02A8     		add	r0, sp, #8
+ 500              	.LVL36:
+ 798:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         {
+ 501              		.loc 1 798 17 view .LVU93
+ 502 002a FFF7FEFF 		bl	RegionIN865ChannelAdd
+ 503              	.LVL37:
+ 798:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         {
+ 504              		.loc 1 798 9 view .LVU94
+ 505 002e 0628     		cmp	r0, #6
+ 506 0030 0BD8     		bhi	.L22
+ 507 0032 DFE800F0 		tbb	[pc, r0]
+ 508              	.L24:
+ 509 0036 04       		.byte	(.L26-.L24)/2
+ 510 0037 0A       		.byte	(.L22-.L24)/2
+ 511 0038 0A       		.byte	(.L22-.L24)/2
+ 512 0039 0A       		.byte	(.L22-.L24)/2
+ 513 003a 0E       		.byte	(.L28-.L24)/2
+ 514 003b 06       		.byte	(.L25-.L24)/2
+ 515 003c 08       		.byte	(.L23-.L24)/2
+ 516 003d 00       		.p2align 1
+ 517              	.L26:
+ 518 003e 0320     		movs	r0, #3
+ 519 0040 EBE7     		b	.L21
+ 520              	.L25:
+ 811:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****                 break;
+ 521              		.loc 1 811 17 is_stmt 1 view .LVU95
+ 522              	.LVL38:
+ 812:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             }
+ 523              		.loc 1 812 17 view .LVU96
+ 811:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****                 break;
+ 524              		.loc 1 811 24 is_stmt 0 view .LVU97
+ 525 0042 0120     		movs	r0, #1
+ 812:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             }
+ 526              		.loc 1 812 17 view .LVU98
+ 527 0044 E9E7     		b	.L21
+ 528              	.LVL39:
+ 529              	.L23:
+ 816:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****                 break;
+ 530              		.loc 1 816 17 is_stmt 1 view .LVU99
+ 817:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             }
+ 531              		.loc 1 817 17 view .LVU100
+ 816:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****                 break;
+ 532              		.loc 1 816 24 is_stmt 0 view .LVU101
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccto82TZ.s 			page 28
+
+
+ 533 0046 0020     		movs	r0, #0
+ 817:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             }
+ 534              		.loc 1 817 17 view .LVU102
+ 535 0048 E7E7     		b	.L21
+ 536              	.LVL40:
+ 537              	.L22:
+ 821:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****                 break;
+ 538              		.loc 1 821 17 is_stmt 1 view .LVU103
+ 822:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             }
+ 539              		.loc 1 822 17 view .LVU104
+ 821:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****                 break;
+ 540              		.loc 1 821 24 is_stmt 0 view .LVU105
+ 541 004a 0020     		movs	r0, #0
+ 822:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****             }
+ 542              		.loc 1 822 17 view .LVU106
+ 543 004c E5E7     		b	.L21
+ 544              	.LVL41:
+ 545              	.L27:
+ 790:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****         }
+ 546              		.loc 1 790 20 view .LVU107
+ 547 004e 0020     		movs	r0, #0
+ 548 0050 E3E7     		b	.L21
+ 549              	.L28:
+ 806:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****                 break;
+ 550              		.loc 1 806 24 view .LVU108
+ 551 0052 0220     		movs	r0, #2
+ 552 0054 E1E7     		b	.L21
+ 553              		.cfi_endproc
+ 554              	.LFE115:
+ 556              		.section	.text.RegionIN865SetContinuousWave,"ax",%progbits
+ 557              		.align	1
+ 558              		.global	RegionIN865SetContinuousWave
+ 559              		.syntax unified
+ 560              		.thumb
+ 561              		.thumb_func
+ 563              	RegionIN865SetContinuousWave:
+ 564              	.LVL42:
+ 565              	.LFB122:
+1008:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** 
+1009:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** void RegionIN865SetContinuousWave( ContinuousWaveParams_t* continuousWave )
+1010:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** {
+ 566              		.loc 1 1010 1 is_stmt 1 view -0
+ 567              		.cfi_startproc
+ 568              		@ args = 0, pretend = 0, frame = 0
+ 569              		@ frame_needed = 0, uses_anonymous_args = 0
+ 570              		@ link register save eliminated.
+1011:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** #if defined( REGION_IN865 )
+1012:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     int8_t txPowerLimited = RegionCommonLimitTxPower( continuousWave->TxPower, RegionNvmGroup1->Ban
+1013:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     int8_t phyTxPower = 0;
+1014:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     uint32_t frequency = RegionNvmGroup2->Channels[continuousWave->Channel].Frequency;
+1015:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** 
+1016:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     // Calculate physical TX power
+1017:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     phyTxPower = RegionCommonComputeTxPower( txPowerLimited, continuousWave->MaxEirp, continuousWav
+1018:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** 
+1019:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     Radio.SetTxContinuousWave( frequency, phyTxPower, continuousWave->Timeout );
+1020:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** #endif /* REGION_IN865 */
+1021:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** }
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccto82TZ.s 			page 29
+
+
+ 571              		.loc 1 1021 1 view .LVU110
+ 572 0000 7047     		bx	lr
+ 573              		.cfi_endproc
+ 574              	.LFE122:
+ 576              		.section	.text.RegionIN865ApplyDrOffset,"ax",%progbits
+ 577              		.align	1
+ 578              		.global	RegionIN865ApplyDrOffset
+ 579              		.syntax unified
+ 580              		.thumb
+ 581              		.thumb_func
+ 583              	RegionIN865ApplyDrOffset:
+ 584              	.LVL43:
+ 585              	.LFB123:
+1022:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** 
+1023:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** uint8_t RegionIN865ApplyDrOffset( uint8_t downlinkDwellTime, int8_t dr, int8_t drOffset )
+1024:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** {
+ 586              		.loc 1 1024 1 view -0
+ 587              		.cfi_startproc
+ 588              		@ args = 0, pretend = 0, frame = 0
+ 589              		@ frame_needed = 0, uses_anonymous_args = 0
+ 590              		@ link register save eliminated.
+1025:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** #if defined( REGION_IN865 )
+1026:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     // Apply offset formula
+1027:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     return MIN( DR_5, MAX( DR_0, dr - EffectiveRx1DrOffsetIN865[drOffset] ) );
+1028:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** #else
+1029:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     return 0;
+ 591              		.loc 1 1029 5 view .LVU112
+1030:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** #endif /* REGION_IN865 */
+1031:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** }
+ 592              		.loc 1 1031 1 is_stmt 0 view .LVU113
+ 593 0000 0020     		movs	r0, #0
+ 594              	.LVL44:
+ 595              		.loc 1 1031 1 view .LVU114
+ 596 0002 7047     		bx	lr
+ 597              		.cfi_endproc
+ 598              	.LFE123:
+ 600              		.section	.text.RegionIN865RxBeaconSetup,"ax",%progbits
+ 601              		.align	1
+ 602              		.global	RegionIN865RxBeaconSetup
+ 603              		.syntax unified
+ 604              		.thumb
+ 605              		.thumb_func
+ 607              	RegionIN865RxBeaconSetup:
+ 608              	.LVL45:
+ 609              	.LFB124:
+1032:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** 
+1033:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** void RegionIN865RxBeaconSetup( RxBeaconSetup_t* rxBeaconSetup, uint8_t* outDr )
+1034:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** {
+ 610              		.loc 1 1034 1 is_stmt 1 view -0
+ 611              		.cfi_startproc
+ 612              		@ args = 0, pretend = 0, frame = 0
+ 613              		@ frame_needed = 0, uses_anonymous_args = 0
+ 614              		@ link register save eliminated.
+1035:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** #if defined( REGION_IN865 )
+1036:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     RegionCommonRxBeaconSetupParams_t regionCommonRxBeaconSetup;
+1037:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** 
+1038:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     regionCommonRxBeaconSetup.Datarates = DataratesIN865;
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccto82TZ.s 			page 30
+
+
+1039:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     regionCommonRxBeaconSetup.Frequency = rxBeaconSetup->Frequency;
+1040:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     regionCommonRxBeaconSetup.BeaconSize = IN865_BEACON_SIZE;
+1041:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     regionCommonRxBeaconSetup.BeaconDatarate = IN865_BEACON_CHANNEL_DR;
+1042:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     regionCommonRxBeaconSetup.BeaconChannelBW = IN865_BEACON_CHANNEL_BW;
+1043:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     regionCommonRxBeaconSetup.RxTime = rxBeaconSetup->RxTime;
+1044:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     regionCommonRxBeaconSetup.SymbolTimeout = rxBeaconSetup->SymbolTimeout;
+1045:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** 
+1046:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     RegionCommonRxBeaconSetup( &regionCommonRxBeaconSetup );
+1047:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** 
+1048:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     // Store downlink datarate
+1049:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c ****     *outDr = IN865_BEACON_CHANNEL_DR;
+1050:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** #endif /* REGION_IN865 */
+1051:Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.c **** }
+ 615              		.loc 1 1051 1 view .LVU116
+ 616 0000 7047     		bx	lr
+ 617              		.cfi_endproc
+ 618              	.LFE124:
+ 620              		.text
+ 621              	.Letext0:
+ 622              		.file 2 "c:\\program files (x86)\\gnu arm embedded toolchain\\10 2021.10\\arm-none-eabi\\include\\
+ 623              		.file 3 "c:\\program files (x86)\\gnu arm embedded toolchain\\10 2021.10\\arm-none-eabi\\include\\
+ 624              		.file 4 "Utilities/timer/stm32_timer.h"
+ 625              		.file 5 "Utilities/misc/stm32_systime.h"
+ 626              		.file 6 "Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacTypes.h"
+ 627              		.file 7 "Middlewares/Third_Party/LoRaWAN/Utilities/utilities.h"
+ 628              		.file 8 "Middlewares/Third_Party/LoRaWAN/Mac/LoRaMac.h"
+ 629              		.file 9 "Middlewares/Third_Party/LoRaWAN/Mac/Region/Region.h"
+ 630              		.file 10 "Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionIN865.h"
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccto82TZ.s 			page 31
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 RegionIN865.c
+C:\Users\NATHAN~1\AppData\Local\Temp\ccto82TZ.s:18     .text.RegionIN865GetPhyParam:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\ccto82TZ.s:24     .text.RegionIN865GetPhyParam:00000000 RegionIN865GetPhyParam
+C:\Users\NATHAN~1\AppData\Local\Temp\ccto82TZ.s:56     .text.RegionIN865SetBandTxDone:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\ccto82TZ.s:62     .text.RegionIN865SetBandTxDone:00000000 RegionIN865SetBandTxDone
+C:\Users\NATHAN~1\AppData\Local\Temp\ccto82TZ.s:76     .text.RegionIN865InitDefaults:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\ccto82TZ.s:82     .text.RegionIN865InitDefaults:00000000 RegionIN865InitDefaults
+C:\Users\NATHAN~1\AppData\Local\Temp\ccto82TZ.s:96     .text.RegionIN865Verify:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\ccto82TZ.s:102    .text.RegionIN865Verify:00000000 RegionIN865Verify
+C:\Users\NATHAN~1\AppData\Local\Temp\ccto82TZ.s:120    .text.RegionIN865ApplyCFList:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\ccto82TZ.s:126    .text.RegionIN865ApplyCFList:00000000 RegionIN865ApplyCFList
+C:\Users\NATHAN~1\AppData\Local\Temp\ccto82TZ.s:140    .text.RegionIN865ChanMaskSet:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\ccto82TZ.s:146    .text.RegionIN865ChanMaskSet:00000000 RegionIN865ChanMaskSet
+C:\Users\NATHAN~1\AppData\Local\Temp\ccto82TZ.s:164    .text.RegionIN865ComputeRxWindowParameters:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\ccto82TZ.s:170    .text.RegionIN865ComputeRxWindowParameters:00000000 RegionIN865ComputeRxWindowParameters
+C:\Users\NATHAN~1\AppData\Local\Temp\ccto82TZ.s:184    .text.RegionIN865RxConfig:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\ccto82TZ.s:190    .text.RegionIN865RxConfig:00000000 RegionIN865RxConfig
+C:\Users\NATHAN~1\AppData\Local\Temp\ccto82TZ.s:208    .text.RegionIN865TxConfig:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\ccto82TZ.s:214    .text.RegionIN865TxConfig:00000000 RegionIN865TxConfig
+C:\Users\NATHAN~1\AppData\Local\Temp\ccto82TZ.s:232    .text.RegionIN865LinkAdrReq:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\ccto82TZ.s:238    .text.RegionIN865LinkAdrReq:00000000 RegionIN865LinkAdrReq
+C:\Users\NATHAN~1\AppData\Local\Temp\ccto82TZ.s:257    .text.RegionIN865RxParamSetupReq:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\ccto82TZ.s:263    .text.RegionIN865RxParamSetupReq:00000000 RegionIN865RxParamSetupReq
+C:\Users\NATHAN~1\AppData\Local\Temp\ccto82TZ.s:282    .text.RegionIN865TxParamSetupReq:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\ccto82TZ.s:288    .text.RegionIN865TxParamSetupReq:00000000 RegionIN865TxParamSetupReq
+C:\Users\NATHAN~1\AppData\Local\Temp\ccto82TZ.s:306    .text.RegionIN865DlChannelReq:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\ccto82TZ.s:312    .text.RegionIN865DlChannelReq:00000000 RegionIN865DlChannelReq
+C:\Users\NATHAN~1\AppData\Local\Temp\ccto82TZ.s:331    .text.RegionIN865AlternateDr:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\ccto82TZ.s:337    .text.RegionIN865AlternateDr:00000000 RegionIN865AlternateDr
+C:\Users\NATHAN~1\AppData\Local\Temp\ccto82TZ.s:355    .text.RegionIN865NextChannel:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\ccto82TZ.s:361    .text.RegionIN865NextChannel:00000000 RegionIN865NextChannel
+C:\Users\NATHAN~1\AppData\Local\Temp\ccto82TZ.s:379    .text.RegionIN865ChannelAdd:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\ccto82TZ.s:385    .text.RegionIN865ChannelAdd:00000000 RegionIN865ChannelAdd
+C:\Users\NATHAN~1\AppData\Local\Temp\ccto82TZ.s:403    .text.RegionIN865ChannelsRemove:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\ccto82TZ.s:409    .text.RegionIN865ChannelsRemove:00000000 RegionIN865ChannelsRemove
+C:\Users\NATHAN~1\AppData\Local\Temp\ccto82TZ.s:427    .text.RegionIN865NewChannelReq:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\ccto82TZ.s:433    .text.RegionIN865NewChannelReq:00000000 RegionIN865NewChannelReq
+C:\Users\NATHAN~1\AppData\Local\Temp\ccto82TZ.s:509    .text.RegionIN865NewChannelReq:00000036 $d
+C:\Users\NATHAN~1\AppData\Local\Temp\ccto82TZ.s:557    .text.RegionIN865SetContinuousWave:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\ccto82TZ.s:563    .text.RegionIN865SetContinuousWave:00000000 RegionIN865SetContinuousWave
+C:\Users\NATHAN~1\AppData\Local\Temp\ccto82TZ.s:577    .text.RegionIN865ApplyDrOffset:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\ccto82TZ.s:583    .text.RegionIN865ApplyDrOffset:00000000 RegionIN865ApplyDrOffset
+C:\Users\NATHAN~1\AppData\Local\Temp\ccto82TZ.s:601    .text.RegionIN865RxBeaconSetup:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\ccto82TZ.s:607    .text.RegionIN865RxBeaconSetup:00000000 RegionIN865RxBeaconSetup
+C:\Users\NATHAN~1\AppData\Local\Temp\ccto82TZ.s:516    .text.RegionIN865NewChannelReq:0000003d $d
+C:\Users\NATHAN~1\AppData\Local\Temp\ccto82TZ.s:516    .text.RegionIN865NewChannelReq:0000003e $t
+
+NO UNDEFINED SYMBOLS

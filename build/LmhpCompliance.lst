@@ -1,0 +1,2124 @@
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccW3kqrC.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.file	"LmhpCompliance.c"
+  14              		.text
+  15              	.Ltext0:
+  16              		.cfi_sections	.debug_frame
+  17              		.section	.text.LmhpComplianceInit,"ax",%progbits
+  18              		.align	1
+  19              		.syntax unified
+  20              		.thumb
+  21              		.thumb_func
+  23              	LmhpComplianceInit:
+  24              	.LVL0:
+  25              	.LFB105:
+  26              		.file 1 "Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c"
+   1:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** /*!
+   2:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****  * \file      LmhpCompliance.c
+   3:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****  *
+   4:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****  * \brief     Implements the LoRa-Alliance certification protocol handling
+   5:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****  *
+   6:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****  * \copyright Revised BSD License, see section \ref LICENSE.
+   7:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****  *
+   8:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****  * \code
+   9:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****  *                ______                              _
+  10:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****  *               / _____)             _              | |
+  11:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****  *              ( (____  _____ ____ _| |_ _____  ____| |__
+  12:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****  *               \____ \| ___ |    (_   _) ___ |/ ___)  _ \
+  13:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****  *               _____) ) ____| | | || |_| ____( (___| | | |
+  14:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****  *              (______/|_____)_|_|_| \__)_____)\____)_| |_|
+  15:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****  *              (C)2013-2018 Semtech
+  16:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****  *
+  17:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****  * \endcode
+  18:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****  *
+  19:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****  * \author    Miguel Luis ( Semtech )
+  20:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****  */
+  21:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** /**
+  22:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****   ******************************************************************************
+  23:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****   *
+  24:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****   *          Portions COPYRIGHT 2020 STMicroelectronics
+  25:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****   *
+  26:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****   * @file    LmhpCompliance.c
+  27:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****   * @author  MCD Application Team
+  28:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****   * @brief   Certification Protocol Handling definition
+  29:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****   ******************************************************************************
+  30:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****   */
+  31:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** #include <stdlib.h>
+  32:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** #include <stdint.h>
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccW3kqrC.s 			page 2
+
+
+  33:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** #include <stdbool.h>
+  34:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** #include "utilities.h"
+  35:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** #include "timer.h"
+  36:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** #include "LoRaMac.h"
+  37:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** #include "LoRaMacTest.h"
+  38:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** #include "Region.h"
+  39:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** #include "LmhPackage.h"
+  40:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** #include "LmhpCompliance.h"
+  41:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** 
+  42:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** /*!
+  43:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****  * LoRaWAN compliance certification protocol port number.
+  44:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****  *
+  45:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****  * LoRaWAN Specification V1.0.2, chapter 4.3.2
+  46:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****  */
+  47:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** #define COMPLIANCE_PORT                             224
+  48:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** 
+  49:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** /*!
+  50:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****  * Defines the compliance mode data transmission duty cycle.
+  51:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****  * An uplink will be transmitted ever \ref COMPLIANCE_TX_DUTYCYCLE [ms].
+  52:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****  */
+  53:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** #define COMPLIANCE_TX_DUTYCYCLE                     5000
+  54:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** 
+  55:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** /*!
+  56:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****  * LoRaWAN compliance tests support data
+  57:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****  */
+  58:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** typedef struct ComplianceTestState_s
+  59:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** {
+  60:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****     bool Initialized;
+  61:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****     bool IsRunning;
+  62:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****     uint8_t State;
+  63:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****     bool IsTxConfirmed;
+  64:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****     uint8_t Port;
+  65:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****     uint8_t DataBufferMaxSize;
+  66:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****     uint8_t DataBufferSize;
+  67:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****     uint8_t *DataBuffer;
+  68:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****     uint16_t DownLinkCounter;
+  69:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****     bool LinkCheck;
+  70:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****     uint8_t DemodMargin;
+  71:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****     uint8_t NbGateways;
+  72:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** }ComplianceTestState_t;
+  73:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** 
+  74:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** #ifndef MIN
+  75:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** #define MIN( a, b ) ( ( ( a ) < ( b ) ) ? ( a ) : ( b ) )
+  76:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** #endif
+  77:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** 
+  78:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** /*!
+  79:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****  * Timer to handle the application data transmission duty cycle
+  80:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****  */
+  81:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** static TimerEvent_t ComplianceTxNextPacketTimer;
+  82:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** 
+  83:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** /*!
+  84:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****  * Holds the compliance test current context
+  85:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****  */
+  86:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** static ComplianceTestState_t ComplianceTestState =
+  87:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** { 
+  88:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****     .Initialized = false,
+  89:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****     .IsRunning = false,
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccW3kqrC.s 			page 3
+
+
+  90:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****     .State = 0,
+  91:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****     .IsTxConfirmed = false,
+  92:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****     .Port = 0,
+  93:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****     .DataBufferMaxSize = 0,
+  94:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****     .DataBufferSize = 0,
+  95:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****     .DataBuffer = NULL,
+  96:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****     .DownLinkCounter = 0,
+  97:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****     .LinkCheck = false,
+  98:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****     .DemodMargin = 0,
+  99:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****     .NbGateways = 0
+ 100:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** };
+ 101:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** 
+ 102:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** /*!
+ 103:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****  * LoRaWAN compliance tests protocol handler parameters
+ 104:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****  */
+ 105:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** static LmhpComplianceParams_t* LmhpComplianceParams;
+ 106:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** 
+ 107:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** /*!
+ 108:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****  * Initializes the compliance tests with provided parameters
+ 109:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****  *
+ 110:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****  * \param [IN] params Structure containing the initial compliance
+ 111:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****  *                    tests parameters.
+ 112:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****  * \param [IN] dataBuffer        Pointer to main application buffer
+ 113:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****  * \param [IN] dataBufferMaxSize Application buffer maximum size
+ 114:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****  */
+ 115:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** static void LmhpComplianceInit( void *params, uint8_t *dataBuffer, uint8_t dataBufferMaxSize );
+ 116:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** 
+ 117:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** /*!
+ 118:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****  * Returns the current compliance certification protocol initialization status.
+ 119:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****  *
+ 120:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****  * \retval status Compliance certification protocol initialization status
+ 121:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****  *                [true: Initialized, false: Not initialized]
+ 122:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****  */
+ 123:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** static bool LmhpComplianceIsInitialized( void );
+ 124:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** 
+ 125:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** /*!
+ 126:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****  * Returns the current compliance certification protocol handling status.
+ 127:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****  *
+ 128:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****  * \retval status Compliance certification protocol handling status
+ 129:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****  *                [true: Running, false: Not running]
+ 130:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****  */
+ 131:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** static bool LmhpComplianceIsRunning( void );
+ 132:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** 
+ 133:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** /*!
+ 134:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****  * Processes the LoRaMac Compliance events.
+ 135:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****  */
+ 136:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** static void LmhpComplianceProcess( void );
+ 137:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** 
+ 138:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** /*!
+ 139:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****  * Processes the MCPS Confirm
+ 140:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****  *
+ 141:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****  * \param [in] mcpsConfirm MCPS confirmation primitive data
+ 142:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****  */
+ 143:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** static void LmhpComplianceOnMcpsConfirm(McpsConfirm_t *mcpsConfirm);
+ 144:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** 
+ 145:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** /*!
+ 146:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****  * Processes the MCPS Indication
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccW3kqrC.s 			page 4
+
+
+ 147:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****  *
+ 148:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****  * \param [IN] mcpsIndication     MCPS indication primitive data
+ 149:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****  */
+ 150:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** static void LmhpComplianceOnMcpsIndication( McpsIndication_t *mcpsIndication );
+ 151:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** 
+ 152:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** /*!
+ 153:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****  * Processes the MLME Confirm
+ 154:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****  *
+ 155:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****  * \param [IN] mlmeConfirm MLME confirmation primitive data
+ 156:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****  */
+ 157:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** static void LmhpComplianceOnMlmeConfirm( MlmeConfirm_t *mlmeConfirm );
+ 158:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** 
+ 159:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** /*!
+ 160:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****  * Function executed on TxNextPacket Timeout event
+ 161:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****  */
+ 162:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** static void OnComplianceTxNextPacketTimerEvent( void *context );
+ 163:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** 
+ 164:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** /*!
+ 165:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****  * Processes the data to transmit on port \ref COMPLIANCE_PORT
+ 166:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****  * Handles the compliance certification protocol data transmission
+ 167:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****  *
+ 168:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****  * \retval status Returns \ref LORAMAC_HANDLER_SUCCESS if request has been
+ 169:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****  *                processed else \ref LORAMAC_HANDLER_ERROR
+ 170:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****  */
+ 171:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** static LmHandlerErrorStatus_t LmhpComplianceTxProcess( void );
+ 172:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** 
+ 173:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** static LmhPackage_t LmhpCompliancePackage =
+ 174:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** {
+ 175:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****     .Port = COMPLIANCE_PORT,
+ 176:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****     .Init = LmhpComplianceInit,
+ 177:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****     .IsInitialized = LmhpComplianceIsInitialized,
+ 178:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****     .IsRunning = LmhpComplianceIsRunning,
+ 179:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****     .Process = LmhpComplianceProcess,
+ 180:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****     .OnMcpsConfirmProcess =       LmhpComplianceOnMcpsConfirm,
+ 181:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****     .OnMcpsIndicationProcess = LmhpComplianceOnMcpsIndication,
+ 182:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****     .OnMlmeConfirmProcess = LmhpComplianceOnMlmeConfirm,
+ 183:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****     .OnJoinRequest = NULL,                                     // To be initialized by LmHandler
+ 184:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****     .OnSendRequest = NULL,                                     // To be initialized by LmHandler
+ 185:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****     .OnDeviceTimeRequest = NULL,                               // To be initialized by LmHandler
+ 186:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****     .OnSysTimeUpdate = NULL,                                   // To be initialized by LmHandler
+ 187:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****     .OnPackageProcessEvent = NULL,                             // To be initialized by LmHandler
+ 188:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** };
+ 189:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** 
+ 190:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** LmhPackage_t *LmhpCompliancePackageFactory( void )
+ 191:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** {
+ 192:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****     return &LmhpCompliancePackage;
+ 193:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** }
+ 194:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** 
+ 195:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** static void LmhpComplianceInit( void *params, uint8_t *dataBuffer, uint8_t dataBufferMaxSize )
+ 196:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** {
+  27              		.loc 1 196 1 view -0
+  28              		.cfi_startproc
+  29              		@ args = 0, pretend = 0, frame = 0
+  30              		@ frame_needed = 0, uses_anonymous_args = 0
+  31              		@ link register save eliminated.
+ 197:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****     if( ( params != NULL ) && ( dataBuffer != NULL ) )
+  32              		.loc 1 197 5 view .LVU1
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccW3kqrC.s 			page 5
+
+
+  33              		.loc 1 197 7 is_stmt 0 view .LVU2
+  34 0000 0346     		mov	r3, r0
+  35 0002 40B1     		cbz	r0, .L2
+  36              		.loc 1 197 28 discriminator 1 view .LVU3
+  37 0004 39B1     		cbz	r1, .L2
+ 198:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****     {
+ 199:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****         LmhpComplianceParams = ( LmhpComplianceParams_t* )params;
+  38              		.loc 1 199 9 is_stmt 1 view .LVU4
+  39              		.loc 1 199 30 is_stmt 0 view .LVU5
+  40 0006 0748     		ldr	r0, .L4
+  41              	.LVL1:
+  42              		.loc 1 199 30 view .LVU6
+  43 0008 0360     		str	r3, [r0]
+ 200:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****         ComplianceTestState.DataBuffer = dataBuffer;
+  44              		.loc 1 200 9 is_stmt 1 view .LVU7
+  45              		.loc 1 200 40 is_stmt 0 view .LVU8
+  46 000a 074B     		ldr	r3, .L4+4
+  47              	.LVL2:
+  48              		.loc 1 200 40 view .LVU9
+  49 000c 9960     		str	r1, [r3, #8]
+ 201:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****         ComplianceTestState.DataBufferMaxSize = dataBufferMaxSize;
+  50              		.loc 1 201 9 is_stmt 1 view .LVU10
+  51              		.loc 1 201 47 is_stmt 0 view .LVU11
+  52 000e 5A71     		strb	r2, [r3, #5]
+ 202:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****         ComplianceTestState.Initialized = true;
+  53              		.loc 1 202 9 is_stmt 1 view .LVU12
+  54              		.loc 1 202 41 is_stmt 0 view .LVU13
+  55 0010 0122     		movs	r2, #1
+  56              	.LVL3:
+  57              		.loc 1 202 41 view .LVU14
+  58 0012 1A70     		strb	r2, [r3]
+  59 0014 7047     		bx	lr
+  60              	.LVL4:
+  61              	.L2:
+ 203:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****     }
+ 204:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****     else
+ 205:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****     {
+ 206:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****         LmhpComplianceParams = NULL;
+  62              		.loc 1 206 9 is_stmt 1 view .LVU15
+  63              		.loc 1 206 30 is_stmt 0 view .LVU16
+  64 0016 0023     		movs	r3, #0
+  65 0018 024A     		ldr	r2, .L4
+  66              	.LVL5:
+  67              		.loc 1 206 30 view .LVU17
+  68 001a 1360     		str	r3, [r2]
+ 207:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****         ComplianceTestState.Initialized = false;
+  69              		.loc 1 207 9 is_stmt 1 view .LVU18
+  70              		.loc 1 207 41 is_stmt 0 view .LVU19
+  71 001c 024A     		ldr	r2, .L4+4
+  72 001e 1370     		strb	r3, [r2]
+ 208:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****     }
+ 209:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** }
+  73              		.loc 1 209 1 view .LVU20
+  74 0020 7047     		bx	lr
+  75              	.L5:
+  76 0022 00BF     		.align	2
+  77              	.L4:
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccW3kqrC.s 			page 6
+
+
+  78 0024 00000000 		.word	.LANCHOR0
+  79 0028 00000000 		.word	.LANCHOR1
+  80              		.cfi_endproc
+  81              	.LFE105:
+  83              		.section	.text.LmhpComplianceIsInitialized,"ax",%progbits
+  84              		.align	1
+  85              		.syntax unified
+  86              		.thumb
+  87              		.thumb_func
+  89              	LmhpComplianceIsInitialized:
+  90              	.LFB106:
+ 210:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** 
+ 211:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** static bool LmhpComplianceIsInitialized( void )
+ 212:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** {
+  91              		.loc 1 212 1 is_stmt 1 view -0
+  92              		.cfi_startproc
+  93              		@ args = 0, pretend = 0, frame = 0
+  94              		@ frame_needed = 0, uses_anonymous_args = 0
+  95              		@ link register save eliminated.
+ 213:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****     return ComplianceTestState.Initialized;
+  96              		.loc 1 213 5 view .LVU22
+ 214:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** }
+  97              		.loc 1 214 1 is_stmt 0 view .LVU23
+  98 0000 014B     		ldr	r3, .L7
+  99 0002 1878     		ldrb	r0, [r3]	@ zero_extendqisi2
+ 100 0004 7047     		bx	lr
+ 101              	.L8:
+ 102 0006 00BF     		.align	2
+ 103              	.L7:
+ 104 0008 00000000 		.word	.LANCHOR1
+ 105              		.cfi_endproc
+ 106              	.LFE106:
+ 108              		.section	.text.LmhpComplianceIsRunning,"ax",%progbits
+ 109              		.align	1
+ 110              		.syntax unified
+ 111              		.thumb
+ 112              		.thumb_func
+ 114              	LmhpComplianceIsRunning:
+ 115              	.LFB107:
+ 215:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** 
+ 216:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** static bool LmhpComplianceIsRunning( void )
+ 217:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** {
+ 116              		.loc 1 217 1 is_stmt 1 view -0
+ 117              		.cfi_startproc
+ 118              		@ args = 0, pretend = 0, frame = 0
+ 119              		@ frame_needed = 0, uses_anonymous_args = 0
+ 120              		@ link register save eliminated.
+ 218:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****     if( ComplianceTestState.Initialized == false )
+ 121              		.loc 1 218 5 view .LVU25
+ 122              		.loc 1 218 28 is_stmt 0 view .LVU26
+ 123 0000 024B     		ldr	r3, .L11
+ 124 0002 1878     		ldrb	r0, [r3]	@ zero_extendqisi2
+ 125              		.loc 1 218 7 view .LVU27
+ 126 0004 00B1     		cbz	r0, .L10
+ 219:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****     {
+ 220:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****         return false;
+ 221:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****     }
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccW3kqrC.s 			page 7
+
+
+ 222:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** 
+ 223:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****     return ComplianceTestState.IsRunning;
+ 127              		.loc 1 223 5 is_stmt 1 view .LVU28
+ 128              		.loc 1 223 31 is_stmt 0 view .LVU29
+ 129 0006 5878     		ldrb	r0, [r3, #1]	@ zero_extendqisi2
+ 130              	.L10:
+ 224:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** }
+ 131              		.loc 1 224 1 view .LVU30
+ 132 0008 7047     		bx	lr
+ 133              	.L12:
+ 134 000a 00BF     		.align	2
+ 135              	.L11:
+ 136 000c 00000000 		.word	.LANCHOR1
+ 137              		.cfi_endproc
+ 138              	.LFE107:
+ 140              		.section	.text.LmhpComplianceOnMcpsConfirm,"ax",%progbits
+ 141              		.align	1
+ 142              		.syntax unified
+ 143              		.thumb
+ 144              		.thumb_func
+ 146              	LmhpComplianceOnMcpsConfirm:
+ 147              	.LVL6:
+ 148              	.LFB108:
+ 225:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** 
+ 226:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** static void LmhpComplianceOnMcpsConfirm(McpsConfirm_t *mcpsConfirm)
+ 227:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** {
+ 149              		.loc 1 227 1 is_stmt 1 view -0
+ 150              		.cfi_startproc
+ 151              		@ args = 0, pretend = 0, frame = 0
+ 152              		@ frame_needed = 0, uses_anonymous_args = 0
+ 153              		@ link register save eliminated.
+ 228:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****     if (ComplianceTestState.Initialized == false)
+ 154              		.loc 1 228 5 view .LVU32
+ 155              		.loc 1 228 28 is_stmt 0 view .LVU33
+ 156 0000 084B     		ldr	r3, .L16
+ 157 0002 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 158              		.loc 1 228 8 view .LVU34
+ 159 0004 2BB1     		cbz	r3, .L13
+ 229:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****     {
+ 230:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****         return;
+ 231:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****     }
+ 232:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** 
+ 233:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****     if ((ComplianceTestState.IsRunning == true) &&
+ 160              		.loc 1 233 5 is_stmt 1 view .LVU35
+ 161              		.loc 1 233 29 is_stmt 0 view .LVU36
+ 162 0006 074B     		ldr	r3, .L16
+ 163 0008 5B78     		ldrb	r3, [r3, #1]	@ zero_extendqisi2
+ 164              		.loc 1 233 8 view .LVU37
+ 165 000a 13B1     		cbz	r3, .L13
+ 234:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****         (mcpsConfirm->McpsRequest == MCPS_CONFIRMED) &&
+ 166              		.loc 1 234 21 discriminator 1 view .LVU38
+ 167 000c 0378     		ldrb	r3, [r0]	@ zero_extendqisi2
+ 233:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****         (mcpsConfirm->McpsRequest == MCPS_CONFIRMED) &&
+ 168              		.loc 1 233 49 discriminator 1 view .LVU39
+ 169 000e 012B     		cmp	r3, #1
+ 170 0010 00D0     		beq	.L15
+ 171              	.L13:
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccW3kqrC.s 			page 8
+
+
+ 235:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****         (mcpsConfirm->AckReceived != 0))
+ 236:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****     {
+ 237:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****         /* Increment the compliance certification protocol downlink counter */
+ 238:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****         ComplianceTestState.DownLinkCounter++;
+ 239:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****     }
+ 240:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** }
+ 172              		.loc 1 240 1 view .LVU40
+ 173 0012 7047     		bx	lr
+ 174              	.L15:
+ 235:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****         (mcpsConfirm->AckReceived != 0))
+ 175              		.loc 1 235 21 view .LVU41
+ 176 0014 0379     		ldrb	r3, [r0, #4]	@ zero_extendqisi2
+ 234:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****         (mcpsConfirm->AckReceived != 0))
+ 177              		.loc 1 234 54 view .LVU42
+ 178 0016 002B     		cmp	r3, #0
+ 179 0018 FBD0     		beq	.L13
+ 238:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****     }
+ 180              		.loc 1 238 9 is_stmt 1 view .LVU43
+ 238:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****     }
+ 181              		.loc 1 238 28 is_stmt 0 view .LVU44
+ 182 001a 024A     		ldr	r2, .L16
+ 183 001c 9389     		ldrh	r3, [r2, #12]
+ 238:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****     }
+ 184              		.loc 1 238 44 view .LVU45
+ 185 001e 0133     		adds	r3, r3, #1
+ 186 0020 9381     		strh	r3, [r2, #12]	@ movhi
+ 187 0022 F6E7     		b	.L13
+ 188              	.L17:
+ 189              		.align	2
+ 190              	.L16:
+ 191 0024 00000000 		.word	.LANCHOR1
+ 192              		.cfi_endproc
+ 193              	.LFE108:
+ 195              		.section	.text.LmhpComplianceOnMlmeConfirm,"ax",%progbits
+ 196              		.align	1
+ 197              		.syntax unified
+ 198              		.thumb
+ 199              		.thumb_func
+ 201              	LmhpComplianceOnMlmeConfirm:
+ 202              	.LVL7:
+ 203              	.LFB109:
+ 241:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** 
+ 242:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** static void LmhpComplianceOnMlmeConfirm( MlmeConfirm_t *mlmeConfirm )
+ 243:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** {
+ 204              		.loc 1 243 1 is_stmt 1 view -0
+ 205              		.cfi_startproc
+ 206              		@ args = 0, pretend = 0, frame = 0
+ 207              		@ frame_needed = 0, uses_anonymous_args = 0
+ 208              		@ link register save eliminated.
+ 244:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****     if( ComplianceTestState.Initialized == false )
+ 209              		.loc 1 244 5 view .LVU47
+ 210              		.loc 1 244 28 is_stmt 0 view .LVU48
+ 211 0000 084B     		ldr	r3, .L21
+ 212 0002 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 213              		.loc 1 244 7 view .LVU49
+ 214 0004 2BB1     		cbz	r3, .L18
+ 245:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****     {
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccW3kqrC.s 			page 9
+
+
+ 246:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****         return;
+ 247:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****     }
+ 248:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** 
+ 249:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****     if( ComplianceTestState.IsRunning == false )
+ 215              		.loc 1 249 5 is_stmt 1 view .LVU50
+ 216              		.loc 1 249 28 is_stmt 0 view .LVU51
+ 217 0006 074B     		ldr	r3, .L21
+ 218 0008 5B78     		ldrb	r3, [r3, #1]	@ zero_extendqisi2
+ 219              		.loc 1 249 7 view .LVU52
+ 220 000a 13B1     		cbz	r3, .L18
+ 250:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****     {
+ 251:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****         return;
+ 252:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****     }
+ 253:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** 
+ 254:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****     if( mlmeConfirm->MlmeRequest == MLME_LINK_CHECK )
+ 221              		.loc 1 254 5 is_stmt 1 view .LVU53
+ 222              		.loc 1 254 20 is_stmt 0 view .LVU54
+ 223 000c 0378     		ldrb	r3, [r0]	@ zero_extendqisi2
+ 224              		.loc 1 254 7 view .LVU55
+ 225 000e 042B     		cmp	r3, #4
+ 226 0010 00D0     		beq	.L20
+ 227              	.L18:
+ 255:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****     {
+ 256:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****         ComplianceTestState.LinkCheck = true;
+ 257:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****         ComplianceTestState.DemodMargin = mlmeConfirm->DemodMargin;
+ 258:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****         ComplianceTestState.NbGateways = mlmeConfirm->NbGateways;
+ 259:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****     }
+ 260:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** }
+ 228              		.loc 1 260 1 view .LVU56
+ 229 0012 7047     		bx	lr
+ 230              	.L20:
+ 256:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****         ComplianceTestState.DemodMargin = mlmeConfirm->DemodMargin;
+ 231              		.loc 1 256 9 is_stmt 1 view .LVU57
+ 256:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****         ComplianceTestState.DemodMargin = mlmeConfirm->DemodMargin;
+ 232              		.loc 1 256 39 is_stmt 0 view .LVU58
+ 233 0014 034B     		ldr	r3, .L21
+ 234 0016 0122     		movs	r2, #1
+ 235 0018 9A73     		strb	r2, [r3, #14]
+ 257:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****         ComplianceTestState.NbGateways = mlmeConfirm->NbGateways;
+ 236              		.loc 1 257 9 is_stmt 1 view .LVU59
+ 257:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****         ComplianceTestState.NbGateways = mlmeConfirm->NbGateways;
+ 237              		.loc 1 257 54 is_stmt 0 view .LVU60
+ 238 001a 027A     		ldrb	r2, [r0, #8]	@ zero_extendqisi2
+ 257:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****         ComplianceTestState.NbGateways = mlmeConfirm->NbGateways;
+ 239              		.loc 1 257 41 view .LVU61
+ 240 001c DA73     		strb	r2, [r3, #15]
+ 258:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****     }
+ 241              		.loc 1 258 9 is_stmt 1 view .LVU62
+ 258:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****     }
+ 242              		.loc 1 258 53 is_stmt 0 view .LVU63
+ 243 001e 427A     		ldrb	r2, [r0, #9]	@ zero_extendqisi2
+ 258:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****     }
+ 244              		.loc 1 258 40 view .LVU64
+ 245 0020 1A74     		strb	r2, [r3, #16]
+ 246 0022 F6E7     		b	.L18
+ 247              	.L22:
+ 248              		.align	2
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccW3kqrC.s 			page 10
+
+
+ 249              	.L21:
+ 250 0024 00000000 		.word	.LANCHOR1
+ 251              		.cfi_endproc
+ 252              	.LFE109:
+ 254              		.section	.text.LmhpComplianceProcess,"ax",%progbits
+ 255              		.align	1
+ 256              		.syntax unified
+ 257              		.thumb
+ 258              		.thumb_func
+ 260              	LmhpComplianceProcess:
+ 261              	.LFB112:
+ 261:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** 
+ 262:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** static LmHandlerErrorStatus_t LmhpComplianceTxProcess( void )
+ 263:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** {
+ 264:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****     if( ComplianceTestState.Initialized == false )
+ 265:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****     {
+ 266:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****         return LORAMAC_HANDLER_ERROR;
+ 267:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****     }
+ 268:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** 
+ 269:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****     if( ComplianceTestState.IsRunning == false )
+ 270:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****     {
+ 271:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****         return LORAMAC_HANDLER_SUCCESS;
+ 272:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****     }
+ 273:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** 
+ 274:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****     if( ComplianceTestState.LinkCheck == true )
+ 275:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****     {
+ 276:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****         ComplianceTestState.LinkCheck = false;
+ 277:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****         ComplianceTestState.DataBufferSize = 3;
+ 278:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****         ComplianceTestState.DataBuffer[0] = 5;
+ 279:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****         ComplianceTestState.DataBuffer[1] = ComplianceTestState.DemodMargin;
+ 280:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****         ComplianceTestState.DataBuffer[2] = ComplianceTestState.NbGateways;
+ 281:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****         ComplianceTestState.State = 1;
+ 282:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****     }
+ 283:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****     else
+ 284:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****     {
+ 285:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****         switch( ComplianceTestState.State )
+ 286:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****         {
+ 287:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****         case 4:
+ 288:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             ComplianceTestState.State = 1;
+ 289:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             break;
+ 290:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****         case 1:
+ 291:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             ComplianceTestState.DataBufferSize = 2;
+ 292:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             ComplianceTestState.DataBuffer[0] = ComplianceTestState.DownLinkCounter >> 8;
+ 293:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             ComplianceTestState.DataBuffer[1] = ComplianceTestState.DownLinkCounter;
+ 294:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             break;
+ 295:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****         }
+ 296:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****     }
+ 297:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** 
+ 298:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****     LmHandlerAppData_t appData =
+ 299:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****     {
+ 300:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****         .Buffer = ComplianceTestState.DataBuffer,
+ 301:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****         .BufferSize = ComplianceTestState.DataBufferSize,
+ 302:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****         .Port = COMPLIANCE_PORT
+ 303:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****     };
+ 304:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** 
+ 305:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****     // Schedule next transmission
+ 306:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****     TimerStart( &ComplianceTxNextPacketTimer );
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccW3kqrC.s 			page 11
+
+
+ 307:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** 
+ 308:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****     return LmhpCompliancePackage.OnSendRequest( &appData, ( LmHandlerMsgTypes_t )ComplianceTestStat
+ 309:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** }
+ 310:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** 
+ 311:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** static void LmhpComplianceOnMcpsIndication( McpsIndication_t* mcpsIndication )
+ 312:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** {
+ 313:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****     if( ComplianceTestState.Initialized == false )
+ 314:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****     {
+ 315:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****         return;
+ 316:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****     }
+ 317:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** 
+ 318:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****     if( mcpsIndication->RxData == false )
+ 319:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****     {
+ 320:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****         return;
+ 321:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****     }
+ 322:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** 
+ 323:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****     if ((ComplianceTestState.IsRunning == true) &&
+ 324:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****         (mcpsIndication->AckReceived == 0))
+ 325:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****     {
+ 326:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****         /* Increment the compliance certification protocol downlink counter */
+ 327:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****         ComplianceTestState.DownLinkCounter++;
+ 328:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****     }
+ 329:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** 
+ 330:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****     if( mcpsIndication->Port != COMPLIANCE_PORT )
+ 331:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****     {
+ 332:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****         return;
+ 333:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****     }
+ 334:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** 
+ 335:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****     if( ComplianceTestState.IsRunning == false )
+ 336:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****     {
+ 337:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****         // Check compliance test enable command (i)
+ 338:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****         if( ( mcpsIndication->BufferSize == 4 ) &&
+ 339:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             ( mcpsIndication->Buffer[0] == 0x01 ) &&
+ 340:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             ( mcpsIndication->Buffer[1] == 0x01 ) &&
+ 341:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             ( mcpsIndication->Buffer[2] == 0x01 ) &&
+ 342:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             ( mcpsIndication->Buffer[3] == 0x01 ) )
+ 343:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****         {
+ 344:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             MibRequestConfirm_t mibReq;
+ 345:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** 
+ 346:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             // Initialize compliance test mode context
+ 347:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             ComplianceTestState.IsTxConfirmed = false;
+ 348:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             ComplianceTestState.Port = 224;
+ 349:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             ComplianceTestState.DataBufferSize = 2;
+ 350:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             ComplianceTestState.DownLinkCounter = 0;
+ 351:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             ComplianceTestState.LinkCheck = false;
+ 352:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             ComplianceTestState.DemodMargin = 0;
+ 353:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             ComplianceTestState.NbGateways = 0;
+ 354:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             ComplianceTestState.IsRunning = true;
+ 355:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             ComplianceTestState.State = 1;
+ 356:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** 
+ 357:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             // Enable ADR while in compliance test mode
+ 358:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             mibReq.Type = MIB_ADR;
+ 359:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             mibReq.Param.AdrEnable = true;
+ 360:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             LoRaMacMibSetRequestConfirm( &mibReq );
+ 361:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** 
+ 362:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             // Disable duty cycle enforcement while in compliance test mode
+ 363:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             LoRaMacTestSetDutyCycleOn( false );
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccW3kqrC.s 			page 12
+
+
+ 364:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** 
+ 365:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             // Stop peripherals
+ 366:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             if( LmhpComplianceParams->StopPeripherals != NULL )
+ 367:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             {
+ 368:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****                 LmhpComplianceParams->StopPeripherals( );
+ 369:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             }
+ 370:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             // Initialize compliance protocol transmission timer
+ 371:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             TimerInit( &ComplianceTxNextPacketTimer, OnComplianceTxNextPacketTimerEvent );
+ 372:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             TimerSetValue( &ComplianceTxNextPacketTimer, COMPLIANCE_TX_DUTYCYCLE );
+ 373:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** 
+ 374:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             // Confirm compliance test protocol activation
+ 375:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             LmhpComplianceTxProcess( );
+ 376:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****         }
+ 377:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****     }
+ 378:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****     else
+ 379:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****     {
+ 380:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** 
+ 381:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****         // Parse compliance test protocol
+ 382:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****         ComplianceTestState.State = mcpsIndication->Buffer[0];
+ 383:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****         switch( ComplianceTestState.State )
+ 384:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****         {
+ 385:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****         case 0: // Check compliance test disable command (ii)
+ 386:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             {
+ 387:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****                 MibRequestConfirm_t mibReq;
+ 388:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** 
+ 389:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****                 TimerStop( &ComplianceTxNextPacketTimer );
+ 390:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** 
+ 391:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****                 // Disable compliance test mode and reset the downlink counter.
+ 392:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****                 ComplianceTestState.DownLinkCounter = 0;
+ 393:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****                 ComplianceTestState.IsRunning = false;
+ 394:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** 
+ 395:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****                 // Restore previous ADR seeting
+ 396:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****                 mibReq.Type = MIB_ADR;
+ 397:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****                 mibReq.Param.AdrEnable = LmhpComplianceParams->AdrEnabled;
+ 398:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****                 LoRaMacMibSetRequestConfirm( &mibReq );
+ 399:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** 
+ 400:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****                 // Enable duty cycle enforcement
+ 401:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****                 LoRaMacTestSetDutyCycleOn( LmhpComplianceParams->DutyCycleEnabled );
+ 402:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** 
+ 403:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****                 // Restart peripherals
+ 404:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****                 if( LmhpComplianceParams->StartPeripherals != NULL )
+ 405:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****                 {
+ 406:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****                     LmhpComplianceParams->StartPeripherals( );
+ 407:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****                 }
+ 408:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             }
+ 409:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             break;
+ 410:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****         case 1: // (iii, iv)
+ 411:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             ComplianceTestState.DataBufferSize = 2;
+ 412:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             break;
+ 413:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****         case 2: // Enable confirmed messages (v)
+ 414:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             ComplianceTestState.IsTxConfirmed = true;
+ 415:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             ComplianceTestState.State = 1;
+ 416:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             break;
+ 417:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****         case 3:  // Disable confirmed messages (vi)
+ 418:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             ComplianceTestState.IsTxConfirmed = false;
+ 419:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             ComplianceTestState.State = 1;
+ 420:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             break;
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccW3kqrC.s 			page 13
+
+
+ 421:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****         case 4: // (vii)
+ 422:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             ComplianceTestState.DataBufferSize = mcpsIndication->BufferSize;
+ 423:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** 
+ 424:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             ComplianceTestState.DataBuffer[0] = 4;
+ 425:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             for( uint8_t i = 1; i < MIN( ComplianceTestState.DataBufferSize, ComplianceTestState.Da
+ 426:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             {
+ 427:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****                 ComplianceTestState.DataBuffer[i] = mcpsIndication->Buffer[i] + 1;
+ 428:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             }
+ 429:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             break;
+ 430:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****         case 5: // (viii)
+ 431:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             {
+ 432:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****                 MlmeReq_t mlmeReq;
+ 433:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** 
+ 434:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****                 mlmeReq.Type = MLME_LINK_CHECK;
+ 435:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** 
+ 436:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****                 LoRaMacMlmeRequest( &mlmeReq );
+ 437:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             }
+ 438:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             break;
+ 439:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****         case 6: // (ix)
+ 440:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             {
+ 441:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****                 MibRequestConfirm_t mibReq;
+ 442:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** 
+ 443:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****                 TimerStop(&ComplianceTxNextPacketTimer);
+ 444:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** 
+ 445:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****                 // Disable TestMode and revert back to normal operation
+ 446:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****                 // Disable compliance test mode and reset the downlink counter.
+ 447:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****                 ComplianceTestState.DownLinkCounter = 0;
+ 448:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****                 ComplianceTestState.IsRunning = false;
+ 449:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** 
+ 450:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****                 // Restore previous ADR seeting
+ 451:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****                 mibReq.Type = MIB_ADR;
+ 452:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****                 mibReq.Param.AdrEnable = LmhpComplianceParams->AdrEnabled;
+ 453:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****                 LoRaMacMibSetRequestConfirm( &mibReq );
+ 454:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** 
+ 455:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****                 // Enable duty cycle enforcement
+ 456:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****                 LoRaMacTestSetDutyCycleOn( LmhpComplianceParams->DutyCycleEnabled );
+ 457:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** 
+ 458:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****                 // Restart peripherals
+ 459:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****                 if( LmhpComplianceParams->StartPeripherals != NULL )
+ 460:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****                 {
+ 461:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****                     LmhpComplianceParams->StartPeripherals( );
+ 462:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****                 }
+ 463:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** 
+ 464:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****                 LmhpCompliancePackage.OnJoinRequest( ACTIVATION_TYPE_OTAA );
+ 465:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             }
+ 466:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             break;
+ 467:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****         case 7: // (x)
+ 468:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             {
+ 469:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****                 MlmeReq_t mlmeReq;
+ 470:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****                 if( mcpsIndication->BufferSize == 3 )
+ 471:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****                 {
+ 472:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****                     mlmeReq.Type = MLME_TXCW;
+ 473:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****                     mlmeReq.Req.TxCw.Timeout = ( uint16_t )( ( mcpsIndication->Buffer[1] << 8 ) | m
+ 474:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****                 }
+ 475:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****                 else if( mcpsIndication->BufferSize == 7 )
+ 476:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****                 {
+ 477:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****                     mlmeReq.Type = MLME_TXCW_1;
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccW3kqrC.s 			page 14
+
+
+ 478:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****                     mlmeReq.Req.TxCw.Timeout = ( uint16_t )( ( mcpsIndication->Buffer[1] << 8 ) | m
+ 479:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****                     mlmeReq.Req.TxCw.Frequency = ( uint32_t )( ( mcpsIndication->Buffer[3] << 16 ) 
+ 480:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****                     mlmeReq.Req.TxCw.Power = mcpsIndication->Buffer[6];
+ 481:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****                 }
+ 482:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****                 LoRaMacMlmeRequest( &mlmeReq );
+ 483:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****                 ComplianceTestState.State = 1;
+ 484:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             }
+ 485:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             break;
+ 486:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****         case 8: // Send DeviceTimeReq
+ 487:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             {
+ 488:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****                 MlmeReq_t mlmeReq;
+ 489:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** 
+ 490:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****                 mlmeReq.Type = MLME_DEVICE_TIME;
+ 491:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** 
+ 492:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****                 LoRaMacMlmeRequest( &mlmeReq );
+ 493:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             }
+ 494:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             break;
+ 495:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****         case 9: // Switch end device Class
+ 496:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             {
+ 497:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****                 MibRequestConfirm_t mibReq;
+ 498:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** 
+ 499:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****                 mibReq.Type = MIB_DEVICE_CLASS;
+ 500:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****                 // CLASS_A = 0, CLASS_B = 1, CLASS_C = 2
+ 501:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****                 mibReq.Param.Class = ( DeviceClass_t )mcpsIndication->Buffer[1];;
+ 502:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****                 LoRaMacMibSetRequestConfirm( &mibReq );
+ 503:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             }
+ 504:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             break;
+ 505:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****         case 10: // Send PingSlotInfoReq
+ 506:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             {
+ 507:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****                 MlmeReq_t mlmeReq;
+ 508:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** 
+ 509:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****                 mlmeReq.Type = MLME_PING_SLOT_INFO;
+ 510:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****                 mlmeReq.Req.PingSlotInfo.PingSlot.Value = mcpsIndication->Buffer[1];
+ 511:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** 
+ 512:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****                 LoRaMacMlmeRequest( &mlmeReq );
+ 513:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             }
+ 514:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             break;
+ 515:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****         default:
+ 516:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             break;
+ 517:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****         }
+ 518:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****     }
+ 519:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** }
+ 520:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** 
+ 521:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** static void LmhpComplianceProcess( void )
+ 522:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** {
+ 262              		.loc 1 522 1 is_stmt 1 view -0
+ 263              		.cfi_startproc
+ 264              		@ args = 0, pretend = 0, frame = 0
+ 265              		@ frame_needed = 0, uses_anonymous_args = 0
+ 266              		@ link register save eliminated.
+ 523:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****     /* Nothing to process */
+ 524:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** }
+ 267              		.loc 1 524 1 view .LVU66
+ 268 0000 7047     		bx	lr
+ 269              		.cfi_endproc
+ 270              	.LFE112:
+ 272              		.section	.text.LmhpComplianceTxProcess,"ax",%progbits
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccW3kqrC.s 			page 15
+
+
+ 273              		.align	1
+ 274              		.syntax unified
+ 275              		.thumb
+ 276              		.thumb_func
+ 278              	LmhpComplianceTxProcess:
+ 279              	.LFB110:
+ 263:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****     if( ComplianceTestState.Initialized == false )
+ 280              		.loc 1 263 1 view -0
+ 281              		.cfi_startproc
+ 282              		@ args = 0, pretend = 0, frame = 8
+ 283              		@ frame_needed = 0, uses_anonymous_args = 0
+ 264:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****     {
+ 284              		.loc 1 264 5 view .LVU68
+ 264:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****     {
+ 285              		.loc 1 264 28 is_stmt 0 view .LVU69
+ 286 0000 234B     		ldr	r3, .L35
+ 287 0002 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 264:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****     {
+ 288              		.loc 1 264 7 view .LVU70
+ 289 0004 002B     		cmp	r3, #0
+ 290 0006 3ED0     		beq	.L29
+ 269:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****     {
+ 291              		.loc 1 269 5 is_stmt 1 view .LVU71
+ 269:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****     {
+ 292              		.loc 1 269 28 is_stmt 0 view .LVU72
+ 293 0008 214B     		ldr	r3, .L35
+ 294 000a 5B78     		ldrb	r3, [r3, #1]	@ zero_extendqisi2
+ 269:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****     {
+ 295              		.loc 1 269 7 view .LVU73
+ 296 000c 002B     		cmp	r3, #0
+ 297 000e 3DD0     		beq	.L30
+ 263:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****     if( ComplianceTestState.Initialized == false )
+ 298              		.loc 1 263 1 view .LVU74
+ 299 0010 30B5     		push	{r4, r5, lr}
+ 300              	.LCFI0:
+ 301              		.cfi_def_cfa_offset 12
+ 302              		.cfi_offset 4, -12
+ 303              		.cfi_offset 5, -8
+ 304              		.cfi_offset 14, -4
+ 305 0012 83B0     		sub	sp, sp, #12
+ 306              	.LCFI1:
+ 307              		.cfi_def_cfa_offset 24
+ 274:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****     {
+ 308              		.loc 1 274 5 is_stmt 1 view .LVU75
+ 274:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****     {
+ 309              		.loc 1 274 28 is_stmt 0 view .LVU76
+ 310 0014 1E4B     		ldr	r3, .L35
+ 311 0016 9B7B     		ldrb	r3, [r3, #14]	@ zero_extendqisi2
+ 274:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****     {
+ 312              		.loc 1 274 7 view .LVU77
+ 313 0018 13B3     		cbz	r3, .L26
+ 276:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****         ComplianceTestState.DataBufferSize = 3;
+ 314              		.loc 1 276 9 is_stmt 1 view .LVU78
+ 276:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****         ComplianceTestState.DataBufferSize = 3;
+ 315              		.loc 1 276 39 is_stmt 0 view .LVU79
+ 316 001a 1D4B     		ldr	r3, .L35
+ 317 001c 0022     		movs	r2, #0
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccW3kqrC.s 			page 16
+
+
+ 318 001e 9A73     		strb	r2, [r3, #14]
+ 277:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****         ComplianceTestState.DataBuffer[0] = 5;
+ 319              		.loc 1 277 9 is_stmt 1 view .LVU80
+ 277:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****         ComplianceTestState.DataBuffer[0] = 5;
+ 320              		.loc 1 277 44 is_stmt 0 view .LVU81
+ 321 0020 0322     		movs	r2, #3
+ 322 0022 9A71     		strb	r2, [r3, #6]
+ 278:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****         ComplianceTestState.DataBuffer[1] = ComplianceTestState.DemodMargin;
+ 323              		.loc 1 278 9 is_stmt 1 view .LVU82
+ 278:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****         ComplianceTestState.DataBuffer[1] = ComplianceTestState.DemodMargin;
+ 324              		.loc 1 278 28 is_stmt 0 view .LVU83
+ 325 0024 9A68     		ldr	r2, [r3, #8]
+ 278:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****         ComplianceTestState.DataBuffer[1] = ComplianceTestState.DemodMargin;
+ 326              		.loc 1 278 43 view .LVU84
+ 327 0026 0521     		movs	r1, #5
+ 328 0028 1170     		strb	r1, [r2]
+ 279:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****         ComplianceTestState.DataBuffer[2] = ComplianceTestState.NbGateways;
+ 329              		.loc 1 279 9 is_stmt 1 view .LVU85
+ 279:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****         ComplianceTestState.DataBuffer[2] = ComplianceTestState.NbGateways;
+ 330              		.loc 1 279 64 is_stmt 0 view .LVU86
+ 331 002a D97B     		ldrb	r1, [r3, #15]	@ zero_extendqisi2
+ 279:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****         ComplianceTestState.DataBuffer[2] = ComplianceTestState.NbGateways;
+ 332              		.loc 1 279 43 view .LVU87
+ 333 002c 5170     		strb	r1, [r2, #1]
+ 280:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****         ComplianceTestState.State = 1;
+ 334              		.loc 1 280 9 is_stmt 1 view .LVU88
+ 280:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****         ComplianceTestState.State = 1;
+ 335              		.loc 1 280 64 is_stmt 0 view .LVU89
+ 336 002e 197C     		ldrb	r1, [r3, #16]	@ zero_extendqisi2
+ 280:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****         ComplianceTestState.State = 1;
+ 337              		.loc 1 280 43 view .LVU90
+ 338 0030 9170     		strb	r1, [r2, #2]
+ 281:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****     }
+ 339              		.loc 1 281 9 is_stmt 1 view .LVU91
+ 281:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****     }
+ 340              		.loc 1 281 35 is_stmt 0 view .LVU92
+ 341 0032 0122     		movs	r2, #1
+ 342 0034 9A70     		strb	r2, [r3, #2]
+ 343              	.L27:
+ 298:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****     {
+ 344              		.loc 1 298 5 is_stmt 1 view .LVU93
+ 298:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****     {
+ 345              		.loc 1 298 24 is_stmt 0 view .LVU94
+ 346 0036 E023     		movs	r3, #224
+ 347 0038 8DF80030 		strb	r3, [sp]
+ 301:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****         .Port = COMPLIANCE_PORT
+ 348              		.loc 1 301 42 view .LVU95
+ 349 003c 144C     		ldr	r4, .L35
+ 350 003e A379     		ldrb	r3, [r4, #6]	@ zero_extendqisi2
+ 298:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****     {
+ 351              		.loc 1 298 24 view .LVU96
+ 352 0040 8DF80130 		strb	r3, [sp, #1]
+ 300:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****         .BufferSize = ComplianceTestState.DataBufferSize,
+ 353              		.loc 1 300 38 view .LVU97
+ 354 0044 A368     		ldr	r3, [r4, #8]
+ 298:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****     {
+ 355              		.loc 1 298 24 view .LVU98
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccW3kqrC.s 			page 17
+
+
+ 356 0046 0193     		str	r3, [sp, #4]
+ 306:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** 
+ 357              		.loc 1 306 5 is_stmt 1 view .LVU99
+ 306:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** 
+ 358              		.loc 1 306 5 view .LVU100
+ 359 0048 1248     		ldr	r0, .L35+4
+ 360 004a FFF7FEFF 		bl	UTIL_TIMER_Start
+ 361              	.LVL8:
+ 306:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** 
+ 362              		.loc 1 306 5 view .LVU101
+ 308:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** }
+ 363              		.loc 1 308 5 view .LVU102
+ 308:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** }
+ 364              		.loc 1 308 33 is_stmt 0 view .LVU103
+ 365 004e 124B     		ldr	r3, .L35+8
+ 366 0050 9D6A     		ldr	r5, [r3, #40]
+ 308:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** }
+ 367              		.loc 1 308 12 view .LVU104
+ 368 0052 0123     		movs	r3, #1
+ 369 0054 0022     		movs	r2, #0
+ 370 0056 E178     		ldrb	r1, [r4, #3]	@ zero_extendqisi2
+ 371 0058 6846     		mov	r0, sp
+ 372 005a A847     		blx	r5
+ 373              	.LVL9:
+ 309:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** 
+ 374              		.loc 1 309 1 view .LVU105
+ 375 005c 03B0     		add	sp, sp, #12
+ 376              	.LCFI2:
+ 377              		.cfi_remember_state
+ 378              		.cfi_def_cfa_offset 12
+ 379              		@ sp needed
+ 380 005e 30BD     		pop	{r4, r5, pc}
+ 381              	.L26:
+ 382              	.LCFI3:
+ 383              		.cfi_restore_state
+ 285:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****         {
+ 384              		.loc 1 285 9 is_stmt 1 view .LVU106
+ 285:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****         {
+ 385              		.loc 1 285 36 is_stmt 0 view .LVU107
+ 386 0060 0B4B     		ldr	r3, .L35
+ 387 0062 9B78     		ldrb	r3, [r3, #2]	@ zero_extendqisi2
+ 285:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****         {
+ 388              		.loc 1 285 9 view .LVU108
+ 389 0064 012B     		cmp	r3, #1
+ 390 0066 05D0     		beq	.L28
+ 391 0068 042B     		cmp	r3, #4
+ 392 006a E4D1     		bne	.L27
+ 288:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             break;
+ 393              		.loc 1 288 13 is_stmt 1 view .LVU109
+ 288:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             break;
+ 394              		.loc 1 288 39 is_stmt 0 view .LVU110
+ 395 006c 084B     		ldr	r3, .L35
+ 396 006e 0122     		movs	r2, #1
+ 397 0070 9A70     		strb	r2, [r3, #2]
+ 289:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****         case 1:
+ 398              		.loc 1 289 13 is_stmt 1 view .LVU111
+ 399 0072 E0E7     		b	.L27
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccW3kqrC.s 			page 18
+
+
+ 400              	.L28:
+ 291:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             ComplianceTestState.DataBuffer[0] = ComplianceTestState.DownLinkCounter >> 8;
+ 401              		.loc 1 291 13 view .LVU112
+ 291:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             ComplianceTestState.DataBuffer[0] = ComplianceTestState.DownLinkCounter >> 8;
+ 402              		.loc 1 291 48 is_stmt 0 view .LVU113
+ 403 0074 064B     		ldr	r3, .L35
+ 404 0076 0222     		movs	r2, #2
+ 405 0078 9A71     		strb	r2, [r3, #6]
+ 292:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             ComplianceTestState.DataBuffer[1] = ComplianceTestState.DownLinkCounter;
+ 406              		.loc 1 292 13 is_stmt 1 view .LVU114
+ 292:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             ComplianceTestState.DataBuffer[1] = ComplianceTestState.DownLinkCounter;
+ 407              		.loc 1 292 68 is_stmt 0 view .LVU115
+ 408 007a 9A89     		ldrh	r2, [r3, #12]
+ 292:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             ComplianceTestState.DataBuffer[1] = ComplianceTestState.DownLinkCounter;
+ 409              		.loc 1 292 32 view .LVU116
+ 410 007c 9B68     		ldr	r3, [r3, #8]
+ 292:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             ComplianceTestState.DataBuffer[1] = ComplianceTestState.DownLinkCounter;
+ 411              		.loc 1 292 47 view .LVU117
+ 412 007e 110A     		lsrs	r1, r2, #8
+ 413 0080 1970     		strb	r1, [r3]
+ 293:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             break;
+ 414              		.loc 1 293 13 is_stmt 1 view .LVU118
+ 293:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             break;
+ 415              		.loc 1 293 47 is_stmt 0 view .LVU119
+ 416 0082 5A70     		strb	r2, [r3, #1]
+ 294:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****         }
+ 417              		.loc 1 294 13 is_stmt 1 view .LVU120
+ 418 0084 D7E7     		b	.L27
+ 419              	.L29:
+ 420              	.LCFI4:
+ 421              		.cfi_def_cfa_offset 0
+ 422              		.cfi_restore 4
+ 423              		.cfi_restore 5
+ 424              		.cfi_restore 14
+ 266:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****     }
+ 425              		.loc 1 266 16 is_stmt 0 view .LVU121
+ 426 0086 4FF0FF30 		mov	r0, #-1
+ 427 008a 7047     		bx	lr
+ 428              	.L30:
+ 271:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****     }
+ 429              		.loc 1 271 16 view .LVU122
+ 430 008c 0020     		movs	r0, #0
+ 309:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** 
+ 431              		.loc 1 309 1 view .LVU123
+ 432 008e 7047     		bx	lr
+ 433              	.L36:
+ 434              		.align	2
+ 435              	.L35:
+ 436 0090 00000000 		.word	.LANCHOR1
+ 437 0094 00000000 		.word	.LANCHOR2
+ 438 0098 00000000 		.word	.LANCHOR3
+ 439              		.cfi_endproc
+ 440              	.LFE110:
+ 442              		.section	.text.LmhpComplianceOnMcpsIndication,"ax",%progbits
+ 443              		.align	1
+ 444              		.syntax unified
+ 445              		.thumb
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccW3kqrC.s 			page 19
+
+
+ 446              		.thumb_func
+ 448              	LmhpComplianceOnMcpsIndication:
+ 449              	.LVL10:
+ 450              	.LFB111:
+ 312:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****     if( ComplianceTestState.Initialized == false )
+ 451              		.loc 1 312 1 is_stmt 1 view -0
+ 452              		.cfi_startproc
+ 453              		@ args = 0, pretend = 0, frame = 40
+ 454              		@ frame_needed = 0, uses_anonymous_args = 0
+ 313:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****     {
+ 455              		.loc 1 313 5 view .LVU125
+ 313:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****     {
+ 456              		.loc 1 313 28 is_stmt 0 view .LVU126
+ 457 0000 8D4B     		ldr	r3, .L67
+ 458 0002 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 313:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****     {
+ 459              		.loc 1 313 7 view .LVU127
+ 460 0004 002B     		cmp	r3, #0
+ 461 0006 00F01681 		beq	.L61
+ 318:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****     {
+ 462              		.loc 1 318 5 is_stmt 1 view .LVU128
+ 318:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****     {
+ 463              		.loc 1 318 23 is_stmt 0 view .LVU129
+ 464 000a 437B     		ldrb	r3, [r0, #13]	@ zero_extendqisi2
+ 318:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****     {
+ 465              		.loc 1 318 7 view .LVU130
+ 466 000c 002B     		cmp	r3, #0
+ 467 000e 00F01281 		beq	.L61
+ 323:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****         (mcpsIndication->AckReceived == 0))
+ 468              		.loc 1 323 5 is_stmt 1 view .LVU131
+ 323:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****         (mcpsIndication->AckReceived == 0))
+ 469              		.loc 1 323 29 is_stmt 0 view .LVU132
+ 470 0012 894B     		ldr	r3, .L67
+ 471 0014 5B78     		ldrb	r3, [r3, #1]	@ zero_extendqisi2
+ 323:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****         (mcpsIndication->AckReceived == 0))
+ 472              		.loc 1 323 8 view .LVU133
+ 473 0016 2BB1     		cbz	r3, .L39
+ 324:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****     {
+ 474              		.loc 1 324 24 discriminator 1 view .LVU134
+ 475 0018 827B     		ldrb	r2, [r0, #14]	@ zero_extendqisi2
+ 323:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****         (mcpsIndication->AckReceived == 0))
+ 476              		.loc 1 323 49 discriminator 1 view .LVU135
+ 477 001a 1AB9     		cbnz	r2, .L39
+ 327:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****     }
+ 478              		.loc 1 327 9 is_stmt 1 view .LVU136
+ 327:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****     }
+ 479              		.loc 1 327 28 is_stmt 0 view .LVU137
+ 480 001c 8649     		ldr	r1, .L67
+ 481 001e 8A89     		ldrh	r2, [r1, #12]
+ 327:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****     }
+ 482              		.loc 1 327 44 view .LVU138
+ 483 0020 0132     		adds	r2, r2, #1
+ 484 0022 8A81     		strh	r2, [r1, #12]	@ movhi
+ 485              	.L39:
+ 330:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****     {
+ 486              		.loc 1 330 5 is_stmt 1 view .LVU139
+ 330:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****     {
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccW3kqrC.s 			page 20
+
+
+ 487              		.loc 1 330 23 is_stmt 0 view .LVU140
+ 488 0024 C278     		ldrb	r2, [r0, #3]	@ zero_extendqisi2
+ 330:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****     {
+ 489              		.loc 1 330 7 view .LVU141
+ 490 0026 E02A     		cmp	r2, #224
+ 491 0028 40F00581 		bne	.L61
+ 312:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****     if( ComplianceTestState.Initialized == false )
+ 492              		.loc 1 312 1 view .LVU142
+ 493 002c 10B5     		push	{r4, lr}
+ 494              	.LCFI5:
+ 495              		.cfi_def_cfa_offset 8
+ 496              		.cfi_offset 4, -8
+ 497              		.cfi_offset 14, -4
+ 498 002e 8CB0     		sub	sp, sp, #48
+ 499              	.LCFI6:
+ 500              		.cfi_def_cfa_offset 56
+ 335:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****     {
+ 501              		.loc 1 335 5 is_stmt 1 view .LVU143
+ 335:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****     {
+ 502              		.loc 1 335 7 is_stmt 0 view .LVU144
+ 503 0030 002B     		cmp	r3, #0
+ 504 0032 40D1     		bne	.L40
+ 338:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             ( mcpsIndication->Buffer[0] == 0x01 ) &&
+ 505              		.loc 1 338 9 is_stmt 1 view .LVU145
+ 338:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             ( mcpsIndication->Buffer[0] == 0x01 ) &&
+ 506              		.loc 1 338 29 is_stmt 0 view .LVU146
+ 507 0034 037B     		ldrb	r3, [r0, #12]	@ zero_extendqisi2
+ 338:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             ( mcpsIndication->Buffer[0] == 0x01 ) &&
+ 508              		.loc 1 338 11 view .LVU147
+ 509 0036 042B     		cmp	r3, #4
+ 510 0038 01D0     		beq	.L64
+ 511              	.LVL11:
+ 512              	.L37:
+ 519:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** 
+ 513              		.loc 1 519 1 view .LVU148
+ 514 003a 0CB0     		add	sp, sp, #48
+ 515              	.LCFI7:
+ 516              		.cfi_remember_state
+ 517              		.cfi_def_cfa_offset 8
+ 518              		@ sp needed
+ 519 003c 10BD     		pop	{r4, pc}
+ 520              	.LVL12:
+ 521              	.L64:
+ 522              	.LCFI8:
+ 523              		.cfi_restore_state
+ 339:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             ( mcpsIndication->Buffer[1] == 0x01 ) &&
+ 524              		.loc 1 339 29 discriminator 1 view .LVU149
+ 525 003e 8368     		ldr	r3, [r0, #8]
+ 339:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             ( mcpsIndication->Buffer[1] == 0x01 ) &&
+ 526              		.loc 1 339 37 discriminator 1 view .LVU150
+ 527 0040 1A78     		ldrb	r2, [r3]	@ zero_extendqisi2
+ 338:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             ( mcpsIndication->Buffer[0] == 0x01 ) &&
+ 528              		.loc 1 338 49 discriminator 1 view .LVU151
+ 529 0042 012A     		cmp	r2, #1
+ 530 0044 F9D1     		bne	.L37
+ 340:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             ( mcpsIndication->Buffer[2] == 0x01 ) &&
+ 531              		.loc 1 340 37 view .LVU152
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccW3kqrC.s 			page 21
+
+
+ 532 0046 5A78     		ldrb	r2, [r3, #1]	@ zero_extendqisi2
+ 339:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             ( mcpsIndication->Buffer[1] == 0x01 ) &&
+ 533              		.loc 1 339 51 view .LVU153
+ 534 0048 012A     		cmp	r2, #1
+ 535 004a F6D1     		bne	.L37
+ 341:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             ( mcpsIndication->Buffer[3] == 0x01 ) )
+ 536              		.loc 1 341 37 view .LVU154
+ 537 004c 9A78     		ldrb	r2, [r3, #2]	@ zero_extendqisi2
+ 340:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             ( mcpsIndication->Buffer[2] == 0x01 ) &&
+ 538              		.loc 1 340 51 view .LVU155
+ 539 004e 012A     		cmp	r2, #1
+ 540 0050 F3D1     		bne	.L37
+ 342:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****         {
+ 541              		.loc 1 342 37 view .LVU156
+ 542 0052 DB78     		ldrb	r3, [r3, #3]	@ zero_extendqisi2
+ 341:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             ( mcpsIndication->Buffer[3] == 0x01 ) )
+ 543              		.loc 1 341 51 view .LVU157
+ 544 0054 012B     		cmp	r3, #1
+ 545 0056 F0D1     		bne	.L37
+ 546              	.LBB2:
+ 344:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** 
+ 547              		.loc 1 344 13 is_stmt 1 view .LVU158
+ 347:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             ComplianceTestState.Port = 224;
+ 548              		.loc 1 347 13 view .LVU159
+ 347:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             ComplianceTestState.Port = 224;
+ 549              		.loc 1 347 47 is_stmt 0 view .LVU160
+ 550 0058 774B     		ldr	r3, .L67
+ 551 005a 0024     		movs	r4, #0
+ 552 005c DC70     		strb	r4, [r3, #3]
+ 348:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             ComplianceTestState.DataBufferSize = 2;
+ 553              		.loc 1 348 13 is_stmt 1 view .LVU161
+ 348:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             ComplianceTestState.DataBufferSize = 2;
+ 554              		.loc 1 348 38 is_stmt 0 view .LVU162
+ 555 005e E022     		movs	r2, #224
+ 556 0060 1A71     		strb	r2, [r3, #4]
+ 349:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             ComplianceTestState.DownLinkCounter = 0;
+ 557              		.loc 1 349 13 is_stmt 1 view .LVU163
+ 349:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             ComplianceTestState.DownLinkCounter = 0;
+ 558              		.loc 1 349 48 is_stmt 0 view .LVU164
+ 559 0062 0222     		movs	r2, #2
+ 560 0064 9A71     		strb	r2, [r3, #6]
+ 350:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             ComplianceTestState.LinkCheck = false;
+ 561              		.loc 1 350 13 is_stmt 1 view .LVU165
+ 350:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             ComplianceTestState.LinkCheck = false;
+ 562              		.loc 1 350 49 is_stmt 0 view .LVU166
+ 563 0066 9C81     		strh	r4, [r3, #12]	@ movhi
+ 351:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             ComplianceTestState.DemodMargin = 0;
+ 564              		.loc 1 351 13 is_stmt 1 view .LVU167
+ 351:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             ComplianceTestState.DemodMargin = 0;
+ 565              		.loc 1 351 43 is_stmt 0 view .LVU168
+ 566 0068 9C73     		strb	r4, [r3, #14]
+ 352:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             ComplianceTestState.NbGateways = 0;
+ 567              		.loc 1 352 13 is_stmt 1 view .LVU169
+ 352:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             ComplianceTestState.NbGateways = 0;
+ 568              		.loc 1 352 45 is_stmt 0 view .LVU170
+ 569 006a DC73     		strb	r4, [r3, #15]
+ 353:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             ComplianceTestState.IsRunning = true;
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccW3kqrC.s 			page 22
+
+
+ 570              		.loc 1 353 13 is_stmt 1 view .LVU171
+ 353:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             ComplianceTestState.IsRunning = true;
+ 571              		.loc 1 353 44 is_stmt 0 view .LVU172
+ 572 006c 1C74     		strb	r4, [r3, #16]
+ 354:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             ComplianceTestState.State = 1;
+ 573              		.loc 1 354 13 is_stmt 1 view .LVU173
+ 354:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             ComplianceTestState.State = 1;
+ 574              		.loc 1 354 43 is_stmt 0 view .LVU174
+ 575 006e 0122     		movs	r2, #1
+ 576 0070 5A70     		strb	r2, [r3, #1]
+ 355:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** 
+ 577              		.loc 1 355 13 is_stmt 1 view .LVU175
+ 355:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** 
+ 578              		.loc 1 355 39 is_stmt 0 view .LVU176
+ 579 0072 9A70     		strb	r2, [r3, #2]
+ 358:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             mibReq.Param.AdrEnable = true;
+ 580              		.loc 1 358 13 is_stmt 1 view .LVU177
+ 358:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             mibReq.Param.AdrEnable = true;
+ 581              		.loc 1 358 25 is_stmt 0 view .LVU178
+ 582 0074 0423     		movs	r3, #4
+ 583 0076 8DF80C30 		strb	r3, [sp, #12]
+ 359:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             LoRaMacMibSetRequestConfirm( &mibReq );
+ 584              		.loc 1 359 13 is_stmt 1 view .LVU179
+ 359:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             LoRaMacMibSetRequestConfirm( &mibReq );
+ 585              		.loc 1 359 36 is_stmt 0 view .LVU180
+ 586 007a 8DF81020 		strb	r2, [sp, #16]
+ 360:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** 
+ 587              		.loc 1 360 13 is_stmt 1 view .LVU181
+ 588 007e 03A8     		add	r0, sp, #12
+ 589              	.LVL13:
+ 360:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** 
+ 590              		.loc 1 360 13 is_stmt 0 view .LVU182
+ 591 0080 FFF7FEFF 		bl	LoRaMacMibSetRequestConfirm
+ 592              	.LVL14:
+ 363:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** 
+ 593              		.loc 1 363 13 is_stmt 1 view .LVU183
+ 594 0084 2046     		mov	r0, r4
+ 595 0086 FFF7FEFF 		bl	LoRaMacTestSetDutyCycleOn
+ 596              	.LVL15:
+ 366:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             {
+ 597              		.loc 1 366 13 view .LVU184
+ 366:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             {
+ 598              		.loc 1 366 37 is_stmt 0 view .LVU185
+ 599 008a 6C4B     		ldr	r3, .L67+4
+ 600 008c 1B68     		ldr	r3, [r3]
+ 601 008e 5B68     		ldr	r3, [r3, #4]
+ 366:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             {
+ 602              		.loc 1 366 15 view .LVU186
+ 603 0090 03B1     		cbz	r3, .L41
+ 368:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             }
+ 604              		.loc 1 368 17 is_stmt 1 view .LVU187
+ 605 0092 9847     		blx	r3
+ 606              	.LVL16:
+ 607              	.L41:
+ 371:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             TimerSetValue( &ComplianceTxNextPacketTimer, COMPLIANCE_TX_DUTYCYCLE );
+ 608              		.loc 1 371 13 view .LVU188
+ 371:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             TimerSetValue( &ComplianceTxNextPacketTimer, COMPLIANCE_TX_DUTYCYCLE );
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccW3kqrC.s 			page 23
+
+
+ 609              		.loc 1 371 13 view .LVU189
+ 610 0094 6A4C     		ldr	r4, .L67+8
+ 611 0096 0022     		movs	r2, #0
+ 612 0098 0092     		str	r2, [sp]
+ 613 009a 6A4B     		ldr	r3, .L67+12
+ 614 009c 4FF0FF31 		mov	r1, #-1
+ 615 00a0 2046     		mov	r0, r4
+ 616 00a2 FFF7FEFF 		bl	UTIL_TIMER_Create
+ 617              	.LVL17:
+ 371:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             TimerSetValue( &ComplianceTxNextPacketTimer, COMPLIANCE_TX_DUTYCYCLE );
+ 618              		.loc 1 371 13 view .LVU190
+ 372:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** 
+ 619              		.loc 1 372 13 view .LVU191
+ 372:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** 
+ 620              		.loc 1 372 13 view .LVU192
+ 621 00a6 41F28831 		movw	r1, #5000
+ 622 00aa 2046     		mov	r0, r4
+ 623 00ac FFF7FEFF 		bl	UTIL_TIMER_SetPeriod
+ 624              	.LVL18:
+ 372:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** 
+ 625              		.loc 1 372 13 view .LVU193
+ 375:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****         }
+ 626              		.loc 1 375 13 view .LVU194
+ 627 00b0 FFF7FEFF 		bl	LmhpComplianceTxProcess
+ 628              	.LVL19:
+ 629 00b4 C1E7     		b	.L37
+ 630              	.LVL20:
+ 631              	.L40:
+ 375:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****         }
+ 632              		.loc 1 375 13 is_stmt 0 view .LVU195
+ 633              	.LBE2:
+ 382:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****         switch( ComplianceTestState.State )
+ 634              		.loc 1 382 9 is_stmt 1 view .LVU196
+ 382:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****         switch( ComplianceTestState.State )
+ 635              		.loc 1 382 51 is_stmt 0 view .LVU197
+ 636 00b6 8268     		ldr	r2, [r0, #8]
+ 382:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****         switch( ComplianceTestState.State )
+ 637              		.loc 1 382 59 view .LVU198
+ 638 00b8 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
+ 382:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****         switch( ComplianceTestState.State )
+ 639              		.loc 1 382 35 view .LVU199
+ 640 00ba 5F49     		ldr	r1, .L67
+ 641 00bc 8B70     		strb	r3, [r1, #2]
+ 383:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****         {
+ 642              		.loc 1 383 9 is_stmt 1 view .LVU200
+ 643 00be 0A2B     		cmp	r3, #10
+ 644 00c0 BBD8     		bhi	.L37
+ 645 00c2 DFE803F0 		tbb	[pc, r3]
+ 646              	.L43:
+ 647 00c6 06       		.byte	(.L53-.L43)/2
+ 648 00c7 22       		.byte	(.L52-.L43)/2
+ 649 00c8 26       		.byte	(.L51-.L43)/2
+ 650 00c9 2B       		.byte	(.L50-.L43)/2
+ 651 00ca 31       		.byte	(.L49-.L43)/2
+ 652 00cb 47       		.byte	(.L48-.L43)/2
+ 653 00cc 4E       		.byte	(.L47-.L43)/2
+ 654 00cd 6D       		.byte	(.L46-.L43)/2
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccW3kqrC.s 			page 24
+
+
+ 655 00ce 9D       		.byte	(.L45-.L43)/2
+ 656 00cf A4       		.byte	(.L44-.L43)/2
+ 657 00d0 AE       		.byte	(.L42-.L43)/2
+ 658 00d1 00       		.p2align 1
+ 659              	.L53:
+ 660              	.LBB3:
+ 387:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** 
+ 661              		.loc 1 387 17 view .LVU201
+ 389:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** 
+ 662              		.loc 1 389 17 view .LVU202
+ 389:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** 
+ 663              		.loc 1 389 17 view .LVU203
+ 664 00d2 5B48     		ldr	r0, .L67+8
+ 665              	.LVL21:
+ 389:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** 
+ 666              		.loc 1 389 17 is_stmt 0 view .LVU204
+ 667 00d4 FFF7FEFF 		bl	UTIL_TIMER_Stop
+ 668              	.LVL22:
+ 389:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** 
+ 669              		.loc 1 389 17 is_stmt 1 view .LVU205
+ 392:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****                 ComplianceTestState.IsRunning = false;
+ 670              		.loc 1 392 17 view .LVU206
+ 392:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****                 ComplianceTestState.IsRunning = false;
+ 671              		.loc 1 392 53 is_stmt 0 view .LVU207
+ 672 00d8 574B     		ldr	r3, .L67
+ 673 00da 0022     		movs	r2, #0
+ 674 00dc 9A81     		strh	r2, [r3, #12]	@ movhi
+ 393:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** 
+ 675              		.loc 1 393 17 is_stmt 1 view .LVU208
+ 393:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** 
+ 676              		.loc 1 393 47 is_stmt 0 view .LVU209
+ 677 00de 5A70     		strb	r2, [r3, #1]
+ 396:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****                 mibReq.Param.AdrEnable = LmhpComplianceParams->AdrEnabled;
+ 678              		.loc 1 396 17 is_stmt 1 view .LVU210
+ 396:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****                 mibReq.Param.AdrEnable = LmhpComplianceParams->AdrEnabled;
+ 679              		.loc 1 396 29 is_stmt 0 view .LVU211
+ 680 00e0 0423     		movs	r3, #4
+ 681 00e2 8DF80C30 		strb	r3, [sp, #12]
+ 397:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****                 LoRaMacMibSetRequestConfirm( &mibReq );
+ 682              		.loc 1 397 17 is_stmt 1 view .LVU212
+ 397:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****                 LoRaMacMibSetRequestConfirm( &mibReq );
+ 683              		.loc 1 397 62 is_stmt 0 view .LVU213
+ 684 00e6 554C     		ldr	r4, .L67+4
+ 685 00e8 2368     		ldr	r3, [r4]
+ 686 00ea 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 397:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****                 LoRaMacMibSetRequestConfirm( &mibReq );
+ 687              		.loc 1 397 40 view .LVU214
+ 688 00ec 8DF81030 		strb	r3, [sp, #16]
+ 398:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** 
+ 689              		.loc 1 398 17 is_stmt 1 view .LVU215
+ 690 00f0 03A8     		add	r0, sp, #12
+ 691 00f2 FFF7FEFF 		bl	LoRaMacMibSetRequestConfirm
+ 692              	.LVL23:
+ 401:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** 
+ 693              		.loc 1 401 17 view .LVU216
+ 401:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** 
+ 694              		.loc 1 401 64 is_stmt 0 view .LVU217
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccW3kqrC.s 			page 25
+
+
+ 695 00f6 2368     		ldr	r3, [r4]
+ 401:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** 
+ 696              		.loc 1 401 17 view .LVU218
+ 697 00f8 5878     		ldrb	r0, [r3, #1]	@ zero_extendqisi2
+ 698 00fa FFF7FEFF 		bl	LoRaMacTestSetDutyCycleOn
+ 699              	.LVL24:
+ 404:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****                 {
+ 700              		.loc 1 404 17 is_stmt 1 view .LVU219
+ 404:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****                 {
+ 701              		.loc 1 404 41 is_stmt 0 view .LVU220
+ 702 00fe 2368     		ldr	r3, [r4]
+ 703 0100 9B68     		ldr	r3, [r3, #8]
+ 404:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****                 {
+ 704              		.loc 1 404 19 view .LVU221
+ 705 0102 002B     		cmp	r3, #0
+ 706 0104 99D0     		beq	.L37
+ 406:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****                 }
+ 707              		.loc 1 406 21 is_stmt 1 view .LVU222
+ 708 0106 9847     		blx	r3
+ 709              	.LVL25:
+ 710              	.LBE3:
+ 409:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****         case 1: // (iii, iv)
+ 711              		.loc 1 409 13 view .LVU223
+ 712 0108 97E7     		b	.L37
+ 713              	.LVL26:
+ 714              	.L52:
+ 411:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             break;
+ 715              		.loc 1 411 13 view .LVU224
+ 411:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             break;
+ 716              		.loc 1 411 48 is_stmt 0 view .LVU225
+ 717 010a 4B4B     		ldr	r3, .L67
+ 718 010c 0222     		movs	r2, #2
+ 719 010e 9A71     		strb	r2, [r3, #6]
+ 412:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****         case 2: // Enable confirmed messages (v)
+ 720              		.loc 1 412 13 is_stmt 1 view .LVU226
+ 721 0110 93E7     		b	.L37
+ 722              	.L51:
+ 414:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             ComplianceTestState.State = 1;
+ 723              		.loc 1 414 13 view .LVU227
+ 414:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             ComplianceTestState.State = 1;
+ 724              		.loc 1 414 47 is_stmt 0 view .LVU228
+ 725 0112 494B     		ldr	r3, .L67
+ 726 0114 0122     		movs	r2, #1
+ 727 0116 DA70     		strb	r2, [r3, #3]
+ 415:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             break;
+ 728              		.loc 1 415 13 is_stmt 1 view .LVU229
+ 415:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             break;
+ 729              		.loc 1 415 39 is_stmt 0 view .LVU230
+ 730 0118 9A70     		strb	r2, [r3, #2]
+ 416:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****         case 3:  // Disable confirmed messages (vi)
+ 731              		.loc 1 416 13 is_stmt 1 view .LVU231
+ 732 011a 8EE7     		b	.L37
+ 733              	.L50:
+ 418:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             ComplianceTestState.State = 1;
+ 734              		.loc 1 418 13 view .LVU232
+ 418:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             ComplianceTestState.State = 1;
+ 735              		.loc 1 418 47 is_stmt 0 view .LVU233
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccW3kqrC.s 			page 26
+
+
+ 736 011c 464B     		ldr	r3, .L67
+ 737 011e 0022     		movs	r2, #0
+ 738 0120 DA70     		strb	r2, [r3, #3]
+ 419:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             break;
+ 739              		.loc 1 419 13 is_stmt 1 view .LVU234
+ 419:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             break;
+ 740              		.loc 1 419 39 is_stmt 0 view .LVU235
+ 741 0122 0122     		movs	r2, #1
+ 742 0124 9A70     		strb	r2, [r3, #2]
+ 420:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****         case 4: // (vii)
+ 743              		.loc 1 420 13 is_stmt 1 view .LVU236
+ 744 0126 88E7     		b	.L37
+ 745              	.L49:
+ 422:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** 
+ 746              		.loc 1 422 13 view .LVU237
+ 422:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** 
+ 747              		.loc 1 422 64 is_stmt 0 view .LVU238
+ 748 0128 017B     		ldrb	r1, [r0, #12]	@ zero_extendqisi2
+ 422:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** 
+ 749              		.loc 1 422 48 view .LVU239
+ 750 012a 434B     		ldr	r3, .L67
+ 751 012c 9971     		strb	r1, [r3, #6]
+ 424:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             for( uint8_t i = 1; i < MIN( ComplianceTestState.DataBufferSize, ComplianceTestState.Da
+ 752              		.loc 1 424 13 is_stmt 1 view .LVU240
+ 424:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             for( uint8_t i = 1; i < MIN( ComplianceTestState.DataBufferSize, ComplianceTestState.Da
+ 753              		.loc 1 424 32 is_stmt 0 view .LVU241
+ 754 012e 9C68     		ldr	r4, [r3, #8]
+ 424:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             for( uint8_t i = 1; i < MIN( ComplianceTestState.DataBufferSize, ComplianceTestState.Da
+ 755              		.loc 1 424 47 view .LVU242
+ 756 0130 0423     		movs	r3, #4
+ 757 0132 2370     		strb	r3, [r4]
+ 425:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             {
+ 758              		.loc 1 425 13 is_stmt 1 view .LVU243
+ 759              	.LBB4:
+ 425:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             {
+ 760              		.loc 1 425 18 view .LVU244
+ 761              	.LVL27:
+ 425:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             {
+ 762              		.loc 1 425 26 is_stmt 0 view .LVU245
+ 763 0134 0123     		movs	r3, #1
+ 764              	.LVL28:
+ 765              	.L55:
+ 425:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             {
+ 766              		.loc 1 425 33 is_stmt 1 discriminator 1 view .LVU246
+ 425:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             {
+ 767              		.loc 1 425 37 is_stmt 0 discriminator 1 view .LVU247
+ 768 0136 404A     		ldr	r2, .L67
+ 769 0138 5279     		ldrb	r2, [r2, #5]	@ zero_extendqisi2
+ 770 013a 8A42     		cmp	r2, r1
+ 771 013c 28BF     		it	cs
+ 772 013e 0A46     		movcs	r2, r1
+ 425:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             {
+ 773              		.loc 1 425 13 discriminator 1 view .LVU248
+ 774 0140 9A42     		cmp	r2, r3
+ 775 0142 7FF67AAF 		bls	.L37
+ 427:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             }
+ 776              		.loc 1 427 17 is_stmt 1 discriminator 3 view .LVU249
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccW3kqrC.s 			page 27
+
+
+ 427:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             }
+ 777              		.loc 1 427 67 is_stmt 0 discriminator 3 view .LVU250
+ 778 0146 8268     		ldr	r2, [r0, #8]
+ 427:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             }
+ 779              		.loc 1 427 75 discriminator 3 view .LVU251
+ 780 0148 D25C     		ldrb	r2, [r2, r3]	@ zero_extendqisi2
+ 427:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             }
+ 781              		.loc 1 427 79 discriminator 3 view .LVU252
+ 782 014a 0132     		adds	r2, r2, #1
+ 427:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             }
+ 783              		.loc 1 427 51 discriminator 3 view .LVU253
+ 784 014c E254     		strb	r2, [r4, r3]
+ 425:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             {
+ 785              		.loc 1 425 119 is_stmt 1 discriminator 3 view .LVU254
+ 425:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             {
+ 786              		.loc 1 425 120 is_stmt 0 discriminator 3 view .LVU255
+ 787 014e 0133     		adds	r3, r3, #1
+ 788              	.LVL29:
+ 425:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             {
+ 789              		.loc 1 425 120 discriminator 3 view .LVU256
+ 790 0150 DBB2     		uxtb	r3, r3
+ 791              	.LVL30:
+ 425:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             {
+ 792              		.loc 1 425 120 discriminator 3 view .LVU257
+ 793 0152 F0E7     		b	.L55
+ 794              	.LVL31:
+ 795              	.L48:
+ 425:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             {
+ 796              		.loc 1 425 120 discriminator 3 view .LVU258
+ 797              	.LBE4:
+ 798              	.LBB5:
+ 432:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** 
+ 799              		.loc 1 432 17 is_stmt 1 discriminator 5 view .LVU259
+ 434:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** 
+ 800              		.loc 1 434 17 discriminator 5 view .LVU260
+ 434:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** 
+ 801              		.loc 1 434 30 is_stmt 0 discriminator 5 view .LVU261
+ 802 0154 0423     		movs	r3, #4
+ 803 0156 8DF80C30 		strb	r3, [sp, #12]
+ 436:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             }
+ 804              		.loc 1 436 17 is_stmt 1 discriminator 5 view .LVU262
+ 805 015a 03A8     		add	r0, sp, #12
+ 806              	.LVL32:
+ 436:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             }
+ 807              		.loc 1 436 17 is_stmt 0 discriminator 5 view .LVU263
+ 808 015c FFF7FEFF 		bl	LoRaMacMlmeRequest
+ 809              	.LVL33:
+ 810              	.LBE5:
+ 438:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****         case 6: // (ix)
+ 811              		.loc 1 438 13 is_stmt 1 discriminator 5 view .LVU264
+ 812 0160 6BE7     		b	.L37
+ 813              	.LVL34:
+ 814              	.L47:
+ 815              	.LBB6:
+ 441:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** 
+ 816              		.loc 1 441 17 view .LVU265
+ 443:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** 
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccW3kqrC.s 			page 28
+
+
+ 817              		.loc 1 443 17 view .LVU266
+ 443:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** 
+ 818              		.loc 1 443 17 view .LVU267
+ 819 0162 3748     		ldr	r0, .L67+8
+ 820              	.LVL35:
+ 443:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** 
+ 821              		.loc 1 443 17 is_stmt 0 view .LVU268
+ 822 0164 FFF7FEFF 		bl	UTIL_TIMER_Stop
+ 823              	.LVL36:
+ 443:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** 
+ 824              		.loc 1 443 17 is_stmt 1 view .LVU269
+ 447:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****                 ComplianceTestState.IsRunning = false;
+ 825              		.loc 1 447 17 view .LVU270
+ 447:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****                 ComplianceTestState.IsRunning = false;
+ 826              		.loc 1 447 53 is_stmt 0 view .LVU271
+ 827 0168 334B     		ldr	r3, .L67
+ 828 016a 0022     		movs	r2, #0
+ 829 016c 9A81     		strh	r2, [r3, #12]	@ movhi
+ 448:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** 
+ 830              		.loc 1 448 17 is_stmt 1 view .LVU272
+ 448:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** 
+ 831              		.loc 1 448 47 is_stmt 0 view .LVU273
+ 832 016e 5A70     		strb	r2, [r3, #1]
+ 451:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****                 mibReq.Param.AdrEnable = LmhpComplianceParams->AdrEnabled;
+ 833              		.loc 1 451 17 is_stmt 1 view .LVU274
+ 451:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****                 mibReq.Param.AdrEnable = LmhpComplianceParams->AdrEnabled;
+ 834              		.loc 1 451 29 is_stmt 0 view .LVU275
+ 835 0170 0423     		movs	r3, #4
+ 836 0172 8DF80C30 		strb	r3, [sp, #12]
+ 452:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****                 LoRaMacMibSetRequestConfirm( &mibReq );
+ 837              		.loc 1 452 17 is_stmt 1 view .LVU276
+ 452:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****                 LoRaMacMibSetRequestConfirm( &mibReq );
+ 838              		.loc 1 452 62 is_stmt 0 view .LVU277
+ 839 0176 314C     		ldr	r4, .L67+4
+ 840 0178 2368     		ldr	r3, [r4]
+ 841 017a 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 452:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****                 LoRaMacMibSetRequestConfirm( &mibReq );
+ 842              		.loc 1 452 40 view .LVU278
+ 843 017c 8DF81030 		strb	r3, [sp, #16]
+ 453:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** 
+ 844              		.loc 1 453 17 is_stmt 1 view .LVU279
+ 845 0180 03A8     		add	r0, sp, #12
+ 846 0182 FFF7FEFF 		bl	LoRaMacMibSetRequestConfirm
+ 847              	.LVL37:
+ 456:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** 
+ 848              		.loc 1 456 17 view .LVU280
+ 456:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** 
+ 849              		.loc 1 456 64 is_stmt 0 view .LVU281
+ 850 0186 2368     		ldr	r3, [r4]
+ 456:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** 
+ 851              		.loc 1 456 17 view .LVU282
+ 852 0188 5878     		ldrb	r0, [r3, #1]	@ zero_extendqisi2
+ 853 018a FFF7FEFF 		bl	LoRaMacTestSetDutyCycleOn
+ 854              	.LVL38:
+ 459:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****                 {
+ 855              		.loc 1 459 17 is_stmt 1 view .LVU283
+ 459:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****                 {
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccW3kqrC.s 			page 29
+
+
+ 856              		.loc 1 459 41 is_stmt 0 view .LVU284
+ 857 018e 2368     		ldr	r3, [r4]
+ 858 0190 9B68     		ldr	r3, [r3, #8]
+ 459:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****                 {
+ 859              		.loc 1 459 19 view .LVU285
+ 860 0192 03B1     		cbz	r3, .L57
+ 461:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****                 }
+ 861              		.loc 1 461 21 is_stmt 1 view .LVU286
+ 862 0194 9847     		blx	r3
+ 863              	.LVL39:
+ 864              	.L57:
+ 464:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             }
+ 865              		.loc 1 464 17 discriminator 6 view .LVU287
+ 464:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             }
+ 866              		.loc 1 464 38 is_stmt 0 discriminator 6 view .LVU288
+ 867 0196 2C4B     		ldr	r3, .L67+16
+ 868 0198 5B6A     		ldr	r3, [r3, #36]
+ 464:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             }
+ 869              		.loc 1 464 17 discriminator 6 view .LVU289
+ 870 019a 0220     		movs	r0, #2
+ 871 019c 9847     		blx	r3
+ 872              	.LVL40:
+ 873              	.LBE6:
+ 466:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****         case 7: // (x)
+ 874              		.loc 1 466 13 is_stmt 1 discriminator 6 view .LVU290
+ 875 019e 4CE7     		b	.L37
+ 876              	.LVL41:
+ 877              	.L46:
+ 878              	.LBB7:
+ 469:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****                 if( mcpsIndication->BufferSize == 3 )
+ 879              		.loc 1 469 17 view .LVU291
+ 470:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****                 {
+ 880              		.loc 1 470 17 view .LVU292
+ 470:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****                 {
+ 881              		.loc 1 470 35 is_stmt 0 view .LVU293
+ 882 01a0 037B     		ldrb	r3, [r0, #12]	@ zero_extendqisi2
+ 470:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****                 {
+ 883              		.loc 1 470 19 view .LVU294
+ 884 01a2 032B     		cmp	r3, #3
+ 885 01a4 08D0     		beq	.L65
+ 475:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****                 {
+ 886              		.loc 1 475 22 is_stmt 1 view .LVU295
+ 475:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****                 {
+ 887              		.loc 1 475 24 is_stmt 0 view .LVU296
+ 888 01a6 072B     		cmp	r3, #7
+ 889 01a8 10D0     		beq	.L66
+ 890              	.L59:
+ 482:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****                 ComplianceTestState.State = 1;
+ 891              		.loc 1 482 17 is_stmt 1 discriminator 7 view .LVU297
+ 892 01aa 03A8     		add	r0, sp, #12
+ 893              	.LVL42:
+ 482:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****                 ComplianceTestState.State = 1;
+ 894              		.loc 1 482 17 is_stmt 0 discriminator 7 view .LVU298
+ 895 01ac FFF7FEFF 		bl	LoRaMacMlmeRequest
+ 896              	.LVL43:
+ 483:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             }
+ 897              		.loc 1 483 17 is_stmt 1 discriminator 7 view .LVU299
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccW3kqrC.s 			page 30
+
+
+ 483:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             }
+ 898              		.loc 1 483 43 is_stmt 0 discriminator 7 view .LVU300
+ 899 01b0 214B     		ldr	r3, .L67
+ 900 01b2 0122     		movs	r2, #1
+ 901 01b4 9A70     		strb	r2, [r3, #2]
+ 902              	.LBE7:
+ 485:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****         case 8: // Send DeviceTimeReq
+ 903              		.loc 1 485 13 is_stmt 1 discriminator 7 view .LVU301
+ 904 01b6 40E7     		b	.L37
+ 905              	.LVL44:
+ 906              	.L65:
+ 907              	.LBB8:
+ 472:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****                     mlmeReq.Req.TxCw.Timeout = ( uint16_t )( ( mcpsIndication->Buffer[1] << 8 ) | m
+ 908              		.loc 1 472 21 view .LVU302
+ 472:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****                     mlmeReq.Req.TxCw.Timeout = ( uint16_t )( ( mcpsIndication->Buffer[1] << 8 ) | m
+ 909              		.loc 1 472 34 is_stmt 0 view .LVU303
+ 910 01b8 0523     		movs	r3, #5
+ 911 01ba 8DF80C30 		strb	r3, [sp, #12]
+ 473:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****                 }
+ 912              		.loc 1 473 21 is_stmt 1 view .LVU304
+ 473:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****                 }
+ 913              		.loc 1 473 86 is_stmt 0 view .LVU305
+ 914 01be 5178     		ldrb	r1, [r2, #1]	@ zero_extendqisi2
+ 473:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****                 }
+ 915              		.loc 1 473 121 view .LVU306
+ 916 01c0 9378     		ldrb	r3, [r2, #2]	@ zero_extendqisi2
+ 473:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****                 }
+ 917              		.loc 1 473 48 view .LVU307
+ 918 01c2 43EA0123 		orr	r3, r3, r1, lsl #8
+ 473:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****                 }
+ 919              		.loc 1 473 46 view .LVU308
+ 920 01c6 ADF81030 		strh	r3, [sp, #16]	@ movhi
+ 921 01ca EEE7     		b	.L59
+ 922              	.L66:
+ 477:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****                     mlmeReq.Req.TxCw.Timeout = ( uint16_t )( ( mcpsIndication->Buffer[1] << 8 ) | m
+ 923              		.loc 1 477 21 is_stmt 1 view .LVU309
+ 477:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****                     mlmeReq.Req.TxCw.Timeout = ( uint16_t )( ( mcpsIndication->Buffer[1] << 8 ) | m
+ 924              		.loc 1 477 34 is_stmt 0 view .LVU310
+ 925 01cc 0623     		movs	r3, #6
+ 926 01ce 8DF80C30 		strb	r3, [sp, #12]
+ 478:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****                     mlmeReq.Req.TxCw.Frequency = ( uint32_t )( ( mcpsIndication->Buffer[3] << 16 ) 
+ 927              		.loc 1 478 21 is_stmt 1 view .LVU311
+ 478:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****                     mlmeReq.Req.TxCw.Frequency = ( uint32_t )( ( mcpsIndication->Buffer[3] << 16 ) 
+ 928              		.loc 1 478 86 is_stmt 0 view .LVU312
+ 929 01d2 5178     		ldrb	r1, [r2, #1]	@ zero_extendqisi2
+ 478:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****                     mlmeReq.Req.TxCw.Frequency = ( uint32_t )( ( mcpsIndication->Buffer[3] << 16 ) 
+ 930              		.loc 1 478 121 view .LVU313
+ 931 01d4 9378     		ldrb	r3, [r2, #2]	@ zero_extendqisi2
+ 478:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****                     mlmeReq.Req.TxCw.Frequency = ( uint32_t )( ( mcpsIndication->Buffer[3] << 16 ) 
+ 932              		.loc 1 478 48 view .LVU314
+ 933 01d6 43EA0123 		orr	r3, r3, r1, lsl #8
+ 478:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****                     mlmeReq.Req.TxCw.Frequency = ( uint32_t )( ( mcpsIndication->Buffer[3] << 16 ) 
+ 934              		.loc 1 478 46 view .LVU315
+ 935 01da ADF81030 		strh	r3, [sp, #16]	@ movhi
+ 479:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****                     mlmeReq.Req.TxCw.Power = mcpsIndication->Buffer[6];
+ 936              		.loc 1 479 21 is_stmt 1 view .LVU316
+ 479:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****                     mlmeReq.Req.TxCw.Power = mcpsIndication->Buffer[6];
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccW3kqrC.s 			page 31
+
+
+ 937              		.loc 1 479 88 is_stmt 0 view .LVU317
+ 938 01de D178     		ldrb	r1, [r2, #3]	@ zero_extendqisi2
+ 479:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****                     mlmeReq.Req.TxCw.Power = mcpsIndication->Buffer[6];
+ 939              		.loc 1 479 126 view .LVU318
+ 940 01e0 1379     		ldrb	r3, [r2, #4]	@ zero_extendqisi2
+ 479:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****                     mlmeReq.Req.TxCw.Power = mcpsIndication->Buffer[6];
+ 941              		.loc 1 479 130 view .LVU319
+ 942 01e2 1B02     		lsls	r3, r3, #8
+ 479:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****                     mlmeReq.Req.TxCw.Power = mcpsIndication->Buffer[6];
+ 943              		.loc 1 479 100 view .LVU320
+ 944 01e4 43EA0143 		orr	r3, r3, r1, lsl #16
+ 479:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****                     mlmeReq.Req.TxCw.Power = mcpsIndication->Buffer[6];
+ 945              		.loc 1 479 161 view .LVU321
+ 946 01e8 5279     		ldrb	r2, [r2, #5]	@ zero_extendqisi2
+ 479:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****                     mlmeReq.Req.TxCw.Power = mcpsIndication->Buffer[6];
+ 947              		.loc 1 479 137 view .LVU322
+ 948 01ea 1343     		orrs	r3, r3, r2
+ 479:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****                     mlmeReq.Req.TxCw.Power = mcpsIndication->Buffer[6];
+ 949              		.loc 1 479 167 view .LVU323
+ 950 01ec 6422     		movs	r2, #100
+ 951 01ee 02FB03F3 		mul	r3, r2, r3
+ 479:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****                     mlmeReq.Req.TxCw.Power = mcpsIndication->Buffer[6];
+ 952              		.loc 1 479 48 view .LVU324
+ 953 01f2 0593     		str	r3, [sp, #20]
+ 480:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****                 }
+ 954              		.loc 1 480 21 is_stmt 1 view .LVU325
+ 480:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****                 }
+ 955              		.loc 1 480 60 is_stmt 0 view .LVU326
+ 956 01f4 8368     		ldr	r3, [r0, #8]
+ 480:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****                 }
+ 957              		.loc 1 480 68 view .LVU327
+ 958 01f6 93F90630 		ldrsb	r3, [r3, #6]
+ 480:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****                 }
+ 959              		.loc 1 480 44 view .LVU328
+ 960 01fa 8DF81830 		strb	r3, [sp, #24]
+ 961 01fe D4E7     		b	.L59
+ 962              	.L45:
+ 480:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****                 }
+ 963              		.loc 1 480 44 view .LVU329
+ 964              	.LBE8:
+ 965              	.LBB9:
+ 488:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** 
+ 966              		.loc 1 488 17 is_stmt 1 discriminator 8 view .LVU330
+ 490:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** 
+ 967              		.loc 1 490 17 discriminator 8 view .LVU331
+ 490:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** 
+ 968              		.loc 1 490 30 is_stmt 0 discriminator 8 view .LVU332
+ 969 0200 0A23     		movs	r3, #10
+ 970 0202 8DF80C30 		strb	r3, [sp, #12]
+ 492:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             }
+ 971              		.loc 1 492 17 is_stmt 1 discriminator 8 view .LVU333
+ 972 0206 03A8     		add	r0, sp, #12
+ 973              	.LVL45:
+ 492:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             }
+ 974              		.loc 1 492 17 is_stmt 0 discriminator 8 view .LVU334
+ 975 0208 FFF7FEFF 		bl	LoRaMacMlmeRequest
+ 976              	.LVL46:
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccW3kqrC.s 			page 32
+
+
+ 977              	.LBE9:
+ 494:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****         case 9: // Switch end device Class
+ 978              		.loc 1 494 13 is_stmt 1 discriminator 8 view .LVU335
+ 979 020c 15E7     		b	.L37
+ 980              	.LVL47:
+ 981              	.L44:
+ 982              	.LBB10:
+ 497:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** 
+ 983              		.loc 1 497 17 discriminator 9 view .LVU336
+ 499:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****                 // CLASS_A = 0, CLASS_B = 1, CLASS_C = 2
+ 984              		.loc 1 499 17 discriminator 9 view .LVU337
+ 499:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****                 // CLASS_A = 0, CLASS_B = 1, CLASS_C = 2
+ 985              		.loc 1 499 29 is_stmt 0 discriminator 9 view .LVU338
+ 986 020e 0023     		movs	r3, #0
+ 987 0210 8DF80C30 		strb	r3, [sp, #12]
+ 501:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****                 LoRaMacMibSetRequestConfirm( &mibReq );
+ 988              		.loc 1 501 17 is_stmt 1 discriminator 9 view .LVU339
+ 501:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****                 LoRaMacMibSetRequestConfirm( &mibReq );
+ 989              		.loc 1 501 38 is_stmt 0 discriminator 9 view .LVU340
+ 990 0214 5378     		ldrb	r3, [r2, #1]	@ zero_extendqisi2
+ 501:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****                 LoRaMacMibSetRequestConfirm( &mibReq );
+ 991              		.loc 1 501 36 discriminator 9 view .LVU341
+ 992 0216 8DF81030 		strb	r3, [sp, #16]
+ 501:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****                 LoRaMacMibSetRequestConfirm( &mibReq );
+ 993              		.loc 1 501 81 is_stmt 1 discriminator 9 view .LVU342
+ 502:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             }
+ 994              		.loc 1 502 17 discriminator 9 view .LVU343
+ 995 021a 03A8     		add	r0, sp, #12
+ 996              	.LVL48:
+ 502:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             }
+ 997              		.loc 1 502 17 is_stmt 0 discriminator 9 view .LVU344
+ 998 021c FFF7FEFF 		bl	LoRaMacMibSetRequestConfirm
+ 999              	.LVL49:
+ 1000              	.LBE10:
+ 504:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****         case 10: // Send PingSlotInfoReq
+ 1001              		.loc 1 504 13 is_stmt 1 discriminator 9 view .LVU345
+ 1002 0220 0BE7     		b	.L37
+ 1003              	.LVL50:
+ 1004              	.L42:
+ 1005              	.LBB11:
+ 507:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** 
+ 1006              		.loc 1 507 17 discriminator 10 view .LVU346
+ 509:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****                 mlmeReq.Req.PingSlotInfo.PingSlot.Value = mcpsIndication->Buffer[1];
+ 1007              		.loc 1 509 17 discriminator 10 view .LVU347
+ 509:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****                 mlmeReq.Req.PingSlotInfo.PingSlot.Value = mcpsIndication->Buffer[1];
+ 1008              		.loc 1 509 30 is_stmt 0 discriminator 10 view .LVU348
+ 1009 0222 0D23     		movs	r3, #13
+ 1010 0224 8DF80C30 		strb	r3, [sp, #12]
+ 510:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** 
+ 1011              		.loc 1 510 17 is_stmt 1 discriminator 10 view .LVU349
+ 510:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** 
+ 1012              		.loc 1 510 57 is_stmt 0 discriminator 10 view .LVU350
+ 1013 0228 5378     		ldrb	r3, [r2, #1]	@ zero_extendqisi2
+ 1014 022a 8DF81030 		strb	r3, [sp, #16]
+ 512:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             }
+ 1015              		.loc 1 512 17 is_stmt 1 discriminator 10 view .LVU351
+ 1016 022e 03A8     		add	r0, sp, #12
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccW3kqrC.s 			page 33
+
+
+ 1017              	.LVL51:
+ 512:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****             }
+ 1018              		.loc 1 512 17 is_stmt 0 discriminator 10 view .LVU352
+ 1019 0230 FFF7FEFF 		bl	LoRaMacMlmeRequest
+ 1020              	.LVL52:
+ 1021              	.LBE11:
+ 514:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****         default:
+ 1022              		.loc 1 514 13 is_stmt 1 discriminator 10 view .LVU353
+ 1023 0234 01E7     		b	.L37
+ 1024              	.LVL53:
+ 1025              	.L61:
+ 1026              	.LCFI9:
+ 1027              		.cfi_def_cfa_offset 0
+ 1028              		.cfi_restore 4
+ 1029              		.cfi_restore 14
+ 514:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****         default:
+ 1030              		.loc 1 514 13 is_stmt 0 discriminator 10 view .LVU354
+ 1031 0236 7047     		bx	lr
+ 1032              	.L68:
+ 1033              		.align	2
+ 1034              	.L67:
+ 1035 0238 00000000 		.word	.LANCHOR1
+ 1036 023c 00000000 		.word	.LANCHOR0
+ 1037 0240 00000000 		.word	.LANCHOR2
+ 1038 0244 00000000 		.word	OnComplianceTxNextPacketTimerEvent
+ 1039 0248 00000000 		.word	.LANCHOR3
+ 1040              		.cfi_endproc
+ 1041              	.LFE111:
+ 1043              		.section	.text.OnComplianceTxNextPacketTimerEvent,"ax",%progbits
+ 1044              		.align	1
+ 1045              		.syntax unified
+ 1046              		.thumb
+ 1047              		.thumb_func
+ 1049              	OnComplianceTxNextPacketTimerEvent:
+ 1050              	.LVL54:
+ 1051              	.LFB113:
+ 525:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** 
+ 526:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** static void OnComplianceTxNextPacketTimerEvent( void* context )
+ 527:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** {
+ 1052              		.loc 1 527 1 is_stmt 1 view -0
+ 1053              		.cfi_startproc
+ 1054              		@ args = 0, pretend = 0, frame = 0
+ 1055              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1056              		.loc 1 527 1 is_stmt 0 view .LVU356
+ 1057 0000 08B5     		push	{r3, lr}
+ 1058              	.LCFI10:
+ 1059              		.cfi_def_cfa_offset 8
+ 1060              		.cfi_offset 3, -8
+ 1061              		.cfi_offset 14, -4
+ 528:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****     LmhpComplianceTxProcess( );
+ 1062              		.loc 1 528 5 is_stmt 1 view .LVU357
+ 1063 0002 FFF7FEFF 		bl	LmhpComplianceTxProcess
+ 1064              	.LVL55:
+ 529:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** }
+ 1065              		.loc 1 529 1 is_stmt 0 view .LVU358
+ 1066 0006 08BD     		pop	{r3, pc}
+ 1067              		.cfi_endproc
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccW3kqrC.s 			page 34
+
+
+ 1068              	.LFE113:
+ 1070              		.section	.text.LmhpCompliancePackageFactory,"ax",%progbits
+ 1071              		.align	1
+ 1072              		.global	LmhpCompliancePackageFactory
+ 1073              		.syntax unified
+ 1074              		.thumb
+ 1075              		.thumb_func
+ 1077              	LmhpCompliancePackageFactory:
+ 1078              	.LFB104:
+ 191:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c ****     return &LmhpCompliancePackage;
+ 1079              		.loc 1 191 1 is_stmt 1 view -0
+ 1080              		.cfi_startproc
+ 1081              		@ args = 0, pretend = 0, frame = 0
+ 1082              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1083              		@ link register save eliminated.
+ 192:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** }
+ 1084              		.loc 1 192 5 view .LVU360
+ 193:Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.c **** 
+ 1085              		.loc 1 193 1 is_stmt 0 view .LVU361
+ 1086 0000 0048     		ldr	r0, .L72
+ 1087 0002 7047     		bx	lr
+ 1088              	.L73:
+ 1089              		.align	2
+ 1090              	.L72:
+ 1091 0004 00000000 		.word	.LANCHOR3
+ 1092              		.cfi_endproc
+ 1093              	.LFE104:
+ 1095              		.section	.bss.ComplianceTestState,"aw",%nobits
+ 1096              		.align	2
+ 1097              		.set	.LANCHOR1,. + 0
+ 1100              	ComplianceTestState:
+ 1101 0000 00000000 		.space	20
+ 1101      00000000 
+ 1101      00000000 
+ 1101      00000000 
+ 1101      00000000 
+ 1102              		.section	.bss.ComplianceTxNextPacketTimer,"aw",%nobits
+ 1103              		.align	2
+ 1104              		.set	.LANCHOR2,. + 0
+ 1107              	ComplianceTxNextPacketTimer:
+ 1108 0000 00000000 		.space	24
+ 1108      00000000 
+ 1108      00000000 
+ 1108      00000000 
+ 1108      00000000 
+ 1109              		.section	.bss.LmhpComplianceParams,"aw",%nobits
+ 1110              		.align	2
+ 1111              		.set	.LANCHOR0,. + 0
+ 1114              	LmhpComplianceParams:
+ 1115 0000 00000000 		.space	4
+ 1116              		.section	.data.LmhpCompliancePackage,"aw"
+ 1117              		.align	2
+ 1118              		.set	.LANCHOR3,. + 0
+ 1121              	LmhpCompliancePackage:
+ 1122 0000 E0       		.byte	-32
+ 1123 0001 000000   		.space	3
+ 1124 0004 00000000 		.word	LmhpComplianceInit
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccW3kqrC.s 			page 35
+
+
+ 1125 0008 00000000 		.word	LmhpComplianceIsInitialized
+ 1126 000c 00000000 		.word	LmhpComplianceIsRunning
+ 1127 0010 00000000 		.word	LmhpComplianceProcess
+ 1128 0014 00000000 		.word	0
+ 1129 0018 00000000 		.word	LmhpComplianceOnMcpsConfirm
+ 1130 001c 00000000 		.word	LmhpComplianceOnMcpsIndication
+ 1131 0020 00000000 		.word	LmhpComplianceOnMlmeConfirm
+ 1132 0024 00000000 		.word	0
+ 1133 0028 00000000 		.word	0
+ 1134 002c 00000000 		.word	0
+ 1135 0030 00000000 		.word	0
+ 1136              		.text
+ 1137              	.Letext0:
+ 1138              		.file 2 "c:\\program files (x86)\\gnu arm embedded toolchain\\10 2021.10\\arm-none-eabi\\include\\
+ 1139              		.file 3 "c:\\program files (x86)\\gnu arm embedded toolchain\\10 2021.10\\arm-none-eabi\\include\\
+ 1140              		.file 4 "Middlewares/Third_Party/LoRaWAN/Utilities/utilities.h"
+ 1141              		.file 5 "Utilities/timer/stm32_timer.h"
+ 1142              		.file 6 "Utilities/misc/stm32_systime.h"
+ 1143              		.file 7 "Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacTypes.h"
+ 1144              		.file 8 "Middlewares/Third_Party/LoRaWAN/Mac/Region/RegionNvm.h"
+ 1145              		.file 9 "Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacCryptoNvm.h"
+ 1146              		.file 10 "Middlewares/Third_Party/LoRaWAN/Mac/secure-element-nvm.h"
+ 1147              		.file 11 "Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacClassBNvm.h"
+ 1148              		.file 12 "Middlewares/Third_Party/LoRaWAN/Mac/LoRaMac.h"
+ 1149              		.file 13 "Middlewares/Third_Party/LoRaWAN/LmHandler/LmHandlerTypes.h"
+ 1150              		.file 14 "Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhPackage.h"
+ 1151              		.file 15 "Middlewares/Third_Party/LoRaWAN/LmHandler/Packages/LmhpCompliance.h"
+ 1152              		.file 16 "Middlewares/Third_Party/LoRaWAN/Mac/LoRaMacTest.h"
+ARM GAS  C:\Users\NATHAN~1\AppData\Local\Temp\ccW3kqrC.s 			page 36
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 LmhpCompliance.c
+C:\Users\NATHAN~1\AppData\Local\Temp\ccW3kqrC.s:18     .text.LmhpComplianceInit:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\ccW3kqrC.s:23     .text.LmhpComplianceInit:00000000 LmhpComplianceInit
+C:\Users\NATHAN~1\AppData\Local\Temp\ccW3kqrC.s:78     .text.LmhpComplianceInit:00000024 $d
+C:\Users\NATHAN~1\AppData\Local\Temp\ccW3kqrC.s:84     .text.LmhpComplianceIsInitialized:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\ccW3kqrC.s:89     .text.LmhpComplianceIsInitialized:00000000 LmhpComplianceIsInitialized
+C:\Users\NATHAN~1\AppData\Local\Temp\ccW3kqrC.s:104    .text.LmhpComplianceIsInitialized:00000008 $d
+C:\Users\NATHAN~1\AppData\Local\Temp\ccW3kqrC.s:109    .text.LmhpComplianceIsRunning:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\ccW3kqrC.s:114    .text.LmhpComplianceIsRunning:00000000 LmhpComplianceIsRunning
+C:\Users\NATHAN~1\AppData\Local\Temp\ccW3kqrC.s:136    .text.LmhpComplianceIsRunning:0000000c $d
+C:\Users\NATHAN~1\AppData\Local\Temp\ccW3kqrC.s:141    .text.LmhpComplianceOnMcpsConfirm:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\ccW3kqrC.s:146    .text.LmhpComplianceOnMcpsConfirm:00000000 LmhpComplianceOnMcpsConfirm
+C:\Users\NATHAN~1\AppData\Local\Temp\ccW3kqrC.s:191    .text.LmhpComplianceOnMcpsConfirm:00000024 $d
+C:\Users\NATHAN~1\AppData\Local\Temp\ccW3kqrC.s:196    .text.LmhpComplianceOnMlmeConfirm:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\ccW3kqrC.s:201    .text.LmhpComplianceOnMlmeConfirm:00000000 LmhpComplianceOnMlmeConfirm
+C:\Users\NATHAN~1\AppData\Local\Temp\ccW3kqrC.s:250    .text.LmhpComplianceOnMlmeConfirm:00000024 $d
+C:\Users\NATHAN~1\AppData\Local\Temp\ccW3kqrC.s:255    .text.LmhpComplianceProcess:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\ccW3kqrC.s:260    .text.LmhpComplianceProcess:00000000 LmhpComplianceProcess
+C:\Users\NATHAN~1\AppData\Local\Temp\ccW3kqrC.s:273    .text.LmhpComplianceTxProcess:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\ccW3kqrC.s:278    .text.LmhpComplianceTxProcess:00000000 LmhpComplianceTxProcess
+C:\Users\NATHAN~1\AppData\Local\Temp\ccW3kqrC.s:436    .text.LmhpComplianceTxProcess:00000090 $d
+C:\Users\NATHAN~1\AppData\Local\Temp\ccW3kqrC.s:443    .text.LmhpComplianceOnMcpsIndication:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\ccW3kqrC.s:448    .text.LmhpComplianceOnMcpsIndication:00000000 LmhpComplianceOnMcpsIndication
+C:\Users\NATHAN~1\AppData\Local\Temp\ccW3kqrC.s:647    .text.LmhpComplianceOnMcpsIndication:000000c6 $d
+C:\Users\NATHAN~1\AppData\Local\Temp\ccW3kqrC.s:1035   .text.LmhpComplianceOnMcpsIndication:00000238 $d
+C:\Users\NATHAN~1\AppData\Local\Temp\ccW3kqrC.s:1049   .text.OnComplianceTxNextPacketTimerEvent:00000000 OnComplianceTxNextPacketTimerEvent
+C:\Users\NATHAN~1\AppData\Local\Temp\ccW3kqrC.s:1044   .text.OnComplianceTxNextPacketTimerEvent:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\ccW3kqrC.s:1071   .text.LmhpCompliancePackageFactory:00000000 $t
+C:\Users\NATHAN~1\AppData\Local\Temp\ccW3kqrC.s:1077   .text.LmhpCompliancePackageFactory:00000000 LmhpCompliancePackageFactory
+C:\Users\NATHAN~1\AppData\Local\Temp\ccW3kqrC.s:1091   .text.LmhpCompliancePackageFactory:00000004 $d
+C:\Users\NATHAN~1\AppData\Local\Temp\ccW3kqrC.s:1096   .bss.ComplianceTestState:00000000 $d
+C:\Users\NATHAN~1\AppData\Local\Temp\ccW3kqrC.s:1100   .bss.ComplianceTestState:00000000 ComplianceTestState
+C:\Users\NATHAN~1\AppData\Local\Temp\ccW3kqrC.s:1103   .bss.ComplianceTxNextPacketTimer:00000000 $d
+C:\Users\NATHAN~1\AppData\Local\Temp\ccW3kqrC.s:1107   .bss.ComplianceTxNextPacketTimer:00000000 ComplianceTxNextPacketTimer
+C:\Users\NATHAN~1\AppData\Local\Temp\ccW3kqrC.s:1110   .bss.LmhpComplianceParams:00000000 $d
+C:\Users\NATHAN~1\AppData\Local\Temp\ccW3kqrC.s:1114   .bss.LmhpComplianceParams:00000000 LmhpComplianceParams
+C:\Users\NATHAN~1\AppData\Local\Temp\ccW3kqrC.s:1117   .data.LmhpCompliancePackage:00000000 $d
+C:\Users\NATHAN~1\AppData\Local\Temp\ccW3kqrC.s:1121   .data.LmhpCompliancePackage:00000000 LmhpCompliancePackage
+C:\Users\NATHAN~1\AppData\Local\Temp\ccW3kqrC.s:658    .text.LmhpComplianceOnMcpsIndication:000000d1 $d
+C:\Users\NATHAN~1\AppData\Local\Temp\ccW3kqrC.s:658    .text.LmhpComplianceOnMcpsIndication:000000d2 $t
+
+UNDEFINED SYMBOLS
+UTIL_TIMER_Start
+LoRaMacMibSetRequestConfirm
+LoRaMacTestSetDutyCycleOn
+UTIL_TIMER_Create
+UTIL_TIMER_SetPeriod
+UTIL_TIMER_Stop
+LoRaMacMlmeRequest
