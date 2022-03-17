@@ -39,7 +39,7 @@ If you prefer [CLion](https://www.jetbrains.com/help/clion/embedded-development.
 #### /Debug/
 - / Debug/STM32WLE5JCIx.hex - the compiled binary for the project. 
 #### /Drivers/
-	>BPS libraries and any other external drivers that you need to interface go in here.
+	>BSP libraries and any other external drivers that you need to interface go in here.
 #### /EWARM/
 #### /LoRaWAN/
 - /LoRaWAN/App/lora_app.c - Application of the LRWAN Middleware
